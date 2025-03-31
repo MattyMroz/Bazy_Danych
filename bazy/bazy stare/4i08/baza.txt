@@ -1,0 +1,129 @@
+create database baza
+
+
+use baza
+
+
+CREATE TABLE dzialy(
+	dzialID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	nazwa varchar(50) 
+)
+
+go
+
+CREATE TABLE pracownicy
+(
+	pracID  int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	nazwisko varchar(50),
+	imie varchar(50),
+	wiek int,
+	dzialID int FOREIGN KEY REFERENCES dzialy (dzialID)
+) 
+
+go
+
+CREATE TABLE zarobki(
+	zarID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	od datetime,
+	brutto money,
+	pracID int FOREIGN KEY REFERENCES pracownicy (pracID)
+)
+
+
+
+create table obiekty
+
+(
+ idobiektu int identity(1,1) primary key,
+nazwa varchar(50) default 'nazwa',
+wysokosc int,
+szerokosc int,
+glebokosc int,
+obiektowosc as wysokosc*szerokosc*glebokosc
+)
+insert into obiekty (nazwa,wysokosc,szerokosc,glebokosc) values('test',1,2,3);
+insert into obiekty (nazwa,wysokosc,szerokosc,glebokosc) values(1,2,3);
+
+alter table pracownicy add wzrost numeric(3,2)
+
+
+alter table pracownicy add dousuniecia2 int default 1
+
+select * from pracownicy
+update pracownicy set wzrost=1.70 where pracid<5
+update pracownicy set wzrost=1.75 where pracid=5
+update pracownicy set wzrost=1.80 where pracid>5
+select * from pracownicy
+
+
+create table absencje
+(
+ 
+ abse_id int identity(1,1) constraint PK_Absencje primary key,
+ od datetime not null,
+ do datetime not null,
+typ varchar (15) not null constraint CK_Abse_Typ check(typ in ('zwolnienie','urlop')),
+prac_id int not null constraint FK_Abse_Prac foreign key references Pracownicy(Pracid)
+
+)
+
+
+
+
+
+
+
+
+alter table dzialy add aktualny2 varchar(3)
+update dzialy set aktualny2='tak'
+
+alter table dzialy 
+add aktualny3 varchar(1)
+
+
+
+
+--dzialy
+insert into dzialy(nazwa) values('Marketing');
+insert into dzialy(nazwa) values('Sprzeda?');
+insert into dzialy(nazwa) values('Wdro?enia');
+insert into dzialy(nazwa) values('Produkcja');
+
+--pracownicy
+insert into pracownicy(nazwisko,imie,wiek,dzialid) values('Kowalski','Jan',50,1);
+insert into pracownicy(nazwisko,imie,wiek,dzialid) values('Pi?tasa','Janusz',27,1);
+insert into pracownicy(nazwisko,imie,wiek,dzialid) values('Wolnicki','Andrzej',34,1);
+insert into pracownicy(nazwisko,imie,wiek,dzialid) values('Pi?tkowski','Roman',30,1);
+insert into pracownicy(nazwisko,imie,wiek,dzialid) values('Doma?ska','Katarzyna',32,1);
+insert into pracownicy(nazwisko,imie,wiek,dzialid) values('Nowacki','Micha?',null,2);
+insert into pracownicy(nazwisko,imie,wiek,dzialid) values('Krakowski','Mariusz',27,2);
+insert into pracownicy(nazwisko,imie,wiek,dzialid) values('Ziomek','Tomasz',34,3);
+insert into pracownicy(nazwisko,imie,wiek,dzialid) values('Andrzejczak','Jan',20,3);
+insert into pracownicy(nazwisko,imie,wiek,dzialid) values('Jackowska','Maria',null,4);
+insert into pracownicy(nazwisko,imie,wiek,dzialid) values('Nowak','Anna',25,4);
+insert into pracownicy(nazwisko,imie,wiek,dzialid) values('Nowacki','Jan',29,null);
+insert into pracownicy(nazwisko,imie,wiek,dzialid) values('Pawe?czyk','Janusz',31,null);
+
+
+--zarobki
+insert into zarobki(od,brutto,pracid) values('01/01/06',12500,1);
+insert into zarobki(od,brutto,pracid) values('02/01/06',12550,1);
+insert into zarobki(od,brutto,pracid) values('03/01/06',12600,1);
+insert into zarobki(od,brutto,pracid) values('01/01/06',2500,2);
+insert into zarobki(od,brutto,pracid) values('02/01/06',2550,2);
+insert into zarobki(od,brutto,pracid) values('03/01/06',6600,2);
+insert into zarobki(od,brutto,pracid) values('04/01/06',6600,2);
+insert into zarobki(od,brutto,pracid) values('05/01/06',6250,2);
+insert into zarobki(od,brutto,pracid) values('06/01/06',6300,2);
+insert into zarobki(od,brutto,pracid) values('01/01/06',2500,3);
+insert into zarobki(od,brutto,pracid) values('02/01/06',2550,4);
+insert into zarobki(od,brutto,pracid) values('03/01/06',2600,5);
+insert into zarobki(od,brutto,pracid) values('01/01/06',2500,6);
+insert into zarobki(od,brutto,pracid) values('02/01/06',2550,6);
+insert into zarobki(od,brutto,pracid) values('03/01/06',2600,6);
+insert into zarobki(od,brutto,pracid) values('01/01/06',2500,7);
+insert into zarobki(od,brutto,pracid) values('02/01/06',2550,7);
+insert into zarobki(od,brutto,pracid) values('03/01/06',2600,8);
+insert into zarobki(od,brutto,pracid) values('01/01/06',2500,9);
+insert into zarobki(od,brutto,pracid) values('02/01/06',5550,10);
+insert into zarobki(od,brutto,pracid) values('03/01/06',5600,11);

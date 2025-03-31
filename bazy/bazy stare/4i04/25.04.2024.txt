@@ -1,0 +1,31 @@
+--Zapytanie zwracające 2 kolumny : nazwę kategorii oraz 
+--nazwę produktu. Jedynie najdroższe produkty dla każdej z 
+--kategorii.
+
+SELECT NazwaKategorii, NazwaProduktu, CenaJednostkowa FROM
+(select NazwaProduktu,NazwaKategorii,k.IDkategorii,CenaJednostkowa 
+from Kategorie as k join Produkty as p
+on
+p.IDkategorii=k.IDkategorii) as t1
+join
+(select IDkategorii, max(CenaJednostkowa) as 'maks' from Produkty
+group by IDkategorii) as t2
+on
+t1.IDkategorii=t2.IDkategorii
+where 
+CenaJednostkowa=maks
+ 
+
+/*Zapytanie zwracające nazwę kategorii zawierającej najwięcej 
+produktów (Confections)*/
+
+
+SELECT CategoryName from Categories as c join Products as p 
+on
+p.CategoryID=c.CategoryID
+group by
+c.CategoryID,c.CategoryName
+having count (ProductID)=
+(select max(ile) from
+(select count(ProductID) as 'ile' from Products
+group by CategoryID) as temp) 
