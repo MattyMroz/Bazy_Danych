@@ -447,53 +447,34 @@ ORDER BY Title;
 
 ZADANIE 6
 ---------
-
-1. Napisz procedurę która określi jaki dzień tygodnia stanowi data podana w parametrze wejściowym.
-   W przypadku braku parametru, zwróci dzień tygodnia aktualnej daty.
-
-CREATE PROCEDURE usp_JakiDzienTygodnia
-    -- Parametr wejściowy @DataWejsciowa jest opcjonalny.
-    -- Jeśli nie zostanie podany, przyjmie wartość NULL.
-    @DataWejsciowa DATETIME = NULL
+CREATE PROCEDURE dbo.ZnajdzDzienTygodnia
+    @DataWejsciowa DATE = NULL
 AS
 BEGIN
-    SET NOCOUNT ON; -- Wyłącza komunikat "(1 row affected)"
+   DECLARE @WynikowaData DATE;
+   DECLARE @DzienTygodnia NVARCHAR(20);
 
-    DECLARE @DataDoSprawdzenia DATETIME;
-    DECLARE @DzienTygodnia NVARCHAR(20);
+   -- Jeśli parametr nie został podany, użyj aktualnej daty
+   IF @DataWejsciowa IS NULL
+      SET @WynikowaData = GETDATE();
+   ELSE
+      SET @WynikowaData = @DataWejsciowa;
 
-    -- Sprawdź, czy podano parametr wejściowy
-    IF @DataWejsciowa IS NULL
-    BEGIN
-        -- Jeśli nie podano daty, użyj aktualnej daty systemowej
-        SET @DataDoSprawdzenia = GETDATE();
-    END
-    ELSE
-    BEGIN
-        -- Jeśli podano datę, użyj jej
-        SET @DataDoSprawdzenia = @DataWejsciowa;
-    END
+   -- Pobierz nazwę dnia tygodnia
+   SET @DzienTygodnia = DATENAME(weekday, @WynikowaData);
 
-    -- Określ dzień tygodnia w języku polskim (wymaga SQL Server 2012+)
-    -- Jeśli używasz starszej wersji, może być potrzebne SET LANGUAGE Polish
-    -- lub ręczne mapowanie numeru dnia na nazwę.
-    BEGIN TRY
-        SET @DzienTygodnia = FORMAT(@DataDoSprawdzenia, 'dddd', 'pl-PL');
-    END TRY
-    BEGIN CATCH
-        -- Fallback dla starszych wersji lub problemów z FORMAT/kulturą 'pl-PL'
-        -- To zwróci nazwę dnia zgodnie z ustawieniami językowymi serwera/sesji
-        PRINT 'Uwaga: Nie można użyć FORMAT z pl-PL. Używam DATENAME (wynik zależny od ustawień językowych serwera).';
-        SET @DzienTygodnia = DATENAME(weekday, @DataDoSprawdzenia);
-    END CATCH
-
-    -- Zwróć wynik
-    SELECT @DzienTygodnia AS DzienTygodnia;
-
+   -- Zwróć wynik
+   SELECT
+      @WynikowaData AS Data,
+      @DzienTygodnia AS DzienTygodnia;
 END;
 
+-- Z podaniem daty
+EXEC dbo.ZnajdzDzienTygodnia '2020-11-11';
+EXEC dbo.ZnajdzDzienTygodnia '2025-04-02';
 
-
+-- Bez podania daty (użyje bieżącej daty)
+EXEC dbo.ZnajdzDzienTygodnia;
 
 2. Zwróć adres w postaci:
    Piotrkowska
@@ -501,6 +482,9 @@ END;
    m.30
    90-123 Łódź
 
+(nie wiem o jaką postac chodziło)
+
+-- teoretycznie powinno działać
 SELECT
    'Piotrkowska' + CHAR(13)+CHAR(10) +
    '123/23' + CHAR(13)+CHAR(10) +
@@ -509,7 +493,17 @@ SELECT
 AS SformatowanyAdres;
 GO
 
-SELECT 'Piotrkowska' AS LiniaAdresu
+-- wyświtla wiadomość w konsoli
+DECLARE @Adres NVARCHAR(100) =
+  'Piotrkowska' + CHAR(13) + CHAR(10) +
+  '123/23' + CHAR(13) + CHAR(10) +
+  'm.30' + CHAR(13) + CHAR(10) +
+  '90-123 Łódź';
+
+PRINT @Adres;
+
+-- robi wiele wierszy
+SELECT 'Piotrkowska' AS Adres
 UNION ALL
 SELECT '123/23'
 UNION ALL
@@ -520,6 +514,81 @@ SELECT '90-123 Łódź';
 3. Stwórz trigger który przenosi dane dotyczące zarobków do tabeli historycznej będącej
    dokładną kopią tabeli zarobki bez kolumny aktualny. Uwzględnij w tej tabeli datę
    przenosin oraz użytkownika który kasował dane.
+
+USE baza;
+go;
+
+-- Sprawdź, czy tabela historii już istnieje, jeśli nie, stwórz ją
+IF OBJECT_ID('zarobki_historia', 'U') IS NULL
+BEGIN
+   CREATE TABLE zarobki_historia (
+      zarID INT,
+      od DATETIME,
+      brutto MONEY,
+      pracID INT,
+
+      -- Dodatkowe kolumny
+      DataPrzeniesienia DATETIME NOT NULL,
+      UzytkownikKasujacy NVARCHAR(128) NOT NULL
+   );
+PRINT 'Tabela zarobki_historia została utworzona.';
+END
+ELSE
+BEGIN
+   PRINT 'Tabela zarobki_historia już istnieje.';
+END
+GO
+
+
+-- Stworzenie triggera
+
+-- Usuń trigger, jeśli już istnieje
+IF OBJECT_ID('archiwizuj_zarobki', 'TR') IS NOT NULL
+BEGIN
+   DROP TRIGGER archiwizuj_zarobki;
+   PRINT 'Istniejący trigger archiwizuj_zarobki został usunięty.';
+END
+GO
+
+-- Trigger, który będzie się uruchamiał PO operacji DELETE na tabeli 'zarobki'
+CREATE TRIGGER archiwizuj_zarobki
+ON zarobki
+AFTER DELETE
+AS
+BEGIN
+   SET NOCOUNT ON;
+
+   -- Wstaw dane do tabeli 'zarobki_historia'
+   INSERT INTO zarobki_historia (
+      zarID,
+      od,
+      brutto,
+      pracID,
+      DataPrzeniesienia,
+      UzytkownikKasujacy
+   )
+   SELECT
+      d.zarID,
+      d.od,
+      d.brutto,
+      d.pracID,
+      GETDATE(),
+      SUSER_SNAME()
+   FROM
+      deleted d;
+END;
+GO
+
+PRINT 'Trigger archiwizuj_zarobki został utworzony.';
+GO
+
+/*
+SELECT * FROM zarobki WHERE pracID = 1;
+SELECT * FROM zarobki_historia WHERE pracID = 1;
+DELETE FROM zarobki WHERE pracID = 1;
+SELECT * FROM zarobki WHERE pracID = 1;
+SELECT * FROM zarobki_historia WHERE pracID = 1;
+*/
 
 
 
@@ -537,6 +606,32 @@ Zadania do wykonania:
    W przypadku niezgodności długości ciągów wejściowych wyświetl komunikat typu:
    'Błąd długości znaków: X <> Y' gdzie X i Y to długości ciągów wejściowych
 
+
+CREATE FUNCTION dbo.MieszajCiagi(@ciag1 VARCHAR(100), @ciag2 VARCHAR(100))
+RETURNS VARCHAR(200)
+AS
+BEGIN
+   DECLARE @wynik VARCHAR(200) = ''
+   DECLARE @dlugosc1 INT = LEN(@ciag1)
+   DECLARE @dlugosc2 INT = LEN(@ciag2)
+   DECLARE @i INT = 1
+
+   IF @dlugosc1 <> @dlugosc2
+      RETURN 'Błąd długości znaków: ' + CAST(@dlugosc1 AS VARCHAR) + ' <> ' + CAST(@dlugosc2 AS VARCHAR)
+
+   WHILE @i <= @dlugosc1
+   BEGIN
+      SET @wynik = SUBSTRING(@ciag2, @i, 1) + SUBSTRING(@ciag1, @i, 1) + @wynik
+      SET @i = @i + 1
+   END
+
+   RETURN @wynik
+END
+
+SELECT dbo.MieszajCiagi('ABCDE', '12345')
+SELECT dbo.MieszajCiagi('ABCDE', 's')
+
+
 2. Stwórz procedurę, która wyświetli w formie tekstowej (w oknie messages) co drugiego pracownika,
    którego nazwisko zaczyna się na literę podaną w parametrze. W przypadku nie podania
    parametru uwzględniaj tylko osoby o nazwisku na literę 'Z'. W przypadku podania w parametrze wartości
@@ -548,3 +643,46 @@ Zadania do wykonania:
    'Pracownik nr #1 Jan Kowalski 25 lat'
    'Pracownik nr #3 Tomasz Kowalski 26 lat'
    'Pracownik nr #5 Piotr Kowalski 29 lat'
+
+CREATE PROCEDURE dbo.WyswietlPracownikow
+    @litera CHAR(1) = 'Z'
+AS
+BEGIN
+   DECLARE @imie VARCHAR(50)
+   DECLARE @nazwisko VARCHAR(50)
+   DECLARE @wiek INT
+   DECLARE @licznik INT = 0
+   DECLARE @wyswietlony INT = 0
+
+   DECLARE kursor_pracownikow CURSOR FOR
+   SELECT imie, nazwisko, wiek
+   FROM pracownicy
+   WHERE @litera IS NULL OR LEFT(nazwisko, 1) = @litera
+   ORDER BY pracID
+
+   OPEN kursor_pracownikow
+
+   FETCH NEXT FROM kursor_pracownikow INTO @imie, @nazwisko, @wiek
+
+   WHILE @@FETCH_STATUS = 0
+   BEGIN
+      SET @licznik = @licznik + 1
+
+      IF @licznik % 2 = 1
+      BEGIN
+         SET @wyswietlony = @wyswietlony + 1
+         PRINT 'Pracownik nr #' + CAST(@wyswietlony AS VARCHAR) + ' ' + @imie + ' ' + @nazwisko +
+               CASE WHEN @wiek IS NULL THEN ' wiek nieznany' ELSE ' ' + CAST(@wiek AS VARCHAR) + ' lat' END
+      END
+
+      FETCH NEXT FROM kursor_pracownikow INTO @imie, @nazwisko, @wiek
+   END
+
+   CLOSE kursor_pracownikow
+   DEALLOCATE kursor_pracownikow
+END
+
+-- Przykład użycia procedury
+EXEC dbo.WyswietlPracownikow 'K'
+EXEC dbo.WyswietlPracownikow -- domyślnie 'Z'
+EXEC dbo.WyswietlPracownikow NULL -- wszyscy pracownicy
