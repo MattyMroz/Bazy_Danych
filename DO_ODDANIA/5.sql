@@ -67,6 +67,27 @@ JOIN Orders O ON E.EmployeeID = O.EmployeeID
 GROUP BY E.EmployeeID, E.FirstName, E.LastName
 ORDER BY IloscZamowien DESC;
 
+
+SELECT 
+   E.Imię AS Imie,
+   E.Nazwisko AS Nazwisko,
+   COUNT(O.IDzamówienia) AS IloscZamowien
+FROM Pracownicy E
+JOIN Zamówienia O ON E.IDpracownika = O.IDpracownika
+GROUP BY E.IDpracownika, E.Imię, E.Nazwisko
+HAVING COUNT(O.IDzamówienia) = (
+    SELECT MAX(IloscZamowien)
+    FROM (
+        SELECT COUNT(O2.IDzamówienia) AS IloscZamowien
+        FROM Pracownicy E2
+        JOIN Zamówienia O2 ON E2.IDpracownika = O2.IDpracownika
+        GROUP BY E2.IDpracownika
+    ) AS SubQuery
+)
+ORDER BY IloscZamowien DESC;
+
+
+
 6. Zapytanie zwracające 3 kolumny: imię, nazwisko, id zamówienia.
    Jedynie zamówienia z 3 kwartału 1996 zrealizowane po terminie (5)
 
