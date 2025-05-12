@@ -102,6 +102,17 @@ WHERE O.OrderDate >= '1996-07-01'
    AND O.ShippedDate > O.RequiredDate
    AND O.ShippedDate IS NOT NULL;
 
+SELECT
+   E.FirstName AS Imie,
+   E.LastName AS Nazwisko,
+   O.OrderID
+FROM Employees E
+JOIN Orders O ON E.EmployeeID = O.EmployeeID
+WHERE DATEPART(QUARTER, O.OrderDate) = 3
+   AND YEAR(O.OrderDate) = 1996
+   AND O.ShippedDate > O.RequiredDate
+   AND O.ShippedDate IS NOT NULL;
+
 7. Zapytanie zwracające nazwy kategorii i ilość produktów do nich przypisanych;
    posortować rosnąco (9)
 
