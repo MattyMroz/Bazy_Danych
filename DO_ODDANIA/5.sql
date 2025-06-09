@@ -29,14 +29,37 @@ JOIN Categories C ON P1.CategoryID = C.CategoryID
 JOIN Suppliers S ON P1.SupplierID = S.SupplierID
 GROUP BY C.CategoryName, S.CompanyName, C.CategoryID
 HAVING
-    -- Sprawdzamy, czy liczba produktów dla tej firmy w tej kategorii jest większa lub równa liczbie produktów WSZYSTKICH firm w TEJ SAMEJ kategorii
     COUNT(P1.ProductID) >= ALL (
-        SELECT COUNT(P2.ProductID) -- Policz produkty dla innych firm w tej kategorii
-        FROM Products P2
-        WHERE P2.CategoryID = C.CategoryID -- Ogranicz do TEJ SAMEJ kategorii
-        GROUP BY P2.SupplierID -- Grupuj wg dostawcy wewnątrz tej kategorii
+         SELECT COUNT(P2.ProductID)
+         FROM Products P2
+         WHERE P2.CategoryID = C.CategoryID
+         GROUP BY P2.SupplierID
     )
 ORDER BY NazwaKategorii, NazwaFirmyZNajwiekszaIlosciaProduktow;
+
+SELECT
+   C.CategoryName AS NazwaKategorii,
+   S.CompanyName AS NazwaFirmyZNajwiekszaIlosciaProduktow
+FROM Products P1
+JOIN Categories C ON P1.CategoryID = C.CategoryID
+JOIN Suppliers S ON P1.SupplierID = S.SupplierID
+GROUP BY C.CategoryName, S.CompanyName, C.CategoryID -- Grupujemy po kategorii i dostawcy
+HAVING
+    COUNT(P1.ProductID) = ( -- Zamiast >= ALL, sprawdzamy równość z maksymalną wartością
+         -- Podzapytanie znajdujące maksymalną liczbę produktów dla *dowolnego* dostawcy w tej samej kategorii
+         SELECT MAX(LiczbaProduktowDostawcyWCategorii)
+         FROM (
+              -- Wewnętrzne podzapytanie obliczające liczbę produktów dla każdego dostawcy w *danej* kategorii
+              SELECT COUNT(P2.ProductID) AS LiczbaProduktowDostawcyWCategorii
+              FROM Products P2
+              WHERE P2.CategoryID = C.CategoryID -- Kluczowe: łączenie z głównym zapytaniem (korelacja)
+              GROUP BY P2.SupplierID -- Zliczamy produkty dla każdego dostawcy
+         ) AS LiczbyProduktowDostawcow
+    )
+ORDER BY NazwaKategorii, NazwaFirmyZNajwiekszaIlosciaProduktow;
+
+
+
 
 3. Zapytanie zwracające 2 kolumny: imię oraz nazwisko pracownika.
    Jedynie pracownicy na stanowisku przedstawiciel handlowy

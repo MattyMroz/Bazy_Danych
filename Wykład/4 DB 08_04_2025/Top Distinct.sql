@@ -1,0 +1,10 @@
+/*SELECT TOP 5 WITH TIES Nazwisko, Wzrost
+FROM Osoby
+ORDER BY Wzrost DESC*/
+
+/*SELECT TOP 10 PERCENT Nazwisko, Wzrost
+FROM Osoby
+ORDER BY Wzrost DESC*/
+
+SELECT DISTINCT RokUrodz
+FROM Osoby

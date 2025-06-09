@@ -3,6 +3,10 @@ AUTOR: MATEUSZ MRÓZ 251190
 
 ZADANIE 6
 ---------
+1. Napisz procedurę która określi jaki dzien tygodnia stanowi
+data podana w parametrze wejściowym.
+W przypadku braku parametru, zwróci dzien tygodnia aktualnej daty.
+
 CREATE PROCEDURE dbo.ZnajdzDzienTygodnia
     @DataWejsciowa DATE = NULL
 AS

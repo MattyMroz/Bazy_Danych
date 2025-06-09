@@ -45,6 +45,24 @@ WHERE ShipCountry IS NOT NULL
 GROUP BY ShipCountry
 ORDER BY numberOfOrders DESC;
 
+
+SELECT
+    ShipCountry,
+    COUNT(OrderID) AS numberOfOrders
+FROM Orders
+WHERE ShipCountry IS NOT NULL
+GROUP BY ShipCountry
+HAVING COUNT(OrderID) = (
+    SELECT MAX(liczbaZamowien)
+    FROM (
+        SELECT COUNT(OrderID) AS liczbaZamowien
+        FROM Orders
+        GROUP BY ShipCountry
+    ) AS Counts
+);
+
+
+
 2. Zapytanie zwracające 3 kolumny: imię, nazwisko, id zamówienia.
    Jedynie zamówienia z 3 kwartału 1996 zrealizowane po terminie.
 

@@ -26,6 +26,25 @@ INNER JOIN [Order Details] OD ON O.OrderID = OD.OrderID
 GROUP BY O.OrderID, C.CompanyName
 ORDER BY SUM(OD.UnitPrice * OD.Quantity * (1 - OD.Discount)) DESC;
 
+SELECT
+    C.CompanyName AS companyName,
+    SUM(OD.UnitPrice * OD.Quantity * (1 - OD.Discount)) AS totalOrderValue
+FROM Customers C
+INNER JOIN Orders O ON C.CustomerID = O.CustomerID
+INNER JOIN [Order Details] OD ON O.OrderID = OD.OrderID
+GROUP BY O.OrderID, C.CompanyName -- Grupujemy po OrderID, żeby zsumować wartość dla każdego zamówienia
+HAVING SUM(OD.UnitPrice * OD.Quantity * (1 - OD.Discount)) = (
+    -- Podzapytanie znajdujące maksymalną wartość spośród wszystkich zamówień
+    SELECT MAX(OrderTotal)
+    FROM (
+        -- Podzapytanie obliczające wartość dla każdego zamówienia
+        SELECT SUM(UnitPrice * Quantity * (1 - Discount)) AS OrderTotal
+        FROM [Order Details]
+        GROUP BY OrderID
+    ) AS OrderTotals
+);
+
+
 3. Podać nazwę towaru i sumaryczną wartość sprzedaży towaru w przedziale czasowym 12 do 5 lat
    wstecz od aktualnej daty systemowej
 
@@ -101,6 +120,29 @@ SELECT
 FROM Employees
 WHERE Title = 'Sales Representative';
 
+
+SELECT
+   FirstName AS Imie,
+   LastName AS Nazwisko
+FROM Employees
+WHERE Title LIKE 'Sales Representative';
+
+SELECT
+    Subquery.FirstName,
+    Subquery.LastName
+FROM
+    (
+        SELECT
+            FirstName,
+            LastName,
+            Title
+        FROM
+            Employees
+    ) AS Subquery
+WHERE
+    Subquery.Title = 'Sales Representative';
+
+
 7. Zapytanie zwracające 2 kolumny: nazwę produktu oraz nazwę firmy dostarczającej dany produkt
 
 SELECT
@@ -121,6 +163,25 @@ JOIN Orders O ON E.EmployeeID = O.EmployeeID
 GROUP BY E.EmployeeID, E.FirstName, E.LastName
 ORDER BY IloscZamowien DESC;
 
+SELECT
+    E.FirstName,
+    E.LastName,
+    COUNT(O.OrderID) AS NumerZamowien
+FROM Employees AS E
+INNER JOIN Orders AS O ON O.EmployeeID = E.EmployeeID
+GROUP BY E.EmployeeID, E.FirstName, E.LastName -- Grupujemy, aby zliczyć zamówienia dla każdego pracownika
+HAVING COUNT(O.OrderID) = (
+    -- Podzapytanie, które znajduje maksymalną liczbę zamówień spośród wszystkich pracowników
+    SELECT MAX(LiczbaZamowienPracownika)
+    FROM (
+        -- Wewnętrzne podzapytanie obliczające liczbę zamówień dla każdego pracownika
+        SELECT COUNT(OrderID) AS LiczbaZamowienPracownika
+        FROM Orders
+        GROUP BY EmployeeID
+    ) AS ZamowieniaPracownikow
+);
+
+
 9. Zapytanie zwracające 3 kolumny: imię, nazwisko, id zamówienia.
    Jedynie zamówienia z 3 kwartału 1996 zrealizowane po terminie (5)
 
@@ -134,3 +195,13 @@ WHERE O.OrderDate >= '1996-07-01'
    AND O.OrderDate < '1996-10-01'
    AND O.ShippedDate > O.RequiredDate
    AND O.ShippedDate IS NOT NULL;
+
+SELECT
+   Employees.FirstName,
+   Employees.LastName,
+   Orders.OrderID
+FROM Employees
+JOIN Orders ON Employees.EmployeeID = Orders.EmployeeID
+WHERE YEAR(Orders.OrderDate) = 1996
+   AND MONTH(Orders.OrderDate) BETWEEN 7 AND 9
+   AND Orders.ShippedDate > Orders.RequiredDate;

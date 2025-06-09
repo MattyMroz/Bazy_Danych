@@ -1,0 +1,13 @@
+CREATE OR ALTER TRIGGER Zaliczka
+ON Osoby
+FOR INSERT
+AS
+INSERT INTO Zarobki 
+SELECT IdOsoby, 1111, GETDATE() FROM INSERTED
+
+GO
+
+INSERT INTO Osoby( Nazwisko) VALUES ('Lisek'), ('Wilczek')
+
+SELECT * FROM Osoby
+SELECT * FROM Zarobki

@@ -1,0 +1,13 @@
+CREATE OR ALTER TRIGGER UpT
+ON Osoby
+AFTER INSERT, UPDATE
+AS
+UPDATE Osoby SET Nazwisko = UPPER(Nazwisko)
+WHERE IdOsoby IN (SELECT IdOsoby FROM INSERTED)
+
+GO
+
+INSERT INTO Osoby( Nazwisko) VALUES ('kowalewski')
+UPDATE Osoby SET Nazwisko = LOWER(Nazwisko) WHERE IdOsoby>3000
+
+SELECT * FROM Osoby
