@@ -91,7 +91,7 @@ GROUP BY E.EmployeeID, E.FirstName, E.LastName
 ORDER BY IloscZamowien DESC;
 
 
-SELECT 
+SELECT
    E.Imię AS Imie,
    E.Nazwisko AS Nazwisko,
    COUNT(O.IDzamówienia) AS IloscZamowien
@@ -185,8 +185,7 @@ FROM Products P
 LEFT JOIN Suppliers S ON P.SupplierID = S.SupplierID
 ORDER BY P.ProductName;
 
-12. Zapytanie zwracające tytuł, imię i nazwisko najmłodszej osoby w każdym z działów,
-    przez dział rozumiemy tytuł pracownika (4)
+12. Zapytanie zwracające tytuł, imię i nazwisko najmłodszej osoby w każdym z działów, przez dział rozumiemy tytuł pracownika (4)
 
 SELECT
    Title AS TytulDzialu,

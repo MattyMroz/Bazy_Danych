@@ -87,7 +87,9 @@ HAVING
                 GROUP BY
                     CategoryID
             ) as temp
-    ) use [north_pl] -- zapytanie zwracajace 2 kolumny ; kraj oraz ilosc 
+    ) use [north_pl]
+    
+    -- zapytanie zwracajace 2 kolumny ; kraj oraz ilosc 
     --zamowien z niego realizowanych, jedynie kraje o 
     --najwiekszej liczbie zamowien(1) 
 SELECT

@@ -125,7 +125,7 @@ join
 from Produkty group by IDkategorii) as t2
 on 
 t1.IDkategorii=t2.IDkategorii
-where CenaJednostkowa=maks
+where CenaJednostkowa=maks 
 
 
 --Zapytanie zwracające 2 kolumny 
