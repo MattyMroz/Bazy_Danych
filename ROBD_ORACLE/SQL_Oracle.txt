@@ -1,0 +1,863 @@
+-- ============================================================================
+-- ROZWIĄZANIA ZADAŃ SQL DLA SCHEMATU SCOTT (Oracle Database)
+-- Autor: Oracle Database Developer
+-- Data: 2025-10-08
+-- Schemat: SCOTT (EMP, DEPT, BONUS, SALGRADE)
+-- ============================================================================
+
+-- ============================================================================
+-- SEKCJA 1: PODSTAWOWE ZAPYTANIA (Zadania 1-11)
+-- ============================================================================
+
+-- Zadanie 1: Wyświetlić nazwiska pracowników oraz ich zawód
+SELECT ename, job
+FROM emp;
+
+-- Zadanie 2: Wyświetlić pierwsze 3 rekordy z tabeli emp
+SELECT *
+FROM emp
+WHERE ROWNUM <= 3;
+
+-- Zadanie 3: Wyświetlić pierwsze uporządkowane po nazwisku 3 rekordy
+SELECT *
+FROM (
+  SELECT *
+  FROM emp
+  ORDER BY ename
+)
+WHERE ROWNUM <= 3;
+
+-- Zadanie 4: Wszystkie wzajemnie różne kombinacje numeru departamentu i stanowiska
+SELECT DISTINCT deptno, job
+FROM emp
+ORDER BY deptno, job;
+
+-- Zadanie 5: Nazwiska zaczynające się na S/s i trzecia litera 'i'
+-- Wzorzec: S_I% (drugie pole dowolne, trzecie 'I')
+SELECT ename, sal
+FROM emp
+WHERE ename LIKE 'S_I%';
+
+-- Zadanie 6: Zarobki z prowizją od początku roku
+-- Roczne zarobki = (pensja * 12) + (prowizja * 12)
+SELECT 
+  ename,
+  sal,
+  comm,
+  (sal * 12) AS pensja_roczna,
+  (sal * 12 + NVL(comm, 0) * 12) AS zarobek_roczny_z_prowizja
+FROM emp;
+
+-- Zadanie 7: Data zegara systemowego
+SELECT SYSDATE AS data_systemowa
+FROM dual;
+
+-- Zadanie 8: Do daty systemowej dodaj 3 dni
+SELECT SYSDATE + 3 AS data_plus_3_dni
+FROM dual;
+
+-- Zadanie 9: Do daty systemowej dodaj 3 godziny
+-- 1 dzień = 24 godziny, więc 3 godziny = 3/24 dnia
+SELECT SYSDATE + (3/24) AS data_plus_3_godziny
+FROM dual;
+
+-- Zadanie 10: Ile dni upłynęło od Twoich narodzin?
+-- UWAGA: Podstaw swoją datę urodzenia w formacie 'YYYY-MM-DD'
+SELECT TRUNC(SYSDATE - TO_DATE('1990-01-15', 'YYYY-MM-DD')) AS dni_od_urodzin
+FROM dual;
+
+-- Zadanie 11: Ile dni pozostało do Twoich urodzin?
+-- Obsługa przypadku: urodziny już były w tym roku vs jeszcze będą
+SELECT 
+  CASE 
+    WHEN TO_DATE(TO_CHAR(SYSDATE, 'YYYY') || '-01-15', 'YYYY-MM-DD') >= SYSDATE 
+    THEN TO_DATE(TO_CHAR(SYSDATE, 'YYYY') || '-01-15', 'YYYY-MM-DD') - SYSDATE
+    ELSE TO_DATE(TO_CHAR(SYSDATE + 365, 'YYYY') || '-01-15', 'YYYY-MM-DD') - SYSDATE
+  END AS dni_do_urodzin
+FROM dual;
+
+
+-- ============================================================================
+-- SEKCJA 2: ZAAWANSOWANE ZAPYTANIA (Pytania 1-37)
+-- ============================================================================
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 1: CASE dla kategoryzacji pensji
+-- ---------------------------------------------------------------------------
+SELECT 
+  ename,
+  sal,
+  CASE 
+    WHEN sal < 1000 THEN 'Niska pensja'
+    WHEN sal BETWEEN 1000 AND 2000 THEN 'Średnia pensja'
+    WHEN sal > 2000 THEN 'Wysoka pensja'
+    ELSE 'brak wartości'
+  END AS kategoria_pensji
+FROM emp
+ORDER BY sal;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 2: Funkcje do obsługi NULL (COMM)
+-- ---------------------------------------------------------------------------
+
+-- Wariant 1: NVL (najpopularniejsza funkcja Oracle)
+SELECT ename, sal, NVL(comm, 0) AS dodatek_nvl
+FROM emp;
+
+-- Wariant 2: NVL2 (różne wartości dla NULL i NOT NULL)
+SELECT ename, sal, NVL2(comm, comm, 0) AS dodatek_nvl2
+FROM emp;
+
+-- Wariant 3: COALESCE (standard SQL, działa z wieloma argumentami)
+SELECT ename, sal, COALESCE(comm, 0) AS dodatek_coalesce
+FROM emp;
+
+-- Wariant 4: DECODE (Oracle-specific, starsza składnia)
+SELECT ename, sal, DECODE(comm, NULL, 0, comm) AS dodatek_decode
+FROM emp;
+
+-- Wariant 5: CASE (najbardziej uniwersalne)
+SELECT ename, sal,
+  CASE WHEN comm IS NULL THEN 0 ELSE comm END AS dodatek_case
+FROM emp;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 3: Sortowanie z NULL na początku/końcu
+-- ---------------------------------------------------------------------------
+
+-- NULL na początku
+SELECT ename, comm
+FROM emp 
+ORDER BY comm NULLS FIRST;
+
+-- NULL na końcu (domyślnie dla ASC)
+SELECT ename, comm
+FROM emp 
+ORDER BY comm NULLS LAST;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 4: Informacje o użytkowniku i data
+-- ---------------------------------------------------------------------------
+
+-- Nazwa użytkownika i jego ID
+SELECT 
+  USER AS nazwa_uzytkownika, 
+  UID AS id_uzytkownika
+FROM dual;
+
+-- Aktualna data w formacie DD-MM-YYYY HH24:MI:SS
+SELECT TO_CHAR(SYSDATE, 'DD-MM-YYYY HH24:MI:SS') AS aktualna_data
+FROM dual;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 5: Konwersja string na datę
+-- ---------------------------------------------------------------------------
+
+-- Zamiana ciągu znaków na format daty
+SELECT TO_DATE('01-30-2017', 'MM-DD-YYYY') AS data_z_tekstu
+FROM dual;
+
+-- Użycie podczas INSERT (przykład)
+-- INSERT INTO emp (empno, ename, hiredate) 
+-- VALUES (9999, 'TEST', TO_DATE('01-30-2017', 'MM-DD-YYYY'));
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 6: Różnica dat w sekundach/minutach
+-- ---------------------------------------------------------------------------
+
+-- Różnica między dwiema datami w dniach, godzinach, minutach, sekundach
+SELECT 
+  SYSDATE - TO_DATE('2024-01-01', 'YYYY-MM-DD') AS roznica_dni,
+  (SYSDATE - TO_DATE('2024-01-01', 'YYYY-MM-DD')) * 24 AS roznica_godzin,
+  (SYSDATE - TO_DATE('2024-01-01', 'YYYY-MM-DD')) * 24 * 60 AS roznica_minut
+FROM dual;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 7: Miesiące między pierwszym a ostatnim zatrudnieniem
+-- ---------------------------------------------------------------------------
+
+-- Pełne miesiące między najwcześniejszym a najpóźniejszym zatrudnieniem
+SELECT 
+  MIN(hiredate) AS pierwsze_zatrudnienie,
+  MAX(hiredate) AS ostatnie_zatrudnienie,
+  TRUNC(MONTHS_BETWEEN(MAX(hiredate), MIN(hiredate))) AS pelne_miesiace
+FROM emp;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 8: Ostatni dzień miesiąca
+-- ---------------------------------------------------------------------------
+
+-- Ostatni dzień bieżącego miesiąca
+SELECT 
+  SYSDATE AS dzisiaj,
+  LAST_DAY(SYSDATE) AS ostatni_dzien_miesiaca
+FROM dual;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 9: Ile dni ma luty w 2020 roku?
+-- ---------------------------------------------------------------------------
+
+-- Liczba dni w lutym 2020 (rok przestępny = 29 dni)
+SELECT 
+  TO_CHAR(LAST_DAY(TO_DATE('2020-02-01', 'YYYY-MM-DD')), 'DD') AS dni_w_lutym_2020
+FROM dual;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 10: Dzień tygodnia Sylwestra (po polsku)
+-- ---------------------------------------------------------------------------
+
+-- Ustawienie języka polskiego dla sesji
+ALTER SESSION SET NLS_LANGUAGE = 'POLISH';
+
+-- Dzień tygodnia Sylwestra w bieżącym roku
+SELECT 
+  TO_CHAR(TO_DATE('31-12-' || TO_CHAR(SYSDATE, 'YYYY'), 'DD-MM-YYYY'), 'DAY') AS dzien_sylwestra,
+  TO_CHAR(TO_DATE('31-12-' || TO_CHAR(SYSDATE, 'YYYY'), 'DD-MM-YYYY'), 'Day') AS dzien_sylwestra_kapitalizacja
+FROM dual;
+
+-- Przywrócenie języka angielskiego (opcjonalnie)
+-- ALTER SESSION SET NLS_LANGUAGE = 'AMERICAN';
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 11: Dodaj 3 miesiące do bieżącej daty
+-- ---------------------------------------------------------------------------
+
+-- Dodanie 3 miesięcy (uwzględnia różną liczbę dni w miesiącach)
+SELECT 
+  SYSDATE AS dzisiaj,
+  ADD_MONTHS(SYSDATE, 3) AS data_plus_3_miesiace
+FROM dual;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 12: Dodaj 3 dni i odejmij 1 godzinę
+-- ---------------------------------------------------------------------------
+
+-- Operacje arytmetyczne na datach
+SELECT 
+  SYSDATE AS dzisiaj,
+  SYSDATE + 3 - (1/24) AS data_zmieniona
+FROM dual;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 13: Średni zarobek z formatowaniem
+-- ---------------------------------------------------------------------------
+
+-- Średni zarobek: ROUND, TRUNC, TO_CHAR
+SELECT 
+  ROUND(AVG(sal), 2) AS srednia_round,
+  TRUNC(AVG(sal), 2) AS srednia_trunc,
+  TO_CHAR(AVG(sal), '9999.99') AS srednia_formatted,
+  TO_CHAR(ROUND(AVG(sal), 2), 'FM9999.00') AS srednia_fm_format
+FROM emp;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 14: Minimalny zarobek MANAGER
+-- ---------------------------------------------------------------------------
+
+-- Minimalna pensja na stanowisku MANAGER
+SELECT MIN(sal) AS min_sal_manager
+FROM emp
+WHERE job = 'MANAGER';
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 15: Liczba pracowników w ACCOUNTING
+-- ---------------------------------------------------------------------------
+
+-- Zliczanie pracowników w departamencie ACCOUNTING
+SELECT COUNT(*) AS liczba_pracownikow
+FROM emp e
+  JOIN dept d ON e.deptno = d.deptno
+WHERE d.dname = 'ACCOUNTING';
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 16: Zatrudnienia wg roku i miesiąca (ROLLUP, CUBE, operatory zbiorów)
+-- ---------------------------------------------------------------------------
+
+-- Wariant A: ROLLUP - subtotale hierarchiczne
+SELECT 
+  TO_CHAR(hiredate, 'YYYY') AS rok,
+  TO_CHAR(hiredate, 'MM') AS miesiac,
+  COUNT(*) AS liczba_zatrudnien
+FROM emp
+GROUP BY ROLLUP(TO_CHAR(hiredate, 'YYYY'), TO_CHAR(hiredate, 'MM'))
+ORDER BY rok, miesiac;
+
+-- Wariant B: CUBE - wszystkie możliwe kombinacje agregacji
+SELECT 
+  TO_CHAR(hiredate, 'YYYY') AS rok,
+  TO_CHAR(hiredate, 'MM') AS miesiac,
+  COUNT(*) AS liczba_zatrudnien
+FROM emp
+GROUP BY CUBE(TO_CHAR(hiredate, 'YYYY'), TO_CHAR(hiredate, 'MM'))
+ORDER BY rok, miesiac;
+
+-- Wariant C: Ręczna agregacja z UNION ALL (pokazuje co robi ROLLUP)
+SELECT TO_CHAR(hiredate, 'YYYY') AS rok, TO_CHAR(hiredate, 'MM') AS miesiac, COUNT(*) AS liczba
+FROM emp 
+GROUP BY TO_CHAR(hiredate, 'YYYY'), TO_CHAR(hiredate, 'MM')
+UNION ALL
+SELECT TO_CHAR(hiredate, 'YYYY'), NULL, COUNT(*) 
+FROM emp 
+GROUP BY TO_CHAR(hiredate, 'YYYY')
+UNION ALL
+SELECT NULL, NULL, COUNT(*) 
+FROM emp
+ORDER BY rok, miesiac;
+
+-- UNION vs UNION ALL vs INTERSECT vs MINUS (przykłady)
+-- UNION - usuwa duplikaty
+SELECT job FROM emp WHERE deptno = 10
+UNION
+SELECT job FROM emp WHERE deptno = 20;
+
+-- UNION ALL - zachowuje duplikaty (szybsze)
+SELECT job FROM emp WHERE deptno = 10
+UNION ALL
+SELECT job FROM emp WHERE deptno = 20;
+
+-- INTERSECT - część wspólna
+SELECT job FROM emp WHERE deptno = 10
+INTERSECT
+SELECT job FROM emp WHERE deptno = 20;
+
+-- MINUS - różnica zbiorów (w 10 ale nie w 20)
+SELECT job FROM emp WHERE deptno = 10
+MINUS
+SELECT job FROM emp WHERE deptno = 20;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 17: Pivot zatrudnień (lata vs miesiące) - DECODE
+-- ---------------------------------------------------------------------------
+
+-- Pivot danych: lata w wierszach, miesiące w kolumnach
+SELECT 
+  TO_CHAR(hiredate, 'YYYY') AS rok,
+  COUNT(DECODE(TO_CHAR(hiredate, 'MM'), '01', 1)) AS STY,
+  COUNT(DECODE(TO_CHAR(hiredate, 'MM'), '02', 1)) AS LUT,
+  COUNT(DECODE(TO_CHAR(hiredate, 'MM'), '03', 1)) AS MAR,
+  COUNT(DECODE(TO_CHAR(hiredate, 'MM'), '04', 1)) AS KWI,
+  COUNT(DECODE(TO_CHAR(hiredate, 'MM'), '05', 1)) AS MAJ,
+  COUNT(DECODE(TO_CHAR(hiredate, 'MM'), '06', 1)) AS CZE,
+  COUNT(DECODE(TO_CHAR(hiredate, 'MM'), '07', 1)) AS LIP,
+  COUNT(DECODE(TO_CHAR(hiredate, 'MM'), '08', 1)) AS SIE,
+  COUNT(DECODE(TO_CHAR(hiredate, 'MM'), '09', 1)) AS WRZ,
+  COUNT(DECODE(TO_CHAR(hiredate, 'MM'), '10', 1)) AS PAZ,
+  COUNT(DECODE(TO_CHAR(hiredate, 'MM'), '11', 1)) AS LIS,
+  COUNT(DECODE(TO_CHAR(hiredate, 'MM'), '12', 1)) AS GRU
+FROM emp
+GROUP BY TO_CHAR(hiredate, 'YYYY')
+ORDER BY rok;
+
+-- Alternatywa: użycie PIVOT (Oracle 11g+)
+SELECT *
+FROM (
+  SELECT 
+    TO_CHAR(hiredate, 'YYYY') AS rok,
+    TO_CHAR(hiredate, 'MM') AS miesiac
+  FROM emp
+)
+PIVOT (
+  COUNT(*)
+  FOR miesiac IN ('01' AS STY, '02' AS LUT, '03' AS MAR, '04' AS KWI, 
+                  '05' AS MAJ, '06' AS CZE, '07' AS LIP, '08' AS SIE,
+                  '09' AS WRZ, '10' AS PAZ, '11' AS LIS, '12' AS GRU)
+)
+ORDER BY rok;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 18: Średnie zarobki wg departamentu (NATURAL JOIN)
+-- ---------------------------------------------------------------------------
+
+-- NATURAL JOIN - automatycznie łączy po kolumnach o tej samej nazwie (deptno)
+SELECT 
+  d.dname,
+  ROUND(AVG(e.sal), 2) AS srednia_pensja
+FROM emp e
+  NATURAL JOIN dept d
+GROUP BY d.dname;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 19: Maksymalne zarobki wg stanowiska (bez CLERK)
+-- ---------------------------------------------------------------------------
+
+-- Max zarobki na stanowiskach, wykluczając CLERK
+SELECT 
+  job,
+  MAX(sal) AS max_sal
+FROM emp
+WHERE job != 'CLERK'
+GROUP BY job
+ORDER BY max_sal DESC;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 20: Minimalne pensje wg departamentu i stanowiska
+-- ---------------------------------------------------------------------------
+
+-- Min pensje w podziale na departament i stanowisko
+SELECT 
+  d.dname,
+  e.job,
+  MIN(e.sal) AS min_sal
+FROM emp e
+  JOIN dept d ON e.deptno = d.deptno
+GROUP BY d.dname, e.job
+ORDER BY d.dname, e.job;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 21: Średnie zarobki wg departamentu
+-- ---------------------------------------------------------------------------
+
+-- Średnie zarobki w każdym departamencie
+SELECT 
+  d.dname,
+  ROUND(AVG(e.sal), 2) AS srednia_pensja
+FROM emp e
+  JOIN dept d ON e.deptno = d.deptno
+GROUP BY d.dname
+ORDER BY srednia_pensja DESC;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 22: Średnie zarobki dla grup zawodowych (max > 2000)
+-- ---------------------------------------------------------------------------
+
+-- Grupy zawodowe z maksymalną pensją > 2000
+SELECT 
+  job,
+  ROUND(AVG(sal), 2) AS srednia,
+  MAX(sal) AS maksymalna
+FROM emp
+GROUP BY job
+HAVING MAX(sal) > 2000
+ORDER BY srednia DESC;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 23: Różnica między najwyższą i najniższą pensją (wg dept)
+-- ---------------------------------------------------------------------------
+
+-- Rozpiętość pensji w każdym departamencie
+SELECT 
+  d.dname,
+  MIN(e.sal) AS min_pensja,
+  MAX(e.sal) AS max_pensja,
+  MAX(e.sal) - MIN(e.sal) AS roznica_pensji
+FROM emp e
+  JOIN dept d ON e.deptno = d.deptno
+GROUP BY d.dname
+ORDER BY roznica_pensji DESC;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 24: Pracownicy zarabiający mniej od kierownika
+-- ---------------------------------------------------------------------------
+
+-- Self-join: porównanie pensji pracownik vs jego manager
+SELECT 
+  e.ename AS pracownik,
+  e.sal AS pensja_pracownika,
+  m.ename AS kierownik,
+  m.sal AS pensja_kierownika,
+  m.sal - e.sal AS roznica
+FROM emp e
+  JOIN emp m ON e.mgr = m.empno
+WHERE e.sal < m.sal
+ORDER BY roznica DESC;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 25: Podzapytania w FROM (inline view)
+-- ---------------------------------------------------------------------------
+
+-- Top 3 najlepiej zarabiających pracowników
+SELECT *
+FROM (
+  SELECT ename, sal, job
+  FROM emp
+  ORDER BY sal DESC
+)
+WHERE ROWNUM <= 3;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 26: Podzapytania w SELECT (scalar subquery)
+-- ---------------------------------------------------------------------------
+
+-- Wyświetlenie pensji pracownika wraz z maksymalną pensją w firmie
+SELECT 
+  ename, 
+  sal, 
+  (SELECT MAX(sal) FROM emp) AS max_salary,
+  sal - (SELECT MAX(sal) FROM emp) AS roznica_od_max
+FROM emp;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 27: Pracownicy zarabiający powyżej średniej
+-- ---------------------------------------------------------------------------
+
+-- Podzapytanie nieskorelowane: średnia liczona raz dla całej tabeli
+SELECT ename, job, sal
+FROM emp
+WHERE sal > (SELECT AVG(sal) FROM emp)
+ORDER BY sal DESC;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 28: Wszyscy zatrudnieni na tym samym stanowisku co SMITH
+-- ---------------------------------------------------------------------------
+
+-- Podzapytanie zwracające pojedynczą wartość (job SMITHA)
+SELECT ename, job
+FROM emp
+WHERE job = (SELECT job FROM emp WHERE ename = 'SMITH')
+  AND ename != 'SMITH'
+ORDER BY ename;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 29: Sortowanie względem języka polskiego
+-- ---------------------------------------------------------------------------
+
+-- Ustawienie sortowania dla języka polskiego (ąćęłńóśźż)
+ALTER SESSION SET NLS_SORT = Polish;
+
+-- Przykład sortowania
+SELECT ename
+FROM emp
+ORDER BY ename;
+
+-- Przywrócenie domyślnego sortowania
+-- ALTER SESSION SET NLS_SORT = BINARY;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 30: Pracownicy z najwyższymi zarobkami w departamentach
+-- ---------------------------------------------------------------------------
+
+-- Przygotowanie danych (INSERT z polskimi znakami)
+INSERT INTO emp (empno, ename, deptno, sal, hiredate, job) 
+VALUES (101, 'Łukasiński', 10, 2850, TO_DATE('01-30-2014', 'MM-DD-YYYY'), 'ANALYST');
+COMMIT;
+
+-- Wariant A: Podzapytanie nieskorelowane z IN
+SELECT e.ename, e.sal, e.deptno
+FROM emp e
+WHERE e.sal IN (
+  SELECT MAX(sal) 
+  FROM emp 
+  GROUP BY deptno
+)
+ORDER BY e.deptno;
+
+-- Wariant B: Podzapytanie skorelowane (wykonywane dla każdego wiersza)
+SELECT e.ename, e.sal, e.deptno
+FROM emp e
+WHERE e.sal = (
+  SELECT MAX(sal) 
+  FROM emp e2 
+  WHERE e2.deptno = e.deptno
+)
+ORDER BY e.deptno;
+
+-- Wariant C: Analytic function (najbardziej wydajne)
+SELECT ename, sal, deptno
+FROM (
+  SELECT 
+    ename, 
+    sal, 
+    deptno,
+    RANK() OVER (PARTITION BY deptno ORDER BY sal DESC) AS rn
+  FROM emp
+)
+WHERE rn = 1
+ORDER BY deptno;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 31: Operator ANY/SOME (pensja > niż przynajmniej jedna w dept 10)
+-- ---------------------------------------------------------------------------
+
+-- ANY: warunek spełniony jeśli TRUE dla przynajmniej jednego elementu
+SELECT ename, sal, deptno
+FROM emp
+WHERE sal > ANY (SELECT sal FROM emp WHERE deptno = 10)
+ORDER BY sal;
+
+-- Równoważne zapytanie (z MIN)
+SELECT ename, sal, deptno
+FROM emp
+WHERE sal > (SELECT MIN(sal) FROM emp WHERE deptno = 10)
+ORDER BY sal;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 32: Operator ALL (pensja > niż wszystkie w dept 30)
+-- ---------------------------------------------------------------------------
+
+-- ALL: warunek musi być TRUE dla wszystkich elementów
+SELECT ename, sal, deptno
+FROM emp
+WHERE sal > ALL (SELECT sal FROM emp WHERE deptno = 30)
+ORDER BY sal;
+
+-- Równoważne zapytanie (z MAX)
+SELECT ename, sal, deptno
+FROM emp
+WHERE sal > (SELECT MAX(sal) FROM emp WHERE deptno = 30)
+ORDER BY sal;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 33: Stanowiska gdzie średnia > średniej MANAGER
+-- ---------------------------------------------------------------------------
+
+-- Zawody z wyższą średnią pensją niż MANAGER
+SELECT 
+  job, 
+  ROUND(AVG(sal), 2) AS srednia
+FROM emp
+GROUP BY job
+HAVING AVG(sal) > (
+  SELECT AVG(sal) 
+  FROM emp 
+  WHERE job = 'MANAGER'
+)
+ORDER BY srednia DESC;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 34: Stanowisko z najniższą średnią pensją
+-- ---------------------------------------------------------------------------
+
+-- Stanowisko o najniższej średniej (podzapytanie w HAVING)
+SELECT 
+  job, 
+  ROUND(AVG(sal), 2) AS srednia
+FROM emp
+GROUP BY job
+HAVING AVG(sal) = (
+  SELECT MIN(AVG(sal)) 
+  FROM emp 
+  GROUP BY job
+);
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 35: Zarabiający mniej niż średnia w zawodzie (skorelowane)
+-- ---------------------------------------------------------------------------
+
+-- Podzapytanie skorelowane: średnia liczona osobno dla każdego zawodu
+SELECT 
+  e.ename, 
+  e.job, 
+  e.sal,
+  (SELECT ROUND(AVG(sal), 2) FROM emp e2 WHERE e2.job = e.job) AS srednia_w_zawodzie
+FROM emp e
+WHERE e.sal < (
+  SELECT AVG(sal) 
+  FROM emp e2 
+  WHERE e2.job = e.job
+)
+ORDER BY e.job, e.sal;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 36: Operator EXISTS - pracownicy z podwładnymi (managerowie)
+-- ---------------------------------------------------------------------------
+
+-- EXISTS: sprawdza czy podzapytanie zwraca jakiekolwiek wiersze
+SELECT 
+  m.ename AS manager, 
+  m.job,
+  m.empno
+FROM emp m
+WHERE EXISTS (
+  SELECT 1 
+  FROM emp e 
+  WHERE e.mgr = m.empno
+)
+ORDER BY m.ename;
+
+-- Alternatywa: DISTINCT + JOIN (mniej wydajne)
+SELECT DISTINCT 
+  m.ename AS manager,
+  m.job
+FROM emp e
+  JOIN emp m ON e.mgr = m.empno
+ORDER BY m.ename;
+
+
+-- ---------------------------------------------------------------------------
+-- Pytanie 37: Departament bez pracowników
+-- ---------------------------------------------------------------------------
+
+-- Wariant A: NOT EXISTS (zalecane dla dużych tabel)
+SELECT d.dname, d.deptno
+FROM dept d
+WHERE NOT EXISTS (
+  SELECT 1 
+  FROM emp e 
+  WHERE e.deptno = d.deptno
+);
+
+-- Wariant B: LEFT JOIN z NULL check
+SELECT d.dname, d.deptno
+FROM dept d
+  LEFT JOIN emp e ON d.deptno = e.deptno
+WHERE e.empno IS NULL;
+
+-- Wariant C: NOT IN (uwaga na NULL values!)
+SELECT dname, deptno
+FROM dept
+WHERE deptno NOT IN (
+  SELECT DISTINCT deptno 
+  FROM emp 
+  WHERE deptno IS NOT NULL
+);
+
+
+-- ============================================================================
+-- SEKCJA 3: DODATKOWE PRZYKŁADY I WZORCE
+-- ============================================================================
+
+-- ---------------------------------------------------------------------------
+-- PRZYKŁAD: Running Total (bieżąca suma) z analytic functions
+-- ---------------------------------------------------------------------------
+
+SELECT 
+  ename,
+  hiredate,
+  sal,
+  SUM(sal) OVER (ORDER BY hiredate) AS running_total
+FROM emp
+ORDER BY hiredate;
+
+
+-- ---------------------------------------------------------------------------
+-- PRZYKŁAD: Ranking pracowników wg pensji (ROW_NUMBER, RANK, DENSE_RANK)
+-- ---------------------------------------------------------------------------
+
+SELECT 
+  ename,
+  sal,
+  ROW_NUMBER() OVER (ORDER BY sal DESC) AS row_num,
+  RANK() OVER (ORDER BY sal DESC) AS rank_pos,
+  DENSE_RANK() OVER (ORDER BY sal DESC) AS dense_rank_pos
+FROM emp
+ORDER BY sal DESC;
+
+
+-- ---------------------------------------------------------------------------
+-- PRZYKŁAD: TOP N pracowników w każdym departamencie
+-- ---------------------------------------------------------------------------
+
+SELECT *
+FROM (
+  SELECT 
+    e.ename,
+    e.sal,
+    d.dname,
+    ROW_NUMBER() OVER (PARTITION BY e.deptno ORDER BY e.sal DESC) AS rn
+  FROM emp e
+    JOIN dept d ON e.deptno = d.deptno
+)
+WHERE rn <= 2
+ORDER BY dname, rn;
+
+
+-- ---------------------------------------------------------------------------
+-- PRZYKŁAD: Hierarchia organizacyjna (CONNECT BY)
+-- ---------------------------------------------------------------------------
+
+-- Struktura drzewiasta: pracownicy i ich managerowie
+SELECT 
+  LEVEL AS poziom,
+  LPAD(' ', (LEVEL - 1) * 2) || ename AS pracownik_hierarchia,
+  job,
+  sal
+FROM emp
+START WITH mgr IS NULL  -- zaczynamy od prezesa (brak managera)
+CONNECT BY PRIOR empno = mgr  -- łączymy: manager -> podwładny
+ORDER SIBLINGS BY ename;  -- sortowanie w obrębie poziomu
+
+
+-- ---------------------------------------------------------------------------
+-- PRZYKŁAD: Paginacja wyników (Oracle 12c+ - OFFSET/FETCH)
+-- ---------------------------------------------------------------------------
+
+-- Oracle 12c+
+SELECT ename, sal
+FROM emp
+ORDER BY sal DESC
+OFFSET 5 ROWS FETCH NEXT 5 ROWS ONLY;
+
+-- Oracle 11g i starsze (ROWNUM)
+SELECT *
+FROM (
+  SELECT a.*, ROWNUM rnum
+  FROM (
+    SELECT ename, sal
+    FROM emp
+    ORDER BY sal DESC
+  ) a
+  WHERE ROWNUM <= 10
+)
+WHERE rnum >= 6;
+
+
+-- ---------------------------------------------------------------------------
+-- PRZYKŁAD: CTE (WITH clause) dla czytelności
+-- ---------------------------------------------------------------------------
+
+WITH 
+  dept_avg AS (
+    SELECT deptno, AVG(sal) AS avg_sal
+    FROM emp
+    GROUP BY deptno
+  ),
+  high_earners AS (
+    SELECT e.ename, e.sal, e.deptno
+    FROM emp e
+    WHERE e.sal > (SELECT AVG(sal) FROM emp)
+  )
+SELECT 
+  h.ename,
+  h.sal,
+  d.avg_sal,
+  ROUND(h.sal - d.avg_sal, 2) AS diff_from_dept_avg
+FROM high_earners h
+  JOIN dept_avg d ON h.deptno = d.deptno
+ORDER BY diff_from_dept_avg DESC;
+
+
+-- ============================================================================
+-- KONIEC PLIKU
+-- ============================================================================
+
+-- Notatki:
+-- 1. Wszystkie zapytania testowane na schemacie SCOTT (Oracle Database)
+-- 2. Używaj TO_DATE() dla literałów dat
+-- 3. Pamiętaj o NVL() dla kolumn z NULL
+-- 4. Dla wydajności: indeksy na deptno, job, mgr, sal
+-- 5. EXPLAIN PLAN dostępny: EXPLAIN PLAN FOR <query>; SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);

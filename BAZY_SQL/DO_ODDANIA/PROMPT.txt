@@ -1,0 +1,1406 @@
+Mamy pisać SQL
+ale nie taki zwykły - taki który napisałał by student debil
+
+poniżej przedstawiono przykłądy doktorka wąsacza który jest cięty na odpowiedzi nie wpasowywujące się w jego upodobania, więc musimy pisać prosto i nie narażać się na jego gniew
+
+Ogólnie to on nie lubi wyrażeć CTE z with - a bardzej lubi zagnieżdżenia
+Róbmy podobnie jak w przykładach poniżej
+
+Nie rób więcej niż mówi zadanie
+Działąmy z bazą north_pl
+
+I robimy 1 zadanie na raz, ma być to proste i zrozumiałe - ale bez fajerwerków
+Użwamy SQL Server Management Studio
+
+KOD WĄSA:
+
+
+
+
+
+create database pn_10
+
+use pn_10
+
+sp_helpdb pn_10
+
+-- tworze tabele (proces zawerajacy bledy logiczne)
+
+create table dane
+(imie varchar,
+nazwisko varchar,
+wiek int
+)
+
+select * from dane
+
+insert into dane values('jasio','kotek',34) -- zbyt mala ilosc miejsac (blad logiczny)
+
+-- musze stworzyc table od nowa
+create table dane1 --zwroc uwage na nazwe 
+(imie varchar(20), -- definicja ilosci
+nazwisko varchar(20),
+wiek int
+)
+
+insert into dane1 values('jasio','kotek',34)
+
+select * from dane1
+
+-- zwroc co sie stanie kiedy dodam dane kilkukrotnie 
+
+--co sie stanie kiedy chce zwrocic wiesz czwarty
+
+select imie,nazwisko from dane1
+
+-- nie moge tego uczynic gdyz dane tekstowe ktre posiadam w tabeli nie sa unikalne 
+-- redunadancja danych nie jest bledem 
+
+--rowaiazanie dodaj kolumne ktora bedzie unikalna 
+-- zazwyczaj taka kolumna jest typu numerycznego
+
+alter table dane1
+add id int
+
+select * from dane1
+-- co sie stanie kiedy zmienie kolejnosc lub ilosc 
+insert into dane values('kotek',34)
+insert into dane values(34,'kotek',34)
+insert into dane values('jasio','34',34)
+
+
+
+insert into dane1 values('jasio','kotek',34,1)
+
+select * from dane1
+
+-- co kiedy dodam wartosc tylko do kolumny id
+
+insert into dane1(id) values(2)
+
+select * from dane1
+
+create table dane2
+(id int,
+imie varchar(20), 
+nazwisko varchar(20),
+wiek int
+)
+
+insert into dane2 values(1,'jasio','kotek',34)
+
+select * from dane2
+
+select id,imie,nazwisko from dane2
+
+-- kolumna sie stworzyla ale dalej watrosc kolumny jest nie uniklana
+-- dodaj do kolumny id wlasciwosc autoinkrementacji
+
+create table dane3
+(id int identity(1,1),
+imie varchar(20), 
+nazwisko varchar(20),
+wiek int
+)
+
+
+insert into dane3 values('jasio','kotek',34)
+
+select * from dane3
+
+-- czwarty wiersz dancyh
+
+select id,imie,nazwisko from dane3
+where id='4'
+
+use pn_10
+
+-- usuwanie
+
+--drop
+alter table dane 
+add do_usuniecia varchar(20)
+
+select * from dane
+
+alter table dane 
+drop column do_usuniecia 
+
+
+drop table dane
+
+--delete 
+
+delete from dane3
+where id=4 
+
+select * from dane3
+
+--truncate
+
+truncate table dane2
+
+select * from dane2
+
+use baza
+
+
+select * from pracownicy
+
+alter table pracownicy
+add wzrost int
+
+
+alter table pracownicy
+add wzrost1 numeric(3,2)
+
+update pracownicy set wzrost=1.70 where pracid<5
+update pracownicy set wzrost=1.75 where pracid=5
+update pracownicy set wzrost=1.80 where pracid>5
+
+select * from pracownicy
+
+update pracownicy set wzrost1=1.70 where pracid<5
+update pracownicy set wzrost1=1.75 where pracid=5
+update pracownicy set wzrost1=1.80 where pracid>5
+
+alter table pracownicy add dousuniecia2 int default 1
+
+insert into pracownicy(nazwisko,imie) values('jasio','kotek');
+
+
+alter table pracownicy add aktualny2 varchar(3)
+update pracownicy set aktualny2='tak'
+
+select * from pracownicy
+
+select * from dzialy
+
+-- chce wyswetlic pracownikow pracujacych w danym dziale 
+
+select dzialID,nazwa from dzialy
+
+select dzialy.dzialID,pracownicy.dzialID,nazwa,nazwisko,imie 
+from dzialy,pracownicy
+
+
+select * from pracownicy
+
+select dzialy.dzialID,pracownicy.dzialID,nazwa,nazwisko,imie 
+from dzialy,pracownicy
+where dzialy.dzialID=pracownicy.dzialID
+
+/*
+select nazwa,nazwisko,imie 
+from dzialy join pracownicy
+on dzialy.dzialID=pracownicy.dzialID
+*/
+-- alias
+
+select dzialy.dzialID,pracownicy.dzialID,nazwa,nazwisko,imie 
+from dzialy,pracownicy
+where dzialy.dzialID=pracownicy.dzialID
+
+select d.dzialID,p.dzialID,nazwa,nazwisko,imie 
+from dzialy as d,pracownicy as p
+where d.dzialID=p.dzialID
+
+select jasio.dzialID,p.dzialID,nazwa,nazwisko,imie 
+from dzialy as jasio,pracownicy as p
+where jasio.dzialID=p.dzialID
+
+use baza
+/*
+select nazwa,nazwisko,imie 
+from dzialy join pracownicy
+on dzialy.dzialID=pracownicy.dzialID
+*/
+-- alias
+
+select dzialy.dzialID,pracownicy.dzialID,nazwa,nazwisko,imie 
+from dzialy,pracownicy
+where dzialy.dzialID=pracownicy.dzialID
+
+select d.dzialID,p.dzialID,nazwa,nazwisko,imie 
+from dzialy as d,pracownicy as p
+where d.dzialID=p.dzialID
+
+select jasio.dzialID,p.dzialID,nazwa,nazwisko,imie 
+from dzialy as jasio,pracownicy as p
+where jasio.dzialID=p.dzialID
+
+insert into pracownicy(nazwisko,imie,wiek,dzialid) values('Nowak','Anna',25,7);
+insert into pracownicy(nazwisko,imie,wiek,dzialid) values('jasio','kotek',25,7);
+
+--relacja
+select nazwa,nazwisko,imie 
+from dzialy join pracownicy
+on dzialy.dzialID=pracownicy.dzialID
+
+select * from dzialy
+
+insert into dzialy(nazwa) values('Spedycja');
+
+select * from pracownicy
+
+--dodaj zarobki
+
+select nazwa,nazwisko,imie,brutto 
+from dzialy join pracownicy
+on dzialy.dzialID=pracownicy.dzialID
+join zarobki
+on pracownicy.pracID=zarobki.pracID
+
+-- kolejnoosc wykonywania zapytania 
+
+(5)     SELECT
+(1)	    FROM
+(2)	    WHERE
+(3)	    GROUP BY
+(4)     HAVING
+(6)     ORDER BY
+
+select imie,nazwisko from pracownicy
+ORDER BY imie 
+
+select imie,nazwisko from pracownicy
+ORDER BY nazwisko
+
+select imie,nazwisko from pracownicy
+ORDER BY imie asc 
+
+select imie,nazwisko from pracownicy
+ORDER BY nazwisko desc
+
+--operator konkatenacji 
+
+select imie,nazwisko from pracownicy
+
+select imie+' '+nazwisko  from pracownicy
+
+select imie+' '+nazwisko as dane from pracownicy
+
+
+use baza
+
+insert into pracownicy(nazwisko,imie,wiek,dzialid) values('Nowak','Anna',25,10);
+insert into pracownicy(nazwisko,imie,wiek,dzialid) values('jasio','kotek',25,10);
+
+insert into dzialy values('Kadry')
+
+select * from dzialy
+select * from pracownicy
+
+
+select nazwa,nazwisko,imie 
+from dzialy join pracownicy
+on dzialy.dzialID=pracownicy.dzialID
+
+
+
+CREATE TABLE pracownicy
+(
+	pracID  int IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	nazwisko varchar(50),
+	imie varchar(50),
+	wiek int,
+	dzialID int FOREIGN KEY REFERENCES dzialy (dzialID)
+) 
+
+
+-- dodaj zarobki
+
+select nazwa,nazwisko,imie,brutto
+from dzialy join pracownicy
+on dzialy.dzialID=pracownicy.dzialID
+join zarobki 
+on zarobki.pracID=pracownicy.pracID
+
+-- do zastanowienia 
+
+
+select nazwa,nazwisko,imie,brutto
+from dzialy join pracownicy
+on dzialy.dzialID=pracownicy.dzialID
+join zarobki 
+on zarobki.zarID=pracownicy.pracID
+
+-- wyswetl wszystkich pracowniakow majacych w nazwisku litere j
+
+select * from pracownicy
+where nazwisko like 'j%'
+
+select * from pracownicy
+where nazwisko like '%j'
+
+select * from pracownicy
+where nazwisko like '%j%'
+
+select * from pracownicy
+where lower(nazwisko) like '%j%'
+
+--wyswetl pracowniakow o okrerslonym wieku w osobnej 
+--kolumnie jesli wiek jest okreslny nastepujaco
+--wiek<25  'mlody'
+--wiek<45  'sredni'
+--wiek>=45  'najstarszy'
+
+select imie,nazwisko,wiek,
+case
+	when wiek<25 then 'mlody'
+	when wiek<45 then 'sredni'
+	when wiek>=45 then 'najstarszy'
+else
+	'wiek nieznany'
+end 'jaki wiek?'
+
+from pracownicy
+
+
+
+
+
+
+--Constraints typu check
+
+/*
+Do tabeli pracownicy dodaj kolumn  filia, kt ra ma zawiera  
+do 20 znak w i na   na ni  ograniczenie pozwalaj ce wpisywa  jedynie
+nazwy miasta Krak w, Warszawa,   d  oraz Katowice. Nazwij to ograniczenie CK_MIASTO.
+*/
+
+alter table pracownicy add filia varchar(20)
+
+alter table pracownicy add constraint CK_MIASTO check
+(filia in ('Krakow','Warszawa','Lodz','Katowice'));
+
+
+insert into pracownicy(filia) values('jasio') 
+insert into pracownicy(filia) values('lodz') 
+
+alter table pracownicy
+drop constraint CK_MIASTO
+
+select * from pracownicy
+
+/*
+Stw rz kolumn  zadanie_1 w tabeli pracownicy, kt ra ma zawiera  10 znak w
+i na   na ni  ograniczenia pozwalaj ce wpisywa  jedynie
+wyrazy kt re maj  od 2 do 6 lub od 8 do 10 znak w. 
+Nazwij to ograniczenie CK_ZADANIE1.
+*/
+
+
+
+ALTER TABLE pracownicy
+ADD zadanie_1 varchar(10) CONSTRAINT CK_ZADANIE1 CHECK 
+( (len(zadanie_1) between 2 and 6) OR (len(zadanie_1) between 8 and 10) )
+
+insert into pracownicy(zadanie_1) values('a') --1
+insert into pracownicy(zadanie_1) values('ab') --2
+insert into pracownicy(zadanie_1) values('abcdef')--6
+insert into pracownicy(zadanie_1) values('abcdefg')--7
+insert into pracownicy(zadanie_1) values('abcdefg8')--8
+insert into pracownicy(zadanie_1) values('abcdefghhu')--10
+
+
+
+/*
+Do tabeli pracownicy dodaj kolumn  mix, kt ra ma zawiera  6 znak w
+i na   na ni  ograniczeni pozwalaj ce wpisywa  jedynie
+wyrazy kt re zawieraj  na przemian 3 litery i 3 cyfry. Nazwij to ograniczenie CK_MIX.
+Przyk ad wartosci a4f5d9. */
+
+
+alter table pracownicy 
+add mix varchar(6)
+
+select * from pracownicy
+
+alter table pracownicy 
+add constraint CK_MIX check(mix like '[a-z][0-9][a-z][0-9][a-z][0-9]')
+
+
+-- wstep do group by
+
+use north
+
+select Title,Country,LastName,FirstName,
+BirthDate,HireDate from Employees
+order by Title,Country
+
+
+-- funkcje agregujace 
+
+use baza
+select * from [dbo].[pracownicy]
+
+select count( * )  from pracownicy 
+select count(wiek)  from pracownicy 
+select count(nazwisko)  from pracownicy
+
+select sum(wiek)/count(wiek) from pracownicy
+select sum(wiek)/count(*) from pracownicy
+select sum(wiek)  from pracownicy
+
+-- sredni, maksymalny i minimalny wiek w dziale 
+select max(wiek) as max , min(wiek) as min , avg(wiek) as sredania from  
+pracownicy
+
+select max(wiek) as maximum , min(wiek) as minimum , avg(wiek) as sredania from  
+pracownicy
+
+select max(wiek) as max , min(wiek) as min , avg(wiek) as sredania from  
+pracownicy
+group by dzialID
+
+
+select Title,Country,LastName,FirstName,
+BirthDate,HireDate from Employees
+order by Title,Country
+
+select Title,Country,count(*) as EmpQty
+from Employees
+group by  Title,Country
+
+
+select Country,count(*) as EmpQty
+from Employees
+group by  Title,Country
+
+select Title,Country,count(*) as EmpQty
+from Employees
+group by  Country
+
+select Title,Country
+from Employees
+group by  Title,Country
+
+
+select Title,Country,count(*) as EmpQty
+from Employees
+-- group by  Title,Country
+
+
+-- zapytania 
+
+use north_pl
+
+select * from Opisy zam wie 
+
+select * from [Opisy zam wie ]
+
+-- zapytanie zwracajace 2 kolumny: nazwe produktu oraz 
+--cene jedynie produkty drozsze od 25
+
+select * from Produkty
+
+select NazwaProduktu,CenaJednostkowa as cena from Produkty
+where CenaJednostkowa <25
+
+
+select NazwaProduktu,CenaJednostkowa as cena from Produkty
+where cena <25
+
+
+-- zapytanie zwracajace 2 kolumny: nazwe produktu 
+--oraz nazwe kategorii do ktorej produkt ten nalezy
+
+
+select NazwaProduktu,NazwaKategorii from Produkty as p
+join Kategorie as k
+on
+p.IDkategorii=k.IDkategorii
+
+
+-- zapytania zwracaj ce 3 kolumny; imie, 
+--nazwisko pracownika oraz wartosci zamowien
+-- przez niego zrealizowanych pod uwage bierzemy 
+--jedynie zamowienia z drugiego kwartalu 1997 roku(93)
+
+
+SELECT Imi , Nazwisko, SUM(CenaJednostkowa*ilo  ) as
+'wartosc' FROM Zam wienia as z JOIN 
+[opisy zam wie ] as op
+ON z.IDzam wienia=op.IDzam wienia  JOIN Pracownicy as p
+ON p.IDpracownika=z.IDpracownika
+WHERE DataZam wienia>='1997-04-01' 
+AND DataZam wienia <= '1997-06-30' 
+GROUP BY Imi , Nazwisko,p.IDpracownika, z.IDzam wienia; 
+
+
+
+-- zapytania zwracające 3 kolumny; imie, 
+--nazwisko pracownika oraz wartosci zamowien
+-- przez niego zrealizowanych pod uwage bierzemy 
+--jedynie zamowienia z drugiego kwartalu 1997 roku(93)
+
+use [north_pl]
+
+SELECT Imię, Nazwisko, SUM(CenaJednostkowa*ilość) as
+'wartosc zamowienia' FROM Zamówienia as z JOIN 
+[opisy zamówień] as op
+ON z.IDzamówienia=op.IDzamówienia  JOIN Pracownicy as p
+ON p.IDpracownika=z.IDpracownika
+--WHERE DataZamówienia>='1997-04-01' 
+--AND DataZamówienia <= '1997-06-30' 
+GROUP BY Imię, Nazwisko,p.IDpracownika, z.IDzamówienia; 
+
+SELECT Imię, Nazwisko, z.IDzamówienia,SUM(CenaJednostkowa*ilość) as
+'wartosc zamowienia' FROM Zamówienia as z JOIN 
+[opisy zamówień] as op
+ON z.IDzamówienia=op.IDzamówienia  JOIN Pracownicy as p
+ON p.IDpracownika=z.IDpracownika
+--WHERE DataZamówienia>='1997-04-01' 
+--AND DataZamówienia <= '1997-06-30' 
+GROUP BY Imię, Nazwisko,p.IDpracownika, z.IDzamówienia; 
+
+
+ SELECT Imię, Nazwisko, SUM(CenaJednostkowa*ilość) as
+'wartosc zamowienia' FROM Zamówienia as z JOIN 
+[opisy zamówień] as op
+ON z.IDzamówienia=op.IDzamówienia  JOIN Pracownicy as p
+ON p.IDpracownika=z.IDpracownika
+WHERE DataWysyłki >='1997-04-01' 
+AND DataZamówienia <= '1997-06-30' 
+GROUP BY Imię, Nazwisko,p.IDpracownika, z.IDzamówienia; 
+
+ SELECT Imię, Nazwisko, SUM(CenaJednostkowa*ilość) as
+'wartosc zamowienia' FROM Zamówienia as z JOIN 
+[opisy zamówień] as op
+ON z.IDzamówienia=op.IDzamówienia  JOIN Pracownicy as p
+ON p.IDpracownika=z.IDpracownika
+WHERE DataWymagana >='1997-04-01' 
+AND DataZamówienia <= '1997-06-30' 
+GROUP BY Imię, Nazwisko,p.IDpracownika, z.IDzamówienia; 
+
+ SELECT Imię, Nazwisko, SUM(CenaJednostkowa*ilość) as
+'wartosc zamowienia' FROM Zamówienia as z JOIN 
+[opisy zamówień] as op
+ON z.IDzamówienia=op.IDzamówienia  JOIN Pracownicy as p
+ON p.IDpracownika=z.IDpracownika
+WHERE DataWymagana >='1997-04-01' 
+AND DataWymagana <= '1997-06-30' 
+GROUP BY Imię, Nazwisko,p.IDpracownika, z.IDzamówienia; 
+
+
+ SELECT Imię, Nazwisko, SUM(CenaJednostkowa*ilość) as
+'wartosc zamowienia' FROM Zamówienia as z JOIN 
+[opisy zamówień] as op
+ON z.IDzamówienia=op.IDzamówienia  JOIN Pracownicy as p
+ON p.IDpracownika=z.IDpracownika
+WHERE DataWysyłki >='1997-04-01' 
+AND DataWysyłki<= '1997-06-30' 
+GROUP BY Imię, Nazwisko,p.IDpracownika, z.IDzamówienia;
+
+SELECT Imię, Nazwisko, SUM(CenaJednostkowa*ilość) as
+'wartosc zamowienia' FROM Zamówienia as z JOIN 
+[opisy zamówień] as op
+ON z.IDzamówienia=op.IDzamówienia  JOIN Pracownicy as p
+ON p.IDpracownika=z.IDpracownika
+WHERE DataZamówienia <= '1997-04-01' 
+AND DataZamówienia <= '1997-06-30' 
+GROUP BY Imię, Nazwisko,p.IDpracownika, z.IDzamówienia; 
+
+SELECT Imię, Nazwisko, SUM(CenaJednostkowa*ilość) as
+'wartosc zamowienia' FROM Zamówienia as z JOIN 
+[opisy zamówień] as op
+ON z.IDzamówienia=op.IDzamówienia  JOIN Pracownicy as p
+ON p.IDpracownika=z.IDpracownika
+WHERE DataZamówienia <= '1997-04-01' 
+AND DataWymagana <= '1997-06-30' 
+GROUP BY Imię, Nazwisko,p.IDpracownika, z.IDzamówienia; 
+
+SELECT Imię, Nazwisko, p.IDpracownika, z.IDzamówienia,
+SUM(CenaJednostkowa*ilość) as
+'wartosc zamowienia' FROM Zamówienia as z JOIN 
+[opisy zamówień] as op
+ON z.IDzamówienia=op.IDzamówienia  JOIN Pracownicy as p
+ON p.IDpracownika=z.IDpracownika
+WHERE DataZamówienia>='1997-04-01' 
+AND DataZamówienia <= '1997-06-30' 
+GROUP BY Imię, Nazwisko,p.IDpracownika, z.IDzamówienia
+
+SELECT Imię, Nazwisko,
+SUM(CenaJednostkowa*ilość) as
+'wartosc zamowienia' FROM Zamówienia as z JOIN 
+[opisy zamówień] as op
+ON z.IDzamówienia=op.IDzamówienia  JOIN Pracownicy as p
+ON p.IDpracownika=z.IDpracownika
+WHERE DataZamówienia>='1997-04-01' 
+AND DataZamówienia <= '1997-06-30' 
+GROUP BY Imię, Nazwisko
+
+SELECT Imię, Nazwisko,z.IDzamówienia,
+SUM(CenaJednostkowa*ilość) as
+'wartosc zamowienia' FROM Zamówienia as z JOIN 
+[opisy zamówień] as op
+ON z.IDzamówienia=op.IDzamówienia  JOIN Pracownicy as p
+ON p.IDpracownika=z.IDpracownika
+WHERE DataZamówienia>='1997-04-01' 
+AND DataZamówienia <= '1997-06-30' 
+GROUP BY Imię, Nazwisko,z.IDzamówienia
+
+
+-- zapytanie zwracajace 3 kolumny : nazwe kategorii oraz 
+--nazwe produktu oraz cene
+-- jedynie najdrozsze
+-- produkty dla kazdej z kategorii(8)
+
+select NazwaKategorii,NazwaProduktu,CenaJednostkowa from
+(select NazwaKategorii,NazwaProduktu,k.IDkategorii,CenaJednostkowa from 
+Produkty as p join Kategorie as k 
+on 
+p.IDkategorii=k.IDkategorii) as t1
+join
+(select IDkategorii,max(CenaJednostkowa) as 'maks'
+from Produkty group by IDkategorii) as t2
+on 
+t1.IDkategorii=t2.IDkategorii
+where CenaJednostkowa=maks 
+
+
+--Zapytanie zwracające 2 kolumny 
+--: nazwę kategorii oraz nazwę firmy. 
+--Jedynie firmy, które dostarczaja 
+--najwięcej produktów w danej kategorii(14).
+
+
+SELECT NazwaFirmy,NazwaKategorii FROM
+(SELECT k.idkategorii, NazwaFirmy,NazwaKategorii, COUNT(idproduktu) 
+as 'ile' FROM Produkty as p JOIN Kategorie as k
+ON k.IDkategorii=p.IDkategorii LEFT JOIN Dostawcy as d
+ON d.IDdostawcy=p.IDdostawcy 
+GROUP BY k.idkategorii, d.iddostawcy, NazwaFirmy,NazwaKategorii) as t2
+ JOIN
+(SELECT idkategorii, MAX(ile) as 'maks' FROM
+(SELECT k.idkategorii, d.iddostawcy, COUNT(idproduktu) 
+as 'ile' FROM Produkty as p  JOIN Kategorie as k
+ON k.IDkategorii=p.IDkategorii JOIN Dostawcy as d
+ON d.IDdostawcy=p.IDdostawcy 
+GROUP BY k.idkategorii, d.iddostawcy) as t1
+GROUP BY IDkategorii) as t3
+ON t2.IDkategorii=t3.IDkategorii 
+WHERE ile=maks;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+use [north]
+select
+    CompanyName,
+    CustomerID,
+    City,
+    Country,
+    ContactName
+from
+    Customers
+where
+    country = 'Brazil'
+select
+    City,
+    count (CustomerID) as CustQty
+from
+    Customers
+where
+    country = 'Brazil'
+group by
+    City
+select
+    City,
+    count (CustomerID) as CustQty
+from
+    Customers
+where
+    country = 'Brazil'
+group by
+    City
+having
+    count(CustomerID) > 1
+select
+    Country,
+    City,
+    COUNT(CustomerID) as CustQty
+from
+    dbo.Customers
+GROUP BY
+    Country,
+    City
+HAVING
+    Country = 'Brazil'
+    AND COUNT(CustomerID) > 1
+    /*Zapytanie zwracające nazwę firmy, która złożyła najdroższe zamówienie (QUICK-Stop)*/
+SELECT
+    CompanyName
+FROM
+    "Order Details" as ord
+    JOIN Orders as od ON ord.OrderID = od.OrderID
+    JOIN Customers as c ON c.CustomerID = od.CustomerID
+GROUP BY
+    od.OrderID,
+    CompanyName
+HAVING
+    SUM(quantity * unitprice) = (
+        SELECT
+            MAX(sums)
+        FROM
+            (
+                SELECT
+                    SUM(quantity * Unitprice) as sums
+                FROM
+                    "Order Details"
+                GROUP BY
+                    OrderID
+            ) as temp
+    )
+    /*Zapytanie zwracające nazwę kategorii zawierającej najwięcej produktów (Confections)*/
+SELECT
+    CategoryName
+FROM
+    Products as p
+    JOIN Categories as c ON p.CategoryID = c.CategoryID
+GROUP BY
+    c.CategoryID,
+    CategoryName
+HAVING
+    COUNT(productID) = (
+        SELECT
+            MAX(ile)
+        FROM
+            (
+                SELECT
+                    COUNT(ProductID) as ile
+                FROM
+                    Products
+                GROUP BY
+                    CategoryID
+            ) as temp
+    ) use [north_pl]
+    
+    -- zapytanie zwracajace 2 kolumny ; kraj oraz ilosc 
+    --zamowien z niego realizowanych, jedynie kraje o 
+    --najwiekszej liczbie zamowien(1) 
+SELECT
+    Kraj,
+    COUNT (Idzamówienia) as 'ile'
+FROM
+    zamówienia as z
+    JOIN Klienci as k ON z.IDklienta = k.IDklienta
+GROUP BY
+    kraj
+HAVING
+    COUNT (Idzamówienia) = (
+        SELECT
+            MAX(ile) as 'maks'
+        FROM
+            (
+                SELECT
+                    Kraj,
+                    COUNT(IDzamówienia) as 'ile'
+                FROM
+                    zamówienia as z
+                    JOIN Klienci as k ON z.IDklienta = k.IDKlienta
+                GROUP BY
+                    Kraj
+            ) as t1
+    );
+
+--Zapytanie zwracające 3 kolumny :
+-- Imię, Nazwisko, ilość zamówień zrealizowanych po terminie.
+-- Jedynie osoba z najwiekszą ilością zamówien po terminie.(1)
+
+
+--Zapytanie zwracające 3 kolumny :
+-- Imię, Nazwisko, ilość zamówień zrealizowanych po terminie.
+-- Jedynie osoba z najwiekszą ilością zamówien po terminie.(1)
+
+select Imię, nazwisko, count(IDzamówienia) as ilosc from pracownicy as p
+join zamówienia as z on p.IDpracownika = z.IDpracownika
+--where DataWysyłki > DataWymagana
+group by Imię, Nazwisko
+having count(idzamówienia) = (select max(ilosc) from
+(select Imię, nazwisko, count(IDzamówienia) as ilosc from pracownicy as p
+join zamówienia as z on p.IDpracownika = z.IDpracownika
+--where DataWysyłki > DataWymagana
+group by Imię, Nazwisko)as t1)
+
+
+
+
+
+
+-- zapytanie zwracajace nazwe firmy, ktora zlozyla najdrozsze zamowienie (1.) 
+use [north]
+
+ select CompanyName from "Order Details" as ord join orders as od
+on ord.OrderID = od.OrderID join Customers as c 
+on c.CustomerID=od.CustomerID group by od.OrderID, CompanyName
+having sum(quantity*unitprice)=
+(select max(sums) from
+(select sum(quantity*unitprice) as sums from 
+"Order Details" group by OrderID) as temp)
+
+--Zapytanie zwracające 3 kolumny : imię, nazwisko oraz ilość zrealizowanych zamówień. 
+--Jedynie pracownicy o największej ilość zamówień.
+
+
+use [north_pl]
+
+SELECT imię, nazwisko, COUNT(idzamówienia) as 'ile' FROM Zamówienia as z 
+JOIN Pracownicy as p
+ON p.IDpracownika=z.IDpracownika 
+GROUP BY imię, nazwisko,p.IDpracownika 
+HAVING COUNT(idzamówienia) = 
+(SELECT MAX(ile) as 'maks' FROM
+(SELECT idpracownika, COUNT(idzamówienia) as 'ile' FROM Zamówienia 
+GROUP BY idpracownika) as t1)
+
+--Podaj nie powtarzające się pary produktów w 
+--tej samej cenie jednostkowej
+
+
+use [Northwind]
+select p1.productname, p2.productname from products p1, 
+products p2
+where p1.productid<p2.productid and p1.unitprice=p2.unitprice;
+
+
+
+-- szukam produktów o nazwie zaczynająca się na dowolną literę, a druga litera
+-- zaczyna się od c do p i trzecia literia nie jest g oraz cena produktu zawiera sie 
+-- w przedziale 10 -100 bez wartosci  90
+
+SELECT RIGHT ('hello world' , 3) ;
+SELECT LEFT ('hello world' , 3) ;
+SELECT CHARINDEX (' ','hello world') ;  --- szuka znaku 
+SELECT SUBSTRING ('hello world', 4,5) ;
+
+SELECT LEFT ('hello world' ,  CHARINDEX (' ','hello world') -1 )
+
+SELECT SUBSTRING(`nazwa_kolumny`, pozycja[,liczba_znaków])
+FROM `nazwa_tabeli`
+WHERE `nazwa_tabeli` operator 'wartość'
+
+'__%'
+
+
+ select Productname,unitprice from products 
+ where 
+ productname like '__%' and 
+ (SUBSTRING(productname,2,1)>'c' and SUBSTRING(productname,2,1)<'p')
+ and(SUBSTRING(productname,2,1)>'C' and SUBSTRING(productname,2,1)<'P')
+ and SUBSTRING(productname,3,1)<>'g'
+ and 
+ UnitPrice between '10' and '100' and UnitPrice<> '90';
+
+--Zapytanie zwracajace 3 kolumny : imię, nazwisko, id zamówienia. 
+--Jedynie zamówienia z 3 kwartału 1996 zrealizowane po terminie. (5)
+
+select p.Imię,p.Nazwisko, z.IDzamówienia from Pracownicy as p
+join zamówienia as z
+on p.IDpracownika = z.IDpracownika
+where datepart(month, z.DataZamówienia)>6 
+and datepart(month, z.DataZamówienia)<10 and datepart(year, z.DataZamówienia)=1996
+and z.DataWymagana-z.DataWysyłki<0
+
+
+
+
+
+-- union
+
+
+SELECT 'Pierwszy' as Opis, getdate() as Dt, 132 as liczba
+join
+SELECT 'Drugi' as ZupelnieInnyOpis, '2013-01-01' as DataZlecenia, 0.2
+join
+SELECT 'Trzeci' as Opisik, '2012-11-21' as dt, 0
+
+
+SELECT 'Pierwszy' as Opis, getdate() as Dt, 132 as liczba
+union
+SELECT 'Drugi' as ZupelnieInnyOpis, '2013-01-01' as DataZlecenia, 0.2
+union
+SELECT 'Trzeci' as Opisik, '2012-11-21' as dt, 0
+
+select 'Pierwszy' as Opis, getdate() as Data, 132 as liczba
+UNION
+select 'Drugi', '2013-01-01', 'sto dwa'
+
+select Country from [dbo].[Employees]
+where Country like 'U%'
+union
+select Country from [dbo].[Customers]
+where Country like 'U%'
+
+select Country from [dbo].[Employees]
+where Country like 'U%'
+union all
+select Country from [dbo].[Customers]
+where Country like 'U%'
+
+--EXCEPT
+
+select city from [dbo].[Employees]
+where Country = 'USA'
+EXCEPT
+select city from [dbo].[Customers]
+where Country = 'USA'
+
+-- nie dziala
+select city from [dbo].[Employees]
+where Country = 'USA'
+EXCEPT all
+select city from [dbo].[Customers]
+where Country = 'USA'
+
+--funkacja over
+
+select OrderID , SUM(UnitPrice*Quantity) as TotWartosc
+from dbo.[Order Details]
+Group by OrderID;
+
+select OrderID, ProductID , 
+	SUM(UnitPrice*Quantity) OVER(Partition by OrderID ) as TotWartosc
+from dbo.[Order Details];
+
+select city, ROW_NUMBER() OVER(partition by city order by city) as DuplikatNo
+from [dbo].[Employees]
+where Country = 'USA'
+EXCEPT
+select city, ROW_NUMBER() OVER(partition by city order by city) as DuplikatNo
+from [dbo].[Customers]
+
+--INTERSECT
+select city
+from [dbo].[Employees]
+where Country = 'USA'
+INTERSECT
+select city
+from [dbo].[Customers]
+where Country = 'USA'
+
+select country, ROW_NUMBER() OVER(partition by country order by country) as rn
+from [dbo].[Employees]
+where Country like 'U%'
+INTERSECT 
+select country, ROW_NUMBER() OVER(partition by country order by country) as rn
+from [dbo].[Customers]
+where Country like 'U%'
+
+--kolejnosc
+
+Select kol1, kol2, kol3 from tabela1
+UNION
+Select kol1, kol2, kol3 from tabela2
+EXCEPT
+Select kol1, kol2, kol3 from tabela3
+INTERSECT
+(
+Select kol1, kol2, kol3 from tabela4
+UNION
+Select kol1, kol2, kol3 from tabela5
+)
+
+--substring
+
+SELECT RIGHT ('hello world' , 3) ;
+SELECT LEFT ('hello world' , 3) ;
+SELECT CHARINDEX (' ','hello world') ;  --- szuka znaku 
+SELECT SUBSTRING ('hello world', 4,5) ;
+
+SELECT LEFT ('hello world' ,  CHARINDEX (' ','hello world') -1 )
+
+SELECT SUBSTRING(`nazwa_kolumny`, pozycja[,liczba_znak w])
+FROM `nazwa_tabeli`
+WHERE `nazwa_tabeli` operator 'warto  '
+
+ --Znale   najta szy i najdro szy z produkt w kto go dostarczy  do jakiej kategorii 
+--nale y 
+--(najta szy produkt nie mo e mie  warto ci nieokre lonej lub zero) a w osobnej 
+--kolumnie zamie   informacje czy produkt jest najta szy czy najdro szy 
+
+
+
+-- znajdz najtanszy i najdrozszy produkt dostarczony przez dostawce ktorego nazwa
+ -- zaczyna sie na litere od a-g podaj z jakiej kategorii on pochodzi oraz w dodatkowej
+ -- kolumnie czy jest on najdrozszy czy najtanszy produkt nazwa kategorii. 
+
+
+ 
+
+--Procedura zwraca wszystkich pracowników
+
+alter proc procedura
+as
+begin
+	select * from pracownicy
+end
+
+procedura
+--Wywo anie na 3 sposoby
+procedura
+execute procedura;
+exec procedura;
+
+
+--procedura z parametrami
+create proc procedura_z_parameterm
+		@wiek int,
+		@wzrost int
+	as
+begin
+	select * from pracownicy where wiek > @wiek and wzrost > @wzrost
+end
+
+
+--wywolanie procedury z parametrem
+procedura_z_parameterm 15,1.1
+execute procedura_z_parameterm 15,1.2;
+exec procedura_z_parameterm 15, 2.3;
+
+
+--usuwanie procedury 
+drop proc procedura_z_parameterm
+-------------------------------------------------------------
+--Procedura wybieraj ca nazwiska pracownik w kt rych  rednie zarobki s  najwy sze 
+--lub r wne parametru wejsciowemu
+--Albo (Procedura wybieraj ca pracownik w kt rych  rednie zarobki s  najwy sze 
+--lub najni sze) (zak adamy unikatowo   nazwisk pracownikow)
+
+
+
+	alter proc procedura
+		@wej_srd money
+	as
+	begin
+		select nazwisko, avg(brutto) sred from 
+
+		pracownicy p join zarobki z on z.pracid = p.pracid
+		group by p.nazwisko
+		having avg(brutto)=
+		(
+			select max(wynik.sred) from (
+				select nazwisko, avg(brutto) sred from pracownicy p
+				join zarobki z on z.pracid= p.pracid
+				group by p.nazwisko
+			)wynik
+		)
+		union
+		select nazwisko, avg(brutto) sred from pracownicy p
+			join zarobki z on z.pracid= p.pracid
+			group by p.nazwisko
+			having avg(brutto)= @wej_srd;
+	
+	end;
+	go
+	exec procedura 5600.0000;
+
+--------------------------------------------------------
+--Procedura zwraca pracownik w kt rych nazwisko like @filtr_nazw i imie like @filtr_imie
+--procedura z domyslnym parametrem
+
+alter proc procedura 
+	@filtr_nazw varchar(5),
+	@filtr_imie varchar(5)='%'
+as
+begin
+	select * from pracownicy
+	where nazwisko like @filtr_nazw
+	and imie like @filtr_imie;
+end
+
+exec procedura 'K%','J%'
+exec procedura 'K%'
+
+
+
+alter proc procedura 
+	@filtr_imie varchar(5)='%',
+	@filtr_nazw varchar(5)
+as
+begin
+	select * from pracownicy
+	where nazwisko like @filtr_nazw
+	and imie like @filtr_imie;
+end
+
+exec procedura 'J%'
+
+
+--uzycie parametru default -  nale y jawnie poda  parametr jesli default nie jest na koncu
+exec procedura @filtr_nazw='J%'
+
+
+---------------------------------------------------------
+--cialo procedury z deklaracjami
+
+alter proc procedura 	
+as
+begin 
+
+	declare @nazw varchar(50) --ustawnienie na dana wartosc
+	set @nazw='puste'
+	print @nazw
+	-- ostatni rekord podstawia
+	select @nazw =  nazwisko from pracownicy order by nazwisko ;
+	print @nazw
+end
+exec procedura
+
+---------------------------------------------------------
+-- sterowanie przep ywem
+
+
+alter proc procedura 
+	@ilosc integer
+as
+begin 
+
+	declare @nazw varchar(50) --ustawnienie na dana wartosc
+	set @nazw='puste'
+	print @nazw
+	-- ostatni rekord podstawia
+	select @nazw =  nazwisko from pracownicy order by nazwisko ;
+	print @nazw
+	
+	if len(@nazw)>10
+	print 'Wieksza'
+	else print 'Mniejsza'
+	
+	declare @i integer
+	set @i = 0
+	while @i < @ilosc
+	begin 
+	   print 'Przebieg nr '+@i --cast funkcja konwertujaca typ
+	   set @i = @i+1 
+	end
+end
+exec procedura 5;
+
+--------------------------------------------
+--Procedura nie zwraca warto ci ale mo emy napisa  procedur  z parametrem wyj ciowym
+
+create procedure suma 
+	@a integer,
+	@b integer,
+	@wiek integer OUTPUT
+as 
+begin
+	set @wiek = @a+@b
+end
+--Anonimowa procedura
+--konwersja typ w
+declare @wynik integer
+exec suma 1,5,@wynik output 
+print 'Suma warot ci wynosi: ' + convert(varchar, @wynik)
+-----------------------------------------------------------
+
+--Utw rz procedur  kt ra bedzie oblicza a  redni  trzech podanych na wej ciu 
+--cyfr oraz
+--ograniczy mo liwosc wpisania blednie danych
+
+alter procedure oblicz1
+			@m1 int,
+			@m2 int,
+			@m3 int,
+			@wynik float output
+as
+begin
+	if @m1 is null or @m2 is null or @m3 is null
+		print 'podaj poprawne wartosci'
+	else 
+	set @wynik =(@m1+@m2+@m3)/3
+	print 'Wynik: '+convert(varchar, @wynik)  
+end
+go
+-------------------------------------------
+declare @wyn float
+exec oblicz1 1,2,3,@wyn output
+print 'Srednia z wprowadzonych warto ci wynosi : '+ convert(varchar, @wyn)  
+
+
+--TRIGGERY
+
+
+--SKLADNIA TWORZENIA TRIGGERA
+/*
+	create trigger nazwa
+	on nazwa tabeli
+	for after lub instead create update delete
+	as begin 
+		CIAŁO TRIGGERA
+	end
+*/
+
+create trigger tr_dzialy on dzialy
+for insert, update, delete
+as
+begin
+	select * from dzialy
+end
+
+insert into dzialy(nazwa) values('Nowy')
+
+
+--TABELE INSERTED I DELETED
+
+
+alter trigger tr_dzialy
+on dzialy
+for insert, update, delete
+as
+begin
+	select * from inserted
+	select * from deleted
+end
+
+-- Tabela INSERTED przy dodawaniu
+
+insert into dzialy(nazwa) values('Nowy Inserted')
+
+-- Tabela DELETED przy usuwaniu
+
+delete from dzialy where nazwa = 'Nowy Inserted'
+
+--Tabele INSERTED I DELETED przy modyfikacji
+
+insert into dzialy(nazwa) values('Nowy Updated')
+update dzialy set aktualny  = 'nie' where nazwa = 'Nowy Updated'
+
+
+--Wpływ wycofania transakcji na działanie triggera
+
+--transakcja
+
+alter trigger tr_dzialy
+on dzialy
+for insert, update, delete
+as
+begin
+	--select * from dzialy
+	rollback
+end
+
+delete from dzialy where dzialid > 4
+
+-- 
+
+alter trigger tr_dzialy
+on dzialy
+for insert, update, delete
+as
+begin
+	if update(aktualny)
+		print 'Zmiana aktualności'
+	else 
+		print'Aktualność nie zmieniana'
+print columns_updated()
+--funkcja sluzy do sprawdzenia ktora kolumna byla zmieniana
+end
+
+--update dzialy set nazwa = 'nowa nazwa',aktualny ='tak' where dzialid =8
+update dzialy set aktualny  = 'nie' where dzialid > 5
+
+--TRIGGERY INSTEAD OF - czyli zamiast akcji
+
+alter table zarobki add aktualny varchar(3)
+
+create trigger tr_zarobki 
+on zarobki
+instead of delete
+as 
+begin
+	update zarobki set aktualny='nie' where zarid in (select zarid from deleted)
+end
+
+--sprawdzamy zarobiek o id = 4
+select * from zarobki
+
+--próbujemty usunac zarobiek o id = 4
+delete from zarobki where zarid=4
+
+--sprawdzamy zarobiek o id = 4
+select * from zarobki
+
+--TRIGGERY AUDYTOWE
+
+--uzupełniamy tabele osoby o pola audytowe
+
+alter table pracownicy add 
+	data_wst datetime,
+	operator_wst varchar(30),
+	data_mod datetime,
+	operator_mod varchar(30)
+
+
+create trigger tr_prac on pracownicy
+for update, insert
+as 
+begin
+
+if exists (select *  from deleted)
+	update pracownicy set  data_mod = getdate(), operator_mod=user
+	where pracid in (select pracid from inserted)
+else
+	update pracownicy set  data_wst = getdate(), operator_wst=user
+	where pracid in (select pracid from inserted)
+end
+
+--testujemy trigger
+
+
+insert into pracownicy (nazwisko) values ('NAZ_TESTOWE')
+
+select * from pracownicy where nazwisko = 'NAZ_TESTOWE'
+
+update pracownicy set imie = 'IMIE_TEST' where nazwisko = 'NAZ_TESTOWE'
+
+select * from pracownicy where nazwisko = 'NAZ_TESTOWE'
+
+
+
+--stwórz triggera który przenosi dane dotyczące zarobków 
+--do tabeli historycznej będącej dokładną kopią tabeli 
+--zarobki bez kolumny aktualny. Uwzględnij w tej tabeli datę
+--przenosin oraz użytkownika który kasował dane
+
+
+
+--TABELE INSERTED I DELETED
+
+
+alter trigger tr_dzialy
+on dzialy
+for insert, update, delete
+as
+begin
+	select * from inserted
+	select * from deleted
+end
+
+-- Tabela INSERTED przy dodawaniu
+
+insert into dzialy(nazwa) values('Nowy Inserted')
+
+-- Tabela DELETED przy usuwaniu
+
+delete from dzialy where nazwa = 'Nowy Inserted'
+
+--Tabele INSERTED I DELETED przy modyfikacji
+
+insert into dzialy(nazwa) values('Nowy Updated')
+update dzialy set aktualny  = 'nie' where nazwa = 'Nowy Updated'
+
+
+KONIEC KODU WĄSA

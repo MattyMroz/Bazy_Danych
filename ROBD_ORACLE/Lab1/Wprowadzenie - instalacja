@@ -1,0 +1,46 @@
+Należy zainstalować u siebie system Oracle.
+
+Zalecam instalację  wersję: ORACLE 19c. Wersja  najnowsza to ORACLE 23c- dostępna jest na różne systemy operacyjne (np. system Linux oraz Windows). 
+
+Aby ściągnąć wersję Oracle 19c lub 23c  to należy zarejestrować się na stronie Oracle, gdzie będzie można ściągnąć instalację:
+
+1. Pełna instalacja
+
+- https://www.oracle.com/database/technologies/oracle-database-software-downloads.html
+
+2. Maszyna wirtualna
+
+https://www.oracle.com/database/technologies/databaseappdev-vm.html
+
+3. Docker (kontener Oracle do pobrania przez link podany w punkcie 1 lub z repozytorium Git) 
+
+- https://www.oracle.com/database/technologies/oracle-database-software-downloads.html
+
+- https://github.com/oracle/docker-images
+
+ 
+
+Link do różnych wersji kontenera Docker systemu Oracle.
+
+ Będziemy pracować na użytkowniku HR oraz SCOTT (jeśli nie ma go w systemie to w dokumentacji na stronie Oracle jest informacja jak zainstalować przykładową bazę danych
+
+lub jeśli konto jest i jest zablokowane to zmienić hasło i odblokować użytkownika)
+
+Zachęcam także do ściągnięcia najnowszej wersji SQL Developer 24.x (współpracujący z dowolną wersją Oracle podaną powyżej
+
+https://www.oracle.com/tools/downloads/sqldev-downloads.html
+
+najlepiej już z dołączonym JDK.
+
+ Istnieją również rozszerzenia do innych środowisk:
+
+ --> CS Studio Code 
+
+
+https://marketplace.visualstudio.com/items?itemName=Oracle.sql-developer
+
+--> IntelliJ (instalacja bezpośrednio z tego środowiska)
+
+Eclipse --> należy z poziomu zakładki marketplace wybrać pakiet: OEPE
+
+ Aby pisać zapytania graficznie z podpowiedzią więzów integralności proszę o wyłączenie opcji  - Skip loading meta data detail for Query Builder
