@@ -1,0 +1,44 @@
+Zadanie projektowe: Projektowanie relacyjnej bazy danych na podstawie dokumentów JSON (Company)
+
+Cel zadania
+Na podstawie dostarczonych plików JSON zawierających dane z serwisu Airbnb zaprojektuj relacyjną strukturę bazy danych, która spełnia trzy pierwsze postacie normalne (1NF, 2NF, 3NF).
+Pracujemy na bazie SAMPLE w schemacie Airbnb.
+
+Plik companies documents 01.json - zawiera tylko jeden dokument przykładowy
+Plik companies documents 02.json - zawiera tylko jeden dokument przykładowy
+Plik companies documents 1-6.json - zawiera w jednym pliku 6 dokumentów JSON (te dane mają trafić do bazy relacyjnej)
+
+Zakres pracy (szczegóły w pliku Wymagania dotyczące projektu zaliczeniowego)
+Analiza danych wejściowych
+
+Przeanalizuj strukturę dokumentów z plików:
+compamies documents 01.json – 1 dokument
+companies documents 02.json – 1 dokument
+companies documents 1-6.json – 6 dokumentów (docelowe dane do importu)
+Projekt relacyjnej bazy danych
+
+Zaprojektuj strukturę tabel tak, aby:
+Spełniała 1NF, 2NF i 3NF
+Uwzględniała ograniczenia:
+PRIMARY KEY
+FOREIGN KEY
+UNIQUE
+CHECK
+DEFAULT
+Zachowywała nazwy pól z dokumentów JSON (jeśli to możliwe i zgodne z dobrymi praktykami)
+Implementacja skryptu SQL
+
+Utwórz skrypt SQL:
+Tworzący strukturę bazy danych
+Tworzący wszystkie wymagane ograniczenia
+Import danych
+
+Napisz skrypt, który
+Wczytuje dane z plików JSON
+Importuje dane do bazy danych
+Przekształca je do formatu zgodnego ze strukturą relacyjną 
+Efekty pracy wysyłamy do WIKAMP'a (opisane w elemencie Zakres projektu)
+Schemat bazy danych w formie diagramu (np. ERD)
+Skrypt SQL tworzący strukturę bazy
+Skrypt importujący dane z JSON do bazy
+itd. ...

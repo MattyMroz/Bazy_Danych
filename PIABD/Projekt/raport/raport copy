@@ -1,0 +1,733 @@
+% ============================================================================
+% MangaShift - Raport Kamienia Milowego 1 (KM1)
+% Moduł Ekstrakcji i~Strukturyzacji Treści
+% Autor: Mateusz Mróz (251190)
+% Data: 02.01.2026
+% ============================================================================
+
+\documentclass[12pt,a4paper]{article}
+
+% ============================================================================
+% PAKIETY
+% ============================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{siunitx}
+\usepackage{pgfplots}
+\usepackage{tikz}
+\pgfplotsset{compat=1.18}
+
+% ============================================================================
+% KONFIGURACJA
+% ============================================================================
+\geometry{
+    left=2.5cm,
+    right=2.5cm,
+    top=2.5cm,
+    bottom=2.5cm,
+    headheight=14pt
+}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    urlcolor=blue!70!black,
+    citecolor=blue!70!black
+}
+
+% Kolory projektu
+\definecolor{mangaprimary}{RGB}{79, 70, 229}
+\definecolor{mangasecondary}{RGB}{16, 185, 129}
+\definecolor{mangaaccent}{RGB}{245, 158, 11}
+\definecolor{successgreen}{RGB}{34, 197, 94}
+\definecolor{lightgray}{RGB}{243, 244, 246}
+
+% Formatowanie nagłówków
+\titleformat{\section}{\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection}{1em}{}
+
+% Nagłówek i stopka
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{gray}{MangaShift --- KM1}}
+\fancyhead[R]{\small\textcolor{gray}{02.01.2026}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ============================================================================
+% DANE PROJEKTU
+% ============================================================================
+\newcommand{\projecttitle}{MangaShift}
+\newcommand{\projectsubtitle}{Automatyczny Generator Audiowizualnych Adaptacji Mangi}
+\newcommand{\milestonename}{Moduł Ekstrakcji i~Strukturyzacji Treści}
+\newcommand{\authorname}{Mateusz Mróz}
+\newcommand{\studentid}{251190}
+\newcommand{\university}{Politechnika Łódzka}
+\newcommand{\supervisor}{dr hab.\ inż.\ Ewa Korzeniewska}
+\newcommand{\scientificsupervisor}{dr inż.\ Rafał Zawiślak}
+\newcommand{\reportdate}{02.01.2026}
+
+% ============================================================================
+% DOKUMENT
+% ============================================================================
+\begin{document}
+
+% ----------------------------------------------------------------------------
+% STRONA TYTUŁOWA
+% ----------------------------------------------------------------------------
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+
+    {\Large\textsc{\university}}\\[0.5cm]
+    {\large Indywidualny Projekt Innowacyjny}\\[2cm]
+
+    \rule{\textwidth}{1.5pt}\\[0.4cm]
+    {\Huge\bfseries\projecttitle}\\[0.3cm]
+    {\Large\projectsubtitle}\\[0.2cm]
+    \rule{\textwidth}{1.5pt}\\[1.5cm]
+
+    {\LARGE\bfseries Raport Kamienia Milowego 1}\\[0.5cm]
+    {\Large\milestonename}\\[2cm]
+
+    \begin{minipage}{0.45\textwidth}
+        \begin{flushleft}
+            \textbf{Autor:}\\
+            \authorname\\
+            Nr albumu: \studentid%
+        \end{flushleft}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \begin{flushright}
+            \textbf{Opiekun Uczelniany:}\\
+            \supervisor\\[0.3cm]
+            \textbf{Opiekun Naukowy:}\\
+            \scientificsupervisor%
+        \end{flushright}
+    \end{minipage}\\[2.5cm]
+
+    \vfill
+
+    {\large\reportdate}
+\end{titlepage}
+
+% ----------------------------------------------------------------------------
+% SPIS TREŚCI
+% ----------------------------------------------------------------------------
+\tableofcontents
+\newpage
+
+% ============================================================================
+% 1. STRESZCZENIE WYKONAWCZE
+% ============================================================================
+\section{Streszczenie wykonawcze}
+
+\subsection{Status kamienia milowego}
+
+\begin{center}
+\fcolorbox{successgreen}{successgreen!10}{
+\begin{minipage}{0.9\textwidth}
+\centering
+\vspace{0.5cm}
+{\Large\bfseries\textcolor{successgreen}{KAMIEŃ MILOWY 1 --- OSIĄGNIĘTY}}\\[0.3cm]
+{\normalsize Wszystkie kryteria sukcesu zostały spełnione}
+\vspace{0.5cm}
+\end{minipage}
+}
+\end{center}
+
+\vspace{0.5cm}
+
+Niniejszy raport dokumentuje pomyślne zakończenie pierwszego kamienia milowego projektu MangaShift. W~ramach KM1 zaimplementowano kompletny moduł ekstrakcji i~strukturyzacji treści, który stanowi fundament całego systemu automatycznej transformacji mangi w~materiały audiowizualne.
+
+\subsection{Kluczowe osiągnięcia}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{6 zintegrowanych modułów AI/ML:} RT-DETR (detekcja dymków), CTD i~MTS (segmentacja tekstu), Hi-SAM (segmentacja tekstu 15~wariantów modeli), Magi (detekcja tekstu, paneli i~postaci), Hunyuan OCR (rozpoznawanie tekstu)
+    \item \textbf{Orchestrator} --- centralny system zarządzający 20+~modelami z~dynamicznym ładowaniem i~zwalnianiem pamięci VRAM
+    \item \textbf{Eksport danych} --- ustrukturyzowane dane JSON oraz maski bitowe dla każdego przetworzonego obrazu
+    \item \textbf{Stabilne przetwarzanie} --- 33~obrazy testowe przetworzone bez błędów krytycznych dzięki mechanizmowi LRU Eviction
+    \item \textbf{Wydajność} --- średni czas przetwarzania 37.9\,s/obraz na GPU z~ograniczonym VRAM (6\,GB)
+    \item \textbf{Stacja robocza} --- złożona i~uruchomiona docelowa stacja robocza z~GPU NVIDIA RTX~5090 (32\,GB VRAM), gotowa do~pracy w~kolejnych fazach projektu
+\end{itemize}
+
+\subsection{Metryki sukcesu}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccl}
+\toprule
+\textbf{Kryterium} & \textbf{Wymagane} & \textbf{Osiągnięte} & \textbf{Status} \\
+\midrule
+Detekcja dymków/tekstu & $\geq$75\% & $\sim$85\%* & Spełnione \\
+OCR (tekst główny) & $\geq$80\% & $\sim$90\%* & Spełnione \\
+Stabilność systemu & Brak awarii & 0~bł.\ kryt. & Spełnione \\
+Eksport strukturyzowany & JSON/dane & JSON + maski & Spełnione \\
+\bottomrule
+\end{tabular}
+\caption{Podsumowanie spełnienia kryteriów sukcesu KM1.\ *Wartości szacowane empirycznie --- wymagana automatyzacja procesu walidacji z wykorzystaniem LLM, przy wcześniejszym oczyszczeniu danych wyjściowych.}
+\end{table}
+\newpage
+
+% ============================================================================
+% 2. CELE I ZAKRES KM1
+% ============================================================================
+\section{Cele i zakres Kamienia Milowego 1}
+
+\subsection{Definicja KM1}
+
+Zgodnie z harmonogramem projektu, Kamień Milowy 1 obejmował:
+
+\begin{quote}
+W~ramach tego kamienia milowego zostanie opracowany i~uruchomiony kluczowy moduł w~Pythonie, odpowiedzialny za~analizę stron mangi. Będzie on integrował zewnętrzne usługi API oraz podstawowe modele AI\@. Moduł będzie potrafił przetworzyć co~najmniej 30~stron testowych mangi, automatycznie wykrywając panele i~dymki dialogowe z~dokładnością na~poziomie minimum 75\%. Tekst z~dymków zostanie wyekstrahowany i~wstępnie oczyszczony z~dokładnością OCR wynoszącą co~najmniej 80\%. Dla każdej przetworzonej strony wygenerowane zostaną ustrukturyzowane dane wyjściowe (np.~w~formacie JSON)\@. Dodatkowo, zdefiniowana zostanie pełna architektura systemu oraz powstanie szczegółowy plan zakupu komponentów stacji roboczej.
+\end{quote}
+
+W~skrócie: \textit{Działający moduł ekstrakcji i~strukturyzacji treści --- analiza grafiki (detekcja tekstu, paneli, dymków), porządkowanie oraz odczyt tekstu z~wykorzystaniem AI, a~także złożenie stacji roboczej.}
+
+\subsection{Zakres prac}
+
+W~ramach KM1 zrealizowano następujące zadania:
+
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Analiza technologii} --- przegląd i~wybór optymalnych modeli AI do~detekcji obiektów, segmentacji tekstu oraz OCR
+    \item \textbf{Konfiguracja środowiska} --- przygotowanie infrastruktury deweloperskiej z~obsługą GPU
+    \item \textbf{Implementacja modułów detekcji}:
+    \begin{itemize}
+        \item RT-DETR --- detekcja dymków dialogowych i tekstu
+        \item CTD (Comic Text Detector) --- segmentacja tekstu (maski bitowe)
+        \item MTS (Manga Text Segmentation) --- segmentacja tekstu (maski bitowe)
+        \item Hi-SAM --- segmentacja tekstu (maski bitowe) z~15~wariantami modeli
+        \item Magi --- wielozadaniowa detekcja tekstu, paneli i~postaci
+    \end{itemize}
+    \item \textbf{Implementacja OCR} --- integracja Hunyuan OCR (~1B parametrów) do~rozpoznawania tekstu w~wielu językach
+    \item \textbf{Orchestrator} --- centralny system zarządzania modelami z~optymalizacją wykorzystania zasobów
+    \item \textbf{API REST} --- Testowy backend w FastAPI z~endpointami dla wszystkich serwisów
+    \item \textbf{Stacja robocza} --- zakup komponentów, złożenie oraz uruchomienie docelowej stacji roboczej z~GPU NVIDIA RTX~5090 (32\,GB VRAM)
+    \item \textbf{Testy i~walidacja} --- testy na~zbiorze 33~obrazów mangi i manhwy
+\end{enumerate}
+\newpage
+
+% ============================================================================
+% 3. ZAIMPLEMENTOWANE MODUŁY
+% ============================================================================
+\section{Zaimplementowane moduły}
+
+\subsection{Przegląd architektury}
+
+System MangaShift składa się z następujących warstw:
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    box/.style={rectangle, draw=black!70, fill=gray!10, 
+                minimum width=3.5cm, minimum height=0.8cm, align=center},
+    arrow/.style={->, thick, black!70}
+]
+    % API Layer
+    \node[box, minimum width=12cm] (api) at (0,4) {REST API / CLI};
+
+    % Orchestrator
+    \node[box, minimum width=12cm, fill=yellow!15, draw=black!70] (orch) at (0,2.8) {Pipeline Orchestrator (zarządzanie procesem)};
+
+    % Services
+    \node[box] (rtdetr) at (-6,1) {RT-DETR};
+    \node[box] (ctd) at (-2,1) {CTD};
+    \node[box] (mts) at (2,1) {MTS};
+    \node[box] (hisam) at (6,1) {Hi-SAM};
+
+    \node[box] (magi) at (-2,-0.3) {Magi};
+    \node[box] (ocr) at (2,-0.3) {Hunyuan OCR};
+
+    % Arrows
+    \draw[arrow] (api) -- (orch);
+    \draw[arrow] (orch) -- (rtdetr);
+    \draw[arrow] (orch) -- (ctd);
+    \draw[arrow] (orch) -- (mts);
+    \draw[arrow] (orch) -- (hisam);
+    \draw[arrow] (orch) -- (magi);
+    \draw[arrow] (orch) -- (ocr);
+\end{tikzpicture}
+\caption{Architektura systemu MangaShift --- KM1}
+\end{figure}
+\newpage
+
+\subsection{Szczegóły modułów}
+
+\subsubsection{RT-DETR --- Detekcja dymków}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{ll}
+\toprule
+\textbf{Parametr} & \textbf{Wartość} \\
+\midrule
+Architektura & Real-Time DEtection TRansformer \\
+Zużycie VRAM & 289 MB \\
+Klasy detekcji & bubble, text\_bubble, text\_free \\
+Średni czas & 0.13 s/obraz \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{img/01_rtdetr.png}
+\caption{Przykład detekcji RT-DETR (Frieren: Beyond Journey's End)}
+\end{figure}
+
+\subsubsection{MTS --- Manga Text Segmentation}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{ll}
+\toprule
+\textbf{Parametr} & \textbf{Wartość} \\
+\midrule
+Architektura & UNet++ z EfficientNetV2 encoder \\
+Zużycie VRAM & 2,246 MB \\
+Średni czas & 0.4 s/obraz \\
+Wyjście & Maski pikselowe tekstu \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{img/02_mts.png}
+\caption{Maska segmentacji tekstu MTS (Frieren: Beyond Journey's End)}
+\end{figure}
+
+\subsubsection{CTD --- Comic Text Detector}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{ll}
+\toprule
+\textbf{Parametr} & \textbf{Wartość} \\
+\midrule
+Architektura & YOLO + UNet refinement \\
+Zużycie VRAM & 749 MB \\
+Średni czas & 0.3 s (Refined), 1.1 s (Patched) \\
+Wyjście & Maski pikselowe tekstu \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{img/03_ctd_refined.png}
+\caption{Tryb Refined}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{img/04_ctd_patched.png}
+\caption{Tryb Patched}
+\end{subfigure}
+\caption{Maski segmentacji tekstu CTD (Frieren: Beyond Journey's End)}
+\end{figure}
+
+\newpage
+
+\subsubsection{Magi --- Multi-task Detection}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{ll}
+\toprule
+\textbf{Parametr} & \textbf{Wartość} \\
+\midrule
+Architektura & Florence-2 (Microsoft) \\
+Zużycie VRAM & 1,978 MB \\
+Zadania & Detekcja tekstu, paneli, postaci, ustalenie kolejności czytania \\
+Średni czas & 10.1 s/obraz \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{img/06_magi.png}
+\caption{Analiza Magi --- detekcja tekstu, paneli i~postaci (Frieren: Beyond Journey's End)}
+\end{figure}
+
+\subsubsection{Hunyuan OCR --- Ekstrakcja tekstu}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{ll}
+\toprule
+\textbf{Parametr} & \textbf{Wartość} \\
+\midrule
+Architektura & Vision-Language Model (~1B params) \\
+Producent & Tencent \\
+Zużycie VRAM & 3,680 MB \\
+Języki & 100+ w tym: japoński, koreański, chiński, angielski, polski \\
+Formaty wyjścia & JSON, Markdown, HTML \\
+Średni czas & 19.8 s/obraz \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{img/07_ocr.png}
+\caption{Wynik OCR Hunyuan --- rozpoznany tekst z~mangi (Frieren: Beyond Journey's End)}
+\end{figure}
+\newpage
+
+% ============================================================================
+% 4. WYNIKI BENCHMARKÓW
+% ============================================================================
+\section{Wyniki benchmarków}
+
+\subsection{Konfiguracja testowa}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Komponent} & \textbf{Specyfikacja} \\
+\midrule
+GPU & NVIDIA GeForce GTX~1660~Ti \\
+VRAM & 6,143 MB \\
+Profil & Sekwencyjne ładowanie z~zarządzaniem VRAM \\
+Liczba obrazów & 33 \\
+Rozdzielczość & 640$\times$640 --- 2133$\times$1600 px \\
+\bottomrule
+\end{tabular}
+\caption{Środowisko testowe}
+\end{table}
+
+\textbf{Uwaga:} Testy przeprowadzono na~maszynie z~ograniczonym VRAM (6\,GB) w~celu weryfikacji stabilności. Przyszłe fazy będą wykorzystywać kartę NVIDIA RTX~5090 (32\,GB VRAM):
+\begin{itemize}[leftmargin=*, nosep]
+    \item Równoległe przetwarzanie wielu modeli
+    \item Obsługę obrazów o~wyższej rozdzielczości
+    \item Znaczne skrócenie czasu przetwarzania
+\end{itemize}
+
+\subsection{Wyniki zbiorcze}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lrr}
+\toprule
+\textbf{Metryka} & \textbf{Wartość} & \textbf{Jednostka} \\
+\midrule
+Całkowity czas & 20:49.9 & min:s \\
+Średni czas/obraz & 37.9 & s \\
+Przetworzone obrazy & 33 & z 33 \\
+Błędy krytyczne & 0 & szt. \\
+\bottomrule
+\end{tabular}
+\caption{Podsumowanie benchmarku}
+\end{table}
+
+\textbf{Uwagi dotyczące pomiarów:}
+\begin{itemize}[leftmargin=*, nosep]
+    \item Czas \textbf{nie uwzględnia} ładowania modeli do pamięci VRAM (cold start)
+    \item Przetwarzanie wykonywane \textbf{sekwencyjnie} --- brak optymalizacji
+    \item Zużycie VRAM przez OCR i MTS zależy od rozmiaru obrazu wejściowego
+\end{itemize}
+
+\subsection{Rozkład czasu przetwarzania}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=14cm,
+    height=7cm,
+    bar width=0.8cm,
+    xlabel={Moduł},
+    ylabel={Średni czas (s)},
+    symbolic x coords={RT-DETR, CTD-R, CTD-P, MTS, Hi-SAM, Magi, Hunyuan OCR},
+    xtick=data,
+    nodes near coords,
+    nodes near coords align={vertical},
+    ymin=0,
+    ymax=25,
+    enlarge x limits=0.1,
+    legend style={at={(0.5,-0.15)}, anchor=north},
+    every node near coord/.append style={font=\small}
+]
+\addplot[fill=mangaprimary!70] coordinates {
+    (RT-DETR, 0.13)
+    (CTD-R, 0.3)
+    (CTD-P, 1.1)
+    (MTS, 0.4)
+    (Hi-SAM, 6.9)
+    (Magi, 10.1)
+    (Hunyuan OCR, 19.8)
+};
+\end{axis}
+\end{tikzpicture}
+\caption{Średni czas przetwarzania poszczególnych modułów}
+\end{figure}
+
+\subsection{Szczegółowe wyniki --- wybrane obrazy}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabular}{lrrrrrr}
+\toprule
+\textbf{Obraz} & \textbf{Rozm.} & \textbf{Czas (mm:ss)} & \textbf{Panele} & \textbf{Teksty} & \textbf{Postacie} & \textbf{OCR} \\
+\midrule
+01 & 1067$\times$1600 & 0:28.9 & 1 & 4 & 4 & 6 \\
+04 & 658$\times$1024 & 1:06.8 & 1 & 4 & 2 & 8 \\
+09 & 1728$\times$2464 & 0:54.6 & 5 & 9 & 9 & 10 \\
+17 & 722$\times$1024 & 1:00.6 & 8 & 22 & 10 & 16 \\
+31 & 715$\times$1024 & 1:33.2 & 5 & 20 & 9 & 24 \\
+\bottomrule
+\end{tabular}
+\caption{Przykładowe wyniki dla wybranych stron mangi}
+\end{table}
+\newpage
+
+% ============================================================================
+% 5. ANALIZA WYNIKÓW
+% ============================================================================
+\section{Analiza wyników}
+
+\subsection{Stabilność systemu}
+
+System wykazał stabilność podczas testów:
+
+\begin{itemize}[leftmargin=*]
+    \item Wszystkie 33~obrazy przetworzone bez błędów krytycznych
+    \item Automatyczne zarządzanie pamięcią VRAM --- dynamiczne ładowanie/zwalnianie modeli
+    \item Poprawna obsługa różnych rozdzielczości (640--2464\,px)
+\end{itemize}
+
+\textbf{Zastrzeżenia:} Pomimo braku błędów krytycznych, surowe dane wymagają dalszego oczyszczania i~późniejszego przetworzenia przed wykorzystaniem w~kolejnych modułach.
+
+\subsection{Wydajność}
+
+Średni czas przetwarzania 37.9\,s/obraz, biorąc pod uwagę:
+
+\begin{itemize}[leftmargin=*]
+    \item Ograniczenia sprzętowe (GTX 1660~Ti, 6\,GB VRAM)
+    \item Uruchamianie 6~modeli AI sekwencyjnie (brak równoległości i innych optymalizacji)
+    \item Dominacja czasu Hunyuan OCR (52\% całkowitego czasu) --- główne wąskie gardło
+    \item Duże pole do~optymalizacji --- batch processing, przetwarzanie równoległe
+    \item Nie wszystkie modele muszą być wykorzystywane jednocześnie w~każdym przypadku użycia
+\end{itemize}
+
+\textbf{Docelowy sprzęt:} Przyszłe fazy będą realizowane na~NVIDIA RTX~5090 (32\,GB VRAM), co~umożliwi równoległe przetwarzanie i~znaczną redukcję czasu.
+
+\subsection{Detekcja}
+
+\textbf{Obserwacje i ograniczenia:}
+\begin{itemize}[leftmargin=*, nosep]
+    \item RT-DETR wykrywa koordynaty dymków dialogowych i tekstu z~bardzo dobrą dokładnością
+    \item Magi skutecznie identyfikuje tekst ze znakami alfabetu łacińskiego, panele oraz postacie
+    \item Hunyuan OCR rozpoznaje tekst w wielu językach, w~tym japońskim, koreańskim, chińskim, angielskim i~polskim
+    \item Segmentacja tekstu generuje maski bitowe do~późniejszego przetwarzania, większość ważnego tekstu jest wykrywana
+    \item \textbf{Detekcja paneli} --- ocena empiryczna, trudność oceny do~statystyk procentowych, ze względu na mnogość formatów i~układów
+    \item \textbf{Napisy poboczne i~SFX} --- trudne do~detekcji, wymagają dalszych prac
+    \item \textbf{Szumy w~danych} --- wyniki zawierają niedokładności wymagające filtracji
+    \item \textbf{Rozpoznawanie postaci} --- pominięte w dalszych pracach ze~względu na~złożoność problemu
+    \item \textbf{Format wyjściowy} --- dane w~JSON i~maskach bitowych wymagają obróbki
+\end{itemize}
+\newpage
+
+% ============================================================================
+% 6. WNIOSKI I NASTĘPNE KROKI
+% ============================================================================
+\section{Wnioski i następne kroki}
+
+\subsection{Podsumowanie KM1}
+
+Kamień Milowy 1 został osiągnięty zgodnie z harmonogramem. Zrealizowane prace obejmują:
+
+\begin{enumerate}[leftmargin=*]
+    \item Implementację kompletnego pipeline'u ekstrakcji treści
+    \item Integrację 6~zaawansowanych modułów AI/ML (RT-DETR, MTS, CTD, Hi-SAM, Magi, Hunyuan OCR)
+    \item Stworzenie skalowalnej architektury z~centralnym orchestratorem
+    \item Walidację na~rzeczywistych danych testowych (33~obrazy)
+    \item Złożenie i~uruchomienie docelowej stacji roboczej z~NVIDIA RTX~5090
+\end{enumerate}
+
+\subsection{Następne kroki --- KM2}
+
+W~ramach Kamienia Milowego~2 (do~M6) planowane są:
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Moduł tłumaczenia} --- integracja z~LLM do~automatycznego tłumaczenia tekstu
+    \item \textbf{Synteza mowy (TTS)} --- generowanie narracji lektorskiej
+    \item \textbf{Upscaling grafiki} --- poprawa jakości paneli z~wykorzystaniem AI
+    \item \textbf{Inpainting} --- usuwanie oryginalnego tekstu z~dymków
+\end{itemize}
+
+\subsection{Zidentyfikowane ograniczenia do dalszych prac}
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Napisy poboczne i~SFX} --- trudne do~automatycznej detekcji, wymagają dedykowanych rozwiązań
+    \item \textbf{Rozpoznawanie postaci} --- pominięte w~tym projekcie ze~względu na~złożoność problemu
+    \item \textbf{Obróbka danych} --- surowe wyniki wymagają filtracji i~walidacji
+    \item \textbf{Optymalizacja wydajności} --- do~implementacji w~przyszłości
+\end{itemize}
+
+\subsection{Zidentyfikowane ryzyka}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lll}
+\toprule
+\textbf{Ryzyko} & \textbf{Poziom} & \textbf{Mitygacja} \\
+\midrule
+Ograniczenia VRAM & Średni & Optymalizacja modeli \\
+Jakość OCR & Niski & Walidacja LLM \\
+Czas przetwarzania & Średni & Paralelizacja \\
+Szumy w detekcji & Średni & Post-processing \\
+\bottomrule
+\end{tabular}
+\caption{Analiza ryzyk dla kolejnych etapów}
+\end{table}
+
+% ============================================================================
+% 7. ZAŁĄCZNIKI
+% ============================================================================
+\section{Załączniki}
+
+\subsection{Przykładowe wizualizacje}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.54\textwidth]{img/08_combined.png}
+\caption{Przetworzenie kompletne (Frieren: Beyond Journey's End)}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.54\textwidth]{img/09_infographic.png}
+\caption{Wizualizacja danych (Frieren: Beyond Journey's End)}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.54\textwidth]{img/10_combined.png}
+\caption{Przetworzenie kompletne (Chainsaw Man --- kolorowa)}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.54\textwidth]{img/11_infographic.png}
+\caption{Wizualizacja danych (Chainsaw Man --- kolorowa)}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.54\textwidth]{img/12_combined.png}
+\caption{Przetworzenie kompletne (Chainsaw Man --- japoński)}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.54\textwidth]{img/13_infographic.png}
+\caption{Wizualizacja danych (Chainsaw Man --- japoński)}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.54\textwidth]{img/14_combined.png}
+\caption{Przetworzenie kompletne (Oshi no Ko)}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.54\textwidth]{img/15_infographic.png}
+\caption{Wizualizacja danych (Oshi no Ko)}
+\end{figure}
+
+\subsection{Pełna tabela wyników}
+
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{table}[H]
+\centering
+\caption{Pełne wyniki benchmarku dla wszystkich obrazów testowych}
+\begin{tabular}{l r r r r r}
+\toprule
+\textbf{Obraz} & \textbf{Rozdzielczość} & \textbf{Czas} & \textbf{RT-DETR} & \textbf{Panele} & \textbf{OCR} \\
+\midrule
+01 & 1067$\times$1600 & 28.9s & 6 & 1 & 6 \\
+02 & 1067$\times$1600 & 27.1s & 5 & 1 & 5 \\
+03 & 1067$\times$1600 & 35.1s & 6 & 1 & 6 \\
+04 & 658$\times$1024 & 1m 6.8s & 8 & 1 & 8 \\
+05 & 2133$\times$1600 & 35.9s & 1 & 1 & 1 \\
+06 & 1067$\times$1600 & 21.2s & 2 & 1 & 2 \\
+07 & 690$\times$1619 & 29.0s & 7 & 1 & 4 \\
+08 & 1013$\times$1600 & 36.1s & 16 & 5 & 8 \\
+09 & 1728$\times$2464 & 54.6s & 17 & 5 & 10 \\
+10 & 1728$\times$2464 & 1m 1.5s & 20 & 4 & 10 \\
+11 & 1080$\times$1507 & 37.9s & 18 & 6 & 9 \\
+12 & 2048$\times$1471 & 40.0s & 10 & 3 & 6 \\
+13 & 736$\times$1046 & 12.9s & 2 & 1 & 1 \\
+14 & 675$\times$843 & 13.8s & 2 & 2 & 1 \\
+15 & 720$\times$1024 & 19.6s & 8 & 4 & 4 \\
+16 & 1049$\times$1500 & 48.3s & 22 & 5 & 11 \\
+17 & 722$\times$1024 & 1m 0.6s & 30 & 8 & 16 \\
+18 & 722$\times$1024 & 42.3s & 19 & 5 & 10 \\
+19 & 658$\times$1024 & 51.5s & 32 & 7 & 16 \\
+20 & 722$\times$1024 & 40.2s & 15 & 2 & 8 \\
+21 & 722$\times$1024 & 39.0s & 17 & 3 & 9 \\
+22 & 715$\times$1024 & 42.4s & 23 & 8 & 15 \\
+23 & 722$\times$1024 & 44.0s & 25 & 5 & 13 \\
+24 & 715$\times$1024 & 48.2s & 18 & 5 & 12 \\
+25 & 722$\times$1024 & 19.0s & 5 & 5 & 3 \\
+26 & 715$\times$1024 & 29.5s & 17 & 7 & 8 \\
+27 & 715$\times$1024 & 14.4s & 2 & 1 & 1 \\
+28 & 715$\times$1024 & 43.8s & 20 & 7 & 10 \\
+29 & 715$\times$1024 & 25.1s & 12 & 3 & 5 \\
+30 & 900$\times$1350 & 20.3s & 3 & 2 & 2 \\
+31 & 715$\times$1024 & 1m 33.2s & 39 & 5 & 24 \\
+test & 1067$\times$1600 & 1m 0.8s & 30 & 6 & 17 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\endgroup
+
+
+% ============================================================================
+% KONIEC DOKUMENTU
+% ============================================================================
+
+\vfill
+\begin{center}
+\rule{0.5\textwidth}{0.4pt}\\[0.3cm]
+\textit{Raport wygenerowany: \reportdate}\\
+\textit{MangaShift --- Indywidualny Projekt Innowacyjny}\\
+\textit{\university}
+\end{center}
+
+\end{document}

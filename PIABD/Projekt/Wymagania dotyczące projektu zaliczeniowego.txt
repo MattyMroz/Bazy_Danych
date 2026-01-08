@@ -1,0 +1,91 @@
+Wymagania dotyczące projektu zaliczeniowego 
+1. Organizacja pracy 
+• Projekt może być realizowany indywidualnie lub w zespołach do 3 osób. 
+• Projekt ma charakter obowiązkowy – jest wymagany do uzyskania zaliczenia 
+przedmiotu. 
+• Każda grupa oddaje jeden wspólny projekt, ale każda osoba jest odpowiedzialna za 
+znajomość całej pracy. 
+2. Zawartość projektu (plik PDF/DOCX) (WIKAMP) 
+Każdy projekt powinien zawierać jeden dokument opisowy (PDF lub DOCX), w którym znajdą 
+się poniższe elementy: 
+Strona tytułowa 
+• Nazwa bazy danych. 
+• Imiona, nazwiska oraz numery albumów członków zespołu. 
+Rozdział 1. Podstawowe założenia projektu 
+Należy opisać: 
+• cel tworzenia bazy, 
+• główne założenia, 
+• zakres możliwości systemu, 
+• wszelkie ograniczenia przyjęte podczas projektowania. 
+Rozdział 2. Schemat bazy danych 
+• Czytelny, graficzny schemat bazy (ERD, diagram relacji z SSMS lub inny narzędzie). 
+• Diagram powinien odzwierciedlać rzeczywistą strukturę bazy. 
+Rozdział 3. Obiekty bazy danych i ich opis 
+A) Tabele 
+Dla każdej tabeli: 
+• opis funkcjonalny tabeli (zdefiniowany w SSMS lub poprzez sp_addextendedproperty), 
+• klucze główne (PK), 
+• klucze obce (FK), 
+• ograniczenia: CHECK, DEFAULT, UNIQUE, 
+• uzasadnienie ewentualnych odstępstw od normalizacji (baza powinna spełniać 1NF, 
+2NF i 3NF — wyjątki muszą być opisane). 
+B) Indeksy 
+• Opis wszystkich własnych indeksów jeśli są, które nie są automatycznie tworzone 
+przy deklaracji PK lub UNIQUE. 
+• Uzasadnienie ich utworzenia. 
+C) Triggery 
+• Jeśli występują, należy je: 
+o wymienić, 
+o opisać ich działanie i cel. 
+D) Procedury składowane 
+• Przynajmniej jedna procedura służąca np. do wstawiania lub aktualizowania danych. 
+• Opis działania procedury. 
+E) Funkcje użytkownika 
+• Przynajmniej jedna funkcja (skalarna lub tabelaryczna). 
+• Opis jej funkcji i zastosowania. 
+F) Widoki 
+• Przynajmniej jeden widok prezentujący dane z bazy. 
+• Widok powinien demonstrować podstawową funkcjonalność bazy. 
+• Opis jego zastosowania. 
+Rozdział 4. Role, uprawnienia i użytkownicy 
+Należy: 
+1. Utworzyć role w bazie danych. 
+2. Przypisać użytkowników do ról. 
+3. Każdy użytkownik ma być contained user – przechowywany lokalnie w bazie i 
+tworzony z hasłem. 
+Przykładowi użytkownicy: 
+• Admin – pełne uprawnienia w bazie (właściciel). 
+• Emp – może wykonywać procedury składowane, ale nie ma bezpośrednich praw do 
+tabel. 
+• Guest – może przeglądać dane przez widok, ale nie ma dostępu do tabel, ani 
+uprawnień do INSERT/UPDATE/DELETE. 
+Wymagane polecenia konfiguracyjne (dla contained users): 
+EXEC sp_configure 'show advanced options', 1; 
+RECONFIGURE; 
+EXEC sp_configure 'contained database authentication', 1; 
+RECONFIGURE; 
+ALTER DATABASE <TwojaBaza> SET CONTAINMENT = PARTIAL; 
+USE <TwojaBaza>; 
+CREATE USER Admin WITH PASSWORD = 'Admin'; -- itd... 
+Uwagi: 
+• Cała konfiguracja użytkowników dotyczy wyłącznie poziomu bazy, nie instancji. 
+Rozdział 5. Uwagi końcowe 
+Krótki opis: 
+• jakie problemy napotkano podczas realizacji projektu, 
+• które elementy nie zostały w pełni ukończone lub zrealizowane zgodnie z planem. 
+3. Co należy dołączyć dodatkowo (oprócz pliku PDF) (Wikamp)? 
+Do projektu należy dołączyć jeden z poniższych elementów (muszą zawierać także 
+użytkowników i role): 
+1. Wygenerowany skrypt (Tasks → Generate Scripts) — razem z danymi. 
+lub 
+2. Plik backupu bazy danych (.bak). 
+lub 
+3. Plik Data-tier Application (.bacpac). 
+4. Nagranie wideo (OneDrive) 
+Każda grupa przygotowuje krótki film (3–5 minut), w którym: 
+• przedstawia założenia projektu, 
+• pokazuje diagram bazy, 
+• prezentuje wybrane obiekty (tabele, procedury, widoki itp.), 
+• omawia sposób działania ról i użytkowników. 
+Film kopiujemy na One Drive i udostępniamy dostęp dla prowadzącego zajęcia tylko do 
+odczytu. 

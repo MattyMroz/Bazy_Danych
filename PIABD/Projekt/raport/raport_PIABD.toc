@@ -1,0 +1,47 @@
+\babel@toc {polish}{}\relax 
+\contentsline {section}{\numberline {1}Założenia wstępne}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Cel projektu}{2}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Źródło danych}{2}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Wymagania funkcjonalne}{2}{subsection.1.3}%
+\contentsline {subsection}{\numberline {1.4}Wymagania niefunkcjonalne}{2}{subsection.1.4}%
+\contentsline {subsection}{\numberline {1.5}Technologie}{3}{subsection.1.5}%
+\contentsline {section}{\numberline {2}Diagram ERD}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Opis encji}{4}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Diagram relacji}{4}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Relacje między tabelami}{6}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Opis obiektów bazy danych}{7}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Tabele}{7}{subsection.3.1}%
+\contentsline {subsubsection}{\numberline {3.1.1}Tabela Company}{7}{subsubsection.3.1.1}%
+\contentsline {subsubsection}{\numberline {3.1.2}Tabela FundingRound}{7}{subsubsection.3.1.2}%
+\contentsline {subsubsection}{\numberline {3.1.3}Tabela Investment}{8}{subsubsection.3.1.3}%
+\contentsline {subsection}{\numberline {3.2}Indeksy}{8}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Procedury składowane}{8}{subsection.3.3}%
+\contentsline {subsubsection}{\numberline {3.3.1}AddCompany}{8}{subsubsection.3.3.1}%
+\contentsline {subsubsection}{\numberline {3.3.2}SearchCompanies}{9}{subsubsection.3.3.2}%
+\contentsline {subsubsection}{\numberline {3.3.3}GetCompanyFundingReport}{10}{subsubsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.4}Funkcje}{10}{subsection.3.4}%
+\contentsline {subsubsection}{\numberline {3.4.1}GetTotalFunding (skalarna)}{10}{subsubsection.3.4.1}%
+\contentsline {subsubsection}{\numberline {3.4.2}GetCompanyAge (skalarna)}{11}{subsubsection.3.4.2}%
+\contentsline {subsubsection}{\numberline {3.4.3}GetCompanyPeople (tabelaryczna)}{11}{subsubsection.3.4.3}%
+\contentsline {subsection}{\numberline {3.5}Widoki}{11}{subsection.3.5}%
+\contentsline {subsubsection}{\numberline {3.5.1}vw\_CompanyOverview}{11}{subsubsection.3.5.1}%
+\contentsline {subsubsection}{\numberline {3.5.2}vw\_FundingByCategory}{12}{subsubsection.3.5.2}%
+\contentsline {subsubsection}{\numberline {3.5.3}vw\_TopInvestors}{12}{subsubsection.3.5.3}%
+\contentsline {subsection}{\numberline {3.6}Triggery}{13}{subsection.3.6}%
+\contentsline {subsubsection}{\numberline {3.6.1}trg\_Company\_UpdateTimestamp}{13}{subsubsection.3.6.1}%
+\contentsline {subsubsection}{\numberline {3.6.2}trg\_FundingRound\_Audit}{13}{subsubsection.3.6.2}%
+\contentsline {subsubsection}{\numberline {3.6.3}trg\_Investment\_Validate}{14}{subsubsection.3.6.3}%
+\contentsline {section}{\numberline {4}Role, uprawnienia i użytkownicy}{16}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Architektura bezpieczeństwa}{16}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Role}{16}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Użytkownicy}{16}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Kod tworzący role i użytkowników}{16}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Instrukcja logowania}{17}{subsection.4.5}%
+\contentsline {section}{\numberline {5}Uwagi końcowe}{18}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Normalizacja}{18}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Decyzje projektowe}{18}{subsection.5.2}%
+\contentsline {subsubsection}{\numberline {5.2.1}Daty jako osobne kolumny}{18}{subsubsection.5.2.1}%
+\contentsline {subsubsection}{\numberline {5.2.2}Nullable foreign keys}{18}{subsubsection.5.2.2}%
+\contentsline {subsubsection}{\numberline {5.2.3}ON DELETE CASCADE}{18}{subsubsection.5.2.3}%
+\contentsline {subsection}{\numberline {5.3}Możliwe rozszerzenia}{19}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Podsumowanie}{19}{subsection.5.4}%

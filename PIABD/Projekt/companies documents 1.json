@@ -1,0 +1,206 @@
+{
+  "_id": {
+    "$oid": "52cdef7c4bab8bd675297d8f"
+  },
+  "name": "Omnidrive",
+  "permalink": "omnidrive",
+  "crunchbase_url": "http://www.crunchbase.com/company/omnidrive",
+  "homepage_url": "http://www.omnidrive.com",
+  "blog_url": "http://www.omnidrive.com/blog",
+  "blog_feed_url": "http://feeds.feedburner.com/omnidrive",
+  "twitter_username": "Nomadesk",
+  "category_code": "network_hosting",
+  "number_of_employees": null,
+  "founded_year": 2005,
+  "founded_month": 11,
+  "founded_day": 1,
+  "deadpooled_year": 2008,
+  "deadpooled_month": 9,
+  "deadpooled_day": 15,
+  "deadpooled_url": "",
+  "tag_list": "storage, sharing, edit, online",
+  "alias_list": null,
+  "email_address": "info@omnidrive.com",
+  "phone_number": "660-675-5052",
+  "description": null,
+  "created_at": "Sun May 27 03:25:32 UTC 2007",
+  "updated_at": "Tue Jul 02 22:48:04 UTC 2013",
+  "overview": "<p>Currently in public beta, Omnidrive makes it easy to access, edit and share your files from any computer with a web browser. The site was founded in late 2004 by Nik Cubrilovic and later launched at the November 2006 Web 2.0 Conference.  An interesting slew of features make Omnidrive an attractive choice in the online file storage field.</p>\n\n<p>Omnidrive&#8217;s competitors include <a href=\"http://www.crunchbase.com/company/box-net\" title=\"Box.net\">Box.net</a>, <a href=\"http://www.streamload.com\" title=\"Streamload\" rel=\"nofollow\">Streamload</a> and <a href=\"http://www.xdrive.com\" title=\"Xdrive\" rel=\"nofollow\">Xdrive</a>.</p>",
+  "image": {
+    "available_sizes": [
+      [
+        [
+          150,
+          85
+        ],
+        "assets/images/resized/0000/0823/823v1-max-150x150.jpg"
+      ],
+      [
+        [
+          150,
+          85
+        ],
+        "assets/images/resized/0000/0823/823v1-max-250x250.jpg"
+      ],
+      [
+        [
+          150,
+          85
+        ],
+        "assets/images/resized/0000/0823/823v1-max-450x450.jpg"
+      ]
+    ],
+    "attribution": null
+  },
+  "products": [
+    {
+      "name": "Omnidrive",
+      "permalink": "omnidrive"
+    }
+  ],
+  "relationships": [
+    {
+      "is_past": true,
+      "title": "Co-founder",
+      "person": {
+        "first_name": "Geoff",
+        "last_name": "McQueen",
+        "permalink": "geoff-mcqueen"
+      }
+    },
+    {
+      "is_past": true,
+      "title": "Founder & CEO",
+      "person": {
+        "first_name": "Nik",
+        "last_name": "Cubrilovic",
+        "permalink": "nik-cubrilovic"
+      }
+    },
+    {
+      "is_past": true,
+      "title": "",
+      "person": {
+        "first_name": "Tony",
+        "last_name": "Guntharp",
+        "permalink": "tony-guntharp"
+      }
+    },
+    {
+      "is_past": true,
+      "title": "Board of Advisors",
+      "person": {
+        "first_name": "Mike",
+        "last_name": "Cannon-Brookes",
+        "permalink": "mike-cannon-brookes"
+      }
+    }
+  ],
+  "competitions": [
+    {
+      "competitor": {
+        "name": "Dropbox",
+        "permalink": "dropbox"
+      }
+    },
+    {
+      "competitor": {
+        "name": "filobite",
+        "permalink": "filobite"
+      }
+    },
+    {
+      "competitor": {
+        "name": "digitalbucket.net",
+        "permalink": "digitalbucket"
+      }
+    },
+    {
+      "competitor": {
+        "name": "ElephantDrive",
+        "permalink": "elephantdrive"
+      }
+    },
+    {
+      "competitor": {
+        "name": "Banckle Customer Service 2.0",
+        "permalink": "banckle"
+      }
+    }
+  ],
+  "providerships": [],
+  "total_money_raised": "$800k",
+  "funding_rounds": [
+    {
+      "id": 225,
+      "round_code": "angel",
+      "source_url": "",
+      "source_description": "",
+      "raised_amount": 800000,
+      "raised_currency_code": "USD",
+      "funded_year": 2006,
+      "funded_month": 12,
+      "funded_day": 1,
+      "investments": [
+        {
+          "company": null,
+          "financial_org": null,
+          "person": {
+            "first_name": "Michael",
+            "last_name": "Arrington",
+            "permalink": "michael-arrington"
+          }
+        },
+        {
+          "company": null,
+          "financial_org": null,
+          "person": {
+            "first_name": "Aydin",
+            "last_name": "Senkut",
+            "permalink": "aydin-senkut"
+          }
+        },
+        {
+          "company": null,
+          "financial_org": null,
+          "person": {
+            "first_name": "Georges",
+            "last_name": "Harik",
+            "permalink": "georges-harik"
+          }
+        },
+        {
+          "company": null,
+          "financial_org": null,
+          "person": {
+            "first_name": "Jeff",
+            "last_name": "Clavier",
+            "permalink": "jeff-clavier"
+          }
+        }
+      ]
+    }
+  ],
+  "investments": [],
+  "acquisition": null,
+  "acquisitions": [],
+  "offices": [
+    {
+      "description": "",
+      "address1": "Suite 200",
+      "address2": "654 High Street",
+      "zip_code": "94301",
+      "city": "Palo Alto",
+      "state_code": "CA",
+      "country_code": "ISR",
+      "latitude": null,
+      "longitude": null
+    }
+  ],
+  "milestones": [],
+  "ipo": null,
+  "video_embeds": [],
+  "screenshots": [],
+  "external_links": [],
+  "partners": []
+}
