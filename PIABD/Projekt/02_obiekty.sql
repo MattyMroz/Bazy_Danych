@@ -21,7 +21,7 @@ CREATE OR ALTER PROCEDURE crunchbase.UpsertCompany
 AS
 BEGIN
     SET NOCOUNT ON;
-    
+
     IF EXISTS (SELECT 1 FROM crunchbase.Company WHERE mongo_id = @mongo_id)
     BEGIN
         UPDATE crunchbase.Company
@@ -32,7 +32,7 @@ BEGIN
             founded_year = @founded_year,
             updated_at = GETDATE()
         WHERE mongo_id = @mongo_id;
-        
+
         PRINT 'Firma zaktualizowana: ' + @name;
     END
     ELSE
@@ -41,7 +41,7 @@ BEGIN
                                         description, number_of_employees, founded_year)
         VALUES (@mongo_id, @name, @permalink, @category_code, 
                 @description, @number_of_employees, @founded_year);
-        
+
         PRINT 'Firma dodana: ' + @name;
     END
 END
@@ -55,11 +55,11 @@ RETURNS DECIMAL(18,2)
 AS
 BEGIN
     DECLARE @total DECIMAL(18,2);
-    
+
     SELECT @total = ISNULL(SUM(raised_amount), 0)
     FROM crunchbase.FundingRound
     WHERE company_id = @company_id;
-    
+
     RETURN @total;
 END
 GO
@@ -69,7 +69,7 @@ GO
 -- ============================================================================
 CREATE OR ALTER VIEW crunchbase.vw_CompanyOverview
 AS
-SELECT 
+SELECT
     c.company_id,
     c.name,
     c.category_code,

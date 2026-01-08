@@ -12,9 +12,9 @@ DECLARE @JSON NVARCHAR(MAX);
 
 -- Wczytanie pliku JSON (ZMIEŃ ŚCIEŻKĘ!)
 SET @JSON = (
-    SELECT BulkColumn 
+    SELECT BulkColumn
     FROM OPENROWSET(
-        BULK 'C:\Users\mateu\Desktop\PROJECTS\GitHub\Bazy_Danych\PIABD\Projekt\companies documents 1-6.json', 
+        BULK 'C:\dane\companies documents 1-6.json',
         SINGLE_CLOB
     ) AS j
 );
@@ -38,7 +38,7 @@ INSERT INTO crunchbase.Company (
     deadpooled_year, deadpooled_month, deadpooled_day, deadpooled_url,
     tag_list, alias_list, email_address, phone_number, total_money_raised
 )
-SELECT 
+SELECT
     JSON_VALUE(c.value, '$._id."$oid"'),
     JSON_VALUE(c.value, '$.name'),
     JSON_VALUE(c.value, '$.permalink'),
@@ -91,7 +91,8 @@ CROSS APPLY OPENJSON(fr.value, '$.investments') AS inv
 WHERE JSON_VALUE(inv.value, '$.person.permalink') IS NOT NULL
 AND NOT EXISTS (SELECT 1 FROM crunchbase.Person p WHERE p.permalink = JSON_VALUE(inv.value, '$.person.permalink'));
 
-PRINT CONCAT('Osoby: ', (SELECT COUNT(*) FROM crunchbase.Person));
+DECLARE @PersonCount INT = (SELECT COUNT(*) FROM crunchbase.Person);
+PRINT CONCAT('Osoby: ', @PersonCount);
 
 -- ============================================================================
 -- IMPORT FINANCIALORG
@@ -111,7 +112,7 @@ PRINT CONCAT('Organizacje finansowe: ', @@ROWCOUNT);
 -- IMPORT PRODUCT
 -- ============================================================================
 INSERT INTO crunchbase.Product (company_id, name, permalink)
-SELECT 
+SELECT
     co.company_id,
     JSON_VALUE(p.value, '$.name'),
     JSON_VALUE(p.value, '$.permalink')
@@ -125,7 +126,7 @@ PRINT CONCAT('Produkty: ', @@ROWCOUNT);
 -- IMPORT OFFICE
 -- ============================================================================
 INSERT INTO crunchbase.Office (company_id, description, address1, address2, zip_code, city, state_code, country_code, latitude, longitude)
-SELECT 
+SELECT
     co.company_id,
     JSON_VALUE(o.value, '$.description'),
     JSON_VALUE(o.value, '$.address1'),
@@ -146,7 +147,7 @@ PRINT CONCAT('Biura: ', @@ROWCOUNT);
 -- IMPORT FUNDINGROUND
 -- ============================================================================
 INSERT INTO crunchbase.FundingRound (company_id, original_id, round_code, source_url, source_description, raised_amount, raised_currency_code, funded_year, funded_month, funded_day)
-SELECT 
+SELECT
     co.company_id,
     TRY_CAST(JSON_VALUE(fr.value, '$.id') AS INT),
     JSON_VALUE(fr.value, '$.round_code'),
@@ -167,7 +168,7 @@ PRINT CONCAT('Rundy finansowania: ', @@ROWCOUNT);
 -- IMPORT INVESTMENT
 -- ============================================================================
 INSERT INTO crunchbase.Investment (funding_round_id, person_id, financial_org_id, investing_company_id)
-SELECT 
+SELECT
     fround.funding_round_id,
     p.person_id,
     fo.financial_org_id,
@@ -188,7 +189,7 @@ PRINT CONCAT('Inwestycje: ', @@ROWCOUNT);
 -- IMPORT COMPANYRELATIONSHIP
 -- ============================================================================
 INSERT INTO crunchbase.CompanyRelationship (company_id, person_id, title, is_past)
-SELECT 
+SELECT
     co.company_id,
     p.person_id,
     JSON_VALUE(r.value, '$.title'),
@@ -204,7 +205,7 @@ PRINT CONCAT('Relacje osoba-firma: ', @@ROWCOUNT);
 -- IMPORT COMPETITOR
 -- ============================================================================
 INSERT INTO crunchbase.Competitor (company_id, competitor_company_id, competitor_name, competitor_permalink)
-SELECT 
+SELECT DISTINCT
     co.company_id,
     cc.company_id,
     JSON_VALUE(comp.value, '$.competitor.name'),
@@ -221,7 +222,7 @@ PRINT CONCAT('Konkurenci: ', @@ROWCOUNT);
 -- IMPORT MILESTONE
 -- ============================================================================
 INSERT INTO crunchbase.Milestone (company_id, original_id, description, stoned_year, stoned_month, stoned_day, source_url, source_text, source_description, stoneable_type, stoned_value, stoned_value_type, stoned_acquirer)
-SELECT 
+SELECT
     co.company_id,
     TRY_CAST(JSON_VALUE(m.value, '$.id') AS INT),
     JSON_VALUE(m.value, '$.description'),
@@ -245,7 +246,7 @@ PRINT CONCAT('Kamienie milowe: ', @@ROWCOUNT);
 -- IMPORT ACQUISITION (firma przejmuje inne)
 -- ============================================================================
 INSERT INTO crunchbase.Acquisition (acquiring_company_id, acquired_company_id, acquired_company_name, acquired_company_permalink, price_amount, price_currency_code, term_code, source_url, source_description, acquired_year, acquired_month, acquired_day)
-SELECT 
+SELECT
     co.company_id,
     ac.company_id,
     JSON_VALUE(a.value, '$.company.name'),
@@ -270,7 +271,7 @@ PRINT CONCAT('Przejecia: ', @@ROWCOUNT);
 -- IMPORT EXTERNALLINK
 -- ============================================================================
 INSERT INTO crunchbase.ExternalLink (company_id, external_url, title)
-SELECT 
+SELECT
     co.company_id,
     JSON_VALUE(l.value, '$.external_url'),
     JSON_VALUE(l.value, '$.title')
@@ -285,7 +286,7 @@ PRINT CONCAT('Linki zewnetrzne: ', @@ROWCOUNT);
 -- IMPORT VIDEOEMBED
 -- ============================================================================
 INSERT INTO crunchbase.VideoEmbed (company_id, embed_code, description)
-SELECT 
+SELECT
     co.company_id,
     JSON_VALUE(v.value, '$.embed_code'),
     JSON_VALUE(v.value, '$.description')
@@ -300,7 +301,7 @@ PRINT CONCAT('Filmy: ', @@ROWCOUNT);
 -- IMPORT PROVIDER
 -- ============================================================================
 INSERT INTO crunchbase.Provider (company_id, provider_company_id, provider_name, provider_permalink, title, is_past)
-SELECT 
+SELECT
     co.company_id,
     pc.company_id,
     JSON_VALUE(pr.value, '$.provider.name'),
@@ -319,7 +320,7 @@ PRINT CONCAT('Dostawcy: ', @@ROWCOUNT);
 -- IMPORT COMPANYIMAGE
 -- ============================================================================
 INSERT INTO crunchbase.CompanyImage (company_id, width, height, image_path, attribution)
-SELECT 
+SELECT
     co.company_id,
     TRY_CAST(JSON_VALUE(s.value, '$[0][0]') AS INT),
     TRY_CAST(JSON_VALUE(s.value, '$[0][1]') AS INT),
@@ -346,6 +347,43 @@ INNER JOIN crunchbase.Company co ON co.mongo_id = JSON_VALUE(c.value, '$._id."$o
 PRINT CONCAT('Zrzuty ekranu: ', @@ROWCOUNT);
 
 -- ============================================================================
+-- IMPORT SCREENSHOTSIZE
+-- ============================================================================
+INSERT INTO crunchbase.ScreenshotSize (screenshot_id, width, height, image_path)
+SELECT
+    s.screenshot_id,
+    TRY_CAST(JSON_VALUE(sz.value, '$[0][0]') AS INT),
+    TRY_CAST(JSON_VALUE(sz.value, '$[0][1]') AS INT),
+    JSON_VALUE(sz.value, '$[1]')
+FROM OPENJSON(@JSON) AS c
+CROSS APPLY OPENJSON(c.value, '$.screenshots') AS ss
+CROSS APPLY OPENJSON(ss.value, '$.available_sizes') AS sz
+INNER JOIN crunchbase.Company co ON co.mongo_id = JSON_VALUE(c.value, '$._id."$oid"')
+INNER JOIN crunchbase.Screenshot s ON s.company_id = co.company_id
+    AND (s.attribution = JSON_VALUE(ss.value, '$.attribution') OR (s.attribution IS NULL AND JSON_VALUE(ss.value, '$.attribution') IS NULL));
+
+PRINT CONCAT('Rozmiary screenshotow: ', @@ROWCOUNT);
+
+-- ============================================================================
+-- IMPORT COMPANYIPO
+-- ============================================================================
+INSERT INTO crunchbase.CompanyIPO (company_id, valuation_amount, valuation_currency_code, pub_year, pub_month, pub_day, stock_symbol)
+SELECT
+    co.company_id,
+    TRY_CAST(JSON_VALUE(c.value, '$.ipo.valuation_amount') AS DECIMAL(18,2)),
+    ISNULL(JSON_VALUE(c.value, '$.ipo.valuation_currency_code'), 'USD'),
+    TRY_CAST(JSON_VALUE(c.value, '$.ipo.pub_year') AS INT),
+    TRY_CAST(JSON_VALUE(c.value, '$.ipo.pub_month') AS INT),
+    TRY_CAST(JSON_VALUE(c.value, '$.ipo.pub_day') AS INT),
+    JSON_VALUE(c.value, '$.ipo.stock_symbol')
+FROM OPENJSON(@JSON) AS c
+INNER JOIN crunchbase.Company co ON co.mongo_id = JSON_VALUE(c.value, '$._id."$oid"')
+WHERE JSON_VALUE(c.value, '$.ipo.stock_symbol') IS NOT NULL 
+   OR JSON_VALUE(c.value, '$.ipo.valuation_amount') IS NOT NULL;
+
+PRINT CONCAT('IPO: ', @@ROWCOUNT);
+
+-- ============================================================================
 -- PODSUMOWANIE
 -- ============================================================================
 PRINT '';
@@ -365,5 +403,7 @@ UNION ALL SELECT 'ExternalLink', COUNT(*) FROM crunchbase.ExternalLink
 UNION ALL SELECT 'VideoEmbed', COUNT(*) FROM crunchbase.VideoEmbed
 UNION ALL SELECT 'Provider', COUNT(*) FROM crunchbase.Provider
 UNION ALL SELECT 'CompanyImage', COUNT(*) FROM crunchbase.CompanyImage
-UNION ALL SELECT 'Screenshot', COUNT(*) FROM crunchbase.Screenshot;
+UNION ALL SELECT 'Screenshot', COUNT(*) FROM crunchbase.Screenshot
+UNION ALL SELECT 'ScreenshotSize', COUNT(*) FROM crunchbase.ScreenshotSize
+UNION ALL SELECT 'CompanyIPO', COUNT(*) FROM crunchbase.CompanyIPO;
 GO

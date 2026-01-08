@@ -1,0 +1,19 @@
+W instrukcji (punkt 3.C) jest mowa o Triggerach. Napisałeś wcześniej, że ich nie zdefiniowałeś. To jest dopuszczalne (instrukcja mówi "Jeśli występują"), ale w raporcie warto napisać jedno zdanie: "Zrezygnowano z triggerów na rzecz więzów integralności (FOREIGN KEY CASCADE) oraz procedur składowych, co zapewnia lepszą wydajność i przejrzystość logiki bazy".
+
+
+
+⚠️ Bardzo ważna uwaga do nagrania wideo i testowania!
+Najczęstszy błąd przy oddawaniu tego projektu to problem z logowaniem. Pamiętaj (i pokaż to na filmie), że logując się jako Guest lub Emp:
+W oknie logowania SSMS wybierasz SQL Server Authentication.
+Wpisujesz Login: Guest / Hasło: Guest.
+KLUCZOWY KROK: Musisz kliknąć przycisk Options >> (Opcje), przejść do zakładki Connection Properties (Właściwości połączenia) i w polu Connect to database ręcznie wpisać lub wybrać CompanyDB.
+Dlaczego? Ponieważ użytkownicy "contained" nie istnieją na poziomie serwera, SQL Server nie wie, do której bazy ich przypisać, dopóki sam jej nie wskażesz przy logowaniu.
+
+
+
+Błąd wynikał z tego, że w danych JSON jedna firma może mieć na liście konkurencji te same podmioty wymienione wielokrotnie lub import generował duplikaty klucza naturalnego (company_id, competitor_permalink).
+
+Naprawiłem to, dodając słowo kluczowe DISTINCT do sekcji IMPORT COMPETITOR. Teraz SQL Server odfiltruje powtarzające się pary przed wstawieniem ich do bazy, co usunie konflikt z unikalnym indeksem UQ_Competitor.
+
+Możesz teraz ponownie uruchomić skrypt 04_import.sql.
+

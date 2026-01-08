@@ -1,0 +1,39 @@
+\babel@toc {polish}{}\relax 
+\contentsline {section}{\numberline {1}Podstawowe założenia projektu}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Cel tworzenia bazy danych}{2}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Główne założenia}{2}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Zakres możliwości systemu}{2}{subsection.1.3}%
+\contentsline {subsection}{\numberline {1.4}Ograniczenia przyjęte podczas projektowania}{2}{subsection.1.4}%
+\contentsline {section}{\numberline {2}Schemat bazy danych}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Diagram ERD}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Opis struktury}{3}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Główne relacje między tabelami}{3}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Obiekty bazy danych i ich opis}{4}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Tabele}{4}{subsection.3.1}%
+\contentsline {subsubsection}{\numberline {3.1.1}Company --- Tabela główna firm}{4}{subsubsection.3.1.1}%
+\contentsline {subsubsection}{\numberline {3.1.2}Person --- Osoby}{4}{subsubsection.3.1.2}%
+\contentsline {subsubsection}{\numberline {3.1.3}FinancialOrg --- Organizacje finansowe}{5}{subsubsection.3.1.3}%
+\contentsline {subsubsection}{\numberline {3.1.4}FundingRound --- Rundy finansowania}{5}{subsubsection.3.1.4}%
+\contentsline {subsubsection}{\numberline {3.1.5}Investment --- Inwestycje}{5}{subsubsection.3.1.5}%
+\contentsline {subsubsection}{\numberline {3.1.6}Pozostałe tabele}{5}{subsubsection.3.1.6}%
+\contentsline {subsubsection}{\numberline {3.1.7}Uzasadnienie normalizacji}{6}{subsubsection.3.1.7}%
+\contentsline {subsubsection}{\numberline {3.1.8}Odstępstwa od pełnej normalizacji}{6}{subsubsection.3.1.8}%
+\contentsline {subsection}{\numberline {3.2}Indeksy}{7}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Triggery}{7}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Procedury składowane}{8}{subsection.3.4}%
+\contentsline {subsubsection}{\numberline {3.4.1}Procedura: UpsertCompany}{8}{subsubsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.5}Funkcje użytkownika}{9}{subsection.3.5}%
+\contentsline {subsubsection}{\numberline {3.5.1}Funkcja skalarna: GetTotalFunding}{9}{subsubsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.6}Widoki}{10}{subsection.3.6}%
+\contentsline {subsubsection}{\numberline {3.6.1}Widok: vw\_CompanyOverview}{10}{subsubsection.3.6.1}%
+\contentsline {section}{\numberline {4}Role, uprawnienia i użytkownicy}{11}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Konfiguracja bazy dla Contained Users}{11}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Role w bazie danych}{11}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Użytkownicy (Contained Users)}{12}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Sposób logowania jako Contained User}{12}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Testowanie uprawnień}{12}{subsection.4.5}%
+\contentsline {section}{\numberline {5}Uwagi końcowe}{14}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Napotkane problemy}{14}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Elementy zrealizowane}{14}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Pliki projektu}{14}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Kolejność uruchamiania skryptów}{15}{subsection.5.4}%

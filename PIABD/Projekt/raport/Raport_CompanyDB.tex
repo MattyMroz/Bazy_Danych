@@ -33,13 +33,14 @@
     left=2.5cm,
     right=2.5cm,
     top=2.5cm,
-    bottom=2.5cm
+    bottom=2.5cm,
+    headheight=14pt
 }
 
 % --- NAGŁÓWKI I STOPKI ---
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\small Projekt Bazy Danych -- CompanyDB}
+\fancyhead[L]{\small Projekt Bazy Danych --- CompanyDB}
 \fancyhead[R]{\small Mateusz Mróz (251190)}
 \fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
@@ -76,7 +77,7 @@
     linkcolor=black,
     filecolor=magenta,
     urlcolor=blue,
-    pdftitle={Projekt Bazy Danych - CompanyDB},
+    pdftitle={Projekt Bazy Danych --- CompanyDB},
     pdfauthor={Mateusz Mróz},
 }
 
@@ -156,11 +157,11 @@ Celem projektu jest zaprojektowanie i implementacja relacyjnej bazy danych przec
 \subsection{Główne założenia}
 
 \begin{enumerate}[noitemsep]
-    \item \textbf{Normalizacja} -- baza danych spełnia trzy pierwsze postacie normalne (1NF, 2NF, 3NF).
-    \item \textbf{Integralność danych} -- wykorzystanie kluczy głównych, obcych oraz ograniczeń CHECK, UNIQUE i DEFAULT.
-    \item \textbf{Bezpieczeństwo} -- system ról i użytkowników z różnymi poziomami uprawnień (contained users).
-    \item \textbf{Skalowalność} -- struktura pozwalająca na łatwe dodawanie nowych firm i danych.
-    \item \textbf{Zgodność z danymi źródłowymi} -- nazwy kolumn zachowują oryginalne nazwy pól z dokumentów JSON.
+    \item \textbf{Normalizacja} --- baza danych spełnia trzy pierwsze postacie normalne (1NF, 2NF, 3NF).
+    \item \textbf{Integralność danych} --- wykorzystanie kluczy głównych, obcych oraz ograniczeń CHECK, UNIQUE i DEFAULT.
+    \item \textbf{Bezpieczeństwo} --- system ról i użytkowników z różnymi poziomami uprawnień (contained users).
+    \item \textbf{Skalowalność} --- struktura pozwalająca na łatwe dodawanie nowych firm i danych.
+    \item \textbf{Zgodność z danymi źródłowymi} --- nazwy kolumn zachowują oryginalne nazwy pól z dokumentów JSON.
 \end{enumerate}
 
 \subsection{Zakres możliwości systemu}
@@ -209,7 +210,7 @@ Poniżej przedstawiono diagram relacji bazy danych. Diagram można wygenerować 
 
 \subsection{Opis struktury}
 
-Baza danych składa się z \textbf{19 tabel} zorganizowanych w schemacie \texttt{crunchbase}. Tabele można podzielić na następujące grupy logiczne:
+Baza danych składa się z \textbf{18 tabel} zorganizowanych w schemacie \texttt{crunchbase}. Tabele można podzielić na następujące grupy logiczne:
 
 \begin{table}[H]
 \centering
@@ -236,13 +237,13 @@ Media & ExternalLink, VideoEmbed, CompanyImage, Screenshot, ScreenshotSize \\
 \subsection{Główne relacje między tabelami}
 
 \begin{itemize}[noitemsep]
-    \item \textbf{Company 1:N Product} -- firma może mieć wiele produktów
-    \item \textbf{Company 1:N Office} -- firma może mieć wiele biur/siedzib
-    \item \textbf{Company 1:N FundingRound} -- firma może mieć wiele rund finansowania
-    \item \textbf{FundingRound 1:N Investment} -- runda może mieć wiele inwestycji
-    \item \textbf{Person M:N Company} -- osoba może być związana z wieloma firmami (przez CompanyRelationship)
-    \item \textbf{Company 1:N Acquisition} -- firma może przejmować wiele innych firm
-    \item \textbf{Screenshot 1:N ScreenshotSize} -- zrzut ekranu może mieć wiele rozmiarów
+    \item \textbf{Company 1:N Product} --- firma może mieć wiele produktów
+    \item \textbf{Company 1:N Office} --- firma może mieć wiele biur/siedzib
+    \item \textbf{Company 1:N FundingRound} --- firma może mieć wiele rund finansowania
+    \item \textbf{FundingRound 1:N Investment} --- runda może mieć wiele inwestycji
+    \item \textbf{Person M:N Company} --- osoba może być związana z wieloma firmami (przez CompanyRelationship)
+    \item \textbf{Company 1:N Acquisition} --- firma może przejmować wiele innych firm
+    \item \textbf{Screenshot 1:N ScreenshotSize} --- zrzut ekranu może mieć wiele rozmiarów
 \end{itemize}
 
 \newpage
@@ -254,9 +255,9 @@ Media & ExternalLink, VideoEmbed, CompanyImage, Screenshot, ScreenshotSize \\
 % --- 3.A TABELE ---
 \subsection{Tabele}
 
-\subsubsection{Company -- Tabela główna firm}
+\subsubsection{Company --- Tabela główna firm}
 
-\textbf{Opis funkcjonalny:} Przechowuje podstawowe informacje o firmach technologicznych -- nazwę, opis, kategorię działalności, daty założenia i zamknięcia, dane kontaktowe oraz informacje o pozyskanym finansowaniu.
+\textbf{Opis funkcjonalny:} Przechowuje podstawowe informacje o firmach technologicznych --- nazwę, opis, kategorię działalności, daty założenia i zamknięcia, dane kontaktowe oraz informacje o pozyskanym finansowaniu.
 
 \begin{table}[H]
 \centering
@@ -298,9 +299,9 @@ updated\_at & DATETIME2 & DEFAULT GETDATE() \\
     \item \texttt{updated\_at = GETDATE()}
 \end{itemize}
 
-\subsubsection{Person -- Osoby}
+\subsubsection{Person --- Osoby}
 
-\textbf{Opis funkcjonalny:} Przechowuje informacje o osobach związanych z firmami -- założycielach, pracownikach, inwestorach.
+\textbf{Opis funkcjonalny:} Przechowuje informacje o osobach związanych z firmami --- założycielach, pracownikach, inwestorach.
 
 \begin{table}[H]
 \centering
@@ -317,7 +318,7 @@ permalink & NVARCHAR(255) & NOT NULL, UNIQUE \\
 \end{tabular}
 \end{table}
 
-\subsubsection{FinancialOrg -- Organizacje finansowe}
+\subsubsection{FinancialOrg --- Organizacje finansowe}
 
 \textbf{Opis funkcjonalny:} Przechowuje informacje o funduszach VC, funduszach inwestycyjnych i innych organizacjach finansowych inwestujących w firmy.
 
@@ -335,9 +336,9 @@ permalink & NVARCHAR(255) & NOT NULL, UNIQUE \\
 \end{tabular}
 \end{table}
 
-\subsubsection{FundingRound -- Rundy finansowania}
+\subsubsection{FundingRound --- Rundy finansowania}
 
-\textbf{Opis funkcjonalny:} Przechowuje informacje o rundach finansowania firm -- typ rundy (seed, Series A, B, C...), kwotę, walutę, datę.
+\textbf{Opis funkcjonalny:} Przechowuje informacje o rundach finansowania firm --- typ rundy (seed, Series A, B, C\ldots), kwotę, walutę, datę.
 
 \begin{table}[H]
 \centering
@@ -358,7 +359,7 @@ funded\_day & INT & CHECK (1-31) \\
 \end{tabular}
 \end{table}
 
-\subsubsection{Investment -- Inwestycje}
+\subsubsection{Investment --- Inwestycje}
 
 \textbf{Opis funkcjonalny:} Tabela łącząca inwestorów z rundami finansowania. Inwestorem może być osoba, organizacja finansowa lub inna firma.
 
@@ -378,35 +379,35 @@ investing\_company\_id & INT & FK $\rightarrow$ Company (opcjonalny) \\
 \end{tabular}
 \end{table}
 
-\textbf{Uwaga:} Inwestorem może być osoba, organizacja finansowa lub firma -- stąd trzy opcjonalne klucze obce.
+\textbf{Uwaga:} Inwestorem może być osoba, organizacja finansowa lub firma --- stąd trzy opcjonalne klucze obce.
 
 \subsubsection{Pozostałe tabele}
 
-\textbf{Product} -- produkty oferowane przez firmy (FK do Company z ON DELETE CASCADE).
+\textbf{Product} --- produkty oferowane przez firmy (FK do Company z ON DELETE CASCADE).
 
-\textbf{Office} -- lokalizacje biur i siedzib firm (FK do Company z ON DELETE CASCADE).
+\textbf{Office} --- lokalizacje biur i siedzib firm (FK do Company z ON DELETE CASCADE).
 
-\textbf{CompanyRelationship} -- tabela asocjacyjna łącząca osoby z firmami, zawiera stanowisko i flagę \texttt{is\_past}.
+\textbf{CompanyRelationship} --- tabela asocjacyjna łącząca osoby z firmami, zawiera stanowisko i flagę \texttt{is\_past}.
 
-\textbf{Competitor} -- informacje o konkurentach firm.
+\textbf{Competitor} --- informacje o konkurentach firm.
 
-\textbf{Acquisition} -- informacje o przejęciach firm (firma przejmująca i przejmowana).
+\textbf{Acquisition} --- informacje o przejęciach firm (firma przejmująca i przejmowana).
 
-\textbf{Milestone} -- kamienie milowe w historii firmy.
+\textbf{Milestone} --- kamienie milowe w historii firmy.
 
-\textbf{Provider} -- dostawcy usług dla firm.
+\textbf{Provider} --- dostawcy usług dla firm.
 
-\textbf{ExternalLink} -- linki zewnętrzne do artykułów o firmie.
+\textbf{ExternalLink} --- linki zewnętrzne do artykułów o firmie.
 
-\textbf{VideoEmbed} -- osadzone filmy (kod embed).
+\textbf{VideoEmbed} --- osadzone filmy (kod embed).
 
-\textbf{CompanyImage} -- obrazy i logo firm.
+\textbf{CompanyImage} --- obrazy i logo firm.
 
-\textbf{Screenshot} -- zrzuty ekranu produktów.
+\textbf{Screenshot} --- zrzuty ekranu produktów.
 
-\textbf{ScreenshotSize} -- różne rozmiary zrzutów ekranu.
+\textbf{ScreenshotSize} --- różne rozmiary zrzutów ekranu.
 
-\textbf{CompanyIPO} -- informacje o IPO firmy.
+\textbf{CompanyIPO} --- informacje o IPO firmy.
 
 \subsubsection{Uzasadnienie normalizacji}
 
@@ -433,6 +434,28 @@ Baza danych spełnia wszystkie trzy postacie normalne:
     \item Każdy atrybut niekluczowy zależy bezpośrednio od klucza głównego.
 \end{itemize}
 
+\subsubsection{Odstępstwa od pełnej normalizacji}
+
+W projekcie celowo pozostawiono jedno odstępstwo od pełnej 1NF:
+
+\textbf{Pole tag\_list w tabeli Company:}
+\begin{itemize}[noitemsep]
+    \item Typ danych: \texttt{NVARCHAR(MAX)}
+    \item Format: wartości oddzielone przecinkami (np. ``wiki, seattle, elowitz'')
+    \item Odstępstwo: pole zawiera wiele wartości zamiast wartości atomowej
+\end{itemize}
+
+\textbf{Uzasadnienie:}
+Pole \texttt{tag\_list} pozostawiono jako ciąg tekstowy (lista rozdzielana przecinkami) zamiast wydzielać je do osobnej tabeli \texttt{Tags} z relacją wiele-do-wielu. Decyzja ta wynika z:
+\begin{itemize}[noitemsep]
+    \item uproszczenia struktury bazy danych,
+    \item zachowania zgodności z oryginalnym formatem prezentacji danych,
+    \item traktowania tagów jako prostych słów kluczowych do wyszukiwania pełnotekstowego,
+    \item braku potrzeby wykonywania złożonych operacji na pojedynczych tagach.
+\end{itemize}
+
+W przypadku konieczności pracy z poszczególnymi tagami, można wykorzystać funkcje SQL Server do parsowania ciągów tekstowych (np. \texttt{STRING\_SPLIT}).
+
 % --- 3.B INDEKSY ---
 \subsection{Indeksy}
 
@@ -455,17 +478,19 @@ IX\_FundingRound\_RoundCode & FundingRound & round\_code \\
 \textbf{Uzasadnienie utworzenia indeksów:}
 
 \begin{enumerate}[noitemsep]
-    \item \textbf{IX\_Company\_Name} -- przyspiesza wyszukiwanie firm po nazwie, często używane w zapytaniach.
+    \item \textbf{IX\_Company\_Name} --- przyspiesza wyszukiwanie firm po nazwie, często używane w zapytaniach.
     
-    \item \textbf{IX\_Company\_CategoryCode} -- przyspiesza filtrowanie firm według kategorii działalności.
+    \item \textbf{IX\_Company\_CategoryCode} --- przyspiesza filtrowanie firm według kategorii działalności.
     
-    \item \textbf{IX\_FundingRound\_RoundCode} -- przyspiesza grupowanie i filtrowanie rund finansowania według typu (seed, series-a, series-b, etc.).
+    \item \textbf{IX\_FundingRound\_RoundCode} --- przyspiesza grupowanie i filtrowanie rund finansowania według typu (seed, series-a, series-b, etc.).
 \end{enumerate}
 
 % --- 3.C TRIGGERY ---
 \subsection{Triggery}
 
-W obecnej wersji bazy danych \textbf{nie zdefiniowano triggerów}. Integralność danych jest zapewniona przez:
+W obecnej wersji bazy danych \textbf{nie zdefiniowano triggerów}. Zrezygnowano z triggerów na rzecz więzów integralności (FOREIGN KEY CASCADE) oraz procedur składowanych, co zapewnia lepszą wydajność i przejrzystość logiki bazy.
+
+Integralność danych jest zapewniona przez:
 \begin{itemize}[noitemsep]
     \item więzy klucza obcego (FK) z opcją ON DELETE CASCADE,
     \item ograniczenia CHECK walidujące wartości,
@@ -482,20 +507,20 @@ W obecnej wersji bazy danych \textbf{nie zdefiniowano triggerów}. Integralnoś�
 
 \textbf{Parametry wejściowe:}
 \begin{itemize}[noitemsep]
-    \item \texttt{@mongo\_id} (NVARCHAR(50)) -- unikalny identyfikator z MongoDB (wymagany)
-    \item \texttt{@name} (NVARCHAR(255)) -- nazwa firmy (wymagany)
-    \item \texttt{@permalink} (NVARCHAR(255)) -- unikalny identyfikator URL (wymagany)
-    \item \texttt{@category\_code} (NVARCHAR(100)) -- kategoria działalności (opcjonalny)
-    \item \texttt{@description} (NVARCHAR(MAX)) -- opis firmy (opcjonalny)
-    \item \texttt{@number\_of\_employees} (INT) -- liczba pracowników (opcjonalny)
-    \item \texttt{@founded\_year} (INT) -- rok założenia (opcjonalny)
+    \item \texttt{@mongo\_id} (NVARCHAR(50)) --- unikalny identyfikator z MongoDB (wymagany)
+    \item \texttt{@name} (NVARCHAR(255)) --- nazwa firmy (wymagany)
+    \item \texttt{@permalink} (NVARCHAR(255)) --- unikalny identyfikator URL (wymagany)
+    \item \texttt{@category\_code} (NVARCHAR(100)) --- kategoria działalności (opcjonalny)
+    \item \texttt{@description} (NVARCHAR(MAX)) --- opis firmy (opcjonalny)
+    \item \texttt{@number\_of\_employees} (INT) --- liczba pracowników (opcjonalny)
+    \item \texttt{@founded\_year} (INT) --- rok założenia (opcjonalny)
 \end{itemize}
 
 \textbf{Działanie:}
 \begin{enumerate}[noitemsep]
     \item Sprawdza, czy firma o podanym \texttt{mongo\_id} już istnieje w bazie.
-    \item Jeśli istnieje -- aktualizuje dane (UPDATE) i ustawia \texttt{updated\_at = GETDATE()}.
-    \item Jeśli nie istnieje -- wstawia nowy rekord (INSERT).
+    \item Jeśli istnieje --- aktualizuje dane (UPDATE) i ustawia \texttt{updated\_at = GETDATE()}.
+    \item Jeśli nie istnieje --- wstawia nowy rekord (INSERT).
     \item Wyświetla komunikat o wykonanej operacji.
 \end{enumerate}
 
@@ -551,10 +576,10 @@ END
 
 \textbf{Parametry wejściowe:}
 \begin{itemize}[noitemsep]
-    \item \texttt{@company\_id} (INT) -- identyfikator firmy
+    \item \texttt{@company\_id} (INT) --- identyfikator firmy
 \end{itemize}
 
-\textbf{Zwracana wartość:} \texttt{DECIMAL(18,2)} -- suma finansowania (0 jeśli brak danych)
+\textbf{Zwracana wartość:} \texttt{DECIMAL(18,2)} --- suma finansowania (0 jeśli brak danych)
 
 \begin{lstlisting}[caption={Funkcja GetTotalFunding}]
 CREATE OR ALTER FUNCTION crunchbase.GetTotalFunding(
@@ -609,15 +634,15 @@ FROM crunchbase.Company c;
 
 \textbf{Kolumny widoku:}
 \begin{itemize}[noitemsep]
-    \item \texttt{company\_id} -- identyfikator firmy
-    \item \texttt{name} -- nazwa firmy
-    \item \texttt{category\_code} -- kategoria działalności
-    \item \texttt{founded\_year} -- rok założenia
-    \item \texttt{number\_of\_employees} -- liczba pracowników
-    \item \texttt{homepage\_url} -- strona główna firmy
-    \item \texttt{total\_funding} -- łączne finansowanie (obliczone przez funkcję)
-    \item \texttt{funding\_rounds\_count} -- liczba rund finansowania
-    \item \texttt{products\_count} -- liczba produktów
+    \item \texttt{company\_id} --- identyfikator firmy
+    \item \texttt{name} --- nazwa firmy
+    \item \texttt{category\_code} --- kategoria działalności
+    \item \texttt{founded\_year} --- rok założenia
+    \item \texttt{number\_of\_employees} --- liczba pracowników
+    \item \texttt{homepage\_url} --- strona główna firmy
+    \item \texttt{total\_funding} --- łączne finansowanie (obliczone przez funkcję)
+    \item \texttt{funding\_rounds\_count} --- liczba rund finansowania
+    \item \texttt{products\_count} --- liczba produktów
 \end{itemize}
 
 \textbf{Zastosowanie:} Widok umożliwia szybki przegląd najważniejszych informacji o firmach bez konieczności pisania złożonych zapytań. Jest udostępniony użytkownikowi \texttt{Guest} do przeglądania danych.
@@ -662,11 +687,11 @@ W bazie zdefiniowano trzy role odpowiadające różnym poziomom dostępu:
 \hline
 \textbf{Rola} & \textbf{Poziom} & \textbf{Uprawnienia} \\
 \hline
-AdminRole & Pełny & Członek roli \texttt{db\_owner} -- pełne uprawnienia do wszystkich obiektów bazy \\
+AdminRole & Pełny & Członek roli \texttt{db\_owner} --- pełne uprawnienia do wszystkich obiektów bazy \\
 \hline
-EmpRole & Ograniczony & Uprawnienie EXECUTE na schemacie \texttt{crunchbase} -- może wykonywać procedury składowane \\
+EmpRole & Ograniczony & Uprawnienie EXECUTE na schemacie \texttt{crunchbase} --- może wykonywać procedury składowane \\
 \hline
-GuestRole & Minimalny & Uprawnienie SELECT na widoku \texttt{vw\_CompanyOverview} -- tylko odczyt przez widok \\
+GuestRole & Minimalny & Uprawnienie SELECT na widoku \texttt{vw\_CompanyOverview} --- tylko odczyt przez widok \\
 \hline
 \end{tabular}
 \end{table}
@@ -772,19 +797,19 @@ EXEC crunchbase.UpsertCompany 'x', 'X', 'x'; -- BLAD!
 Podczas realizacji projektu napotkano następujące wyzwania:
 
 \begin{enumerate}
-    \item \textbf{Struktura zagnieżdżona JSON} -- dokumenty JSON zawierały głęboko zagnieżdżone obiekty (np. \texttt{investments} wewnątrz \texttt{funding\_rounds}). Wymagało to użycia wielokrotnego \texttt{CROSS APPLY OPENJSON}.
+    \item \textbf{Struktura zagnieżdżona JSON} --- dokumenty JSON zawierały głęboko zagnieżdżone obiekty (np.\ \texttt{investments} wewnątrz \texttt{funding\_rounds}). Wymagało to użycia wielokrotnego \texttt{CROSS APPLY OPENJSON}.
     
-    \item \textbf{Polimorficzne inwestycje} -- inwestorem może być osoba (\texttt{person}), organizacja finansowa (\texttt{financial\_org}) lub firma (\texttt{company}). Rozwiązano przez trzy opcjonalne klucze obce w tabeli \texttt{Investment}.
+    \item \textbf{Polimorficzne inwestycje} --- inwestorem może być osoba (\texttt{person}), organizacja finansowa (\texttt{financial\_org}) lub firma (\texttt{company}). Rozwiązano przez trzy opcjonalne klucze obce w tabeli \texttt{Investment}.
     
-    \item \textbf{Referencje do nieistniejących firm} -- niektórzy konkurenci i przejęte firmy nie istnieją w danych źródłowych (6 firm). Zachowano ich nazwy i permalinki jako tekst, z opcjonalnym kluczem obcym jeśli firma istnieje w bazie.
+    \item \textbf{Referencje do nieistniejących firm} --- niektórzy konkurenci i przejęte firmy nie istnieją w danych źródłowych (6 firm). Zachowano ich nazwy i permalinki jako tekst, z opcjonalnym kluczem obcym jeśli firma istnieje w bazie.
     
-    \item \textbf{Contained users} -- wymagana była dodatkowa konfiguracja serwera (\texttt{sp\_configure}) przed utworzeniem użytkowników lokalnych.
+    \item \textbf{Contained users} --- wymagana była dodatkowa konfiguracja serwera (\texttt{sp\_configure}) przed utworzeniem użytkowników lokalnych.
 \end{enumerate}
 
 \subsection{Elementy zrealizowane}
 
 \begin{itemize}[noitemsep]
-    \item[$\checkmark$] 19 tabel z pełną strukturą więzów integralności
+    \item[$\checkmark$] 18 tabel w schemacie \texttt{crunchbase} z pełną strukturą więzów integralności
     \item[$\checkmark$] Klucze główne (PK) i obce (FK) dla wszystkich tabel
     \item[$\checkmark$] Ograniczenia CHECK, UNIQUE i DEFAULT
     \item[$\checkmark$] 3 indeksy nieklastrowe na często używanych kolumnach
@@ -806,13 +831,15 @@ Podczas realizacji projektu napotkano następujące wyzwania:
 \hline
 \textbf{Plik} & \textbf{Opis} \\
 \hline
-01\_struktura.sql & Tworzenie bazy danych, schematu i wszystkich 19 tabel z ograniczeniami \\
+01\_struktura.sql & Tworzenie bazy danych, schematu i wszystkich 18 tabel z ograniczeniami \\
 \hline
 02\_obiekty.sql & Procedura składowana, funkcja skalarna i widok \\
 \hline
 03\_uzytkownicy.sql & Role i contained users z uprawnieniami \\
 \hline
 04\_import.sql & Import danych z pliku JSON do wszystkich tabel \\
+\hline
+05\_testy.sql & Zapytania testowe i demonstracyjne (SELECT, JOIN, agregacje) \\
 \hline
 Raport\_CompanyDB.pdf & Niniejszy dokument \\
 \hline
@@ -822,10 +849,11 @@ Raport\_CompanyDB.pdf & Niniejszy dokument \\
 \subsection{Kolejność uruchamiania skryptów}
 
 \begin{enumerate}
-    \item \texttt{01\_struktura.sql} -- tworzenie bazy i tabel
-    \item \texttt{02\_obiekty.sql} -- procedura, funkcja, widok
-    \item \texttt{03\_uzytkownicy.sql} -- role i użytkownicy
-    \item \texttt{04\_import.sql} -- import danych z JSON
+    \item \texttt{01\_struktura.sql} --- tworzenie bazy i tabel
+    \item \texttt{02\_obiekty.sql} --- procedura, funkcja, widok
+    \item \texttt{03\_uzytkownicy.sql} --- role i użytkownicy
+    \item \texttt{04\_import.sql} --- import danych z JSON
+    \item \texttt{05\_testy.sql} --- zapytania testowe (opcjonalnie, do demonstracji)
 \end{enumerate}
 
 \textbf{Uwaga:} W pliku \texttt{04\_import.sql} należy zmodyfikować ścieżkę do pliku JSON odpowiednio do lokalizacji na dysku.

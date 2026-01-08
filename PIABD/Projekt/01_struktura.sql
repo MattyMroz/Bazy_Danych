@@ -4,9 +4,15 @@
 -- Przedmiot: PIABD
 -- ============================================================================
 
+-- Przełączenie na master, aby móc usunąć istniejącą bazę danych
+USE master;
+GO
+
 -- Konfiguracja Contained Users
+-- Odblokowanie dostępu do zaawansowanych ustawień serwera SQL
 EXEC sp_configure 'show advanced options', 1;
 RECONFIGURE;
+-- Włączenie lokalnego uwierzytelniania użytkowników na poziomie bazy danych
 EXEC sp_configure 'contained database authentication', 1;
 RECONFIGURE;
 GO
@@ -20,6 +26,7 @@ END
 GO
 
 -- Utworzenie bazy z obsługą Contained Users
+-- Tworzy bazę danych z lokalnym systemem uwierzytelniania
 CREATE DATABASE CompanyDB CONTAINMENT = PARTIAL;
 GO
 
@@ -27,14 +34,18 @@ USE CompanyDB;
 GO
 
 -- Schemat
-CREATE SCHEMA crunchbase;
+-- Tworzy logiczny kontener do pogrupowania tabel projektu
+IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'crunchbase')
+BEGIN
+    EXEC('CREATE SCHEMA crunchbase');
+END
 GO
 
 -- ============================================================================
 -- TABELE
 -- ============================================================================
 
--- Company (Firma)
+-- Company (Firma) #1
 CREATE TABLE crunchbase.Company (
     company_id INT IDENTITY(1,1) PRIMARY KEY,
     mongo_id NVARCHAR(50) NOT NULL UNIQUE,
@@ -66,7 +77,7 @@ CREATE TABLE crunchbase.Company (
 );
 GO
 
--- Person (Osoba)
+-- Person (Osoba) #2
 CREATE TABLE crunchbase.Person (
     person_id INT IDENTITY(1,1) PRIMARY KEY,
     first_name NVARCHAR(100) NOT NULL,
@@ -75,7 +86,7 @@ CREATE TABLE crunchbase.Person (
 );
 GO
 
--- FinancialOrg (Organizacja finansowa)
+-- FinancialOrg (Organizacja finansowa) #3
 CREATE TABLE crunchbase.FinancialOrg (
     financial_org_id INT IDENTITY(1,1) PRIMARY KEY,
     name NVARCHAR(255) NOT NULL,
@@ -83,18 +94,18 @@ CREATE TABLE crunchbase.FinancialOrg (
 );
 GO
 
--- Product (Produkt)
+-- Product (Produkt) #4
 CREATE TABLE crunchbase.Product (
     product_id INT IDENTITY(1,1) PRIMARY KEY,
     company_id INT NOT NULL,
     name NVARCHAR(255) NOT NULL,
     permalink NVARCHAR(255) NOT NULL,
-    CONSTRAINT FK_Product_Company FOREIGN KEY (company_id) 
+    CONSTRAINT FK_Product_Company FOREIGN KEY (company_id)
         REFERENCES crunchbase.Company(company_id) ON DELETE CASCADE
 );
 GO
 
--- Office (Biuro)
+-- Office (Biuro) #5
 CREATE TABLE crunchbase.Office (
     office_id INT IDENTITY(1,1) PRIMARY KEY,
     company_id INT NOT NULL,
@@ -107,12 +118,12 @@ CREATE TABLE crunchbase.Office (
     country_code NVARCHAR(10) NULL,
     latitude DECIMAL(10, 7) NULL,
     longitude DECIMAL(10, 7) NULL,
-    CONSTRAINT FK_Office_Company FOREIGN KEY (company_id) 
+    CONSTRAINT FK_Office_Company FOREIGN KEY (company_id)
         REFERENCES crunchbase.Company(company_id) ON DELETE CASCADE
 );
 GO
 
--- FundingRound (Runda finansowania)
+-- FundingRound (Runda finansowania) #6
 CREATE TABLE crunchbase.FundingRound (
     funding_round_id INT IDENTITY(1,1) PRIMARY KEY,
     company_id INT NOT NULL,
@@ -125,30 +136,30 @@ CREATE TABLE crunchbase.FundingRound (
     funded_year INT NULL,
     funded_month INT NULL CHECK (funded_month BETWEEN 1 AND 12),
     funded_day INT NULL CHECK (funded_day BETWEEN 1 AND 31),
-    CONSTRAINT FK_FundingRound_Company FOREIGN KEY (company_id) 
+    CONSTRAINT FK_FundingRound_Company FOREIGN KEY (company_id)
         REFERENCES crunchbase.Company(company_id) ON DELETE CASCADE
 );
 GO
 
--- Investment (Inwestycja)
+-- Investment (Inwestycja) #7
 CREATE TABLE crunchbase.Investment (
     investment_id INT IDENTITY(1,1) PRIMARY KEY,
     funding_round_id INT NOT NULL,
     person_id INT NULL,
     financial_org_id INT NULL,
     investing_company_id INT NULL,
-    CONSTRAINT FK_Investment_FundingRound FOREIGN KEY (funding_round_id) 
+    CONSTRAINT FK_Investment_FundingRound FOREIGN KEY (funding_round_id)
         REFERENCES crunchbase.FundingRound(funding_round_id) ON DELETE CASCADE,
-    CONSTRAINT FK_Investment_Person FOREIGN KEY (person_id) 
+    CONSTRAINT FK_Investment_Person FOREIGN KEY (person_id)
         REFERENCES crunchbase.Person(person_id),
-    CONSTRAINT FK_Investment_FinancialOrg FOREIGN KEY (financial_org_id) 
+    CONSTRAINT FK_Investment_FinancialOrg FOREIGN KEY (financial_org_id)
         REFERENCES crunchbase.FinancialOrg(financial_org_id),
-    CONSTRAINT FK_Investment_Company FOREIGN KEY (investing_company_id) 
+    CONSTRAINT FK_Investment_Company FOREIGN KEY (investing_company_id)
         REFERENCES crunchbase.Company(company_id)
 );
 GO
 
--- Acquisition (Przejęcie)
+-- Acquisition (Przejęcie) #8
 CREATE TABLE crunchbase.Acquisition (
     acquisition_id INT IDENTITY(1,1) PRIMARY KEY,
     acquiring_company_id INT NOT NULL,
@@ -163,14 +174,14 @@ CREATE TABLE crunchbase.Acquisition (
     acquired_year INT NULL,
     acquired_month INT NULL,
     acquired_day INT NULL,
-    CONSTRAINT FK_Acquisition_AcquiringCompany FOREIGN KEY (acquiring_company_id) 
+    CONSTRAINT FK_Acquisition_AcquiringCompany FOREIGN KEY (acquiring_company_id)
         REFERENCES crunchbase.Company(company_id),
-    CONSTRAINT FK_Acquisition_AcquiredCompany FOREIGN KEY (acquired_company_id) 
+    CONSTRAINT FK_Acquisition_AcquiredCompany FOREIGN KEY (acquired_company_id)
         REFERENCES crunchbase.Company(company_id)
 );
 GO
 
--- Milestone (Kamień milowy)
+-- Milestone (Kamień milowy) #9
 CREATE TABLE crunchbase.Milestone (
     milestone_id INT IDENTITY(1,1) PRIMARY KEY,
     company_id INT NOT NULL,
@@ -186,19 +197,19 @@ CREATE TABLE crunchbase.Milestone (
     stoned_value NVARCHAR(100) NULL,
     stoned_value_type NVARCHAR(50) NULL,
     stoned_acquirer NVARCHAR(255) NULL,
-    CONSTRAINT FK_Milestone_Company FOREIGN KEY (company_id) 
+    CONSTRAINT FK_Milestone_Company FOREIGN KEY (company_id)
         REFERENCES crunchbase.Company(company_id) ON DELETE CASCADE
 );
 GO
 
--- Competitor (Konkurent)
+-- Competitor (Konkurent) #10
 CREATE TABLE crunchbase.Competitor (
     competitor_id INT IDENTITY(1,1) PRIMARY KEY,
     company_id INT NOT NULL,
     competitor_company_id INT NULL,
     competitor_name NVARCHAR(255) NOT NULL,
     competitor_permalink NVARCHAR(255) NOT NULL,
-    CONSTRAINT FK_Competitor_Company FOREIGN KEY (company_id) 
+    CONSTRAINT FK_Competitor_Company FOREIGN KEY (company_id)
         REFERENCES crunchbase.Company(company_id) ON DELETE CASCADE,
     CONSTRAINT FK_Competitor_CompetitorCompany FOREIGN KEY (competitor_company_id)
         REFERENCES crunchbase.Company(company_id),
@@ -206,65 +217,65 @@ CREATE TABLE crunchbase.Competitor (
 );
 GO
 
--- CompanyRelationship (Relacja osoba-firma)
+-- CompanyRelationship (Relacja osoba-firma) #11
 CREATE TABLE crunchbase.CompanyRelationship (
     relationship_id INT IDENTITY(1,1) PRIMARY KEY,
     company_id INT NOT NULL,
     person_id INT NOT NULL,
     title NVARCHAR(255) NULL,
     is_past BIT DEFAULT 0,
-    CONSTRAINT FK_CompanyRelationship_Company FOREIGN KEY (company_id) 
+    CONSTRAINT FK_CompanyRelationship_Company FOREIGN KEY (company_id)
         REFERENCES crunchbase.Company(company_id) ON DELETE CASCADE,
-    CONSTRAINT FK_CompanyRelationship_Person FOREIGN KEY (person_id) 
+    CONSTRAINT FK_CompanyRelationship_Person FOREIGN KEY (person_id)
         REFERENCES crunchbase.Person(person_id) ON DELETE CASCADE
 );
 GO
 
--- ExternalLink (Link zewnętrzny)
+-- ExternalLink (Link zewnętrzny) #12
 CREATE TABLE crunchbase.ExternalLink (
     external_link_id INT IDENTITY(1,1) PRIMARY KEY,
     company_id INT NOT NULL,
     external_url NVARCHAR(1000) NOT NULL,
     title NVARCHAR(500) NULL,
-    CONSTRAINT FK_ExternalLink_Company FOREIGN KEY (company_id) 
+    CONSTRAINT FK_ExternalLink_Company FOREIGN KEY (company_id)
         REFERENCES crunchbase.Company(company_id) ON DELETE CASCADE
 );
 GO
 
--- Screenshot (Zrzut ekranu)
+-- Screenshot (Zrzut ekranu) #13
 CREATE TABLE crunchbase.Screenshot (
     screenshot_id INT IDENTITY(1,1) PRIMARY KEY,
     company_id INT NOT NULL,
     attribution NVARCHAR(500) NULL,
-    CONSTRAINT FK_Screenshot_Company FOREIGN KEY (company_id) 
+    CONSTRAINT FK_Screenshot_Company FOREIGN KEY (company_id)
         REFERENCES crunchbase.Company(company_id) ON DELETE CASCADE
 );
 GO
 
--- ScreenshotSize (Rozmiary zrzutów)
+-- ScreenshotSize (Rozmiary zrzutów) #14
 CREATE TABLE crunchbase.ScreenshotSize (
     screenshot_size_id INT IDENTITY(1,1) PRIMARY KEY,
     screenshot_id INT NOT NULL,
     width INT NULL,
     height INT NULL,
     image_path NVARCHAR(500) NOT NULL,
-    CONSTRAINT FK_ScreenshotSize_Screenshot FOREIGN KEY (screenshot_id) 
+    CONSTRAINT FK_ScreenshotSize_Screenshot FOREIGN KEY (screenshot_id)
         REFERENCES crunchbase.Screenshot(screenshot_id) ON DELETE CASCADE
 );
 GO
 
--- VideoEmbed (Osadzone wideo)
+-- VideoEmbed (Osadzone wideo) #15
 CREATE TABLE crunchbase.VideoEmbed (
     video_embed_id INT IDENTITY(1,1) PRIMARY KEY,
     company_id INT NOT NULL,
     embed_code NVARCHAR(MAX) NULL,
     description NVARCHAR(MAX) NULL,
-    CONSTRAINT FK_VideoEmbed_Company FOREIGN KEY (company_id) 
+    CONSTRAINT FK_VideoEmbed_Company FOREIGN KEY (company_id)
         REFERENCES crunchbase.Company(company_id) ON DELETE CASCADE
 );
 GO
 
--- Provider (Dostawca usług)
+-- Provider (Dostawca usług) #16
 CREATE TABLE crunchbase.Provider (
     provider_id INT IDENTITY(1,1) PRIMARY KEY,
     company_id INT NOT NULL,
@@ -273,14 +284,14 @@ CREATE TABLE crunchbase.Provider (
     provider_permalink NVARCHAR(255) NOT NULL,
     title NVARCHAR(255) NULL,
     is_past BIT DEFAULT 0,
-    CONSTRAINT FK_Provider_Company FOREIGN KEY (company_id) 
+    CONSTRAINT FK_Provider_Company FOREIGN KEY (company_id)
         REFERENCES crunchbase.Company(company_id) ON DELETE CASCADE,
-    CONSTRAINT FK_Provider_ProviderCompany FOREIGN KEY (provider_company_id) 
+    CONSTRAINT FK_Provider_ProviderCompany FOREIGN KEY (provider_company_id)
         REFERENCES crunchbase.Company(company_id)
 );
 GO
 
--- CompanyImage (Obrazy firmy)
+-- CompanyImage (Obrazy firmy) #17
 CREATE TABLE crunchbase.CompanyImage (
     image_id INT IDENTITY(1,1) PRIMARY KEY,
     company_id INT NOT NULL,
@@ -288,12 +299,12 @@ CREATE TABLE crunchbase.CompanyImage (
     height INT NULL,
     image_path NVARCHAR(500) NOT NULL,
     attribution NVARCHAR(500) NULL,
-    CONSTRAINT FK_CompanyImage_Company FOREIGN KEY (company_id) 
+    CONSTRAINT FK_CompanyImage_Company FOREIGN KEY (company_id)
         REFERENCES crunchbase.Company(company_id) ON DELETE CASCADE
 );
 GO
 
--- CompanyIPO (IPO)
+-- CompanyIPO (IPO) #18
 CREATE TABLE crunchbase.CompanyIPO (
     ipo_id INT IDENTITY(1,1) PRIMARY KEY,
     company_id INT NOT NULL UNIQUE,
@@ -303,7 +314,7 @@ CREATE TABLE crunchbase.CompanyIPO (
     pub_month INT NULL,
     pub_day INT NULL,
     stock_symbol NVARCHAR(20) NULL,
-    CONSTRAINT FK_CompanyIPO_Company FOREIGN KEY (company_id) 
+    CONSTRAINT FK_CompanyIPO_Company FOREIGN KEY (company_id)
         REFERENCES crunchbase.Company(company_id) ON DELETE CASCADE
 );
 GO

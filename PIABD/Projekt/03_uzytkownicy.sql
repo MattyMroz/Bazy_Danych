@@ -38,9 +38,7 @@ GO
 GRANT EXECUTE ON SCHEMA::crunchbase TO EmpRole;
 GO
 
--- Guest - tylko SELECT na widoku
-GRANT SELECT ON crunchbase.vw_CompanyOverview TO GuestRole;
-DENY SELECT ON SCHEMA::crunchbase TO GuestRole;
+-- Guest - tylko SELECT na widoku (bez DENY - domyslnie brak dostepu)
 GRANT SELECT ON crunchbase.vw_CompanyOverview TO GuestRole;
 GO
 
