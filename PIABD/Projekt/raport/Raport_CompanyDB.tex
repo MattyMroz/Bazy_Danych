@@ -9,6 +9,7 @@
 % --- PAKIETY ---
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{lmodern}
 \usepackage[polish]{babel}
 \usepackage{geometry}
 \usepackage{graphicx}
@@ -119,11 +120,11 @@
     
     \vspace{3.5cm}
     
-    \begin{flushright}
+    \begin{center}
         \large
         \textbf{Autor:} Mateusz Mróz\\
         \textbf{Nr indeksu:} 251190
-    \end{flushright}
+    \end{center}
     
     \vfill
     
@@ -144,46 +145,40 @@
 
 \subsection{Cel tworzenia bazy danych}
 
-Celem projektu jest zaprojektowanie i implementacja relacyjnej bazy danych przechowującej informacje o firmach technologicznych, pochodzące z serwisu CrunchBase. Baza danych ma umożliwiać:
-
-\begin{itemize}[noitemsep]
-    \item przechowywanie szczegółowych informacji o firmach (nazwa, opis, kategoria, data założenia),
-    \item śledzenie rund finansowania i inwestycji,
-    \item zarządzanie informacjami o osobach związanych z firmami (założyciele, pracownicy, inwestorzy),
-    \item rejestrowanie przejęć, konkurentów i kamieni milowych w historii firm,
-    \item przechowywanie danych o produktach, biurach i mediach firmowych.
-\end{itemize}
+Celem projektu jest stworzenie relacyjnej bazy danych \texttt{CompanyDB} na serwerze MS SQL. Baza służy do przechowywania danych o firmach (startupach), ich pracownikach i inwestycjach. Dane wejściowe pochodzą z plików JSON (serwis CrunchBase). Moim zadaniem było zaprojektowanie struktury tabel i napisanie skryptu, który przeniesie te dane z formatu dokumentowego (JSON) do uporządkowanej bazy SQL.
 
 \subsection{Główne założenia}
 
-\begin{enumerate}[noitemsep]
-    \item \textbf{Normalizacja} --- baza danych spełnia trzy pierwsze postacie normalne (1NF, 2NF, 3NF).
-    \item \textbf{Integralność danych} --- wykorzystanie kluczy głównych, obcych oraz ograniczeń CHECK, UNIQUE i DEFAULT.
-    \item \textbf{Bezpieczeństwo} --- system ról i użytkowników z różnymi poziomami uprawnień (contained users).
-    \item \textbf{Skalowalność} --- struktura pozwalająca na łatwe dodawanie nowych firm i danych.
-    \item \textbf{Zgodność z danymi źródłowymi} --- nazwy kolumn zachowują oryginalne nazwy pól z dokumentów JSON.
-\end{enumerate}
+Przyjąłem następujące zasady przy tworzeniu bazy:
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Silnik:} Baza działa na Microsoft SQL Server.
+    \item \textbf{Struktura:} Baza jest relacyjna i dąży do 3.~Postaci Normalnej (3NF), aby nie powielać niepotrzebnie danych.
+    \item \textbf{Bezpieczeństwo:} Użyłem opcji \textit{Contained Database}. Dzięki temu użytkownicy są przypisani bezpośrednio do bazy danych, a nie do całego serwera SQL. To ułatwia przenoszenie bazy.
+    \item \textbf{Spójność:} Zastosowałem klucze obce (Foreign Keys). Jeśli usuniemy firmę, to automatycznie usuną się jej produkty czy biura (opcja \texttt{ON DELETE CASCADE}).
+    \item \textbf{Klucze:} Każda tabela ma swój własny, unikalny numer ID (np.\@ \texttt{company\_id}), który generuje się automatycznie. Nie używam nazw firm jako kluczy, bo mogą się powtarzać lub zmieniać.
+\end{itemize}
 
 \subsection{Zakres możliwości systemu}
 
-System umożliwia:
+W bazie można:
 
 \begin{itemize}[noitemsep]
-    \item import danych z plików JSON przy użyciu funkcji OPENJSON,
-    \item wstawianie i aktualizację firm przez procedurę składowaną \texttt{UpsertCompany},
-    \item obliczanie łącznego finansowania firmy przez funkcję skalarną \texttt{GetTotalFunding},
-    \item przeglądanie podsumowania firm przez widok \texttt{vw\_CompanyOverview},
-    \item zarządzanie dostępem przez role i contained users.
+    \item Przechowywać informacje o firmach, ich produktach i adresach biur.
+    \item Sprawdzać historię finansowania --- kto, ile i kiedy zainwestował w daną firmę.
+    \item Widzieć powiązania między ludźmi a firmami (kto gdzie pracuje lub pracował).
+    \item Analizować konkurencję i przejęcia firm.
+    \item Automatycznie importować dane z plików JSON za pomocą przygotowanego skryptu SQL.
 \end{itemize}
 
 \subsection{Ograniczenia przyjęte podczas projektowania}
 
+W projekcie zastosowałem kilka uproszczeń:
+
 \begin{itemize}[noitemsep]
-    \item Dane źródłowe ograniczone do 6 dokumentów JSON (6 firm: Wetpaint, Facebook, Twitter, Omnidrive, StumbleUpon, Scribd).
-    \item Brak walidacji zewnętrznych URL-i (przechowywane jako tekst).
-    \item Obrazy przechowywane jako ścieżki do plików, nie jako dane binarne (BLOB).
-    \item Waluta finansowania domyślnie USD (brak automatycznego przeliczania walut).
-    \item Baza typu \texttt{CONTAINMENT = PARTIAL} (umożliwia tworzenie contained users).
+    \item \textbf{Tagi:} Pola takie jak \texttt{tag\_list} (lista tagów po przecinku) zostawiłem jako zwykły tekst. Rozbijanie tego na osobne tabele skomplikowałoby import, a w tym projekcie nie jest to kluczowe. To świadome odstępstwo od 1.~Postaci Normalnej.
+    \item \textbf{Waluty:} Zakładam, że kwoty są w dolarach (USD) lub są przeliczane, nie robiłem osobnego systemu kursów walut.
+    \item \textbf{Braki danych:} Pliki JSON są dziurawe (np.\@ brak roku założenia), więc baza pozwala na wpisywanie wartości pustych (\texttt{NULL}) w wielu miejscach.
 \end{itemize}
 
 \newpage
@@ -208,42 +203,38 @@ Poniżej przedstawiono diagram relacji bazy danych. Diagram można wygenerować 
     \label{fig:erd}
 \end{figure}
 
-\subsection{Opis struktury}
+\subsection{Opis struktury relacyjnej}
 
-Baza danych składa się z \textbf{18 tabel} zorganizowanych w schemacie \texttt{crunchbase}. Tabele można podzielić na następujące grupy logiczne:
+Sercem bazy jest tabela \texttt{Company} (Firmy). Wszystkie inne tabele są z nią powiązane --- np.\ \texttt{Product} (Produkty), \texttt{Office} (Biura).
 
-\begin{table}[H]
-\centering
-\caption{Podział tabel na grupy logiczne}
-\begin{tabular}{|l|l|}
-\hline
-\textbf{Grupa} & \textbf{Tabele} \\
-\hline
-Główna & Company \\
-\hline
-Podmioty & Person, FinancialOrg \\
-\hline
-Finansowanie & FundingRound, Investment, CompanyIPO \\
-\hline
-Struktura firmy & Product, Office, CompanyRelationship \\
-\hline
-Relacje biznesowe & Competitor, Acquisition, Provider, Milestone \\
-\hline
-Media & ExternalLink, VideoEmbed, CompanyImage, Screenshot, ScreenshotSize \\
-\hline
-\end{tabular}
-\end{table}
+Podczas projektowania musiałem rozwiązać dwa trudniejsze problemy:
 
-\subsection{Główne relacje między tabelami}
+\textbf{1. Relacja Wiele-do-Wielu (Ludzie i Firmy)}
+
+Jedna osoba może pracować w wielu firmach, a w firmie pracuje wiele osób. Nie mogłem wpisać pracownika bezpośrednio do tabeli firmy.
 
 \begin{itemize}[noitemsep]
-    \item \textbf{Company 1:N Product} --- firma może mieć wiele produktów
-    \item \textbf{Company 1:N Office} --- firma może mieć wiele biur/siedzib
-    \item \textbf{Company 1:N FundingRound} --- firma może mieć wiele rund finansowania
-    \item \textbf{FundingRound 1:N Investment} --- runda może mieć wiele inwestycji
-    \item \textbf{Person M:N Company} --- osoba może być związana z wieloma firmami (przez CompanyRelationship)
-    \item \textbf{Company 1:N Acquisition} --- firma może przejmować wiele innych firm
-    \item \textbf{Screenshot 1:N ScreenshotSize} --- zrzut ekranu może mieć wiele rozmiarów
+    \item \textbf{Rozwiązanie:} Stworzyłem tabelę łączącą \texttt{CompanyRelationship}. Łączy ona ID osoby z ID firmy i dodaje informację o stanowisku (np.\@ ``CEO'').
+\end{itemize}
+
+\textbf{2. Kto jest inwestorem? (Różne typy inwestorów)}
+
+W firmę może zainwestować: inna osoba, inna firma albo bank/fundusz.
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Rozwiązanie:} W tabeli \texttt{Investment} (Inwestycje) mam trzy kolumny na ID: \texttt{person\_id}, \texttt{financial\_org\_id} i \texttt{investing\_company\_id}. Wypełniam tylko jedną z nich dla danej inwestycji, a reszta zostaje pusta. To proste i skuteczne rozwiązanie problemu polimorfizmu w SQL.
+\end{itemize}
+
+\subsection{Normalizacja}
+
+Starałem się trzymać zasad normalizacji:
+
+\begin{itemize}[noitemsep]
+    \item \textbf{1NF (Atomowość):} W każdej kratce tabeli jest jedna wartość. Wyjątkiem są wspomniane wcześniej tagi, które zostawiłem jako listę po przecinku dla wygody.
+    \item \textbf{2NF:} Każda tabela ma swój klucz główny (\texttt{ID}), więc wszystkie dane w wierszu dotyczą konkretnego obiektu (np.\@ konkretnej firmy). Nie ma sytuacji, że część danych zależy od czegoś innego.
+    \item \textbf{3NF:} Usunąłem zależności przechodnie.
+    
+    \textit{Mały wyjątek:} W tabeli \texttt{Acquisition} (Przejęcia) trzymam nazwę przejętej firmy ORAZ jej ID. Robię to celowo --- czasem przejmowana firma nie istnieje w naszej bazie (nie ma ID), a musimy wiedzieć, jak się nazywała. To bezpieczniejsza opcja.
 \end{itemize}
 
 \newpage
@@ -255,206 +246,224 @@ Media & ExternalLink, VideoEmbed, CompanyImage, Screenshot, ScreenshotSize \\
 % --- 3.A TABELE ---
 \subsection{Tabele}
 
-\subsubsection{Company --- Tabela główna firm}
+Baza danych składa się z 18 tabel. Poniżej znajduje się szczegółowy opis każdej z nich.
 
-\textbf{Opis funkcjonalny:} Przechowuje podstawowe informacje o firmach technologicznych --- nazwę, opis, kategorię działalności, daty założenia i zamknięcia, dane kontaktowe oraz informacje o pozyskanym finansowaniu.
+\subsubsection{1. Tabela crunchbase.Company}
 
-\begin{table}[H]
-\centering
-\caption{Struktura tabeli Company (wybrane kolumny)}
-\small
-\begin{tabular}{|l|l|l|}
-\hline
-\textbf{Kolumna} & \textbf{Typ danych} & \textbf{Ograniczenia} \\
-\hline
-company\_id & INT IDENTITY(1,1) & PRIMARY KEY \\
-mongo\_id & NVARCHAR(50) & NOT NULL, UNIQUE \\
-name & NVARCHAR(255) & NOT NULL \\
-permalink & NVARCHAR(255) & NOT NULL, UNIQUE \\
-category\_code & NVARCHAR(100) & NULL \\
-number\_of\_employees & INT & CHECK ($\geq$ 0) \\
-founded\_year & INT & NULL \\
-founded\_month & INT & CHECK (1-12) \\
-founded\_day & INT & CHECK (1-31) \\
-created\_at & DATETIME2 & DEFAULT GETDATE() \\
-updated\_at & DATETIME2 & DEFAULT GETDATE() \\
-\hline
-\end{tabular}
-\end{table}
+\textbf{Opis:} Główna tabela przechowująca podstawowe informacje o firmach (startupach), takie jak nazwa, kategoria, opis, daty założenia i zamknięcia.
 
-\textbf{Klucz główny:} \texttt{company\_id} (auto-inkrementacja)
+\textbf{Klucz główny (PK):} \texttt{company\_id} (INT, IDENTITY).
 
-\textbf{Ograniczenia UNIQUE:} \texttt{mongo\_id}, \texttt{permalink}
+\textbf{Klucze obce (FK):} Brak.
 
-\textbf{Ograniczenia CHECK:}
+\textbf{Ograniczenia:}
 \begin{itemize}[noitemsep]
-    \item \texttt{number\_of\_employees >= 0}
-    \item \texttt{founded\_month BETWEEN 1 AND 12}
-    \item \texttt{founded\_day BETWEEN 1 AND 31}
+    \item \texttt{UNIQUE} na kolumnach \texttt{mongo\_id} oraz \texttt{permalink}.
+    \item \texttt{CHECK (number\_of\_employees >= 0)} --- liczba pracowników nie może być ujemna.
+    \item \texttt{CHECK (founded\_month BETWEEN 1 AND 12)} --- walidacja miesiąca.
+    \item \texttt{CHECK (founded\_day BETWEEN 1 AND 31)} --- walidacja dnia.
+    \item \texttt{DEFAULT GETDATE()} dla dat utworzenia rekordu.
 \end{itemize}
 
-\textbf{Ograniczenia DEFAULT:}
+\textbf{Uwagi:} Pole \texttt{tag\_list} jest przechowywane jako tekst (odstępstwo od 1NF dla uproszczenia).
+
+\subsubsection{2. Tabela crunchbase.Person}
+
+\textbf{Opis:} Słownik osób (pracowników, założycieli, inwestorów).
+
+\textbf{Klucz główny (PK):} \texttt{person\_id} (INT, IDENTITY).
+
+\textbf{Klucze obce (FK):} Brak.
+
+\textbf{Ograniczenia:} \texttt{UNIQUE} na kolumnie \texttt{permalink}.
+
+\subsubsection{3. Tabela crunchbase.FinancialOrg}
+
+\textbf{Opis:} Słownik organizacji finansowych (fundusze VC, banki).
+
+\textbf{Klucz główny (PK):} \texttt{financial\_org\_id} (INT, IDENTITY).
+
+\textbf{Klucze obce (FK):} Brak.
+
+\textbf{Ograniczenia:} \texttt{UNIQUE} na kolumnie \texttt{permalink}.
+
+\subsubsection{4. Tabela crunchbase.Product}
+
+\textbf{Opis:} Produkty oferowane przez firmy.
+
+\textbf{Klucz główny (PK):} \texttt{product\_id} (INT, IDENTITY).
+
+\textbf{Klucz obcy (FK):} \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE).
+
+\textbf{Ograniczenia:} Brak dodatkowych.
+
+\subsubsection{5. Tabela crunchbase.Office}
+
+\textbf{Opis:} Lokalizacje biur i siedzib firm.
+
+\textbf{Klucz główny (PK):} \texttt{office\_id} (INT, IDENTITY).
+
+\textbf{Klucz obcy (FK):} \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE).
+
+\textbf{Ograniczenia:} Brak dodatkowych.
+
+\subsubsection{6. Tabela crunchbase.FundingRound}
+
+\textbf{Opis:} Rundy finansowania firm --- typ rundy (seed, Series A, B, C, etc.), kwota, waluta, data.
+
+\textbf{Klucz główny (PK):} \texttt{funding\_round\_id} (INT, IDENTITY).
+
+\textbf{Klucz obcy (FK):} \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE).
+
+\textbf{Ograniczenia:}
 \begin{itemize}[noitemsep]
-    \item \texttt{created\_at = GETDATE()}
-    \item \texttt{updated\_at = GETDATE()}
+    \item \texttt{CHECK (raised\_amount >= 0)} --- kwota nie może być ujemna.
+    \item \texttt{DEFAULT 'USD'} dla \texttt{raised\_currency\_code}.
+    \item \texttt{CHECK (funded\_month BETWEEN 1 AND 12)} --- walidacja miesiąca.
+    \item \texttt{CHECK (funded\_day BETWEEN 1 AND 31)} --- walidacja dnia.
 \end{itemize}
 
-\subsubsection{Person --- Osoby}
+\subsubsection{7. Tabela crunchbase.Investment}
 
-\textbf{Opis funkcjonalny:} Przechowuje informacje o osobach związanych z firmami --- założycielach, pracownikach, inwestorach.
+\textbf{Opis:} Łączy rundę finansowania z inwestorem. Inwestorem może być osoba, organizacja finansowa lub inna firma.
 
-\begin{table}[H]
-\centering
-\caption{Struktura tabeli Person}
-\begin{tabular}{|l|l|l|}
-\hline
-\textbf{Kolumna} & \textbf{Typ danych} & \textbf{Ograniczenia} \\
-\hline
-person\_id & INT IDENTITY(1,1) & PRIMARY KEY \\
-first\_name & NVARCHAR(100) & NOT NULL \\
-last\_name & NVARCHAR(100) & NOT NULL \\
-permalink & NVARCHAR(255) & NOT NULL, UNIQUE \\
-\hline
-\end{tabular}
-\end{table}
+\textbf{Klucz główny (PK):} \texttt{investment\_id} (INT, IDENTITY).
 
-\subsubsection{FinancialOrg --- Organizacje finansowe}
-
-\textbf{Opis funkcjonalny:} Przechowuje informacje o funduszach VC, funduszach inwestycyjnych i innych organizacjach finansowych inwestujących w firmy.
-
-\begin{table}[H]
-\centering
-\caption{Struktura tabeli FinancialOrg}
-\begin{tabular}{|l|l|l|}
-\hline
-\textbf{Kolumna} & \textbf{Typ danych} & \textbf{Ograniczenia} \\
-\hline
-financial\_org\_id & INT IDENTITY(1,1) & PRIMARY KEY \\
-name & NVARCHAR(255) & NOT NULL \\
-permalink & NVARCHAR(255) & NOT NULL, UNIQUE \\
-\hline
-\end{tabular}
-\end{table}
-
-\subsubsection{FundingRound --- Rundy finansowania}
-
-\textbf{Opis funkcjonalny:} Przechowuje informacje o rundach finansowania firm --- typ rundy (seed, Series A, B, C\ldots), kwotę, walutę, datę.
-
-\begin{table}[H]
-\centering
-\caption{Struktura tabeli FundingRound}
-\begin{tabular}{|l|l|l|}
-\hline
-\textbf{Kolumna} & \textbf{Typ danych} & \textbf{Ograniczenia} \\
-\hline
-funding\_round\_id & INT IDENTITY(1,1) & PRIMARY KEY \\
-company\_id & INT & FK $\rightarrow$ Company, ON DELETE CASCADE \\
-round\_code & NVARCHAR(50) & NULL \\
-raised\_amount & DECIMAL(18,2) & CHECK ($\geq$ 0) \\
-raised\_currency\_code & NVARCHAR(10) & DEFAULT 'USD' \\
-funded\_year & INT & NULL \\
-funded\_month & INT & CHECK (1-12) \\
-funded\_day & INT & CHECK (1-31) \\
-\hline
-\end{tabular}
-\end{table}
-
-\subsubsection{Investment --- Inwestycje}
-
-\textbf{Opis funkcjonalny:} Tabela łącząca inwestorów z rundami finansowania. Inwestorem może być osoba, organizacja finansowa lub inna firma.
-
-\begin{table}[H]
-\centering
-\caption{Struktura tabeli Investment}
-\begin{tabular}{|l|l|l|}
-\hline
-\textbf{Kolumna} & \textbf{Typ danych} & \textbf{Ograniczenia} \\
-\hline
-investment\_id & INT IDENTITY(1,1) & PRIMARY KEY \\
-funding\_round\_id & INT & FK $\rightarrow$ FundingRound, ON DELETE CASCADE \\
-person\_id & INT & FK $\rightarrow$ Person (opcjonalny) \\
-financial\_org\_id & INT & FK $\rightarrow$ FinancialOrg (opcjonalny) \\
-investing\_company\_id & INT & FK $\rightarrow$ Company (opcjonalny) \\
-\hline
-\end{tabular}
-\end{table}
-
-\textbf{Uwaga:} Inwestorem może być osoba, organizacja finansowa lub firma --- stąd trzy opcjonalne klucze obce.
-
-\subsubsection{Pozostałe tabele}
-
-\textbf{Product} --- produkty oferowane przez firmy (FK do Company z ON DELETE CASCADE).
-
-\textbf{Office} --- lokalizacje biur i siedzib firm (FK do Company z ON DELETE CASCADE).
-
-\textbf{CompanyRelationship} --- tabela asocjacyjna łącząca osoby z firmami, zawiera stanowisko i flagę \texttt{is\_past}.
-
-\textbf{Competitor} --- informacje o konkurentach firm.
-
-\textbf{Acquisition} --- informacje o przejęciach firm (firma przejmująca i przejmowana).
-
-\textbf{Milestone} --- kamienie milowe w historii firmy.
-
-\textbf{Provider} --- dostawcy usług dla firm.
-
-\textbf{ExternalLink} --- linki zewnętrzne do artykułów o firmie.
-
-\textbf{VideoEmbed} --- osadzone filmy (kod embed).
-
-\textbf{CompanyImage} --- obrazy i logo firm.
-
-\textbf{Screenshot} --- zrzuty ekranu produktów.
-
-\textbf{ScreenshotSize} --- różne rozmiary zrzutów ekranu.
-
-\textbf{CompanyIPO} --- informacje o IPO firmy.
-
-\subsubsection{Uzasadnienie normalizacji}
-
-Baza danych spełnia wszystkie trzy postacie normalne:
-
-\textbf{1NF (Pierwsza postać normalna):}
+\textbf{Klucze obce (FK):}
 \begin{itemize}[noitemsep]
-    \item Każda kolumna zawiera wartości atomowe (niepodzielne).
-    \item Tablice z JSON (np. products, offices, funding\_rounds) zostały rozdzielone do osobnych tabel.
-    \item Każda tabela ma unikalny klucz główny (IDENTITY).
+    \item \texttt{funding\_round\_id} $\rightarrow$ \texttt{FundingRound} (ON DELETE CASCADE) --- w co zainwestowano.
+    \item \texttt{person\_id} $\rightarrow$ \texttt{Person} (opcjonalny) --- jeśli inwestorem jest osoba.
+    \item \texttt{financial\_org\_id} $\rightarrow$ \texttt{FinancialOrg} (opcjonalny) --- jeśli inwestorem jest organizacja.
+    \item \texttt{investing\_company\_id} $\rightarrow$ \texttt{Company} (opcjonalny) --- jeśli inwestorem jest inna firma.
 \end{itemize}
 
-\textbf{2NF (Druga postać normalna):}
+\textbf{Uwagi:} W danym rekordzie wypełniony jest zazwyczaj tylko jeden z trzech kluczy inwestorów.
+
+\subsubsection{8. Tabela crunchbase.Acquisition}
+
+\textbf{Opis:} Informacje o zakupie jednej firmy przez drugą.
+
+\textbf{Klucz główny (PK):} \texttt{acquisition\_id} (INT, IDENTITY).
+
+\textbf{Klucze obce (FK):}
 \begin{itemize}[noitemsep]
-    \item Baza jest w 1NF.
-    \item Wszystkie atrybuty niekluczowe zależą od całego klucza głównego.
-    \item Nie występują częściowe zależności funkcyjne.
+    \item \texttt{acquiring\_company\_id} $\rightarrow$ \texttt{Company} --- firma kupująca.
+    \item \texttt{acquired\_company\_id} $\rightarrow$ \texttt{Company} (opcjonalny) --- firma kupowana.
 \end{itemize}
 
-\textbf{3NF (Trzecia postać normalna):}
+\textbf{Uwagi do normalizacji:} Przechowuję nazwę przejmowanej firmy (\texttt{acquired\_company\_name}) jako tekst, nawet jeśli mam do niej ID. To zabezpieczenie na wypadek, gdyby przejmowana firma nie istniała w naszej bazie jako osobny rekord (świadoma redundancja).
+
+\subsubsection{9. Tabela crunchbase.Milestone}
+
+\textbf{Opis:} Kamienie milowe w historii firmy (ważne wydarzenia).
+
+\textbf{Klucz główny (PK):} \texttt{milestone\_id} (INT, IDENTITY).
+
+\textbf{Klucz obcy (FK):} \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE).
+
+\textbf{Ograniczenia:} Brak dodatkowych.
+
+\subsubsection{10. Tabela crunchbase.Competitor}
+
+\textbf{Opis:} Informacje o konkurentach firm.
+
+\textbf{Klucz główny (PK):} \texttt{competitor\_id} (INT, IDENTITY).
+
+\textbf{Klucze obce (FK):}
 \begin{itemize}[noitemsep]
-    \item Baza jest w 2NF.
-    \item Nie występują przechodnie zależności funkcyjne.
-    \item Każdy atrybut niekluczowy zależy bezpośrednio od klucza głównego.
+    \item \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE) --- firma.
+    \item \texttt{competitor\_company\_id} $\rightarrow$ \texttt{Company} (opcjonalny) --- firma konkurencyjna.
 \end{itemize}
 
-\subsubsection{Odstępstwa od pełnej normalizacji}
+\textbf{Ograniczenia:} \texttt{UNIQUE (company\_id, competitor\_permalink)} --- unikalna para firma-konkurent.
 
-W projekcie celowo pozostawiono jedno odstępstwo od pełnej 1NF:
+\subsubsection{11. Tabela crunchbase.CompanyRelationship}
 
-\textbf{Pole tag\_list w tabeli Company:}
+\textbf{Opis:} Tabela łącznikowa dla relacji wiele-do-wielu między osobami a firmami. Przechowuje historię zatrudnienia.
+
+\textbf{Klucz główny (PK):} \texttt{relationship\_id} (INT, IDENTITY).
+
+\textbf{Klucze obce (FK):}
 \begin{itemize}[noitemsep]
-    \item Typ danych: \texttt{NVARCHAR(MAX)}
-    \item Format: wartości oddzielone przecinkami (np. ``wiki, seattle, elowitz'')
-    \item Odstępstwo: pole zawiera wiele wartości zamiast wartości atomowej
+    \item \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE).
+    \item \texttt{person\_id} $\rightarrow$ \texttt{Person} (ON DELETE CASCADE).
 \end{itemize}
 
-\textbf{Uzasadnienie:}
-Pole \texttt{tag\_list} pozostawiono jako ciąg tekstowy (lista rozdzielana przecinkami) zamiast wydzielać je do osobnej tabeli \texttt{Tags} z relacją wiele-do-wielu. Decyzja ta wynika z:
+\textbf{Dodatkowe pola:} \texttt{title} (stanowisko), \texttt{is\_past} (czy to była praca w przeszłości).
+
+\subsubsection{12. Tabela crunchbase.ExternalLink}
+
+\textbf{Opis:} Linki zewnętrzne do artykułów o firmie.
+
+\textbf{Klucz główny (PK):} \texttt{external\_link\_id} (INT, IDENTITY).
+
+\textbf{Klucz obcy (FK):} \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE).
+
+\textbf{Ograniczenia:} Brak dodatkowych.
+
+\subsubsection{13. Tabela crunchbase.Screenshot}
+
+\textbf{Opis:} Zrzuty ekranu produktów.
+
+\textbf{Klucz główny (PK):} \texttt{screenshot\_id} (INT, IDENTITY).
+
+\textbf{Klucz obcy (FK):} \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE).
+
+\textbf{Ograniczenia:} Brak dodatkowych.
+
+\subsubsection{14. Tabela crunchbase.ScreenshotSize}
+
+\textbf{Opis:} Różne rozmiary zrzutów ekranu (thumbnails).
+
+\textbf{Klucz główny (PK):} \texttt{screenshot\_size\_id} (INT, IDENTITY).
+
+\textbf{Klucz obcy (FK):} \texttt{screenshot\_id} $\rightarrow$ \texttt{Screenshot} (ON DELETE CASCADE).
+
+\textbf{Ograniczenia:} Brak dodatkowych.
+
+\subsubsection{15. Tabela crunchbase.VideoEmbed}
+
+\textbf{Opis:} Osadzone filmy (kod embed) dotyczące firm.
+
+\textbf{Klucz główny (PK):} \texttt{video\_embed\_id} (INT, IDENTITY).
+
+\textbf{Klucz obcy (FK):} \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE).
+
+\textbf{Ograniczenia:} Brak dodatkowych.
+
+\subsubsection{16. Tabela crunchbase.Provider}
+
+\textbf{Opis:} Dostawcy usług dla firm.
+
+\textbf{Klucz główny (PK):} \texttt{provider\_id} (INT, IDENTITY).
+
+\textbf{Klucze obce (FK):}
 \begin{itemize}[noitemsep]
-    \item uproszczenia struktury bazy danych,
-    \item zachowania zgodności z oryginalnym formatem prezentacji danych,
-    \item traktowania tagów jako prostych słów kluczowych do wyszukiwania pełnotekstowego,
-    \item braku potrzeby wykonywania złożonych operacji na pojedynczych tagach.
+    \item \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE) --- firma.
+    \item \texttt{provider\_company\_id} $\rightarrow$ \texttt{Company} (opcjonalny) --- firma dostawcy.
 \end{itemize}
 
-W przypadku konieczności pracy z poszczególnymi tagami, można wykorzystać funkcje SQL Server do parsowania ciągów tekstowych (np. \texttt{STRING\_SPLIT}).
+\textbf{Ograniczenia:} Brak dodatkowych.
+
+\subsubsection{17. Tabela crunchbase.CompanyImage}
+
+\textbf{Opis:} Obrazy i logo firm.
+
+\textbf{Klucz główny (PK):} \texttt{image\_id} (INT, IDENTITY).
+
+\textbf{Klucz obcy (FK):} \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE).
+
+\textbf{Ograniczenia:} Brak dodatkowych.
+
+\subsubsection{18. Tabela crunchbase.CompanyIPO}
+
+\textbf{Opis:} Informacje o IPO (Initial Public Offering) firmy.
+
+\textbf{Klucz główny (PK):} \texttt{ipo\_id} (INT, IDENTITY).
+
+\textbf{Klucz obcy (FK):} \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE, UNIQUE).
+
+\textbf{Ograniczenia:} Firma może mieć tylko jedno IPO (relacja 1:1).
 
 % --- 3.B INDEKSY ---
 \subsection{Indeksy}
@@ -498,7 +507,7 @@ Integralność danych jest zapewniona przez:
     \item procedurę składowaną do bezpiecznego wstawiania/aktualizacji danych.
 \end{itemize}
 
-% --- 3.D PROCEDURY ---
+\newpage
 \subsection{Procedury składowane}
 
 \subsubsection{Procedura: UpsertCompany}
