@@ -1,0 +1,330 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[polish]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+\usepackage[hidelinks]{hyperref}
+
+\geometry{margin=2.5cm}
+
+\begin{document}
+
+% =============================================================================
+% STRONA TYTUŁOWA
+% =============================================================================
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+    
+    {\Large\textbf{Politechnika Łódzka}}\\[0.3cm]
+    {\large Wydział Elektrotechniki, Elektroniki, Informatyki i Automatyki}\\[2cm]
+    
+    {\Huge\textbf{Szkoła Muzyczna}}\\[0.5cm]
+    {\Large Obiektowa Baza Danych Oracle}\\[1cm]
+    
+    {\large Rozproszone i Obiektowe Bazy Danych}\\[3cm]
+    
+    \begin{tabular}{ll}
+        \textbf{Autorzy:} & Igor Typiński (251237) \\
+                          & Mateusz Mróz (251190) \\[0.5cm]
+        \textbf{Grupa:}   & 5 \\[0.5cm]
+        \textbf{Temat:}   & Szkoła muzyczna (z naciskiem na rozwój ucznia)
+    \end{tabular}
+    
+    \vfill
+    {\large Łódź, styczeń 2026}
+\end{titlepage}
+
+% =============================================================================
+% SPIS TREŚCI
+% =============================================================================
+\tableofcontents
+\newpage
+
+% =============================================================================
+% 1. OPIS PROJEKTU
+% =============================================================================
+\section{Opis projektu}
+
+\subsection{Cel i zakres}
+Projekt przedstawia obiektową bazę danych dla szkoły muzycznej, ze szczególnym uwzględnieniem śledzenia rozwoju uczniów. System umożliwia:
+\begin{itemize}[nosep]
+    \item Zarządzanie danymi uczniów i nauczycieli
+    \item Planowanie i prowadzenie lekcji
+    \item Ocenianie postępów uczniów w różnych obszarach muzycznych
+    \item Przypisywanie nauczycieli do instrumentów
+    \item Generowanie raportów i statystyk
+\end{itemize}
+
+\subsection{Technologia}
+\begin{itemize}[nosep]
+    \item Oracle Database
+    \item Podejście obiektowo-relacyjne
+    \item Język PL/SQL
+\end{itemize}
+
+% =============================================================================
+% 2. REALIZACJA ZAŁOŻEŃ
+% =============================================================================
+\section{Realizacja założeń projektowych}
+
+\subsection{Typy obiektowe}
+W projekcie zdefiniowano 7 typów obiektowych:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|p{6cm}|}
+\hline
+\textbf{Typ} & \textbf{Metody} & \textbf{Opis} \\
+\hline
+t\_instrument\_obj & 1 & Instrument muzyczny \\
+t\_nauczyciel\_obj & 3 & Nauczyciel z listą instrumentów \\
+t\_uczen\_obj & 3 & Uczeń z obliczaniem wieku \\
+t\_kurs\_obj & 1 & Kurs nauki gry \\
+t\_lekcja\_obj & 2 & Pojedyncza lekcja \\
+t\_ocena\_obj & 2 & Ocena postępu ucznia \\
+t\_lista\_instrumentow & -- & VARRAY(5) nazw instrumentów \\
+\hline
+\end{tabular}
+\caption{Typy obiektowe w projekcie}
+\end{table}
+
+\subsection{Tabele obiektowe}
+Utworzono 6 tabel obiektowych przechowujących dane:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Tabela} & \textbf{Typ bazowy} & \textbf{Referencje (REF)} \\
+\hline
+t\_instrument & t\_instrument\_obj & -- \\
+t\_nauczyciel & t\_nauczyciel\_obj & -- (zawiera VARRAY) \\
+t\_uczen & t\_uczen\_obj & -- \\
+t\_kurs & t\_kurs\_obj & ref\_instrument \\
+t\_lekcja & t\_lekcja\_obj & ref\_uczen, ref\_nauczyciel, ref\_kurs \\
+t\_ocena\_postepu & t\_ocena\_obj & ref\_uczen, ref\_nauczyciel \\
+\hline
+\end{tabular}
+\caption{Tabele obiektowe i ich referencje}
+\end{table}
+
+\subsection{Referencje (REF/DEREF)}
+W projekcie zastosowano 6 referencji do modelowania relacji między obiektami:
+\begin{itemize}[nosep]
+    \item Kurs wskazuje na instrument, którego dotyczy
+    \item Lekcja wskazuje na ucznia, nauczyciela i kurs
+    \item Ocena wskazuje na ucznia i nauczyciela wystawiającego
+\end{itemize}
+
+Dzięki DEREF możliwe jest odwołanie się do atrybutów i metod obiektu wskazywanego, np. pobranie pełnych danych ucznia z poziomu lekcji.
+
+\subsection{Kolekcja VARRAY}
+Typ \texttt{t\_lista\_instrumentow} jako VARRAY(5) przechowuje listę instrumentów, których może uczyć nauczyciel. Ograniczenie do 5 elementów wynika z założenia, że nauczyciel specjalizuje się w kilku instrumentach.
+
+\subsection{Pakiety PL/SQL}
+Logika biznesowa zaimplementowana w 3 pakietach:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|p{7cm}|}
+\hline
+\textbf{Pakiet} & \textbf{Procedur} & \textbf{Główne funkcjonalności} \\
+\hline
+pkg\_uczen & 5 & Dodawanie uczniów, lista, średnia ocen, filtrowanie wg wieku \\
+pkg\_lekcja & 6 & Planowanie, oznaczanie, odwoływanie lekcji, raporty \\
+pkg\_ocena & 5 & Dodawanie ocen, raport postępu, porównanie uczniów \\
+\hline
+\end{tabular}
+\caption{Pakiety PL/SQL}
+\end{table}
+
+\subsection{Kursory}
+W projekcie wykorzystano trzy rodzaje kursorów:
+\begin{itemize}[nosep]
+    \item \textbf{Jawne} -- deklarowane z CURSOR, obsługiwane przez OPEN/FETCH/CLOSE
+    \item \textbf{Niejawne (FOR)} -- uproszczona składnia FOR rec IN (SELECT...)
+    \item \textbf{REF CURSOR} -- dynamiczne kursory zwracane przez funkcje
+\end{itemize}
+
+\subsection{Wyzwalacze (Triggery)}
+Zdefiniowano 5 wyzwalaczy:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|p{6cm}|}
+\hline
+\textbf{Trigger} & \textbf{Typ} & \textbf{Działanie} \\
+\hline
+trg\_lekcja\_walidacja & BEFORE & Walidacja daty, godziny, konfliktów \\
+trg\_ocena\_audit & AFTER & Logowanie operacji na ocenach \\
+trg\_uczen\_przed\_usunieciem & BEFORE & Ochrona ucznia z lekcjami \\
+trg\_nauczyciel\_data & BEFORE & Domyślna data zatrudnienia \\
+trg\_kurs\_cena\_audit & AFTER & Logowanie zmian cen \\
+\hline
+\end{tabular}
+\caption{Wyzwalacze w projekcie}
+\end{table}
+
+\subsection{Obsługa błędów}
+Zastosowano mechanizmy obsługi wyjątków:
+\begin{itemize}[nosep]
+    \item Bloki EXCEPTION z obsługą standardowych wyjątków
+    \item RAISE\_APPLICATION\_ERROR dla błędów biznesowych
+    \item Własne kody błędów (-20001 do -20021)
+\end{itemize}
+
+% =============================================================================
+% 3. PRZYJĘTE OGRANICZENIA
+% =============================================================================
+\section{Przyjęte ograniczenia}
+
+\begin{enumerate}[nosep]
+    \item Minimalny wiek ucznia: 5 lat
+    \item Nauczyciel może uczyć maksymalnie 5 instrumentów (VARRAY)
+    \item Oceny w skali 1--6 (polska skala szkolna)
+    \item Lekcje tylko w godzinach 08:00--20:00
+    \item Czas trwania lekcji: 30, 45, 60 lub 90 minut
+    \item Kategorie instrumentów: dęte, strunowe, perkusyjne, klawiszowe
+    \item Obszary oceny: technika, teoria, słuch, rytm, interpretacja
+    \item Poziomy kursów: początkujący, średni, zaawansowany
+    \item Statusy lekcji: zaplanowana, odbyta, odwołana
+    \item Uczeń nie może mieć dwóch lekcji o tej samej godzinie
+\end{enumerate}
+
+% =============================================================================
+% 4. ROLE UŻYTKOWNIKÓW
+% =============================================================================
+\section{Role użytkowników}
+
+\subsection{Administrator (rola\_admin)}
+Pełny dostęp do systemu:
+\begin{itemize}[nosep]
+    \item Zarządzanie wszystkimi danymi (CRUD na wszystkich tabelach)
+    \item Dostęp do logów audytowych
+    \item Wykonywanie wszystkich pakietów
+    \item Zarządzanie użytkownikami i uprawnieniami
+\end{itemize}
+
+\subsection{Nauczyciel (rola\_nauczyciel)}
+Prowadzenie lekcji i ocenianie:
+\begin{itemize}[nosep]
+    \item Odczyt danych uczniów, kursów, instrumentów
+    \item Aktualizacja statusu/tematu/uwag lekcji
+    \item Dodawanie ocen postępu
+    \item Generowanie raportów dziennych
+\end{itemize}
+
+\subsection{Sekretariat (rola\_sekretariat)}
+Zarządzanie harmonogramem:
+\begin{itemize}[nosep]
+    \item Pełne zarządzanie danymi uczniów
+    \item Planowanie, modyfikowanie i odwoływanie lekcji
+    \item Odczyt ocen i danych nauczycieli
+    \item Generowanie list i raportów
+\end{itemize}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Funkcjonalność} & \textbf{Admin} & \textbf{Nauczyciel} & \textbf{Sekretariat} \\
+\hline
+Zarządzanie uczniami & \checkmark & -- & \checkmark \\
+Zarządzanie nauczycielami & \checkmark & -- & -- \\
+Planowanie lekcji & \checkmark & -- & \checkmark \\
+Aktualizacja lekcji & \checkmark & \checkmark & \checkmark \\
+Dodawanie ocen & \checkmark & \checkmark & -- \\
+Odczyt ocen & \checkmark & \checkmark & \checkmark \\
+Logi audytowe & \checkmark & -- & -- \\
+\hline
+\end{tabular}
+\caption{Macierz uprawnień}
+\end{table}
+
+% =============================================================================
+% 5. DIAGRAM RELACJI OBIEKTÓW
+% =============================================================================
+\section{Diagram relacji obiektów}
+
+\begin{center}
+\begin{tikzpicture}[
+    node distance=2cm,
+    every node/.style={font=\small},
+    type/.style={rectangle, draw, fill=blue!20, minimum width=3cm, minimum height=1cm, align=center},
+    varray/.style={rectangle, draw, fill=green!20, minimum width=2.5cm, minimum height=0.8cm, align=center},
+    arrow/.style={-{Stealth}, thick}
+]
+
+% Typy główne
+\node[type] (instrument) {T\_INSTRUMENT\\{\scriptsize(klawiszowe, strunowe...)}};
+\node[type, right=3cm of instrument] (kurs) {T\_KURS\\{\scriptsize(poziom, cena)}};
+\node[type, below=2cm of instrument] (nauczyciel) {T\_NAUCZYCIEL\\{\scriptsize(imię, nazwisko, staż)}};
+\node[type, right=3cm of nauczyciel] (lekcja) {T\_LEKCJA\\{\scriptsize(data, godzina, status)}};
+\node[type, below=2cm of nauczyciel] (uczen) {T\_UCZEŃ\\{\scriptsize(imię, nazwisko, wiek)}};
+\node[type, right=3cm of uczen] (ocena) {T\_OCENA\_POSTĘPU\\{\scriptsize(ocena 1-6, obszar)}};
+
+% VARRAY
+\node[varray, left=1.5cm of nauczyciel] (varray) {VARRAY\\{\scriptsize lista\_instrumentów}};
+
+% Strzałki REF
+\draw[arrow] (kurs) -- node[above, font=\scriptsize] {REF} (instrument);
+\draw[arrow] (lekcja) -- node[above, font=\scriptsize] {REF} (kurs);
+\draw[arrow] (lekcja) -- node[left, font=\scriptsize] {REF} (nauczyciel);
+\draw[arrow] (lekcja) -- node[below, font=\scriptsize] {REF} (uczen);
+\draw[arrow] (ocena) -- node[left, font=\scriptsize] {REF} (nauczyciel);
+\draw[arrow] (ocena) -- node[above, font=\scriptsize] {REF} (uczen);
+
+% VARRAY
+\draw[arrow, dashed] (nauczyciel) -- (varray);
+
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.5cm}
+
+\textbf{Legenda:}
+\begin{itemize}[nosep]
+    \item Strzałka ciągła -- referencja REF (wskaźnik do obiektu)
+    \item Strzałka przerywana -- zawiera VARRAY (kolekcja)
+    \item Niebieskie prostokąty -- typy obiektowe / tabele
+    \item Zielony prostokąt -- typ kolekcji VARRAY
+\end{itemize}
+
+% =============================================================================
+% 6. PODSUMOWANIE
+% =============================================================================
+\section{Podsumowanie}
+
+Projekt obiektowej bazy danych dla szkoły muzycznej spełnia wszystkie wymagania:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|p{8cm}|c|}
+\hline
+\textbf{Wymaganie} & \textbf{Realizacja} \\
+\hline
+Definicje typów obiektowych z metodami & 7 typów, 12 metod \\
+Tabele obiektowe (wierszowe) & 6 tabel \\
+Referencja i dereferencja & 6 REF, DEREF \\
+Wstawianie danych z referencją & Tak \\
+VARRAY do relacji 1:N & t\_lista\_instrumentow \\
+Pakiety PL/SQL & 3 pakiety \\
+Kursory i REF kursory & 3 typy kursorów \\
+Obsługa błędów & EXCEPTION, RAISE \\
+Wyzwalacze & 5 triggerów \\
+Role użytkowników & 3 role \\
+\hline
+\end{tabular}
+\caption{Realizacja wymagań projektowych}
+\end{table}
+
+\end{document}

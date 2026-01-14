@@ -1,0 +1,20 @@
+\babel@toc {polish}{}\relax 
+\contentsline {section}{\numberline {1}Opis projektu}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Cel i zakres}{2}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Technologia}{2}{subsection.1.2}%
+\contentsline {section}{\numberline {2}Realizacja założeń projektowych}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Typy obiektowe}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Tabele obiektowe}{2}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Referencje (REF/DEREF)}{3}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Kolekcja VARRAY}{3}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}Pakiety PL/SQL}{3}{subsection.2.5}%
+\contentsline {subsection}{\numberline {2.6}Kursory}{3}{subsection.2.6}%
+\contentsline {subsection}{\numberline {2.7}Wyzwalacze (Triggery)}{3}{subsection.2.7}%
+\contentsline {subsection}{\numberline {2.8}Obsługa błędów}{4}{subsection.2.8}%
+\contentsline {section}{\numberline {3}Przyjęte ograniczenia}{4}{section.3}%
+\contentsline {section}{\numberline {4}Role użytkowników}{4}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Administrator (rola\_admin)}{4}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Nauczyciel (rola\_nauczyciel)}{4}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Sekretariat (rola\_sekretariat)}{4}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Diagram relacji obiektów}{5}{section.5}%
+\contentsline {section}{\numberline {6}Podsumowanie}{5}{section.6}%
