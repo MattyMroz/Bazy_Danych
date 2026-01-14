@@ -1,0 +1,877 @@
+% ============================================================================
+% RAPORT PROJEKTU BAZY DANYCH - CompanyDB (CrunchBase)
+% Autor: Mateusz Mróz (251190)
+% Przedmiot: Projektowanie i Administracja Baz Danych
+% ============================================================================
+
+\documentclass[12pt,a4paper]{article}
+
+% --- PAKIETY ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[polish]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage{amssymb}
+\usepackage{tabularx}
+
+% --- GEOMETRIA ---
+\geometry{
+    a4paper,
+    left=2.5cm,
+    right=2.5cm,
+    top=2.5cm,
+    bottom=2.5cm,
+    headheight=14pt
+}
+
+% --- NAGŁÓWKI I STOPKI ---
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Projekt Bazy Danych --- CompanyDB}
+\fancyhead[R]{\small Mateusz Mróz (251190)}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% --- STYL KODU SQL ---
+\definecolor{sqlblue}{RGB}{0,0,180}
+\definecolor{sqlgreen}{RGB}{0,128,0}
+\definecolor{sqlgray}{RGB}{128,128,128}
+\definecolor{sqlbg}{RGB}{248,248,248}
+
+\lstdefinestyle{sqlstyle}{
+    language=SQL,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{sqlblue}\bfseries,
+    commentstyle=\color{sqlgreen}\itshape,
+    stringstyle=\color{red},
+    showstringspaces=false,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{sqlbg},
+    numbers=left,
+    numberstyle=\tiny\color{sqlgray},
+    numbersep=8pt,
+    tabsize=4,
+    captionpos=b,
+    morekeywords={NVARCHAR,VARCHAR,DECIMAL,BIT,IDENTITY,SCHEMA,GO,USE,EXEC,ISNULL,TRY_CAST,OPENJSON,GETDATE,DATETIME2}
+}
+\lstset{style=sqlstyle}
+
+% --- HYPERREF ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,
+    urlcolor=blue,
+    pdftitle={Projekt Bazy Danych --- CompanyDB},
+    pdfauthor={Mateusz Mróz},
+}
+
+% --- TYTUŁY SEKCJI ---
+\titleformat{\section}{\Large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection.}{0.5em}{}
+
+% ============================================================================
+% POCZĄTEK DOKUMENTU
+% ============================================================================
+\begin{document}
+
+% ============================================================================
+% STRONA TYTUŁOWA
+% ============================================================================
+\begin{titlepage}
+    \centering
+    \vspace*{1.5cm}
+    
+    {\Large\textsc{POLITECHNIKA ŁÓDZKA}\\[0.4cm]
+    \large Wydział Elektrotechniki, Elektroniki, Informatyki i Automatyki}
+    
+    \vspace{2.5cm}
+    
+    {\large\textbf{Projektowanie i Administracja Baz Danych}\\[0.2cm]
+    Semestr 5}
+    
+    \vspace{2.5cm}
+    
+    \rule{0.8\textwidth}{0.5pt}
+    \vspace{0.5cm}
+    
+    {\Huge\bfseries Projekt Bazy Danych\\[0.4cm]}
+    {\LARGE Company (CrunchBase)}
+    
+    \vspace{0.5cm}
+    \rule{0.8\textwidth}{0.5pt}
+    
+    \vspace{3.5cm}
+    
+    \begin{center}
+        \large
+        \textbf{Autor:} Mateusz Mróz\\
+        \textbf{Nr indeksu:} 251190
+    \end{center}
+    
+    \vfill
+    
+    {\large Łódź, styczeń 2026}
+    
+\end{titlepage}
+
+% ============================================================================
+% SPIS TREŚCI
+% ============================================================================
+\tableofcontents
+\newpage
+
+% ============================================================================
+% ROZDZIAŁ 1: PODSTAWOWE ZAŁOŻENIA PROJEKTU
+% ============================================================================
+\section{Podstawowe założenia projektu}
+
+\subsection{Cel tworzenia bazy danych}
+
+Celem projektu jest stworzenie relacyjnej bazy danych \texttt{CompanyDB} na serwerze MS SQL. Baza służy do przechowywania danych o firmach (startupach), ich pracownikach i inwestycjach. Dane wejściowe pochodzą z plików JSON (serwis CrunchBase). Moim zadaniem było zaprojektowanie struktury tabel i napisanie skryptu, który przeniesie te dane z formatu dokumentowego (JSON) do uporządkowanej bazy SQL.
+
+\subsection{Główne założenia}
+
+Przyjąłem następujące zasady przy tworzeniu bazy:
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Silnik:} Baza działa na Microsoft SQL Server.
+    \item \textbf{Struktura:} Baza jest relacyjna i dąży do 3.~Postaci Normalnej (3NF), aby nie powielać niepotrzebnie danych.
+    \item \textbf{Bezpieczeństwo:} Użyłem opcji \textit{Contained Database}. Dzięki temu użytkownicy są przypisani bezpośrednio do bazy danych, a nie do całego serwera SQL. To ułatwia przenoszenie bazy.
+    \item \textbf{Spójność:} Zastosowałem klucze obce (Foreign Keys). Jeśli usuniemy firmę, to automatycznie usuną się jej produkty czy biura (opcja \texttt{ON DELETE CASCADE}).
+    \item \textbf{Klucze:} Każda tabela ma swój własny, unikalny numer ID (np.\@ \texttt{company\_id}), który generuje się automatycznie. Nie używam nazw firm jako kluczy, bo mogą się powtarzać lub zmieniać.
+\end{itemize}
+
+\subsection{Zakres możliwości systemu}
+
+W bazie można:
+
+\begin{itemize}[noitemsep]
+    \item Przechowywać informacje o firmach, ich produktach i adresach biur.
+    \item Sprawdzać historię finansowania --- kto, ile i kiedy zainwestował w daną firmę.
+    \item Widzieć powiązania między ludźmi a firmami (kto gdzie pracuje lub pracował).
+    \item Analizować konkurencję i przejęcia firm.
+    \item Automatycznie importować dane z plików JSON za pomocą przygotowanego skryptu SQL.
+\end{itemize}
+
+\subsection{Ograniczenia przyjęte podczas projektowania}
+
+W projekcie zastosowałem kilka uproszczeń:
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Tagi:} Pola takie jak \texttt{tag\_list} (lista tagów po przecinku) zostawiłem jako zwykły tekst. Rozbijanie tego na osobne tabele skomplikowałoby import, a w tym projekcie nie jest to kluczowe. To świadome odstępstwo od 1.~Postaci Normalnej.
+    \item \textbf{Waluty:} Zakładam, że kwoty są w dolarach (USD) lub są przeliczane, nie robiłem osobnego systemu kursów walut.
+    \item \textbf{Braki danych:} Pliki JSON są dziurawe (np.\@ brak roku założenia), więc baza pozwala na wpisywanie wartości pustych (\texttt{NULL}) w wielu miejscach.
+\end{itemize}
+
+\newpage
+% ============================================================================
+% ROZDZIAŁ 2: SCHEMAT BAZY DANYCH
+% ============================================================================
+\section{Schemat bazy danych}
+
+\subsection{Diagram ERD}
+
+Poniżej przedstawiono diagram relacji bazy danych. Diagram można wygenerować w SQL Server Management Studio poprzez: Database Diagrams $\rightarrow$ New Database Diagram.
+
+\begin{figure}[H]
+    \centering
+    \fbox{\parbox{0.95\textwidth}{
+        \centering
+        \vspace{3cm}
+        \textit{[Miejsce na diagram ERD wygenerowany z SSMS]}
+        \vspace{3cm}
+    }}
+    \caption{Diagram relacji bazy danych CompanyDB}
+    \label{fig:erd}
+\end{figure}
+
+\subsection{Opis struktury relacyjnej}
+
+Sercem bazy jest tabela \texttt{Company} (Firmy). Wszystkie inne tabele są z nią powiązane --- np.\ \texttt{Product} (Produkty), \texttt{Office} (Biura).
+
+Podczas projektowania musiałem rozwiązać dwa trudniejsze problemy:
+
+\textbf{1. Relacja Wiele-do-Wielu (Ludzie i Firmy)}
+
+Jedna osoba może pracować w wielu firmach, a w firmie pracuje wiele osób. Nie mogłem wpisać pracownika bezpośrednio do tabeli firmy.
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Rozwiązanie:} Stworzyłem tabelę łączącą \texttt{CompanyRelationship}. Łączy ona ID osoby z ID firmy i dodaje informację o stanowisku (np.\@ ``CEO'').
+\end{itemize}
+
+\textbf{2. Kto jest inwestorem? (Różne typy inwestorów)}
+
+W firmę może zainwestować: inna osoba, inna firma albo bank/fundusz.
+
+\begin{itemize}[noitemsep]
+    \item \textbf{Rozwiązanie:} W tabeli \texttt{Investment} (Inwestycje) mam trzy kolumny na ID: \texttt{person\_id}, \texttt{financial\_org\_id} i \texttt{investing\_company\_id}. Wypełniam tylko jedną z nich dla danej inwestycji, a reszta zostaje pusta. To proste i skuteczne rozwiązanie problemu polimorfizmu w SQL.
+\end{itemize}
+
+\subsection{Normalizacja}
+
+Starałem się trzymać zasad normalizacji:
+
+\begin{itemize}[noitemsep]
+    \item \textbf{1NF (Atomowość):} W każdej kratce tabeli jest jedna wartość. Wyjątkiem są wspomniane wcześniej tagi, które zostawiłem jako listę po przecinku dla wygody.
+    \item \textbf{2NF:} Każda tabela ma swój klucz główny (\texttt{ID}), więc wszystkie dane w wierszu dotyczą konkretnego obiektu (np.\@ konkretnej firmy). Nie ma sytuacji, że część danych zależy od czegoś innego.
+    \item \textbf{3NF:} Usunąłem zależności przechodnie.
+    
+    \textit{Mały wyjątek:} W tabeli \texttt{Acquisition} (Przejęcia) trzymam nazwę przejętej firmy ORAZ jej ID. Robię to celowo --- czasem przejmowana firma nie istnieje w naszej bazie (nie ma ID), a musimy wiedzieć, jak się nazywała. To bezpieczniejsza opcja.
+\end{itemize}
+
+\newpage
+% ============================================================================
+% ROZDZIAŁ 3: OBIEKTY BAZY DANYCH
+% ============================================================================
+\section{Obiekty bazy danych i ich opis}
+
+% --- 3.A TABELE ---
+\subsection{Tabele}
+
+Baza danych składa się z 18 tabel. Poniżej znajduje się szczegółowy opis każdej z nich.
+
+\subsubsection{1. Tabela crunchbase.Company}
+
+\textbf{Opis:} Główna tabela przechowująca podstawowe informacje o firmach (startupach), takie jak nazwa, kategoria, opis, daty założenia i zamknięcia.
+
+\textbf{Klucz główny (PK):} \texttt{company\_id} (INT, IDENTITY).
+
+\textbf{Klucze obce (FK):} Brak.
+
+\textbf{Ograniczenia:}
+\begin{itemize}[noitemsep]
+    \item \texttt{UNIQUE} na kolumnach \texttt{mongo\_id} oraz \texttt{permalink}.
+    \item \texttt{CHECK (number\_of\_employees >= 0)} --- liczba pracowników nie może być ujemna.
+    \item \texttt{CHECK (founded\_month BETWEEN 1 AND 12)} --- walidacja miesiąca.
+    \item \texttt{CHECK (founded\_day BETWEEN 1 AND 31)} --- walidacja dnia.
+    \item \texttt{DEFAULT GETDATE()} dla dat utworzenia rekordu.
+\end{itemize}
+
+\textbf{Uwagi:} Pole \texttt{tag\_list} jest przechowywane jako tekst (odstępstwo od 1NF dla uproszczenia).
+
+\subsubsection{2. Tabela crunchbase.Person}
+
+\textbf{Opis:} Słownik osób (pracowników, założycieli, inwestorów).
+
+\textbf{Klucz główny (PK):} \texttt{person\_id} (INT, IDENTITY).
+
+\textbf{Klucze obce (FK):} Brak.
+
+\textbf{Ograniczenia:} \texttt{UNIQUE} na kolumnie \texttt{permalink}.
+
+\subsubsection{3. Tabela crunchbase.FinancialOrg}
+
+\textbf{Opis:} Słownik organizacji finansowych (fundusze VC, banki).
+
+\textbf{Klucz główny (PK):} \texttt{financial\_org\_id} (INT, IDENTITY).
+
+\textbf{Klucze obce (FK):} Brak.
+
+\textbf{Ograniczenia:} \texttt{UNIQUE} na kolumnie \texttt{permalink}.
+
+\subsubsection{4. Tabela crunchbase.Product}
+
+\textbf{Opis:} Produkty oferowane przez firmy.
+
+\textbf{Klucz główny (PK):} \texttt{product\_id} (INT, IDENTITY).
+
+\textbf{Klucz obcy (FK):} \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE).
+
+\textbf{Ograniczenia:} Brak dodatkowych.
+
+\subsubsection{5. Tabela crunchbase.Office}
+
+\textbf{Opis:} Lokalizacje biur i siedzib firm.
+
+\textbf{Klucz główny (PK):} \texttt{office\_id} (INT, IDENTITY).
+
+\textbf{Klucz obcy (FK):} \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE).
+
+\textbf{Ograniczenia:} Brak dodatkowych.
+
+\subsubsection{6. Tabela crunchbase.FundingRound}
+
+\textbf{Opis:} Rundy finansowania firm --- typ rundy (seed, Series A, B, C, etc.), kwota, waluta, data.
+
+\textbf{Klucz główny (PK):} \texttt{funding\_round\_id} (INT, IDENTITY).
+
+\textbf{Klucz obcy (FK):} \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE).
+
+\textbf{Ograniczenia:}
+\begin{itemize}[noitemsep]
+    \item \texttt{CHECK (raised\_amount >= 0)} --- kwota nie może być ujemna.
+    \item \texttt{DEFAULT 'USD'} dla \texttt{raised\_currency\_code}.
+    \item \texttt{CHECK (funded\_month BETWEEN 1 AND 12)} --- walidacja miesiąca.
+    \item \texttt{CHECK (funded\_day BETWEEN 1 AND 31)} --- walidacja dnia.
+\end{itemize}
+
+\subsubsection{7. Tabela crunchbase.Investment}
+
+\textbf{Opis:} Łączy rundę finansowania z inwestorem. Inwestorem może być osoba, organizacja finansowa lub inna firma.
+
+\textbf{Klucz główny (PK):} \texttt{investment\_id} (INT, IDENTITY).
+
+\textbf{Klucze obce (FK):}
+\begin{itemize}[noitemsep]
+    \item \texttt{funding\_round\_id} $\rightarrow$ \texttt{FundingRound} (ON DELETE CASCADE) --- w co zainwestowano.
+    \item \texttt{person\_id} $\rightarrow$ \texttt{Person} (opcjonalny) --- jeśli inwestorem jest osoba.
+    \item \texttt{financial\_org\_id} $\rightarrow$ \texttt{FinancialOrg} (opcjonalny) --- jeśli inwestorem jest organizacja.
+    \item \texttt{investing\_company\_id} $\rightarrow$ \texttt{Company} (opcjonalny) --- jeśli inwestorem jest inna firma.
+\end{itemize}
+
+\textbf{Uwagi:} W danym rekordzie wypełniony jest zazwyczaj tylko jeden z trzech kluczy inwestorów.
+
+\subsubsection{8. Tabela crunchbase.Acquisition}
+
+\textbf{Opis:} Informacje o zakupie jednej firmy przez drugą.
+
+\textbf{Klucz główny (PK):} \texttt{acquisition\_id} (INT, IDENTITY).
+
+\textbf{Klucze obce (FK):}
+\begin{itemize}[noitemsep]
+    \item \texttt{acquiring\_company\_id} $\rightarrow$ \texttt{Company} --- firma kupująca.
+    \item \texttt{acquired\_company\_id} $\rightarrow$ \texttt{Company} (opcjonalny) --- firma kupowana.
+\end{itemize}
+
+\textbf{Uwagi do normalizacji:} Przechowuję nazwę przejmowanej firmy (\texttt{acquired\_company\_name}) jako tekst, nawet jeśli mam do niej ID. To zabezpieczenie na wypadek, gdyby przejmowana firma nie istniała w naszej bazie jako osobny rekord (świadoma redundancja).
+
+\subsubsection{9. Tabela crunchbase.Milestone}
+
+\textbf{Opis:} Kamienie milowe w historii firmy (ważne wydarzenia).
+
+\textbf{Klucz główny (PK):} \texttt{milestone\_id} (INT, IDENTITY).
+
+\textbf{Klucz obcy (FK):} \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE).
+
+\textbf{Ograniczenia:} Brak dodatkowych.
+
+\subsubsection{10. Tabela crunchbase.Competitor}
+
+\textbf{Opis:} Informacje o konkurentach firm.
+
+\textbf{Klucz główny (PK):} \texttt{competitor\_id} (INT, IDENTITY).
+
+\textbf{Klucze obce (FK):}
+\begin{itemize}[noitemsep]
+    \item \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE) --- firma.
+    \item \texttt{competitor\_company\_id} $\rightarrow$ \texttt{Company} (opcjonalny) --- firma konkurencyjna.
+\end{itemize}
+
+\textbf{Ograniczenia:} \texttt{UNIQUE (company\_id, competitor\_permalink)} --- unikalna para firma-konkurent.
+
+\subsubsection{11. Tabela crunchbase.CompanyRelationship}
+
+\textbf{Opis:} Tabela łącznikowa dla relacji wiele-do-wielu między osobami a firmami. Przechowuje historię zatrudnienia.
+
+\textbf{Klucz główny (PK):} \texttt{relationship\_id} (INT, IDENTITY).
+
+\textbf{Klucze obce (FK):}
+\begin{itemize}[noitemsep]
+    \item \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE).
+    \item \texttt{person\_id} $\rightarrow$ \texttt{Person} (ON DELETE CASCADE).
+\end{itemize}
+
+\textbf{Dodatkowe pola:} \texttt{title} (stanowisko), \texttt{is\_past} (czy to była praca w przeszłości).
+
+\subsubsection{12. Tabela crunchbase.ExternalLink}
+
+\textbf{Opis:} Linki zewnętrzne do artykułów o firmie.
+
+\textbf{Klucz główny (PK):} \texttt{external\_link\_id} (INT, IDENTITY).
+
+\textbf{Klucz obcy (FK):} \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE).
+
+\textbf{Ograniczenia:} Brak dodatkowych.
+
+\subsubsection{13. Tabela crunchbase.Screenshot}
+
+\textbf{Opis:} Zrzuty ekranu produktów.
+
+\textbf{Klucz główny (PK):} \texttt{screenshot\_id} (INT, IDENTITY).
+
+\textbf{Klucz obcy (FK):} \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE).
+
+\textbf{Ograniczenia:} Brak dodatkowych.
+
+\subsubsection{14. Tabela crunchbase.ScreenshotSize}
+
+\textbf{Opis:} Różne rozmiary zrzutów ekranu (thumbnails).
+
+\textbf{Klucz główny (PK):} \texttt{screenshot\_size\_id} (INT, IDENTITY).
+
+\textbf{Klucz obcy (FK):} \texttt{screenshot\_id} $\rightarrow$ \texttt{Screenshot} (ON DELETE CASCADE).
+
+\textbf{Ograniczenia:} Brak dodatkowych.
+
+\subsubsection{15. Tabela crunchbase.VideoEmbed}
+
+\textbf{Opis:} Osadzone filmy (kod embed) dotyczące firm.
+
+\textbf{Klucz główny (PK):} \texttt{video\_embed\_id} (INT, IDENTITY).
+
+\textbf{Klucz obcy (FK):} \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE).
+
+\textbf{Ograniczenia:} Brak dodatkowych.
+
+\subsubsection{16. Tabela crunchbase.Provider}
+
+\textbf{Opis:} Dostawcy usług dla firm.
+
+\textbf{Klucz główny (PK):} \texttt{provider\_id} (INT, IDENTITY).
+
+\textbf{Klucze obce (FK):}
+\begin{itemize}[noitemsep]
+    \item \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE) --- firma.
+    \item \texttt{provider\_company\_id} $\rightarrow$ \texttt{Company} (opcjonalny) --- firma dostawcy.
+\end{itemize}
+
+\textbf{Ograniczenia:} Brak dodatkowych.
+
+\subsubsection{17. Tabela crunchbase.CompanyImage}
+
+\textbf{Opis:} Obrazy i logo firm.
+
+\textbf{Klucz główny (PK):} \texttt{image\_id} (INT, IDENTITY).
+
+\textbf{Klucz obcy (FK):} \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE).
+
+\textbf{Ograniczenia:} Brak dodatkowych.
+
+\subsubsection{18. Tabela crunchbase.CompanyIPO}
+
+\textbf{Opis:} Informacje o IPO (Initial Public Offering) firmy.
+
+\textbf{Klucz główny (PK):} \texttt{ipo\_id} (INT, IDENTITY).
+
+\textbf{Klucz obcy (FK):} \texttt{company\_id} $\rightarrow$ \texttt{Company} (ON DELETE CASCADE, UNIQUE).
+
+\textbf{Ograniczenia:} Firma może mieć tylko jedno IPO (relacja 1:1).
+
+% --- 3.B INDEKSY ---
+\subsection{Indeksy}
+
+W bazie danych utworzono następujące indeksy nieklastrowe (poza automatycznymi dla PK i UNIQUE):
+
+\begin{table}[H]
+\centering
+\caption{Indeksy utworzone w bazie danych}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Nazwa indeksu} & \textbf{Tabela} & \textbf{Kolumna} \\
+\hline
+IX\_Company\_Name & Company & name \\
+IX\_Company\_CategoryCode & Company & category\_code \\
+IX\_FundingRound\_RoundCode & FundingRound & round\_code \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Uzasadnienie utworzenia indeksów:}
+
+\begin{enumerate}[noitemsep]
+    \item \textbf{IX\_Company\_Name} --- przyspiesza wyszukiwanie firm po nazwie, często używane w zapytaniach.
+    
+    \item \textbf{IX\_Company\_CategoryCode} --- przyspiesza filtrowanie firm według kategorii działalności.
+    
+    \item \textbf{IX\_FundingRound\_RoundCode} --- przyspiesza grupowanie i filtrowanie rund finansowania według typu (seed, series-a, series-b, etc.).
+\end{enumerate}
+
+% --- 3.C TRIGGERY ---
+\subsection{Triggery}
+
+W obecnej wersji bazy danych \textbf{nie zdefiniowano triggerów}. Zrezygnowano z triggerów na rzecz więzów integralności (FOREIGN KEY CASCADE) oraz procedur składowanych, co zapewnia lepszą wydajność i przejrzystość logiki bazy.
+
+Integralność danych jest zapewniona przez:
+\begin{itemize}[noitemsep]
+    \item więzy klucza obcego (FK) z opcją ON DELETE CASCADE,
+    \item ograniczenia CHECK walidujące wartości,
+    \item ograniczenia DEFAULT dla wartości domyślnych,
+    \item procedurę składowaną do bezpiecznego wstawiania/aktualizacji danych.
+\end{itemize}
+
+\newpage
+\subsection{Procedury składowane}
+
+\subsubsection{Procedura: UpsertCompany}
+
+\textbf{Opis:} Procedura służąca do wstawiania nowej firmy lub aktualizacji istniejącej na podstawie unikalnego identyfikatora \texttt{mongo\_id}. Implementuje wzorzec UPSERT (UPDATE or INSERT).
+
+\textbf{Parametry wejściowe:}
+\begin{itemize}[noitemsep]
+    \item \texttt{@mongo\_id} (NVARCHAR(50)) --- unikalny identyfikator z MongoDB (wymagany)
+    \item \texttt{@name} (NVARCHAR(255)) --- nazwa firmy (wymagany)
+    \item \texttt{@permalink} (NVARCHAR(255)) --- unikalny identyfikator URL (wymagany)
+    \item \texttt{@category\_code} (NVARCHAR(100)) --- kategoria działalności (opcjonalny)
+    \item \texttt{@description} (NVARCHAR(MAX)) --- opis firmy (opcjonalny)
+    \item \texttt{@number\_of\_employees} (INT) --- liczba pracowników (opcjonalny)
+    \item \texttt{@founded\_year} (INT) --- rok założenia (opcjonalny)
+\end{itemize}
+
+\textbf{Działanie:}
+\begin{enumerate}[noitemsep]
+    \item Sprawdza, czy firma o podanym \texttt{mongo\_id} już istnieje w bazie.
+    \item Jeśli istnieje --- aktualizuje dane (UPDATE) i ustawia \texttt{updated\_at = GETDATE()}.
+    \item Jeśli nie istnieje --- wstawia nowy rekord (INSERT).
+    \item Wyświetla komunikat o wykonanej operacji.
+\end{enumerate}
+
+\begin{lstlisting}[caption={Procedura UpsertCompany}]
+CREATE OR ALTER PROCEDURE crunchbase.UpsertCompany
+    @mongo_id NVARCHAR(50),
+    @name NVARCHAR(255),
+    @permalink NVARCHAR(255),
+    @category_code NVARCHAR(100) = NULL,
+    @description NVARCHAR(MAX) = NULL,
+    @number_of_employees INT = NULL,
+    @founded_year INT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    IF EXISTS (SELECT 1 FROM crunchbase.Company 
+               WHERE mongo_id = @mongo_id)
+    BEGIN
+        UPDATE crunchbase.Company
+        SET name = @name,
+            category_code = @category_code,
+            description = @description,
+            number_of_employees = @number_of_employees,
+            founded_year = @founded_year,
+            updated_at = GETDATE()
+        WHERE mongo_id = @mongo_id;
+        
+        PRINT 'Firma zaktualizowana: ' + @name;
+    END
+    ELSE
+    BEGIN
+        INSERT INTO crunchbase.Company 
+            (mongo_id, name, permalink, category_code, 
+             description, number_of_employees, founded_year)
+        VALUES 
+            (@mongo_id, @name, @permalink, @category_code, 
+             @description, @number_of_employees, @founded_year);
+        
+        PRINT 'Firma dodana: ' + @name;
+    END
+END
+\end{lstlisting}
+
+\textbf{Zastosowanie:} Procedura umożliwia bezpieczne dodawanie i aktualizowanie firm bez ryzyka duplikacji danych. Jest wykorzystywana przez użytkownika \texttt{Emp} do zarządzania danymi.
+
+% --- 3.E FUNKCJE ---
+\subsection{Funkcje użytkownika}
+
+\subsubsection{Funkcja skalarna: GetTotalFunding}
+
+\textbf{Opis:} Funkcja skalarna zwracająca łączną sumę finansowania pozyskanego przez firmę we wszystkich rundach finansowania.
+
+\textbf{Parametry wejściowe:}
+\begin{itemize}[noitemsep]
+    \item \texttt{@company\_id} (INT) --- identyfikator firmy
+\end{itemize}
+
+\textbf{Zwracana wartość:} \texttt{DECIMAL(18,2)} --- suma finansowania (0 jeśli brak danych)
+
+\begin{lstlisting}[caption={Funkcja GetTotalFunding}]
+CREATE OR ALTER FUNCTION crunchbase.GetTotalFunding(
+    @company_id INT
+)
+RETURNS DECIMAL(18,2)
+AS
+BEGIN
+    DECLARE @total DECIMAL(18,2);
+    
+    SELECT @total = ISNULL(SUM(raised_amount), 0)
+    FROM crunchbase.FundingRound
+    WHERE company_id = @company_id;
+    
+    RETURN @total;
+END
+\end{lstlisting}
+
+\textbf{Zastosowanie:} Funkcja jest wykorzystywana w widoku \texttt{vw\_CompanyOverview} do prezentacji podsumowania finansowania każdej firmy. Może być również używana bezpośrednio w zapytaniach SELECT.
+
+\textbf{Przykład użycia:}
+\begin{lstlisting}
+SELECT name, crunchbase.GetTotalFunding(company_id) AS funding
+FROM crunchbase.Company
+ORDER BY funding DESC;
+\end{lstlisting}
+
+% --- 3.F WIDOKI ---
+\subsection{Widoki}
+
+\subsubsection{Widok: vw\_CompanyOverview}
+
+\textbf{Opis:} Widok prezentujący podsumowanie informacji o firmach wraz z obliczonym łącznym finansowaniem i liczbą produktów oraz rund finansowania.
+
+\begin{lstlisting}[caption={Widok vw\_CompanyOverview}]
+CREATE OR ALTER VIEW crunchbase.vw_CompanyOverview
+AS
+SELECT 
+    c.company_id,
+    c.name,
+    c.category_code,
+    c.founded_year,
+    c.number_of_employees,
+    c.homepage_url,
+    crunchbase.GetTotalFunding(c.company_id) AS total_funding,
+    (SELECT COUNT(*) FROM crunchbase.FundingRound fr 
+     WHERE fr.company_id = c.company_id) AS funding_rounds_count,
+    (SELECT COUNT(*) FROM crunchbase.Product p 
+     WHERE p.company_id = c.company_id) AS products_count
+FROM crunchbase.Company c;
+\end{lstlisting}
+
+\textbf{Kolumny widoku:}
+\begin{itemize}[noitemsep]
+    \item \texttt{company\_id} --- identyfikator firmy
+    \item \texttt{name} --- nazwa firmy
+    \item \texttt{category\_code} --- kategoria działalności
+    \item \texttt{founded\_year} --- rok założenia
+    \item \texttt{number\_of\_employees} --- liczba pracowników
+    \item \texttt{homepage\_url} --- strona główna firmy
+    \item \texttt{total\_funding} --- łączne finansowanie (obliczone przez funkcję)
+    \item \texttt{funding\_rounds\_count} --- liczba rund finansowania
+    \item \texttt{products\_count} --- liczba produktów
+\end{itemize}
+
+\textbf{Zastosowanie:} Widok umożliwia szybki przegląd najważniejszych informacji o firmach bez konieczności pisania złożonych zapytań. Jest udostępniony użytkownikowi \texttt{Guest} do przeglądania danych.
+
+\textbf{Przykład użycia:}
+\begin{lstlisting}
+SELECT * FROM crunchbase.vw_CompanyOverview
+ORDER BY total_funding DESC;
+\end{lstlisting}
+
+\newpage
+% ============================================================================
+% ROZDZIAŁ 4: ROLE, UPRAWNIENIA I UŻYTKOWNICY
+% ============================================================================
+\section{Role, uprawnienia i użytkownicy}
+
+\subsection{Konfiguracja bazy dla Contained Users}
+
+Baza danych została skonfigurowana z opcją \texttt{CONTAINMENT = PARTIAL}, co umożliwia tworzenie użytkowników przechowywanych lokalnie w bazie (contained users). Użytkownicy ci nie wymagają loginów na poziomie serwera.
+
+\begin{lstlisting}[caption={Konfiguracja Contained Database Authentication}]
+-- Wlaczenie zaawansowanych opcji
+EXEC sp_configure 'show advanced options', 1;
+RECONFIGURE;
+
+-- Wlaczenie contained database authentication
+EXEC sp_configure 'contained database authentication', 1;
+RECONFIGURE;
+
+-- Utworzenie bazy z CONTAINMENT = PARTIAL
+CREATE DATABASE CompanyDB CONTAINMENT = PARTIAL;
+\end{lstlisting}
+
+\subsection{Role w bazie danych}
+
+W bazie zdefiniowano trzy role odpowiadające różnym poziomom dostępu:
+
+\begin{table}[H]
+\centering
+\caption{Role zdefiniowane w bazie danych}
+\begin{tabular}{|l|l|p{7cm}|}
+\hline
+\textbf{Rola} & \textbf{Poziom} & \textbf{Uprawnienia} \\
+\hline
+AdminRole & Pełny & Członek roli \texttt{db\_owner} --- pełne uprawnienia do wszystkich obiektów bazy \\
+\hline
+EmpRole & Ograniczony & Uprawnienie EXECUTE na schemacie \texttt{crunchbase} --- może wykonywać procedury składowane \\
+\hline
+GuestRole & Minimalny & Uprawnienie SELECT na widoku \texttt{vw\_CompanyOverview} --- tylko odczyt przez widok \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{lstlisting}[caption={Tworzenie ról i nadawanie uprawnień}]
+-- Rola administratora
+CREATE ROLE AdminRole;
+ALTER ROLE db_owner ADD MEMBER AdminRole;
+
+-- Rola pracownika
+CREATE ROLE EmpRole;
+GRANT EXECUTE ON SCHEMA::crunchbase TO EmpRole;
+
+-- Rola goscia
+CREATE ROLE GuestRole;
+GRANT SELECT ON crunchbase.vw_CompanyOverview TO GuestRole;
+\end{lstlisting}
+
+\subsection{Użytkownicy (Contained Users)}
+
+W bazie utworzono trzech użytkowników lokalnych (contained users):
+
+\begin{table}[H]
+\centering
+\caption{Użytkownicy w bazie danych}
+\begin{tabular}{|l|l|l|p{5cm}|}
+\hline
+\textbf{Użytkownik} & \textbf{Hasło} & \textbf{Rola} & \textbf{Możliwości} \\
+\hline
+Admin & Admin & AdminRole & Pełny dostęp do bazy, tworzenie/modyfikacja/usuwanie obiektów \\
+\hline
+Emp & Emp & EmpRole & Wykonywanie procedur składowanych (np. UpsertCompany) \\
+\hline
+Guest & Guest & GuestRole & Przeglądanie danych tylko przez widok \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{lstlisting}[caption={Tworzenie użytkowników contained}]
+-- Administrator
+CREATE USER Admin WITH PASSWORD = 'Admin';
+ALTER ROLE AdminRole ADD MEMBER Admin;
+
+-- Pracownik
+CREATE USER Emp WITH PASSWORD = 'Emp';
+ALTER ROLE EmpRole ADD MEMBER Emp;
+
+-- Gosc
+CREATE USER Guest WITH PASSWORD = 'Guest';
+ALTER ROLE GuestRole ADD MEMBER Guest;
+\end{lstlisting}
+
+\subsection{Sposób logowania jako Contained User}
+
+Aby zalogować się jako contained user w SQL Server Management Studio:
+
+\begin{enumerate}
+    \item Server name: \texttt{localhost} (lub nazwa serwera)
+    \item Authentication: \texttt{SQL Server Authentication}
+    \item Login: \texttt{Admin} / \texttt{Emp} / \texttt{Guest}
+    \item Password: \texttt{Admin} / \texttt{Emp} / \texttt{Guest}
+    \item Options $\rightarrow$ Connect to database: \texttt{CompanyDB}
+\end{enumerate}
+
+\subsection{Testowanie uprawnień}
+
+\textbf{Test użytkownika Admin:}
+\begin{lstlisting}
+-- Logowanie jako Admin - moze wszystko
+SELECT * FROM crunchbase.Company;
+INSERT INTO crunchbase.Company (mongo_id, name, permalink) 
+VALUES ('test123', 'Test', 'test');
+EXEC crunchbase.UpsertCompany 'test456', 'Test2', 'test2';
+\end{lstlisting}
+
+\textbf{Test użytkownika Emp:}
+\begin{lstlisting}
+-- Logowanie jako Emp - moze wykonac procedure
+EXEC crunchbase.UpsertCompany 'test789', 'Test3', 'test3';
+
+-- Nie moze bezposrednio modyfikowac tabel
+SELECT * FROM crunchbase.Company; -- BLAD!
+\end{lstlisting}
+
+\textbf{Test użytkownika Guest:}
+\begin{lstlisting}
+-- Logowanie jako Guest - moze tylko przegladac widok
+SELECT * FROM crunchbase.vw_CompanyOverview;
+
+-- Nie moze nic wiecej
+SELECT * FROM crunchbase.Company; -- BLAD!
+EXEC crunchbase.UpsertCompany 'x', 'X', 'x'; -- BLAD!
+\end{lstlisting}
+
+\newpage
+% ============================================================================
+% ROZDZIAŁ 5: UWAGI KOŃCOWE
+% ============================================================================
+\section{Uwagi końcowe}
+
+\subsection{Napotkane problemy}
+
+Podczas realizacji projektu napotkano następujące wyzwania:
+
+\begin{enumerate}
+    \item \textbf{Struktura zagnieżdżona JSON} --- dokumenty JSON zawierały głęboko zagnieżdżone obiekty (np.\ \texttt{investments} wewnątrz \texttt{funding\_rounds}). Wymagało to użycia wielokrotnego \texttt{CROSS APPLY OPENJSON}.
+    
+    \item \textbf{Polimorficzne inwestycje} --- inwestorem może być osoba (\texttt{person}), organizacja finansowa (\texttt{financial\_org}) lub firma (\texttt{company}). Rozwiązano przez trzy opcjonalne klucze obce w tabeli \texttt{Investment}.
+    
+    \item \textbf{Referencje do nieistniejących firm} --- niektórzy konkurenci i przejęte firmy nie istnieją w danych źródłowych (6 firm). Zachowano ich nazwy i permalinki jako tekst, z opcjonalnym kluczem obcym jeśli firma istnieje w bazie.
+    
+    \item \textbf{Contained users} --- wymagana była dodatkowa konfiguracja serwera (\texttt{sp\_configure}) przed utworzeniem użytkowników lokalnych.
+\end{enumerate}
+
+\subsection{Elementy zrealizowane}
+
+\begin{itemize}[noitemsep]
+    \item[$\checkmark$] 18 tabel w schemacie \texttt{crunchbase} z pełną strukturą więzów integralności
+    \item[$\checkmark$] Klucze główne (PK) i obce (FK) dla wszystkich tabel
+    \item[$\checkmark$] Ograniczenia CHECK, UNIQUE i DEFAULT
+    \item[$\checkmark$] 3 indeksy nieklastrowe na często używanych kolumnach
+    \item[$\checkmark$] 1 procedura składowana (UpsertCompany)
+    \item[$\checkmark$] 1 funkcja skalarna (GetTotalFunding)
+    \item[$\checkmark$] 1 widok (vw\_CompanyOverview)
+    \item[$\checkmark$] 3 role z różnymi uprawnieniami
+    \item[$\checkmark$] 3 contained users (Admin, Emp, Guest)
+    \item[$\checkmark$] Skrypt importu danych z JSON (OPENJSON)
+    \item[$\checkmark$] Normalizacja do 3NF
+\end{itemize}
+
+\subsection{Pliki projektu}
+
+\begin{table}[H]
+\centering
+\caption{Pliki wchodzące w skład projektu}
+\begin{tabular}{|l|p{9cm}|}
+\hline
+\textbf{Plik} & \textbf{Opis} \\
+\hline
+01\_struktura.sql & Tworzenie bazy danych, schematu i wszystkich 18 tabel z ograniczeniami \\
+\hline
+02\_obiekty.sql & Procedura składowana, funkcja skalarna i widok \\
+\hline
+03\_uzytkownicy.sql & Role i contained users z uprawnieniami \\
+\hline
+04\_import.sql & Import danych z pliku JSON do wszystkich tabel \\
+\hline
+05\_testy.sql & Zapytania testowe i demonstracyjne (SELECT, JOIN, agregacje) \\
+\hline
+Raport\_CompanyDB.pdf & Niniejszy dokument \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Kolejność uruchamiania skryptów}
+
+\begin{enumerate}
+    \item \texttt{01\_struktura.sql} --- tworzenie bazy i tabel
+    \item \texttt{02\_obiekty.sql} --- procedura, funkcja, widok
+    \item \texttt{03\_uzytkownicy.sql} --- role i użytkownicy
+    \item \texttt{04\_import.sql} --- import danych z JSON
+    \item \texttt{05\_testy.sql} --- zapytania testowe (opcjonalnie, do demonstracji)
+\end{enumerate}
+
+\textbf{Uwaga:} W pliku \texttt{04\_import.sql} należy zmodyfikować ścieżkę do pliku JSON odpowiednio do lokalizacji na dysku.
+
+\vspace{1cm}
+\hrule
+\vspace{0.5cm}
+\begin{center}
+\textit{Koniec dokumentu}
+\end{center}
+
+\end{document}

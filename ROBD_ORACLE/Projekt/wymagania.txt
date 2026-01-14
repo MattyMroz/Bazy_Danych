@@ -1,0 +1,22 @@
+Projekt obiektowej bazy danych powinien zawierać opracowaną strukturę składającą się z:
+- definicji typów obiektowych  (łącznie z przewidzianymi niezbędnymi do ich obsługi metodami) ,
+- definicji tabel obiektowych w których składowane będą obiekty wierszowe  i kolumnowe 
+- zastosowana zostanie referencja  (wskaźnikiem do rekordu tabeli obiektowej) i dereferencja pozwalająca na wprowadzenie relacji występujących między obiektami,
+-  wstawianie danych do tabeli z referencją,
+- tworzenie i użytkowanie typu VARRY/ NESTED TABLE - do modelowania relacji jeden do wielu, gdzie po stronie "wiele" występuje kolekcja obiektów,
+- implementacja z zastosowaniem języka PL/SQL logiki biznesowej w postaci pakietów (a w nich procedur/funkcji) umożliwiającej obsługę bazy obiektowej (kursory, ref kursory, obsługa błędów, wyzwalacze itp.)
+- przykład obsługi obiektowej bazy danych od strony opracowanych funkcjonalności.
+
+Dodatkowo proszę przygotować sprawozdanie w którym opisane zostaną założenia projektowe:
+- opis projektu,
+- opis realizacji założeń i przyjętych ograniczeń,
+- przyjęte role użytkowników z podziałem na funkcjonalności
+- podanie "Diagramu Relacji obiektów" wykorzystanych do stworzenia tabel
+
+
+Grupa 5 Temat: Szkoła muzyczna (z naciskiem na rozwój ucznia)
+-----------------------------------------
+Nazwisko Imię Album
+Typiński Igor 251237
+Mateusz Mróz 251190
+
