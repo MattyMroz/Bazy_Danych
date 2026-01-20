@@ -1,0 +1,63 @@
+\babel@toc {polish}{}\relax 
+\contentsline {section}{\numberline {1}Opis projektu}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Cel i zakres}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Technologia}{3}{subsection.1.2}%
+\contentsline {section}{\numberline {2}Typy obiektowe}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Szczegółowy opis typów}{3}{subsection.2.1}%
+\contentsline {subsubsection}{\numberline {2.1.1}t\_uczen\_obj}{3}{subsubsection.2.1.1}%
+\contentsline {subsubsection}{\numberline {2.1.2}t\_nauczyciel\_obj}{4}{subsubsection.2.1.2}%
+\contentsline {subsubsection}{\numberline {2.1.3}t\_kurs\_obj}{4}{subsubsection.2.1.3}%
+\contentsline {subsubsection}{\numberline {2.1.4}t\_zapis\_obj}{4}{subsubsection.2.1.4}%
+\contentsline {subsubsection}{\numberline {2.1.5}t\_lekcja\_obj}{5}{subsubsection.2.1.5}%
+\contentsline {subsubsection}{\numberline {2.1.6}t\_ocena\_obj}{5}{subsubsection.2.1.6}%
+\contentsline {subsubsection}{\numberline {2.1.7}t\_sala\_obj}{5}{subsubsection.2.1.7}%
+\contentsline {subsubsection}{\numberline {2.1.8}t\_semestr\_obj}{6}{subsubsection.2.1.8}%
+\contentsline {subsubsection}{\numberline {2.1.9}t\_lista\_instrumentow}{6}{subsubsection.2.1.9}%
+\contentsline {section}{\numberline {3}Tabele obiektowe}{6}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Szczegółowy opis tabel}{6}{subsection.3.1}%
+\contentsline {subsubsection}{\numberline {3.1.1}t\_uczen}{6}{subsubsection.3.1.1}%
+\contentsline {subsubsection}{\numberline {3.1.2}t\_nauczyciel}{7}{subsubsection.3.1.2}%
+\contentsline {subsubsection}{\numberline {3.1.3}t\_kurs}{7}{subsubsection.3.1.3}%
+\contentsline {subsubsection}{\numberline {3.1.4}t\_zapis}{7}{subsubsection.3.1.4}%
+\contentsline {subsubsection}{\numberline {3.1.5}t\_lekcja}{7}{subsubsection.3.1.5}%
+\contentsline {subsubsection}{\numberline {3.1.6}t\_ocena\_postepu}{7}{subsubsection.3.1.6}%
+\contentsline {subsubsection}{\numberline {3.1.7}t\_sala}{7}{subsubsection.3.1.7}%
+\contentsline {subsubsection}{\numberline {3.1.8}t\_semestr}{8}{subsubsection.3.1.8}%
+\contentsline {subsection}{\numberline {3.2}Referencje (REF/DEREF)}{8}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Sekwencje}{8}{subsection.3.3}%
+\contentsline {section}{\numberline {4}Pakiety PL/SQL}{8}{section.4}%
+\contentsline {subsection}{\numberline {4.1}pkg\_semestr}{8}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}pkg\_sala}{9}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}pkg\_uczen}{9}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}pkg\_lekcja}{9}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}pkg\_ocena}{10}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Kursory}{10}{subsection.4.6}%
+\contentsline {section}{\numberline {5}Wyzwalacze (Triggery)}{10}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Triggery walidacyjne}{10}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Triggery kontroli semestrów}{10}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Triggery blokujące usuwanie}{10}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Triggery audytowe}{10}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Szczegółowy opis wybranych triggerów}{10}{subsection.5.5}%
+\contentsline {subsubsection}{\numberline {5.5.1}trg\_lekcja\_godziny\_dziecka}{10}{subsubsection.5.5.1}%
+\contentsline {subsubsection}{\numberline {5.5.2}trg\_lekcja\_limit\_nauczyciela}{11}{subsubsection.5.5.2}%
+\contentsline {subsubsection}{\numberline {5.5.3}trg\_semestr\_tylko\_jeden\_aktywny}{11}{subsubsection.5.5.3}%
+\contentsline {subsection}{\numberline {5.6}Kody błędów}{11}{subsection.5.6}%
+\contentsline {section}{\numberline {6}Przyjęte ograniczenia}{11}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Ograniczenia dotyczące uczniów}{11}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Ograniczenia dotyczące nauczycieli}{12}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Ograniczenia dotyczące lekcji}{12}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Ograniczenia dotyczące ocen}{12}{subsection.6.4}%
+\contentsline {subsection}{\numberline {6.5}Ograniczenia dotyczące kursów}{12}{subsection.6.5}%
+\contentsline {subsection}{\numberline {6.6}Ograniczenia dotyczące sal}{13}{subsection.6.6}%
+\contentsline {subsection}{\numberline {6.7}Ograniczenia dotyczące semestrów}{13}{subsection.6.7}%
+\contentsline {subsection}{\numberline {6.8}Ograniczenia dotyczące zapisów}{13}{subsection.6.8}%
+\contentsline {section}{\numberline {7}Role użytkowników}{13}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Administrator (ROLA\_ADMIN\_SZKOLY)}{13}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Nauczyciel (ROLA\_NAUCZYCIEL)}{14}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Sekretariat (ROLA\_SEKRETARIAT)}{14}{subsection.7.3}%
+\contentsline {subsection}{\numberline {7.4}Użytkownicy testowi}{14}{subsection.7.4}%
+\contentsline {section}{\numberline {8}Testy}{14}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Przykładowe testy}{14}{subsection.8.1}%
+\contentsline {section}{\numberline {9}Diagram relacji obiektów}{15}{section.9}%
+\contentsline {section}{\numberline {10}Podsumowanie}{15}{section.10}%
+\contentsline {subsection}{\numberline {10.1}Pliki projektu}{16}{subsection.10.1}%

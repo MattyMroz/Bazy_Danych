@@ -2,15 +2,15 @@
 -- Uprawnienia --------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------
 
--- Podmiot zabezpieczeñ (ang. security principal)
--- Przedmiot zabezpieczeñ (ang. securable)
--- Wszystkie polecenia mo¿na utworzyæ za pomoc¹ narzêdzia SSMS i za pommoc¹ tego narzêdzia sprawdzaæ przypisane upranienia (warto z tego narzêdzia korzystaæ)
--- Uwaga: Login na poziomie instancji SQL Server zawiera has³o. Natomiast, ka¿da baza danych ma swoich u¿ytkowników na poziomie ka¿dej z baz.
-	-- Login jest mapowany w ka¿dej bazie danych na konkretne konto bazy danych.
-	-- (jeœli takiego konta nie ma to mapowany jest jako u¿ytkownik Guest z odpowiednimi uprawnieniami chyba, ¿e konto to jest wy³¹czone)
+-- Podmiot zabezpieczeÅ„ (ang. security principal)
+-- Przedmiot zabezpieczeÅ„ (ang. securable)
+-- Wszystkie polecenia moÅ¼na utworzyÄ‡ za pomocÄ… narzÄ™dzia SSMS i za pommocÄ… tego narzÄ™dzia sprawdzaÄ‡ przypisane upranienia (warto z tego narzÄ™dzia korzystaÄ‡)
+-- Uwaga: Login na poziomie instancji SQL Server zawiera hasÅ‚o. Natomiast, kaÅ¼da baza danych ma swoich uÅ¼ytkownikÃ³w na poziomie kaÅ¼dej z baz.
+	-- Login jest mapowany w kaÅ¼dej bazie danych na konkretne konto bazy danych.
+	-- (jeÅ›li takiego konta nie ma to mapowany jest jako uÅ¼ytkownik Guest z odpowiednimi uprawnieniami chyba, Å¼e konto to jest wyÅ‚Ä…czone)
 
 -----------------------------------------------------------------------------------------------------------------
--- Kasowanie istniej¹cych loginów, u¿ytkowników i schematów -----------------------------------------------------
+-- Kasowanie istniejÄ…cych loginÃ³w, uÅ¼ytkownikÃ³w i schematÃ³w -----------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------
 USE MASTER
 GO
@@ -46,7 +46,7 @@ GO
 ------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------
 
--- Tworzymy bazê TEST i dwie tabele Categories i Products
+-- Tworzymy bazÄ™ TEST i dwie tabele Categories i Products
 USE MASTER
 GO
 DROP DATABASE IF EXISTS TEST;
@@ -58,96 +58,96 @@ GO
 SELECT * INTO test.dbo.categories FROM Northwind.dbo.Categories
 SELECT * INTO test.dbo.products FROM Northwind.dbo.Products
 
--- Tworzymy nowe konto na poziomie serwera o nazwie ADMIN (próbujemy siê zalogowaæ)
--- aby to siê uda³o musimy zdefiniowaæ domyœln¹ bazê danych dla danego konta logowania (default MASTER)
--- jeœli damy bazê TEST jako default to niestety system nie pozwoli nam na zalogowanie, gdy¿ nie mamy uprawnieñ do bazy TEST
+-- Tworzymy nowe konto na poziomie serwera o nazwie ADMIN (prÃ³bujemy siÄ™ zalogowaÄ‡)
+-- aby to siÄ™ udaÅ‚o musimy zdefiniowaÄ‡ domyÅ›lnÄ… bazÄ™ danych dla danego konta logowania (default MASTER)
+-- jeÅ›li damy bazÄ™ TEST jako default to niestety system nie pozwoli nam na zalogowanie, gdyÅ¼ nie mamy uprawnieÅ„ do bazy TEST
 CREATE LOGIN [ADMIN] WITH PASSWORD='admin', DEFAULT_DATABASE=[master], 
 	DEFAULT_LANGUAGE=[polski], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF;
 GO
 
--- Logujemy siê jako [ADMIN] i sprawdzamy co widzimy w SSMS 
--- (w Object Explorer mo¿emy wykonaæ dodatkowe po³¹czenie za pomoc¹ CONNECT podaj¹c powy¿sze konto)
--- Nastêpnie kasujemy to konto.
--- Jeœli s¹ k³opoty to w pasku SSMS jest ikonka Activity Monitor, 
--- gdzie mo¿emy zamkn¹æ dane po³¹czenie dla u¿ytkownika [ADMIN] (Kill Process)
+-- Logujemy siÄ™ jako [ADMIN] i sprawdzamy co widzimy w SSMS 
+-- (w Object Explorer moÅ¼emy wykonaÄ‡ dodatkowe poÅ‚Ä…czenie za pomocÄ… CONNECT podajÄ…c powyÅ¼sze konto)
+-- NastÄ™pnie kasujemy to konto.
+-- JeÅ›li sÄ… kÅ‚opoty to w pasku SSMS jest ikonka Activity Monitor, 
+-- gdzie moÅ¼emy zamknÄ…Ä‡ dane poÅ‚Ä…czenie dla uÅ¼ytkownika [ADMIN] (Kill Process)
 DROP LOGIN [ADMIN]
 GO
 
--- Jeszcze raz definiujemy dane konto generuj¹c kod za pomoc¹ SSMS (Security | Logins | pod prawym przyciskiem myszy mamy New Logins ...)
+-- Jeszcze raz definiujemy dane konto generujÄ…c kod za pomocÄ… SSMS (Security | Logins | pod prawym przyciskiem myszy mamy New Logins ...)
 CREATE LOGIN [ADMIN] WITH PASSWORD='admin', DEFAULT_DATABASE=[Test], 
 	DEFAULT_LANGUAGE=[polski], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF;
 
--- Logujemy siê jako [ADMIN] i sprawdzamy co widzimy w SSMS 
--- Tutaj niestety nie jesteœmy wstanie zalogowaæ siê do bazy Test.
+-- Logujemy siÄ™ jako [ADMIN] i sprawdzamy co widzimy w SSMS 
+-- Tutaj niestety nie jesteÅ›my wstanie zalogowaÄ‡ siÄ™ do bazy Test.
 
--- Sprawdzamy czy konto GUEST jest w³¹czone (na poziomie bazy danych TEST)
--- standardowo uprawnienie connect jest wy³¹czone i jeœli w³¹czymy to uprawnienie to mo¿emy wejœæ do danej bazy danych 
--- z racji uprawnieñ u¿ytkownika GUEST oraz uprawnieñ roli PUBLIC (konto u¿ytkownika bazy GUEST jest typu "SQL user without login")
+-- Sprawdzamy czy konto GUEST jest wÅ‚Ä…czone (na poziomie bazy danych TEST)
+-- standardowo uprawnienie connect jest wyÅ‚Ä…czone i jeÅ›li wÅ‚Ä…czymy to uprawnienie to moÅ¼emy wejÅ›Ä‡ do danej bazy danych 
+-- z racji uprawnieÅ„ uÅ¼ytkownika GUEST oraz uprawnieÅ„ roli PUBLIC (konto uÅ¼ytkownika bazy GUEST jest typu "SQL user without login")
 USE TEST
 GO
 REVOKE CONNECT TO [guest] 
--- polecenie do wy³¹czenia konta Guest w bazie TEST 
--- (ikonka w SSMS pokazuje ikonkê z przekreœlonym czerwonym krzy¿ykiem)
--- Miejsce sprawdzenia (Databases | wybieramy bazê Test | Security | Users)
+-- polecenie do wyÅ‚Ä…czenia konta Guest w bazie TEST 
+-- (ikonka w SSMS pokazuje ikonkÄ™ z przekreÅ›lonym czerwonym krzyÅ¼ykiem)
+-- Miejsce sprawdzenia (Databases | wybieramy bazÄ™ Test | Security | Users)
 GO
-GRANT CONNECT TO [guest]  -- ADMIN widzi strukturê bazy, ale bez obiektów (sprawdzamy)
+GRANT CONNECT TO [guest]  -- ADMIN widzi strukturÄ™ bazy, ale bez obiektÃ³w (sprawdzamy)
 GO
-GRANT SELECT ON categories TO public -- ADMIN widzi, tak¿e obiekt Categories (sprawdzamy)
+GRANT SELECT ON categories TO public -- ADMIN widzi, takÅ¼e obiekt Categories (sprawdzamy)
 GO
 REVOKE SELECT ON categories TO public -- wracamy do stanu poprzedniego (sprawdzamy)
 
--- Uwaga! Zabranie prawa CONNECT TO u¿ytkownikowi Guest powoduje brak dostêpu do bazy dla loginu ADMIN
--- Wykonaæ tak¹ operacjê.
+-- Uwaga! Zabranie prawa CONNECT TO uÅ¼ytkownikowi Guest powoduje brak dostÄ™pu do bazy dla loginu ADMIN
+-- WykonaÄ‡ takÄ… operacjÄ™.
 
--- Wykonujemy nadanie uprawnieñ (prawo CONNECT) za pomoc¹ SSMS - Databases | wybieramy bazê Test (PKM) | Properties | Permissions
--- Przyznawanie i zabranie uprawnieñ za pomoc¹ SSMS -  Databases | wybieramy bazê Test | Tables (PKM) | Properties | Permissions
+-- Wykonujemy nadanie uprawnieÅ„ (prawo CONNECT) za pomocÄ… SSMS - Databases | wybieramy bazÄ™ Test (PKM) | Properties | Permissions
+-- Przyznawanie i zabranie uprawnieÅ„ za pomocÄ… SSMS -  Databases | wybieramy bazÄ™ Test | Tables (PKM) | Properties | Permissions
 
 
 ---------------------------------------------------
--- Zapisujemy u¿ytkownika ADMIN do roli sysadmin --
+-- Zapisujemy uÅ¼ytkownika ADMIN do roli sysadmin --
 -- i sprawdzamy co widzi w bazie TEST, Northwind --
 ---------------------------------------------------
 ALTER SERVER ROLE [sysadmin] ADD MEMBER [admin] -- (sprawdzamy)
 -- wypisujemy login ADMIN z roli sysadmin
 ALTER SERVER ROLE [sysadmin] DROP MEMBER [admin]
 
--- sprawdzamy jakie s¹ role serwera i jakie maj¹ uprawnienia
-EXEC sp_srvrolepermission		        -- ogl¹danie wszystkich praw
-EXEC sp_srvrolepermission 'dbcreator'	-- ogl¹danie szczegó³owych praw
+-- sprawdzamy jakie sÄ… role serwera i jakie majÄ… uprawnienia
+EXEC sp_srvrolepermission		        -- oglÄ…danie wszystkich praw
+EXEC sp_srvrolepermission 'dbcreator'	-- oglÄ…danie szczegÃ³Å‚owych praw
 
 ALTER SERVER ROLE [dbcreator] ADD MEMBER [ADMIN] 
--- sprawdziæ czy mo¿e on za³o¿yæ i usun¹æ swoj¹ bazê danych np. Test1
--- wracamy do poprzedniego stanu wczeœniej kasujac bazê Test1
+-- sprawdziÄ‡ czy moÅ¼e on zaÅ‚oÅ¼yÄ‡ i usunÄ…Ä‡ swojÄ… bazÄ™ danych np. Test1
+-- wracamy do poprzedniego stanu wczeÅ›niej kasujac bazÄ™ Test1
 ALTER SERVER ROLE [dbcreator] DROP MEMBER [admin]
 
 
 ------------------------------------------------------------------------------------------------------------------------------
--- Zamiast, za ka¿dym razem pod³¹czaæ siê do serwera w okienku Object Explorer, mo¿emy wykorzystaæ polecenie execute as ... --
+-- Zamiast, za kaÅ¼dym razem podÅ‚Ä…czaÄ‡ siÄ™ do serwera w okienku Object Explorer, moÅ¼emy wykorzystaÄ‡ polecenie execute as ... --
 ------------------------------------------------------------------------------------------------------------------------------
-USE TEST --Pamiêtajmy i¿ uprawnienia dla u¿ytkowników dodajemy w konkretnej bazie danych (nie w bazie master) 
+USE TEST --PamiÄ™tajmy iÅ¼ uprawnienia dla uÅ¼ytkownikÃ³w dodajemy w konkretnej bazie danych (nie w bazie master) 
 GRANT CONNECT TO [guest]
 GO
-USE TEST  -- po wykonaniu polecenia EXECUTE AS LOGIN ... a przed wykonaniem polecenia REVERT musimy znajdowaæ siê w tej samej bazie danych
+USE TEST  -- po wykonaniu polecenia EXECUTE AS LOGIN ... a przed wykonaniem polecenia REVERT musimy znajdowaÄ‡ siÄ™ w tej samej bazie danych
 PRINT Suser_Sname(); -- konto na poziomie instancji (sa)
 PRINT user_name(); -- konto na poziomie bazy danych (dbo)
 
-EXECUTE AS LOGIN='ADMIN'; -- tym poleceniem podszywamy siê pod konto 'admin' (mo¿na u¿yæ te¿ polecenie EXECUTE AS USER ... dla u¿ytkownika bazy danych a nie instancji)
+EXECUTE AS LOGIN='ADMIN'; -- tym poleceniem podszywamy siÄ™ pod konto 'admin' (moÅ¼na uÅ¼yÄ‡ teÅ¼ polecenie EXECUTE AS USER ... dla uÅ¼ytkownika bazy danych a nie instancji)
 PRINT Suser_Sname(); -- konto na poziomie instancji (ADMIN)
 PRINT user_name();   -- konto na poziomie bazy danych (guest)
-REVERT; -- tym poleceniem wracamy do u¿ytkownika sa, który ma prawo IMPERSONATE aby podszyæ siê pod czyjeœ konto bez logowania
+REVERT; -- tym poleceniem wracamy do uÅ¼ytkownika sa, ktÃ³ry ma prawo IMPERSONATE aby podszyÄ‡ siÄ™ pod czyjeÅ› konto bez logowania
 
-EXECUTE AS USER='guest'; -- tym poleceniem podszywamy siê pod konto 'guest' 
+EXECUTE AS USER='guest'; -- tym poleceniem podszywamy siÄ™ pod konto 'guest' 
 PRINT Suser_Sname(); -- konto na poziomie instancji (rola public)
 PRINT user_name();   -- konto na poziomie bazy danych (user guest)
 REVERT; 
 GO
 
--- Wracamy do standardowych ustawieñ dla goœcia (wy³¹czamy to konto)
+-- Wracamy do standardowych ustawieÅ„ dla goÅ›cia (wyÅ‚Ä…czamy to konto)
 USE TEST
 REVOKE CONNECT TO [guest]  
 
 ---------------------------------------------
--- Prawa szczegó³owe na poziomie instancji --
+-- Prawa szczegÃ³Å‚owe na poziomie instancji --
 ---------------------------------------------
 USE MASTER
 GRANT CREATE ANY DATABASE to [ADMIN]
@@ -164,7 +164,7 @@ REVERT;
 REVOKE CREATE ANY DATABASE to [ADMIN];
 
 ---------------------------------------
--- Tworzenie w³asnej roli serwerowej --
+-- Tworzenie wÅ‚asnej roli serwerowej --
 ---------------------------------------
 USE [master]
 GO
@@ -174,45 +174,45 @@ GRANT CREATE ANY DATABASE TO [RolaSerwerowa1];
 GO
 ALTER SERVER ROLE [RolaSerwerowa1] ADD MEMBER [admin];
 GO
--- i sprawdzamy czy admin potrafi utworzyæ i skasowaæ swoj¹ bazê danych
+-- i sprawdzamy czy admin potrafi utworzyÄ‡ i skasowaÄ‡ swojÄ… bazÄ™ danych
 EXECUTE AS LOGIN='admin';
 PRINT Suser_Sname();
 CREATE DATABASE Test2; 
 DROP DATABASE Test2;
 REVERT;
 
--- Sprawdzamy nazwê u¿ytkowników serwera
+-- Sprawdzamy nazwÄ™ uÅ¼ytkownikÃ³w serwera
 SELECT * FROM sys.syslogins;
 --lub
 SELECT * FROM sys.server_principals
 ------------------------------------------------
 -- Na poziomie serwera i kont logowania LOGIN --
 ------------------------------------------------
--- Wy³¹czamy konto logowania i jako ADMIN nie mo¿emy siê logowaæ do instancji SQL Server 
--- W ka¿dym kroku sprawdzamy mo¿liwoœæ logowania jako ADMIN za pomoc¹ SSMS w sosbnym po³¹czeniu.
--- Poni¿sze ustawienia znaleŸæ w SSMS.
+-- WyÅ‚Ä…czamy konto logowania i jako ADMIN nie moÅ¼emy siÄ™ logowaÄ‡ do instancji SQL Server 
+-- W kaÅ¼dym kroku sprawdzamy moÅ¼liwoÅ›Ä‡ logowania jako ADMIN za pomocÄ… SSMS w sosbnym poÅ‚Ä…czeniu.
+-- PoniÅ¼sze ustawienia znaleÅºÄ‡ w SSMS.
 ALTER LOGIN [ADMIN] DISABLE
 GO
--- W³¹czamy konto logowania
+-- WÅ‚Ä…czamy konto logowania
 ALTER LOGIN [ADMIN] ENABLE
 GO
 
--- Brak uprawnieñ do logowania do serwera
+-- Brak uprawnieÅ„ do logowania do serwera
 DENY CONNECT SQL TO [ADMIN]
 GO
--- W³¹czenie uprawnieñ do logowania do serwera
+-- WÅ‚Ä…czenie uprawnieÅ„ do logowania do serwera
 GRANT CONNECT SQL TO [ADMIN]
 GO
 
 --------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------
--- Tworzymy u¿ytownika bazy danych o nazwie test przypisanego do loginu TEST w bazie Test --
+-- Tworzymy uÅ¼ytownika bazy danych o nazwie test przypisanego do loginu TEST w bazie Test --
 --------------------------------------------------------------------------------------------
 -- Definiujemy login [TEST] 
--- w bazie Test dodajemy u¿ytkownika bazy, tak¿e o nazwie [test] (login 'sa' ma przypisany w bazach u¿ytkownika 'dbo') 
--- (nazwa nie musi byæ taka sama jak login) na podstawie loginu [TEST].
--- Tym samym dodajemy u¿ytkownika do konkretnej bazy danych (z prawem CONNECT standardowo)
--- i wtedy nie ma ju¿ uprawnieñ zwi¹zanych z u¿ytkownikiem GUEST tylko z rol¹ PUBLIC
+-- w bazie Test dodajemy uÅ¼ytkownika bazy, takÅ¼e o nazwie [test] (login 'sa' ma przypisany w bazach uÅ¼ytkownika 'dbo') 
+-- (nazwa nie musi byÄ‡ taka sama jak login) na podstawie loginu [TEST].
+-- Tym samym dodajemy uÅ¼ytkownika do konkretnej bazy danych (z prawem CONNECT standardowo)
+-- i wtedy nie ma juÅ¼ uprawnieÅ„ zwiÄ…zanych z uÅ¼ytkownikiem GUEST tylko z rolÄ… PUBLIC
 USE MASTER
 CREATE LOGIN [TEST] WITH PASSWORD='test', DEFAULT_DATABASE=[Test], 
 	DEFAULT_LANGUAGE=[polski], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF;
@@ -224,51 +224,51 @@ GO
 ALTER USER [test] WITH DEFAULT_SCHEMA=[dbo]
 GO
 
--- Sprawdzamy mo¿liwoœæ zalogowania do serwera i bazy danych Test (OK). 
+-- Sprawdzamy moÅ¼liwoÅ›Ä‡ zalogowania do serwera i bazy danych Test (OK). 
 
--- Nastêpnie dodajemy konkretne uprawnienia
+-- NastÄ™pnie dodajemy konkretne uprawnienia
 USE TEST
-GRANT SELECT ON products to GUEST; -- to uprawnienie dzia³a jeœli jest w³¹czony GUEST i nie mamy przypisanego ¿adnego konta
-GRANT SELECT ON categories to PUBLIC; -- to uprawnienie dzia³a zawsze
+GRANT SELECT ON products to GUEST; -- to uprawnienie dziaÅ‚a jeÅ›li jest wÅ‚Ä…czony GUEST i nie mamy przypisanego Å¼adnego konta
+GRANT SELECT ON categories to PUBLIC; -- to uprawnienie dziaÅ‚a zawsze
 
--- Sprawdzamy dostêp do tabeli products i categories
+-- Sprawdzamy dostÄ™p do tabeli products i categories
 EXECUTE AS LOGIN='TEST'; 
 -- lub 
 -- EXECUTE AS USER='test'
 PRINT Suser_Sname();
-SELECT * FROM products; -- nie dzia³a
-SELECT * FROM categories; -- dzia³a
+SELECT * FROM products; -- nie dziaÅ‚a
+SELECT * FROM categories; -- dziaÅ‚a
 REVERT;
 
--- Wracamy do uprawnieñ poprzednich bez uprawnieñ dla GUEST i PUBLIC 
--- (blokujemy u¿ytkownika GUEST jeœli nie by³ wczeœniej zablokowany) i sprawdzamy j.w.
+-- Wracamy do uprawnieÅ„ poprzednich bez uprawnieÅ„ dla GUEST i PUBLIC 
+-- (blokujemy uÅ¼ytkownika GUEST jeÅ›li nie byÅ‚ wczeÅ›niej zablokowany) i sprawdzamy j.w.
 REVOKE SELECT ON products to GUEST; 
 REVOKE SELECT ON categories to PUBLIC;
 
 --------------------------------------------------------------------------
--- W takiej konfiguracji braku uprawnieñ do tabel realizujemy zadania: ---
--- Jeœli brakuje nam uprawnieñ w zadanich to dodajemy je przez login sa --
+-- W takiej konfiguracji braku uprawnieÅ„ do tabel realizujemy zadania: ---
+-- JeÅ›li brakuje nam uprawnieÅ„ w zadanich to dodajemy je przez login sa --
 --------------------------------------------------------------------------
 
--- 1. Przypisujemy uprawnienia SELECT, INSERT na tabeli Categories dla u¿ytkownika test
+-- 1. Przypisujemy uprawnienia SELECT, INSERT na tabeli Categories dla uÅ¼ytkownika test
 
--- 2. Sprawdzamy czy dzia³aj¹ dane polecenia polecenie SELECT i INSERT na tabeli Categories dla u¿ytkownika test 
--- Sprawdziæ tak¿e czy dzia³a polcenie DELETE i UPDATE na tej tabeli.
+-- 2. Sprawdzamy czy dziaÅ‚ajÄ… dane polecenia polecenie SELECT i INSERT na tabeli Categories dla uÅ¼ytkownika test 
+-- SprawdziÄ‡ takÅ¼e czy dziaÅ‚a polcenie DELETE i UPDATE na tej tabeli.
 
--- 3. Modyfikujemy nazwê wczeœniej dodanej kategorii.
+-- 3. Modyfikujemy nazwÄ™ wczeÅ›niej dodanej kategorii.
 
--- 4. Kasujemy dodany rekord (ewentualnie dodajemy uprawnienia jeœli brakuje uprawnienia do kasowania) przez u¿ytkownika test
+-- 4. Kasujemy dodany rekord (ewentualnie dodajemy uprawnienia jeÅ›li brakuje uprawnienia do kasowania) przez uÅ¼ytkownika test
 
--- 5. Wykonujemy zapytanie zwracaj¹ce nazwê produktu, jego cenê i nazwê kategorii, do której produkt nale¿y (dla u¿ytkownika test)  
+-- 5. Wykonujemy zapytanie zwracajÄ…ce nazwÄ™ produktu, jego cenÄ™ i nazwÄ™ kategorii, do ktÃ³rej produkt naleÅ¼y (dla uÅ¼ytkownika test)  
 
--- 6. Cofamy uprawnienia INSERT na tabeli Categories dla u¿ytkownika test.
--- Sprawdziæ jak dzia³a polecenie SELECT, INSERT, DELETE i UPDATE na tej tabeli.
+-- 6. Cofamy uprawnienia INSERT na tabeli Categories dla uÅ¼ytkownika test.
+-- SprawdziÄ‡ jak dziaÅ‚a polecenie SELECT, INSERT, DELETE i UPDATE na tej tabeli.
 
--- 7. Zabraniamy uprawnienia SELECT, UPDATE na tabeli Categories dla u¿ytkownika test.
--- Sprawdziæ jak dzia³a polecenie SELECT, INSERT, DELETE i UPDATE na tej tabeli.
+-- 7. Zabraniamy uprawnienia SELECT, UPDATE na tabeli Categories dla uÅ¼ytkownika test.
+-- SprawdziÄ‡ jak dziaÅ‚a polecenie SELECT, INSERT, DELETE i UPDATE na tej tabeli.
 
 
--- Systemowe procedury sk³adowane do przegl¹dania uprawnieñ
+-- Systemowe procedury skÅ‚adowane do przeglÄ…dania uprawnieÅ„
 EXEC sp_helpsrvrole
 EXEC sp_srvrolepermission securityadmin
 EXEC sp_srvrolepermission diskadmin
@@ -279,28 +279,28 @@ EXEC sp_dbfixedrolepermission db_securityadmin
 EXEC sp_dbfixedrolepermission db_datawriter
 EXEC sp_dbfixedrolepermission db_datareader
 
--- Przypisanie uprawnieñ z opcj¹ WITH GRANT OPTION (admin bêdzie móg³ u¿ytkownikowi bazy danych test przypisaæ dane uprawnienia) 
+-- Przypisanie uprawnieÅ„ z opcjÄ… WITH GRANT OPTION (admin bÄ™dzie mÃ³gÅ‚ uÅ¼ytkownikowi bazy danych test przypisaÄ‡ dane uprawnienia) 
 GRANT select, insert ON dbo.categories TO admin WITH GRANT OPTION
 
--- 8. Przypisz u¿ytkownikowi test powy¿sze uprawnienia jako admin i sprawdŸ poprawnoœæ tych uprawnieñ (SELECT, INSERT) przez u¿ytkownika test.
+-- 8. Przypisz uÅ¼ytkownikowi test powyÅ¼sze uprawnienia jako admin i sprawdÅº poprawnoÅ›Ä‡ tych uprawnieÅ„ (SELECT, INSERT) przez uÅ¼ytkownika test.
 
 
--- Nastêpnie zabieramy prawa przypisane z opcj¹ WITH GRANT OPTION
-EXEC sp_helprotect 'dbo.categories', null, null -- mo¿na te prawa sprawdziæ jako prawa efektywne w SSMS
+-- NastÄ™pnie zabieramy prawa przypisane z opcjÄ… WITH GRANT OPTION
+EXEC sp_helprotect 'dbo.categories', null, null -- moÅ¼na te prawa sprawdziÄ‡ jako prawa efektywne w SSMS
 REVOKE select, INSERT on dbo.categories FROM admin CASCADE
 
--- 9. Sprawdzamy, czy u¿ytkownik test ma uprawnienia (SELECT, INSERT na tabeli categories) wykonuj¹c polecenia SELECT, INSERT, spradzaj¹c prawa efektywne w SSMS oraz za pomoc¹ sp_helprotect
+-- 9. Sprawdzamy, czy uÅ¼ytkownik test ma uprawnienia (SELECT, INSERT na tabeli categories) wykonujÄ…c polecenia SELECT, INSERT, spradzajÄ…c prawa efektywne w SSMS oraz za pomocÄ… sp_helprotect
 
 
--- Sprawdzanie ró¿nych uprawnieñ procedur¹ sp_helprotect
+-- Sprawdzanie rÃ³Å¼nych uprawnieÅ„ procedurÄ… sp_helprotect
 EXEC sp_helprotect null, null, null, 's'
 EXEC sp_helprotect null, 'admin', null, 'o'
 EXEC sp_helprotect null
 EXEC sp_helprotect 'CREATE TABLE', [dbo]
 
 
--- 10. Dodaæ odpowiednie uprawnienia u¿ytkownikowi test, 
--- aby móg³ dodaæ klucze PK i FK do tabeli Products i Categories (dodaæ klucze). 
--- (wykorzystaæ odpowiednie prawo szczegó³owe (np. ALTER) na poziomie tabel bez zapisywania do roli db_owner)
+-- 10. DodaÄ‡ odpowiednie uprawnienia uÅ¼ytkownikowi test, 
+-- aby mÃ³gÅ‚ dodaÄ‡ klucze PK i FK do tabeli Products i Categories (dodaÄ‡ klucze). 
+-- (wykorzystaÄ‡ odpowiednie prawo szczegÃ³Å‚owe (np. ALTER) na poziomie tabel bez zapisywania do roli db_owner)
 -- Po wykonaniu operacji zabieramy uprawnienia do tworzenia kluczy i zostawiamy tylko do wykonania 
 -- zapytania na obu tabelach z wykorzystaniem klauzuli join (zad 5.).
