@@ -1,0 +1,50 @@
+\babel@toc {polish}{}\relax 
+\contentsline {section}{\numberline {1}Opis projektu}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Cel i zakres}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Przyjęte ograniczenia}{3}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Technologia}{4}{subsection.1.3}%
+\contentsline {section}{\numberline {2}Typy obiektowe}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}t\_instrument\_obj}{5}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}t\_lista\_instrumentow}{5}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}t\_sala\_obj}{5}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}t\_nauczyciel\_obj}{5}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}t\_uczen\_obj}{5}{subsection.2.5}%
+\contentsline {subsection}{\numberline {2.6}t\_kurs\_obj}{6}{subsection.2.6}%
+\contentsline {subsection}{\numberline {2.7}t\_lekcja\_obj}{6}{subsection.2.7}%
+\contentsline {subsection}{\numberline {2.8}t\_ocena\_obj}{6}{subsection.2.8}%
+\contentsline {section}{\numberline {3}Tabele obiektowe}{7}{section.3}%
+\contentsline {subsection}{\numberline {3.1}t\_instrument}{7}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}t\_sala}{7}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}t\_nauczyciel}{7}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}t\_uczen}{8}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}t\_kurs}{8}{subsection.3.5}%
+\contentsline {subsection}{\numberline {3.6}t\_lekcja}{8}{subsection.3.6}%
+\contentsline {subsection}{\numberline {3.7}t\_ocena\_postepu}{8}{subsection.3.7}%
+\contentsline {subsection}{\numberline {3.8}Referencje (REF/DEREF)}{8}{subsection.3.8}%
+\contentsline {subsection}{\numberline {3.9}Sekwencje}{9}{subsection.3.9}%
+\contentsline {section}{\numberline {4}Pakiety PL/SQL}{9}{section.4}%
+\contentsline {subsection}{\numberline {4.1}pkg\_uczen}{9}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}pkg\_lekcja}{9}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}pkg\_ocena}{10}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Wyzwalacze (Triggery)}{10}{section.5}%
+\contentsline {section}{\numberline {6}Obsługa błędów}{10}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Kody błędów aplikacji}{10}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Scenariusze testowe}{11}{subsection.6.2}%
+\contentsline {subsubsection}{\numberline {6.2.1}Scenariusz 1: Dane podstawowe}{11}{subsubsection.6.2.1}%
+\contentsline {subsubsection}{\numberline {6.2.2}Scenariusz 2: Walidacja wieku ucznia}{11}{subsubsection.6.2.2}%
+\contentsline {subsubsection}{\numberline {6.2.3}Scenariusz 3: Dni robocze}{11}{subsubsection.6.2.3}%
+\contentsline {subsubsection}{\numberline {6.2.4}Scenariusz 4: Godziny dla dzieci}{11}{subsubsection.6.2.4}%
+\contentsline {subsubsection}{\numberline {6.2.5}Scenariusz 5: Limit nauczyciela}{12}{subsubsection.6.2.5}%
+\contentsline {subsubsection}{\numberline {6.2.6}Scenariusz 6: Limit ucznia}{12}{subsubsection.6.2.6}%
+\contentsline {subsubsection}{\numberline {6.2.7}Scenariusz 7: Konflikty czasowe}{12}{subsubsection.6.2.7}%
+\contentsline {subsubsection}{\numberline {6.2.8}Scenariusz 8: Blokada usuwania}{12}{subsubsection.6.2.8}%
+\contentsline {subsubsection}{\numberline {6.2.9}Scenariusz 9: Pakiety CRUD}{12}{subsubsection.6.2.9}%
+\contentsline {subsubsection}{\numberline {6.2.10}Scenariusz 10: Metody obiektów}{12}{subsubsection.6.2.10}%
+\contentsline {section}{\numberline {7}Role użytkowników}{12}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Administrator (rola\_admin)}{13}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Nauczyciel (rola\_nauczyciel)}{13}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Sekretariat (rola\_sekretariat)}{13}{subsection.7.3}%
+\contentsline {subsection}{\numberline {7.4}Macierz uprawnień}{13}{subsection.7.4}%
+\contentsline {subsection}{\numberline {7.5}Użytkownicy testowi}{13}{subsection.7.5}%
+\contentsline {section}{\numberline {8}Diagram relacji obiektów}{14}{section.8}%
+\contentsline {section}{\numberline {9}Struktura plików projektu}{14}{section.9}%
