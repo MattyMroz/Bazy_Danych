@@ -222,16 +222,38 @@ END;
 -- ============================================================================
 DECLARE
     v_data DATE;
+    v_id_kacper     t_uczen.id_ucznia%TYPE;
+    v_id_adam       t_uczen.id_ucznia%TYPE;
+    v_id_michal     t_uczen.id_ucznia%TYPE;
+    v_id_jan        t_nauczyciel.id_nauczyciela%TYPE;
+    v_id_anna       t_nauczyciel.id_nauczyciela%TYPE;
+    v_id_kurs_fort  t_kurs.id_kursu%TYPE;
+    v_id_kurs_git   t_kurs.id_kursu%TYPE;
+    v_id_sala1      t_sala.id_sali%TYPE;
+    v_id_sala2      t_sala.id_sali%TYPE;
+    v_id_sala3      t_sala.id_sali%TYPE;
 BEGIN
     -- Znajdz najblizszy poniedzialek
-    v_data := NEXT_DAY(SYSDATE, 'MONDAY');
+    v_data := TRUNC(SYSDATE, 'IW') + 7;
+    
+    -- Pobranie ID na podstawie nazw/nazwisk
+    SELECT id_ucznia INTO v_id_kacper FROM t_uczen WHERE nazwisko = 'Malinowski' AND ROWNUM = 1;
+    SELECT id_ucznia INTO v_id_adam FROM t_uczen WHERE nazwisko = 'Szymanski' AND ROWNUM = 1;
+    SELECT id_ucznia INTO v_id_michal FROM t_uczen WHERE nazwisko = 'Kozlowski' AND ROWNUM = 1;
+    SELECT id_nauczyciela INTO v_id_jan FROM t_nauczyciel WHERE nazwisko = 'Kowalski' AND ROWNUM = 1;
+    SELECT id_nauczyciela INTO v_id_anna FROM t_nauczyciel WHERE nazwisko = 'Nowak' AND ROWNUM = 1;
+    SELECT id_kursu INTO v_id_kurs_fort FROM t_kurs WHERE nazwa = 'Fortepian - podstawy' AND ROWNUM = 1;
+    SELECT id_kursu INTO v_id_kurs_git FROM t_kurs WHERE nazwa = 'Gitara klasyczna - podstawy' AND ROWNUM = 1;
+    SELECT id_sali INTO v_id_sala1 FROM t_sala WHERE nazwa = 'Sala A1' AND ROWNUM = 1;
+    SELECT id_sali INTO v_id_sala2 FROM t_sala WHERE nazwa = 'Sala A2' AND ROWNUM = 1;
+    SELECT id_sali INTO v_id_sala3 FROM t_sala WHERE nazwa = 'Sala B1' AND ROWNUM = 1;
     
     -- Lekcja 1: dziecko (Kacper) o 14:00 - dozwolona godzina dla dzieci
     pkg_lekcja.zaplanuj(
-        p_id_ucznia     => 1,
-        p_id_nauczyciela => 1,
-        p_id_kursu      => 1,
-        p_id_sali       => 1,
+        p_id_ucznia     => v_id_kacper,
+        p_id_nauczyciela => v_id_jan,
+        p_id_kursu      => v_id_kurs_fort,
+        p_id_sali       => v_id_sala1,
         p_data          => v_data,
         p_godzina       => '14:00',
         p_czas_trwania  => 45
@@ -239,10 +261,10 @@ BEGIN
     
     -- Lekcja 2: mlodziez (Adam) o 10:00
     pkg_lekcja.zaplanuj(
-        p_id_ucznia     => 5,
-        p_id_nauczyciela => 2,
-        p_id_kursu      => 4,
-        p_id_sali       => 3,
+        p_id_ucznia     => v_id_adam,
+        p_id_nauczyciela => v_id_anna,
+        p_id_kursu      => v_id_kurs_git,
+        p_id_sali       => v_id_sala3,
         p_data          => v_data,
         p_godzina       => '10:00',
         p_czas_trwania  => 45
@@ -250,10 +272,10 @@ BEGIN
     
     -- Lekcja 3: dorosly (Michal) o 08:00
     pkg_lekcja.zaplanuj(
-        p_id_ucznia     => 7,
-        p_id_nauczyciela => 1,
-        p_id_kursu      => 1,
-        p_id_sali       => 2,
+        p_id_ucznia     => v_id_michal,
+        p_id_nauczyciela => v_id_jan,
+        p_id_kursu      => v_id_kurs_fort,
+        p_id_sali       => v_id_sala2,
         p_data          => v_data,
         p_godzina       => '08:00',
         p_czas_trwania  => 60
@@ -268,36 +290,36 @@ END;
 -- 7. PRZYKLADOWE OCENY
 -- ============================================================================
 DECLARE
-    v_ref_uczen1 REF t_uczen_obj;
-    v_ref_uczen5 REF t_uczen_obj;
-    v_ref_naucz1 REF t_nauczyciel_obj;
-    v_ref_naucz2 REF t_nauczyciel_obj;
+    v_ref_uczen_kacper REF t_uczen_obj;
+    v_ref_uczen_adam   REF t_uczen_obj;
+    v_ref_naucz_jan    REF t_nauczyciel_obj;
+    v_ref_naucz_anna   REF t_nauczyciel_obj;
 BEGIN
-    SELECT REF(u) INTO v_ref_uczen1 FROM t_uczen u WHERE u.id_ucznia = 1;
-    SELECT REF(u) INTO v_ref_uczen5 FROM t_uczen u WHERE u.id_ucznia = 5;
-    SELECT REF(n) INTO v_ref_naucz1 FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
-    SELECT REF(n) INTO v_ref_naucz2 FROM t_nauczyciel n WHERE n.id_nauczyciela = 2;
+    SELECT REF(u) INTO v_ref_uczen_kacper FROM t_uczen u WHERE u.nazwisko = 'Malinowski' AND ROWNUM = 1;
+    SELECT REF(u) INTO v_ref_uczen_adam FROM t_uczen u WHERE u.nazwisko = 'Szymanski' AND ROWNUM = 1;
+    SELECT REF(n) INTO v_ref_naucz_jan FROM t_nauczyciel n WHERE n.nazwisko = 'Kowalski' AND ROWNUM = 1;
+    SELECT REF(n) INTO v_ref_naucz_anna FROM t_nauczyciel n WHERE n.nazwisko = 'Nowak' AND ROWNUM = 1;
     
-    -- Oceny dla ucznia 1 (Kacper)
-    INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 30, 4, 'technika', 'Dobra postawa', v_ref_uczen1, v_ref_naucz1)
+    -- Oceny dla ucznia Kacper Malinowski
+    INSERT INTO t_ocena VALUES (
+        t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 30, 4, 'technika', 'Dobra postawa', v_ref_uczen_kacper, v_ref_naucz_jan)
     );
-    INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 15, 5, 'rytm', 'Swietne wyczucie', v_ref_uczen1, v_ref_naucz1)
+    INSERT INTO t_ocena VALUES (
+        t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 15, 5, 'rytm', 'Swietne wyczucie', v_ref_uczen_kacper, v_ref_naucz_jan)
     );
-    INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 7, 4, 'teoria', NULL, v_ref_uczen1, v_ref_naucz1)
+    INSERT INTO t_ocena VALUES (
+        t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 7, 4, 'teoria', NULL, v_ref_uczen_kacper, v_ref_naucz_jan)
     );
     
-    -- Oceny dla ucznia 5 (Adam)
-    INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 20, 3, 'technika', 'Do poprawy chwyty', v_ref_uczen5, v_ref_naucz2)
+    -- Oceny dla ucznia Adam Szymanski
+    INSERT INTO t_ocena VALUES (
+        t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 20, 3, 'technika', 'Do poprawy chwyty', v_ref_uczen_adam, v_ref_naucz_anna)
     );
-    INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 10, 4, 'technika', 'Widac postep', v_ref_uczen5, v_ref_naucz2)
+    INSERT INTO t_ocena VALUES (
+        t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 10, 4, 'technika', 'Widac postep', v_ref_uczen_adam, v_ref_naucz_anna)
     );
-    INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 5, 5, 'interpretacja', 'Bardzo dobra ekspresja', v_ref_uczen5, v_ref_naucz2)
+    INSERT INTO t_ocena VALUES (
+        t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 5, 5, 'interpretacja', 'Bardzo dobra ekspresja', v_ref_uczen_adam, v_ref_naucz_anna)
     );
     
     COMMIT;

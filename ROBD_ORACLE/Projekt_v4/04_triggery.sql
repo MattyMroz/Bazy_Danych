@@ -97,21 +97,30 @@ END;
 -- ============================================================================
 -- TRIGGER 5: TRG_BLOKADA_USUN_UCZNIA
 -- Blokuje usuniecie ucznia ktory ma lekcje w historii
+-- UWAGA: Uzywamy REF() zamiast DEREF() aby uniknac bledu mutacji ORA-04091
 -- ============================================================================
 CREATE OR REPLACE TRIGGER trg_blokada_usun_ucznia
 BEFORE DELETE ON t_uczen
 FOR EACH ROW
 DECLARE
     v_cnt NUMBER;
+    v_ref_uczen REF t_uczen_obj;
 BEGIN
+    -- Pobierz REF do usuwanego ucznia
+    SELECT REF(u) INTO v_ref_uczen FROM t_uczen u WHERE u.id_ucznia = :OLD.id_ucznia;
+
+    -- Sprawdz czy istnieja lekcje z tym REF (bez DEREF - nie odwolujemy sie do t_uczen)
     SELECT COUNT(*) INTO v_cnt 
     FROM t_lekcja l 
-    WHERE DEREF(l.ref_uczen).id_ucznia = :OLD.id_ucznia;
+    WHERE l.ref_uczen = v_ref_uczen;
 
     IF v_cnt > 0 THEN
         RAISE_APPLICATION_ERROR(-20110, 
             'Nie mozna usunac ucznia z historia lekcji.');
     END IF;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        NULL; -- Uczen nie istnieje, pozwol na usuniecie
 END;
 /
 

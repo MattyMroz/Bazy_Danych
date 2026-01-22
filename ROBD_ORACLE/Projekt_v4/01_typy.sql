@@ -6,6 +6,79 @@
 -- ============================================================================
 
 -- ============================================================================
+-- CZYSZCZENIE - Uruchom jako SYS (usuwa uzytkownika i wszystkie jego obiekty)
+-- ============================================================================
+ALTER DATABASE OPEN;
+ALTER SESSION SET "_oracle_script" = TRUE;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP USER szkola_muzyczna CASCADE';
+    DBMS_OUTPUT.PUT_LINE('Uzytkownik szkola_muzyczna zostal usuniety.');
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE = -1918 THEN
+            DBMS_OUTPUT.PUT_LINE('Uzytkownik szkola_muzyczna nie istnieje - pomijam.');
+        ELSIF SQLCODE = -28014 THEN
+            DBMS_OUTPUT.PUT_LINE('Blad ORA-28014 - uruchom: ALTER SESSION SET "_oracle_script" = TRUE;');
+        ELSE
+            RAISE;
+        END IF;
+END;
+/
+
+ALTER SESSION SET "_oracle_script" = FALSE;
+/
+
+-- ============================================================================
+-- TWORZENIE UZYTKOWNIKA - Uruchom jako SYS
+-- ============================================================================
+-- UŻYTKOWNIK: szkola_muzyczna
+CREATE USER szkola_muzyczna IDENTIFIED BY "Szkola123"
+DEFAULT TABLESPACE "USERS"
+TEMPORARY TABLESPACE "TEMP";
+
+-- Przydzial miejsca na tabelach
+ALTER USER szkola_muzyczna QUOTA UNLIMITED ON USERS;
+
+-- ROLE
+GRANT "CONNECT" TO szkola_muzyczna;
+GRANT "RESOURCE" TO szkola_muzyczna;
+ALTER USER szkola_muzyczna DEFAULT ROLE "CONNECT","RESOURCE";
+
+-- SYSTEM PRIVILEGES
+-- Uprawnienia systemowe (Programowanie + Obiekty)
+GRANT CREATE VIEW TO szkola_muzyczna;
+GRANT CREATE PROCEDURE TO szkola_muzyczna;
+GRANT CREATE TRIGGER TO szkola_muzyczna;
+GRANT CREATE SEQUENCE TO szkola_muzyczna;
+GRANT CREATE TYPE TO szkola_muzyczna;
+GRANT CREATE TABLE TO szkola_muzyczna;
+GRANT CREATE PUBLIC SYNONYM TO szkola_muzyczna;
+GRANT DROP PUBLIC SYNONYM TO szkola_muzyczna;
+
+-- Uprawnienia administracyjne (Zarzadzanie uzytkownikami i sesjami)
+GRANT CREATE USER TO szkola_muzyczna;
+GRANT DROP USER TO szkola_muzyczna;
+GRANT CREATE ROLE TO szkola_muzyczna;
+GRANT DROP ANY ROLE TO szkola_muzyczna;
+--. Uprawnienia do nadawania uprawnien innym
+GRANT GRANT ANY PRIVILEGE TO szkola_muzyczna;
+GRANT GRANT ANY ROLE TO szkola_muzyczna;
+-- Diagnostyka i Ustawienia
+GRANT SELECT ANY DICTIONARY TO szkola_muzyczna;
+GRANT UNLIMITED TABLESPACE TO szkola_muzyczna;
+GRANT ALTER SESSION TO szkola_muzyczna;
+GRANT ALTER SYSTEM TO szkola_muzyczna;
+/
+
+-- ============================================================================
+-- ZALOGUJ SIE JAKO: szkola_muzyczna / Szkola123
+-- A NASTEPNIE URUCHOM RESZTĘ SKRYPTU (od czyszczenia ponizej)
+-- ============================================================================
+
+
+-- ============================================================================
 -- CZYSZCZENIE - usuwanie istniejacych obiektow
 -- ============================================================================
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE t_ocena CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;

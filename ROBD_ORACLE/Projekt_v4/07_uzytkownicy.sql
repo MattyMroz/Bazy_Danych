@@ -93,9 +93,9 @@ GRANT SELECT ON seq_ocena TO rola_nauczyciel;
 -- ============================================================================
 -- UZYTKOWNICY
 -- ============================================================================
-CREATE USER usr_admin IDENTIFIED BY Admin123!;
-CREATE USER usr_sekretariat IDENTIFIED BY Sekr123!;
-CREATE USER usr_nauczyciel IDENTIFIED BY Naucz123!;
+CREATE USER usr_admin IDENTIFIED BY "Admin123!";
+CREATE USER usr_sekretariat IDENTIFIED BY "Sekr123!";
+CREATE USER usr_nauczyciel IDENTIFIED BY "Naucz123!";
 
 -- Podstawowe uprawnienia
 GRANT CREATE SESSION TO usr_admin;

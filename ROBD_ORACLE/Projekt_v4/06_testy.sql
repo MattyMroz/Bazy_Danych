@@ -146,8 +146,10 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 3: WALIDACJA DNI ROBOCZYCH');
     DBMS_OUTPUT.PUT_LINE('========================================================');
     
-    v_sobota := NEXT_DAY(SYSDATE, 'SATURDAY');
-    v_poniedzialek := NEXT_DAY(SYSDATE, 'MONDAY');
+    -- Sobota nastepnego tygodnia (niezalezne od jezyka)
+    v_sobota := TRUNC(SYSDATE, 'IW') + 7 + 5;
+    -- Poniedzialek nastepnego tygodnia
+    v_poniedzialek := TRUNC(SYSDATE, 'IW') + 7;
     
     -- Test 3.1: Lekcja w sobote przez zaplanuj (FAIL)
     BEGIN
@@ -195,7 +197,8 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 4: GODZINY DLA DZIECI (14:00-19:00)');
     DBMS_OUTPUT.PUT_LINE('========================================================');
     
-    v_data := NEXT_DAY(SYSDATE, 'WEDNESDAY');
+    -- Sroda nastepnego tygodnia (niezalezne od jezyka)
+    v_data := TRUNC(SYSDATE, 'IW') + 7 + 2;
     
     -- Test 4.1: Dziecko o 08:00 (FAIL)
     BEGIN
@@ -256,7 +259,8 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 5: LIMIT NAUCZYCIELA (max 6h)');
     DBMS_OUTPUT.PUT_LINE('========================================================');
     
-    v_data := NEXT_DAY(SYSDATE + 7, 'TUESDAY');
+    -- Wtorek za 2 tygodnie (niezalezne od jezyka)
+    v_data := TRUNC(SYSDATE, 'IW') + 14 + 1;
     
     BEGIN
         -- Dodaj 6 lekcji po 60 min = 360 min (Nauczyciel 3 - Flet)
@@ -312,7 +316,8 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 6: LIMIT UCZNIA (max 2 lekcje/dzien)');
     DBMS_OUTPUT.PUT_LINE('========================================================');
     
-    v_data := NEXT_DAY(SYSDATE + 14, 'FRIDAY');
+    -- Piatek za 3 tygodnie (niezalezne od jezyka)
+    v_data := TRUNC(SYSDATE, 'IW') + 21 + 4;
     
     BEGIN
         -- Lekcja 1: Uczen 7, Nauczyciel 1, Kurs 1 (Fortepian)
@@ -367,7 +372,8 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 7: KONFLIKTY');
     DBMS_OUTPUT.PUT_LINE('========================================================');
     
-    v_data := NEXT_DAY(SYSDATE + 21, 'THURSDAY');
+    -- Czwartek za 4 tygodnie (niezalezne od jezyka)
+    v_data := TRUNC(SYSDATE, 'IW') + 28 + 3;
     
     BEGIN
         -- Lekcja bazowa: 10:00-10:45, Sala 1, Nauczyciel 1, Uczen 7
@@ -447,7 +453,8 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 8: KOMPETENCJE NAUCZYCIELA');
     DBMS_OUTPUT.PUT_LINE('========================================================');
     
-    v_data := NEXT_DAY(SYSDATE + 28, 'MONDAY');
+    -- Poniedzialek za 5 tygodni (niezalezne od jezyka)
+    v_data := TRUNC(SYSDATE, 'IW') + 35;
     
     -- Test 8.1: Nauczyciel 1 (Fortepian, Skrzypce) uczy Fortepian - OK
     BEGIN
@@ -558,7 +565,8 @@ BEGIN
     
     -- Test 10.3: pkg_lekcja.plan_dnia
     BEGIN
-        pkg_lekcja.plan_dnia(NEXT_DAY(SYSDATE, 'MONDAY'));
+        -- Poniedzialek nastepnego tygodnia (niezalezne od jezyka)
+        pkg_lekcja.plan_dnia(TRUNC(SYSDATE, 'IW') + 7);
         DBMS_OUTPUT.PUT_LINE('[OK] 10.3: pkg_lekcja.plan_dnia');
         v_ok := v_ok + 1;
     EXCEPTION

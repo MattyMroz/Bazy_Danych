@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2025.12.30)  22 JAN 2026 01:34
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2025.12.30)  22 JAN 2026 01:41
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -628,7 +628,7 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.45 ...strator (rola\_admin)}{16}{subsection.7.1}
+l.45 ... -- Sekretariat}{15}{subsubsection.6.2.13}
                                                   % [1])
 \tf@toc=\write5
 \openout5 = `Raport_MusicSchoolDB.toc'.
@@ -664,20 +664,20 @@ LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
 Package rerunfilecheck Info: File `Raport_MusicSchoolDB.out' has not changed.
-(rerunfilecheck)             Checksum: DA981BF5DA997C9DE53989A62FD71D9E;7808.
+(rerunfilecheck)             Checksum: 4698BBA12B193EDED4B380AB4E29521C;8665.
  ) 
 Here is how much of TeX's memory you used:
- 23176 strings out of 467871
- 438696 string characters out of 5418375
+ 23183 strings out of 467871
+ 438829 string characters out of 5418375
  844944 words of memory out of 5000000
- 51558 multiletter control sequences out of 15000+600000
+ 51561 multiletter control sequences out of 15000+600000
  686791 words of font info for 86 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,10n,104p,534b,702s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr17.pfb><C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr8.pfb><C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb>
-Output written on Raport_MusicSchoolDB.pdf (20 pages, 294825 bytes).
+Output written on Raport_MusicSchoolDB.pdf (20 pages, 298107 bytes).
 PDF statistics:
- 436 PDF objects out of 1000 (max. 8388607)
- 102 named destinations out of 1000 (max. 500000)
- 413 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 453 PDF objects out of 1000 (max. 8388607)
+ 106 named destinations out of 1000 (max. 500000)
+ 437 words of extra memory for PDF output out of 10000 (max. 10000000)
 

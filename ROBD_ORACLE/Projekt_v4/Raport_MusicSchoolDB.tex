@@ -591,7 +591,7 @@ W projekcie zastosowano mechanizmy obsługi wyjątków z własnymi kodami błęd
 
 \subsection{Scenariusze testowe}
 
-Projekt zawiera kompleksowe testy w pliku 06\_testy.sql obejmujące 11 scenariuszy:
+Projekt zawiera kompleksowe testy w plikach 06\_testy.sql i 08\_testy\_uprawnien.sql obejmujące 14 scenariuszy:
 
 \subsubsection{Scenariusz 1: Dane podstawowe}
 Weryfikacja poprawnego załadowania danych (instrumenty, sale, nauczyciele, uczniowie, kursy).
@@ -672,6 +672,33 @@ Test metod typów obiektowych:
     \item t\_nauczyciel\_obj.lata\_stazu() -- oblicza staż
     \item t\_nauczyciel\_obj.liczba\_instrumentow() -- liczba instrumentów
     \item t\_sala\_obj.opis\_pelny() -- opis sali z wyposażeniem
+\end{itemize}
+
+\subsubsection{Scenariusz 12: Uprawnienia -- Administrator}
+Test uprawnień roli rola\_admin (plik 08\_testy\_uprawnien.sql):
+\begin{itemize}[nosep]
+    \item SELECT na wszystkich tabelach: dozwolone
+    \item INSERT/UPDATE/DELETE na wszystkich tabelach: dozwolone
+    \item Wykonywanie wszystkich pakietów: dozwolone
+\end{itemize}
+
+\subsubsection{Scenariusz 13: Uprawnienia -- Sekretariat}
+Test uprawnień roli rola\_sekretariat:
+\begin{itemize}[nosep]
+    \item SELECT na wszystkich tabelach: dozwolone
+    \item INSERT/UPDATE na t\_uczen, t\_lekcja: dozwolone
+    \item DELETE na t\_uczen: zabronione (błąd ORA-01031)
+    \item INSERT na t\_ocena: zabronione (błąd ORA-01031)
+\end{itemize}
+
+\subsubsection{Scenariusz 14: Uprawnienia -- Nauczyciel}
+Test uprawnień roli rola\_nauczyciel:
+\begin{itemize}[nosep]
+    \item SELECT na wszystkich tabelach: dozwolone
+    \item UPDATE na t\_lekcja (zmiana statusu): dozwolone
+    \item INSERT na t\_ocena: dozwolone
+    \item INSERT na t\_uczen: zabronione (błąd ORA-01031)
+    \item DELETE na t\_lekcja: zabronione (błąd ORA-01031)
 \end{itemize}
 
 % =============================================================================
@@ -815,8 +842,9 @@ usr\_sekretariat & rola\_sekretariat & Sekr123! \\
 03\_pakiety.sql & 3 pakiety PL/SQL z 10 podprogramami \\
 04\_triggery.sql & 5 wyzwalaczy walidacyjnych \\
 05\_dane.sql & Dane testowe (10 instr., 5 sal, 5 naucz., 10 uczn., 10 kursów) \\
-06\_testy.sql & 11 scenariuszy testowych \\
+06\_testy.sql & 11 scenariuszy testowych (logika biznesowa) \\
 07\_uzytkownicy.sql & 3 role, 3 użytkowników \\
+08\_testy\_uprawnien.sql & 3 scenariusze testów uprawnień (12--14) \\
 \hline
 \end{tabular}
 \caption{Pliki projektu}
@@ -829,8 +857,9 @@ usr\_sekretariat & rola\_sekretariat & Sekr123! \\
     \item 03\_pakiety.sql -- pakiety PL/SQL
     \item 04\_triggery.sql -- wyzwalacze
     \item 05\_dane.sql -- dane testowe
-    \item 06\_testy.sql -- testy (opcjonalne)
+    \item 06\_testy.sql -- testy logiki biznesowej (opcjonalne)
     \item 07\_uzytkownicy.sql -- role i użytkownicy (wymaga uprawnień DBA)
+    \item 08\_testy\_uprawnien.sql -- testy uprawnień (wymaga połączenia jako różni użytkownicy)
 \end{enumerate}
 
 \end{document}

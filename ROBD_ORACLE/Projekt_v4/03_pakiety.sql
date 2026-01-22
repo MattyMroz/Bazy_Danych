@@ -149,7 +149,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_uczen AS
     BEGIN
         -- Uzycie DEREF do pobrania danych z referencji
         SELECT AVG(o.ocena) INTO v_srednia
-        FROM t_ocena_postepu o
+        FROM t_ocena o
         WHERE DEREF(o.ref_uczen).id_ucznia = p_id_ucznia;
 
         RETURN ROUND(v_srednia, 2);
@@ -571,7 +571,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
         SELECT REF(n) INTO v_ref_naucz FROM t_nauczyciel n WHERE n.id_nauczyciela = p_id_nauczyciela;
 
         -- Wstaw ocene
-        INSERT INTO t_ocena_postepu VALUES (
+        INSERT INTO t_ocena VALUES (
             t_ocena_obj(
                 seq_ocena.NEXTVAL,
                 SYSDATE,
@@ -603,7 +603,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
         FOR r IN (
             SELECT TO_CHAR(o.data_oceny, 'YYYY-MM-DD') AS data,
                    o.obszar, o.ocena, o.komentarz
-            FROM t_ocena_postepu o
+            FROM t_ocena o
             WHERE DEREF(o.ref_uczen).id_ucznia = p_id_ucznia
             ORDER BY o.data_oceny DESC
         ) LOOP
@@ -634,7 +634,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
             SELECT o.obszar, 
                    ROUND(AVG(o.ocena), 2) AS srednia,
                    COUNT(*) AS liczba_ocen
-            FROM t_ocena_postepu o
+            FROM t_ocena o
             WHERE DEREF(o.ref_uczen).id_ucznia = p_id_ucznia
             GROUP BY o.obszar
             ORDER BY srednia DESC
@@ -648,7 +648,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
 
         -- Srednia ogolna
         SELECT ROUND(AVG(o.ocena), 2) INTO v_sr_ogolna
-        FROM t_ocena_postepu o
+        FROM t_ocena o
         WHERE DEREF(o.ref_uczen).id_ucznia = p_id_ucznia;
 
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 40, '-'));
