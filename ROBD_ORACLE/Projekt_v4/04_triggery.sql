@@ -78,15 +78,12 @@ END;
 -- Blokuje usuniecie nauczyciela ktory ma lekcje w historii
 -- ============================================================================
 CREATE OR REPLACE TRIGGER trg_blokada_usun_nauczyciela
-BEFORE DELETE ON t_nauczyciel
-FOR EACH ROW
+AFTER DELETE ON t_nauczyciel
 DECLARE
     v_cnt NUMBER;
 BEGIN
-    SELECT COUNT(*) INTO v_cnt 
-    FROM t_lekcja l 
-    WHERE DEREF(l.ref_nauczyciel).id_nauczyciela = :OLD.id_nauczyciela;
-
+    -- Sprawdz czy po DELETE powstaly osierocone referencje
+    SELECT COUNT(*) INTO v_cnt FROM t_lekcja WHERE ref_nauczyciel IS DANGLING;
     IF v_cnt > 0 THEN
         RAISE_APPLICATION_ERROR(-20109, 
             'Nie mozna usunac nauczyciela z historia lekcji.');
@@ -97,30 +94,18 @@ END;
 -- ============================================================================
 -- TRIGGER 5: TRG_BLOKADA_USUN_UCZNIA
 -- Blokuje usuniecie ucznia ktory ma lekcje w historii
--- UWAGA: Uzywamy REF() zamiast DEREF() aby uniknac bledu mutacji ORA-04091
+-- UWAGA: AFTER STATEMENT + IS DANGLING unika bledu mutacji ORA-04091
 -- ============================================================================
 CREATE OR REPLACE TRIGGER trg_blokada_usun_ucznia
-BEFORE DELETE ON t_uczen
-FOR EACH ROW
+AFTER DELETE ON t_uczen
 DECLARE
     v_cnt NUMBER;
-    v_ref_uczen REF t_uczen_obj;
 BEGIN
-    -- Pobierz REF do usuwanego ucznia
-    SELECT REF(u) INTO v_ref_uczen FROM t_uczen u WHERE u.id_ucznia = :OLD.id_ucznia;
-
-    -- Sprawdz czy istnieja lekcje z tym REF (bez DEREF - nie odwolujemy sie do t_uczen)
-    SELECT COUNT(*) INTO v_cnt 
-    FROM t_lekcja l 
-    WHERE l.ref_uczen = v_ref_uczen;
-
+    SELECT COUNT(*) INTO v_cnt FROM t_lekcja WHERE ref_uczen IS DANGLING;
     IF v_cnt > 0 THEN
         RAISE_APPLICATION_ERROR(-20110, 
             'Nie mozna usunac ucznia z historia lekcji.');
     END IF;
-EXCEPTION
-    WHEN NO_DATA_FOUND THEN
-        NULL; -- Uczen nie istnieje, pozwol na usuniecie
 END;
 /
 
@@ -129,27 +114,15 @@ END;
 -- Blokuje usuniecie sali ktora ma lekcje w historii
 -- ============================================================================
 CREATE OR REPLACE TRIGGER trg_blokada_usun_sali
-BEFORE DELETE ON t_sala
-FOR EACH ROW
+AFTER DELETE ON t_sala
 DECLARE
     v_cnt NUMBER;
-    v_ref_sala REF t_sala_obj;
 BEGIN
-    -- Pobierz REF do usuwanej sali
-    SELECT REF(s) INTO v_ref_sala FROM t_sala s WHERE s.id_sali = :OLD.id_sali;
-
-    -- Sprawdz czy istnieja lekcje z tym REF
-    SELECT COUNT(*) INTO v_cnt 
-    FROM t_lekcja l 
-    WHERE l.ref_sala = v_ref_sala;
-
+    SELECT COUNT(*) INTO v_cnt FROM t_lekcja WHERE ref_sala IS DANGLING;
     IF v_cnt > 0 THEN
         RAISE_APPLICATION_ERROR(-20111, 
             'Nie mozna usunac sali z historia lekcji.');
     END IF;
-EXCEPTION
-    WHEN NO_DATA_FOUND THEN
-        NULL; -- Sala nie istnieje, pozwol na usuniecie
 END;
 /
 
@@ -158,27 +131,15 @@ END;
 -- Blokuje usuniecie kursu ktory ma lekcje w historii
 -- ============================================================================
 CREATE OR REPLACE TRIGGER trg_blokada_usun_kursu
-BEFORE DELETE ON t_kurs
-FOR EACH ROW
+AFTER DELETE ON t_kurs
 DECLARE
     v_cnt NUMBER;
-    v_ref_kurs REF t_kurs_obj;
 BEGIN
-    -- Pobierz REF do usuwanego kursu
-    SELECT REF(k) INTO v_ref_kurs FROM t_kurs k WHERE k.id_kursu = :OLD.id_kursu;
-
-    -- Sprawdz czy istnieja lekcje z tym REF
-    SELECT COUNT(*) INTO v_cnt 
-    FROM t_lekcja l 
-    WHERE l.ref_kurs = v_ref_kurs;
-
+    SELECT COUNT(*) INTO v_cnt FROM t_lekcja WHERE ref_kurs IS DANGLING;
     IF v_cnt > 0 THEN
         RAISE_APPLICATION_ERROR(-20112, 
             'Nie mozna usunac kursu z historia lekcji.');
     END IF;
-EXCEPTION
-    WHEN NO_DATA_FOUND THEN
-        NULL; -- Kurs nie istnieje, pozwol na usuniecie
 END;
 /
 

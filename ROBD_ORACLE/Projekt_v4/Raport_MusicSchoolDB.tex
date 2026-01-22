@@ -536,13 +536,13 @@ trg\_lekcja\_dni\_robocze & BEFORE I/U & Lekcje tylko w dni robocze (Pn--Pt) \\
 \hline
 trg\_lekcja\_godziny\_dziecka & BEFORE I/U & Dzieci: lekcje tylko 14:00--19:00 \\
 \hline
-trg\_blokada\_usun\_nauczyciela & BEFORE DELETE & Ochrona nauczyciela z lekcjami \\
+trg\_blokada\_usun\_nauczyciela & AFTER DELETE & Ochrona nauczyciela z lekcjami \\
 \hline
-trg\_blokada\_usun\_ucznia & BEFORE DELETE & Ochrona ucznia z lekcjami \\
+trg\_blokada\_usun\_ucznia & AFTER DELETE & Ochrona ucznia z lekcjami \\
 \hline
-trg\_blokada\_usun\_sali & BEFORE DELETE & Ochrona sali z lekcjami \\
+trg\_blokada\_usun\_sali & AFTER DELETE & Ochrona sali z lekcjami \\
 \hline
-trg\_blokada\_usun\_kursu & BEFORE DELETE & Ochrona kursu z lekcjami \\
+trg\_blokada\_usun\_kursu & AFTER DELETE & Ochrona kursu z lekcjami \\
 \hline
 \end{tabular}
 \caption{Wyzwalacze w projekcie}
@@ -659,10 +659,12 @@ Test procedury pkg\_lekcja.zaplanuj:
 \end{itemize}
 
 \subsubsection{Scenariusz 9: Blokada usuwania}
-Test triggerów ochrony danych:
+Test triggerów ochrony integralności referencyjnej:
 \begin{itemize}[nosep]
-    \item Usunięcie nauczyciela z lekcjami: odrzucone (błąd -20201)
-    \item Usunięcie ucznia z lekcjami: odrzucone (błąd -20202)
+    \item Usunięcie nauczyciela z lekcjami: odrzucone (błąd -20109)
+    \item Usunięcie ucznia z lekcjami: odrzucone (błąd -20110)
+    \item Usunięcie sali z lekcjami: odrzucone (błąd -20111)
+    \item Usunięcie kursu z lekcjami: odrzucone (błąd -20112)
 \end{itemize}
 
 \subsubsection{Scenariusz 10: Pakiety CRUD}

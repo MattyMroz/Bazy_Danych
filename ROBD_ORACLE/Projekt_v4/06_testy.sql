@@ -509,8 +509,13 @@ BEGIN
         ROLLBACK;
     EXCEPTION
         WHEN OTHERS THEN
-            DBMS_OUTPUT.PUT_LINE('[OK] 9.1: Blokada usuwania nauczyciela');
-            v_ok := v_ok + 1;
+            IF SQLCODE = -20109 THEN
+                DBMS_OUTPUT.PUT_LINE('[OK] 9.1: Blokada usuwania nauczyciela');
+                v_ok := v_ok + 1;
+            ELSE
+                DBMS_OUTPUT.PUT_LINE('[FAIL] 9.1: Nieoczekiwany blad: ' || SQLERRM);
+                v_fail := v_fail + 1;
+            END IF;
     END;
     
     -- Test 9.2: Usuniecie ucznia z lekcjami
@@ -521,8 +526,47 @@ BEGIN
         ROLLBACK;
     EXCEPTION
         WHEN OTHERS THEN
-            DBMS_OUTPUT.PUT_LINE('[OK] 9.2: Blokada usuwania ucznia');
-            v_ok := v_ok + 1;
+            IF SQLCODE = -20110 THEN
+                DBMS_OUTPUT.PUT_LINE('[OK] 9.2: Blokada usuwania ucznia');
+                v_ok := v_ok + 1;
+            ELSE
+                DBMS_OUTPUT.PUT_LINE('[FAIL] 9.2: Nieoczekiwany blad: ' || SQLERRM);
+                v_fail := v_fail + 1;
+            END IF;
+    END;
+    
+    -- Test 9.3: Usuniecie sali z lekcjami
+    BEGIN
+        DELETE FROM t_sala WHERE id_sali = 1;
+        DBMS_OUTPUT.PUT_LINE('[FAIL] 9.3: Usunieto sale z lekcjami!');
+        v_fail := v_fail + 1;
+        ROLLBACK;
+    EXCEPTION
+        WHEN OTHERS THEN
+            IF SQLCODE = -20111 THEN
+                DBMS_OUTPUT.PUT_LINE('[OK] 9.3: Blokada usuwania sali');
+                v_ok := v_ok + 1;
+            ELSE
+                DBMS_OUTPUT.PUT_LINE('[FAIL] 9.3: Nieoczekiwany blad: ' || SQLERRM);
+                v_fail := v_fail + 1;
+            END IF;
+    END;
+    
+    -- Test 9.4: Usuniecie kursu z lekcjami
+    BEGIN
+        DELETE FROM t_kurs WHERE id_kursu = 1;
+        DBMS_OUTPUT.PUT_LINE('[FAIL] 9.4: Usunieto kurs z lekcjami!');
+        v_fail := v_fail + 1;
+        ROLLBACK;
+    EXCEPTION
+        WHEN OTHERS THEN
+            IF SQLCODE = -20112 THEN
+                DBMS_OUTPUT.PUT_LINE('[OK] 9.4: Blokada usuwania kursu');
+                v_ok := v_ok + 1;
+            ELSE
+                DBMS_OUTPUT.PUT_LINE('[FAIL] 9.4: Nieoczekiwany blad: ' || SQLERRM);
+                v_fail := v_fail + 1;
+            END IF;
     END;
     
     DBMS_OUTPUT.PUT_LINE('Scenariusz 9: OK=' || v_ok || ' FAIL=' || v_fail);
@@ -681,7 +725,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('6.  Limit ucznia (max 2 lekcje/dzien)');
     DBMS_OUTPUT.PUT_LINE('7.  Konflikty (sala, nauczyciel, uczen)');
     DBMS_OUTPUT.PUT_LINE('8.  Kompetencje nauczyciela');
-    DBMS_OUTPUT.PUT_LINE('9.  Blokada usuwania');
+    DBMS_OUTPUT.PUT_LINE('9.  Blokada usuwania (nauczyciel, uczen, sala, kurs)');
     DBMS_OUTPUT.PUT_LINE('10. Pakiety - operacje');
     DBMS_OUTPUT.PUT_LINE('11. Metody obiektow');
     DBMS_OUTPUT.PUT_LINE('============================================================');
