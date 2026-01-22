@@ -112,9 +112,9 @@ W projekcie przyjęto następujące ograniczenia biznesowe:
     
     \item \textbf{Kategorie instrumentów:} dęte, strunowe, perkusyjne, klawiszowe
     
-    \item \textbf{Brak konfliktów czasowych:} ta sama sala, nauczyciel lub uczeń nie mogą mieć dwóch lekcji w tym samym czasie
+    \item \textbf{Brak konfliktów czasowych:} ta sama sala, nauczyciel lub uczeń nie mogą mieć dwóch lekcji w tym samym czasie (uwzględniane są zarówno lekcje zaplanowane, jak i odbyte)
     
-    \item \textbf{Ochrona danych:} nie można usunąć nauczyciela lub ucznia z zaplanowanymi lekcjami
+    \item \textbf{Ochrona integralności referencyjnej:} nie można usunąć nauczyciela, ucznia, sali ani kursu, które mają przypisane lekcje w historii
 \end{enumerate}
 
 \subsection{Technologia}
@@ -519,7 +519,9 @@ Pakiet do zarządzania ocenami postępu uczniów.
 \newpage
 \section{Wyzwalacze (Triggery)}
 
-Zdefiniowano 5 wyzwalaczy realizujących reguły biznesowe. Walidacja limitów i konfliktów jest zaimplementowana w pakiecie \texttt{pkg\_lekcja.zaplanuj}, aby uniknąć błędu ORA-04091 (Mutating Table).
+Zdefiniowano 7 wyzwalaczy realizujących reguły biznesowe. Walidacja limitów i konfliktów jest zaimplementowana w pakiecie \texttt{pkg\_lekcja.zaplanuj}, aby uniknąć błędu ORA-04091 (Mutating Table).
+
+Walidacja konfliktów czasowych (sala, nauczyciel, uczeń) uwzględnia zarówno lekcje zaplanowane, jak i odbyte -- zapobiega to sytuacji, w której system pozwoliłby na podwójną rezerwację po zmianie statusu lekcji na \texttt{'odbyta'}.
 
 \begin{table}[h]
 \centering
@@ -537,6 +539,10 @@ trg\_lekcja\_godziny\_dziecka & BEFORE I/U & Dzieci: lekcje tylko 14:00--19:00 \
 trg\_blokada\_usun\_nauczyciela & BEFORE DELETE & Ochrona nauczyciela z lekcjami \\
 \hline
 trg\_blokada\_usun\_ucznia & BEFORE DELETE & Ochrona ucznia z lekcjami \\
+\hline
+trg\_blokada\_usun\_sali & BEFORE DELETE & Ochrona sali z lekcjami \\
+\hline
+trg\_blokada\_usun\_kursu & BEFORE DELETE & Ochrona kursu z lekcjami \\
 \hline
 \end{tabular}
 \caption{Wyzwalacze w projekcie}
@@ -581,9 +587,13 @@ W projekcie zastosowano mechanizmy obsługi wyjątków z własnymi kodami błęd
 \hline
 -20108 & pkg\_lekcja.zaplanuj & Uczeń ma inną lekcję w tym czasie \\
 \hline
--20201 & trg\_blokada\_usun\_nauczyciela & Próba usunięcia nauczyciela z lekcjami \\
+-20109 & trg\_blokada\_usun\_nauczyciela & Próba usunięcia nauczyciela z lekcjami \\
 \hline
--20202 & trg\_blokada\_usun\_ucznia & Próba usunięcia ucznia z lekcjami \\
+-20110 & trg\_blokada\_usun\_ucznia & Próba usunięcia ucznia z lekcjami \\
+\hline
+-20111 & trg\_blokada\_usun\_sali & Próba usunięcia sali z lekcjami \\
+\hline
+-20112 & trg\_blokada\_usun\_kursu & Próba usunięcia kursu z lekcjami \\
 \hline
 \end{tabular}
 \caption{Kody błędów aplikacji}
@@ -675,7 +685,7 @@ Test metod typów obiektowych:
 \end{itemize}
 
 \subsubsection{Scenariusz 12: Uprawnienia -- Administrator}
-Test uprawnień roli rola\_admin (plik 08\_testy\_uprawnien.sql):
+Test uprawnień roli rola\_admin:
 \begin{itemize}[nosep]
     \item SELECT na wszystkich tabelach: dozwolone
     \item INSERT/UPDATE/DELETE na wszystkich tabelach: dozwolone
@@ -804,7 +814,7 @@ usr\_sekretariat & rola\_sekretariat & Sekr123! \\
 01\_typy.sql & Definicje 8 typów obiektowych z 14 metodami \\
 02\_tabele.sql & 7 tabel obiektowych, 7 sekwencji, 5 indeksów \\
 03\_pakiety.sql & 3 pakiety PL/SQL z 10 podprogramami \\
-04\_triggery.sql & 5 wyzwalaczy walidacyjnych \\
+04\_triggery.sql & 7 wyzwalaczy walidacyjnych \\
 05\_dane.sql & Dane testowe (10 instr., 5 sal, 5 naucz., 10 uczn., 10 kursów) \\
 06\_testy.sql & 11 scenariuszy testowych (logika biznesowa) \\
 07\_uzytkownicy.sql & 3 role, 3 użytkowników \\

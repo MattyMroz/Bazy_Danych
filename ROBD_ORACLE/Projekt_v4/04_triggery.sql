@@ -125,14 +125,74 @@ END;
 /
 
 -- ============================================================================
+-- TRIGGER 6: TRG_BLOKADA_USUN_SALI
+-- Blokuje usuniecie sali ktora ma lekcje w historii
+-- ============================================================================
+CREATE OR REPLACE TRIGGER trg_blokada_usun_sali
+BEFORE DELETE ON t_sala
+FOR EACH ROW
+DECLARE
+    v_cnt NUMBER;
+    v_ref_sala REF t_sala_obj;
+BEGIN
+    -- Pobierz REF do usuwanej sali
+    SELECT REF(s) INTO v_ref_sala FROM t_sala s WHERE s.id_sali = :OLD.id_sali;
+
+    -- Sprawdz czy istnieja lekcje z tym REF
+    SELECT COUNT(*) INTO v_cnt 
+    FROM t_lekcja l 
+    WHERE l.ref_sala = v_ref_sala;
+
+    IF v_cnt > 0 THEN
+        RAISE_APPLICATION_ERROR(-20111, 
+            'Nie mozna usunac sali z historia lekcji.');
+    END IF;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        NULL; -- Sala nie istnieje, pozwol na usuniecie
+END;
+/
+
+-- ============================================================================
+-- TRIGGER 7: TRG_BLOKADA_USUN_KURSU
+-- Blokuje usuniecie kursu ktory ma lekcje w historii
+-- ============================================================================
+CREATE OR REPLACE TRIGGER trg_blokada_usun_kursu
+BEFORE DELETE ON t_kurs
+FOR EACH ROW
+DECLARE
+    v_cnt NUMBER;
+    v_ref_kurs REF t_kurs_obj;
+BEGIN
+    -- Pobierz REF do usuwanego kursu
+    SELECT REF(k) INTO v_ref_kurs FROM t_kurs k WHERE k.id_kursu = :OLD.id_kursu;
+
+    -- Sprawdz czy istnieja lekcje z tym REF
+    SELECT COUNT(*) INTO v_cnt 
+    FROM t_lekcja l 
+    WHERE l.ref_kurs = v_ref_kurs;
+
+    IF v_cnt > 0 THEN
+        RAISE_APPLICATION_ERROR(-20112, 
+            'Nie mozna usunac kursu z historia lekcji.');
+    END IF;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        NULL; -- Kurs nie istnieje, pozwol na usuniecie
+END;
+/
+
+-- ============================================================================
 -- PODSUMOWANIE TRIGGEROW
 -- ============================================================================
--- Utworzono 5 triggerow:
+-- Utworzono 7 triggerow:
 -- 1. trg_uczen_wiek             - min. 5 lat
 -- 2. trg_lekcja_dni_robocze     - tylko Pn-Pt
 -- 3. trg_lekcja_godziny_dziecka - dzieci 14:00-19:00
 -- 4. trg_blokada_usun_nauczyciela
 -- 5. trg_blokada_usun_ucznia
+-- 6. trg_blokada_usun_sali
+-- 7. trg_blokada_usun_kursu
 --
 -- UWAGA: Walidacja konfliktow (sala, nauczyciel, uczen) oraz limitow
 -- (6h nauczyciel, 2 lekcje uczen) jest w pakiecie pkg_lekcja.zaplanuj()

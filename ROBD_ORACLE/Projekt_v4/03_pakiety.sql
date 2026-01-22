@@ -289,7 +289,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         FROM t_lekcja l
         WHERE DEREF(l.ref_sala).id_sali = p_id_sali
           AND TRUNC(l.data_lekcji) = TRUNC(p_data)
-          AND l.status = 'zaplanowana'
+          AND l.status IN ('zaplanowana', 'odbyta')
           AND (
               -- Nowa lekcja zaczyna sie w trakcie istniejacej
               (v_godz_start_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
@@ -322,7 +322,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         FROM t_lekcja l
         WHERE DEREF(l.ref_nauczyciel).id_nauczyciela = p_id_nauczyciela
           AND TRUNC(l.data_lekcji) = TRUNC(p_data)
-          AND l.status = 'zaplanowana'
+          AND l.status IN ('zaplanowana', 'odbyta')
           AND (
               (v_godz_start_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
                                    TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))
@@ -352,7 +352,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         FROM t_lekcja l
         WHERE DEREF(l.ref_uczen).id_ucznia = p_id_ucznia
           AND TRUNC(l.data_lekcji) = TRUNC(p_data)
-          AND l.status = 'zaplanowana'
+          AND l.status IN ('zaplanowana', 'odbyta')
           AND (
               (v_godz_start_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
                                    TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))

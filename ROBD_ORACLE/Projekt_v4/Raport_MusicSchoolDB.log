@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2025.12.30)  22 JAN 2026 04:53
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2025.12.30)  22 JAN 2026 05:09
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -657,12 +657,12 @@ Overfull \hbox (0.80592pt too wide) in paragraph at lines 428--429
 
 [9] [10] [11]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 527.
+(Font)              <10.95> on input line 529.
  [12] [13] [14] [15] [16] [17]
 <Relational_1.png, id=376, 858.95906pt x 343.2825pt>
 File: Relational_1.png Graphic file (type png)
 <use Relational_1.png>
-Package pdftex.def Info: Relational_1.png  used on input line 788.
+Package pdftex.def Info: Relational_1.png  used on input line 798.
 (pdftex.def)             Requested size: 455.24411pt x 181.93884pt.
  [18 <./Relational_1.png>] [19] (Raport_MusicSchoolDB.aux)
  ***********
@@ -681,7 +681,7 @@ Here is how much of TeX's memory you used:
  1141 hyphenation exceptions out of 8191
  84i,10n,104p,534b,605s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr17.pfb><C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb>
-Output written on Raport_MusicSchoolDB.pdf (20 pages, 303134 bytes).
+Output written on Raport_MusicSchoolDB.pdf (20 pages, 304280 bytes).
 PDF statistics:
  452 PDF objects out of 1000 (max. 8388607)
  107 named destinations out of 1000 (max. 500000)
