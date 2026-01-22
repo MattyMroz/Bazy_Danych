@@ -6,10 +6,9 @@
 -- ============================================================================
 
 -- ============================================================================
--- CZYSZCZENIE (usuwanie istniejacych typow w odpowiedniej kolejnosci)
+-- CZYSZCZENIE - usuwanie istniejacych obiektow
 -- ============================================================================
-
-BEGIN EXECUTE IMMEDIATE 'DROP TABLE t_ocena_postepu CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE t_ocena CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
 /
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE t_lekcja CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
 /
@@ -23,7 +22,6 @@ BEGIN EXECUTE IMMEDIATE 'DROP TABLE t_instrument CASCADE CONSTRAINTS'; EXCEPTION
 /
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE t_sala CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
 /
-
 BEGIN EXECUTE IMMEDIATE 'DROP TYPE t_ocena_obj FORCE'; EXCEPTION WHEN OTHERS THEN NULL; END;
 /
 BEGIN EXECUTE IMMEDIATE 'DROP TYPE t_lekcja_obj FORCE'; EXCEPTION WHEN OTHERS THEN NULL; END;
@@ -43,13 +41,14 @@ BEGIN EXECUTE IMMEDIATE 'DROP TYPE t_sala_obj FORCE'; EXCEPTION WHEN OTHERS THEN
 
 -- ============================================================================
 -- 1. TYP: T_INSTRUMENT_OBJ
--- Reprezentuje instrument muzyczny
+-- Reprezentuje instrument muzyczny w slowniku
 -- ============================================================================
 CREATE OR REPLACE TYPE t_instrument_obj AS OBJECT (
     id_instrumentu  NUMBER,
     nazwa           VARCHAR2(100),
-    kategoria       VARCHAR2(50),
+    kategoria       VARCHAR2(50),     -- dete, strunowe, perkusyjne, klawiszowe
 
+    -- Metoda zwracajaca opis instrumentu
     MEMBER FUNCTION opis RETURN VARCHAR2
 );
 /
@@ -65,21 +64,23 @@ END;
 -- ============================================================================
 -- 2. TYP: T_LISTA_INSTRUMENTOW (VARRAY)
 -- Kolekcja nazw instrumentow - nauczyciel moze uczyc max 5 instrumentow
+-- Demonstracja VARRAY do modelowania relacji 1:N
 -- ============================================================================
 CREATE OR REPLACE TYPE t_lista_instrumentow AS VARRAY(5) OF VARCHAR2(100);
 /
 
 -- ============================================================================
 -- 3. TYP: T_SALA_OBJ
--- Reprezentuje sale lekcyjna
+-- Reprezentuje sale lekcyjna z wyposazeniem
 -- ============================================================================
 CREATE OR REPLACE TYPE t_sala_obj AS OBJECT (
     id_sali         NUMBER,
     nazwa           VARCHAR2(50),
-    pojemnosc       NUMBER,
-    ma_fortepian    CHAR(1),
-    ma_perkusje     CHAR(1),
+    pojemnosc       NUMBER,           -- liczba miejsc
+    ma_fortepian    CHAR(1),          -- T/N
+    ma_perkusje     CHAR(1),          -- T/N
 
+    -- Metoda zwracajaca pelny opis sali z wyposazeniem
     MEMBER FUNCTION opis_pelny RETURN VARCHAR2
 );
 /
@@ -98,8 +99,8 @@ END;
 
 -- ============================================================================
 -- 4. TYP: T_NAUCZYCIEL_OBJ
--- Reprezentuje nauczyciela szkoły muzycznej
--- Zawiera VARRAY instrumentow
+-- Reprezentuje nauczyciela szkoly muzycznej
+-- Zawiera VARRAY instrumentow ktore nauczyciel moze prowadzic
 -- ============================================================================
 CREATE OR REPLACE TYPE t_nauczyciel_obj AS OBJECT (
     id_nauczyciela      NUMBER,
@@ -108,10 +109,13 @@ CREATE OR REPLACE TYPE t_nauczyciel_obj AS OBJECT (
     email               VARCHAR2(100),
     telefon             VARCHAR2(20),
     data_zatrudnienia   DATE,
-    instrumenty         t_lista_instrumentow,
+    instrumenty         t_lista_instrumentow,  -- VARRAY instrumentow
 
+    -- Metoda zwracajaca pelne dane nauczyciela
     MEMBER FUNCTION pelne_dane RETURN VARCHAR2,
+    -- Metoda liczaca lata stazu
     MEMBER FUNCTION lata_stazu RETURN NUMBER,
+    -- Metoda zwracajaca liczbe instrumentow
     MEMBER FUNCTION liczba_instrumentow RETURN NUMBER
 );
 /
@@ -137,8 +141,10 @@ END;
 
 -- ============================================================================
 -- 5. TYP: T_UCZEN_OBJ
--- Reprezentuje ucznia szkoły muzycznej
--- Ograniczenia: min 5 lat, dzieci <15 lat lekcje 14:00-19:00
+-- Reprezentuje ucznia szkoly muzycznej
+-- Reguly biznesowe:
+--   - Minimalny wiek: 5 lat
+--   - Dzieci (<15 lat) moga miec lekcje tylko 14:00-19:00
 -- ============================================================================
 CREATE OR REPLACE TYPE t_uczen_obj AS OBJECT (
     id_ucznia       NUMBER,
@@ -148,9 +154,13 @@ CREATE OR REPLACE TYPE t_uczen_obj AS OBJECT (
     email           VARCHAR2(100),
     data_zapisu     DATE,
 
+    -- Metoda obliczajaca wiek ucznia
     MEMBER FUNCTION wiek RETURN NUMBER,
+    -- Metoda zwracajaca pelne dane
     MEMBER FUNCTION pelne_dane RETURN VARCHAR2,
+    -- Metoda sprawdzajaca pelnoletnosc
     MEMBER FUNCTION czy_pelnoletni RETURN VARCHAR2,
+    -- Metoda sprawdzajaca czy uczen jest dzieckiem (<15 lat)
     MEMBER FUNCTION czy_dziecko RETURN CHAR
 );
 /
@@ -181,14 +191,16 @@ END;
 -- ============================================================================
 -- 6. TYP: T_KURS_OBJ
 -- Reprezentuje kurs nauki gry na instrumencie
+-- Zawiera REF do instrumentu (demonstracja referencji)
 -- ============================================================================
 CREATE OR REPLACE TYPE t_kurs_obj AS OBJECT (
     id_kursu        NUMBER,
     nazwa           VARCHAR2(100),
-    poziom          VARCHAR2(20),
+    poziom          VARCHAR2(20),     -- poczatkujacy, sredni, zaawansowany
     cena_za_lekcje  NUMBER(10,2),
-    ref_instrument  REF t_instrument_obj,
+    ref_instrument  REF t_instrument_obj,  -- REF do instrumentu
 
+    -- Metoda zwracajaca informacje o kursie
     MEMBER FUNCTION info RETURN VARCHAR2
 );
 /
@@ -203,21 +215,23 @@ END;
 
 -- ============================================================================
 -- 7. TYP: T_LEKCJA_OBJ
--- Reprezentuje pojedyncza lekcje
--- REF: uczen, nauczyciel, kurs, sala
+-- Reprezentuje pojedyncza lekcje muzyki
+-- Zawiera 4 referencje REF demonstrujace relacje obiektowe
 -- ============================================================================
 CREATE OR REPLACE TYPE t_lekcja_obj AS OBJECT (
     id_lekcji       NUMBER,
     data_lekcji     DATE,
-    godzina_start   VARCHAR2(5),
-    czas_trwania    NUMBER,
-    status          VARCHAR2(20),
+    godzina_start   VARCHAR2(5),      -- format HH:MM
+    czas_trwania    NUMBER,           -- 30, 45, 60 lub 90 minut
+    status          VARCHAR2(20),     -- zaplanowana, odbyta, odwolana
     ref_uczen       REF t_uczen_obj,
     ref_nauczyciel  REF t_nauczyciel_obj,
     ref_kurs        REF t_kurs_obj,
     ref_sala        REF t_sala_obj,
 
+    -- Metoda zwracajaca czas trwania jako tekst
     MEMBER FUNCTION czas_txt RETURN VARCHAR2,
+    -- Metoda sprawdzajaca czy lekcja odbyta
     MEMBER FUNCTION czy_odbyta RETURN VARCHAR2
 );
 /
@@ -238,18 +252,20 @@ END;
 -- ============================================================================
 -- 8. TYP: T_OCENA_OBJ
 -- Reprezentuje ocene postepu ucznia
--- REF: uczen, nauczyciel
+-- Zawiera 2 referencje REF (uczen, nauczyciel)
 -- ============================================================================
 CREATE OR REPLACE TYPE t_ocena_obj AS OBJECT (
     id_oceny        NUMBER,
     data_oceny      DATE,
-    ocena           NUMBER(1),
-    obszar          VARCHAR2(50),
+    ocena           NUMBER(1),        -- 1-6
+    obszar          VARCHAR2(50),     -- technika, teoria, sluch, rytm, interpretacja, ogolna
     komentarz       VARCHAR2(500),
     ref_uczen       REF t_uczen_obj,
     ref_nauczyciel  REF t_nauczyciel_obj,
 
+    -- Metoda zwracajaca ocene slownie
     MEMBER FUNCTION ocena_slownie RETURN VARCHAR2,
+    -- Metoda sprawdzajaca czy ocena pozytywna
     MEMBER FUNCTION czy_pozytywna RETURN VARCHAR2
 );
 /
@@ -276,19 +292,17 @@ END;
 /
 
 -- ============================================================================
--- PODSUMOWANIE TYPOW - WERSJA 3.0
+-- PODSUMOWANIE TYPOW
 -- ============================================================================
-/*
-Utworzono 8 typow:
-
-1. t_instrument_obj     - instrument (1 metoda: opis)
-2. t_lista_instrumentow - VARRAY(5) nazw instrumentow
-3. t_sala_obj           - sala lekcyjna (1 metoda: opis_pelny)
-4. t_nauczyciel_obj     - nauczyciel z VARRAY (3 metody: pelne_dane, lata_stazu, liczba_instrumentow)
-5. t_uczen_obj          - uczen (4 metody: wiek, pelne_dane, czy_pelnoletni, czy_dziecko)
-6. t_kurs_obj           - kurs z REF->instrument (1 metoda: info)
-7. t_lekcja_obj         - lekcja z 4x REF (2 metody: czas_txt, czy_odbyta)
-8. t_ocena_obj          - ocena z 2x REF (2 metody: ocena_slownie, czy_pozytywna)
-
-Lacznie: 14 metod, 1 VARRAY, 7 REF
-*/
+-- Utworzono 8 typow obiektowych:
+-- 1. t_instrument_obj     - instrument (1 metoda)
+-- 2. t_lista_instrumentow - VARRAY(5) nazw instrumentow
+-- 3. t_sala_obj           - sala lekcyjna (1 metoda)
+-- 4. t_nauczyciel_obj     - nauczyciel z VARRAY (3 metody)
+-- 5. t_uczen_obj          - uczen (4 metody)
+-- 6. t_kurs_obj           - kurs z REF->instrument (1 metoda)
+-- 7. t_lekcja_obj         - lekcja z 4x REF (2 metody)
+-- 8. t_ocena_obj          - ocena z 2x REF (2 metody)
+--
+-- Lacznie: 14 metod, 1 VARRAY, 7 REF
+-- ============================================================================

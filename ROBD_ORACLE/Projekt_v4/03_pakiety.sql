@@ -1,24 +1,31 @@
 -- ============================================================================
 -- Projekt: Obiektowa Baza Danych - Szkola Muzyczna
 -- Plik: 03_pakiety.sql
+-- Opis: Pakiety PL/SQL z logika biznesowa
 -- Autorzy: Igor Typinski (251237), Mateusz Mroz (251190)
 -- ============================================================================
 
 -- ============================================================================
 -- PAKIET 1: PKG_UCZEN
+-- Obsluga uczniow - dodawanie, listy, informacje, statystyki
 -- ============================================================================
-
 CREATE OR REPLACE PACKAGE pkg_uczen AS
+    -- Dodaje nowego ucznia do bazy
     PROCEDURE dodaj(
         p_imie          VARCHAR2,
         p_nazwisko      VARCHAR2,
         p_data_urodzenia DATE,
         p_email         VARCHAR2 DEFAULT NULL
     );
+    -- Wyswietla liste wszystkich uczniow
     PROCEDURE lista;
+    -- Wyswietla liste dzieci (ponizej 15 lat)
     PROCEDURE lista_dzieci;
+    -- Wyswietla szczegolowe informacje o uczniu
     PROCEDURE info(p_id_ucznia NUMBER);
+    -- Oblicza srednia ocen ucznia
     FUNCTION srednia_ocen(p_id_ucznia NUMBER) RETURN NUMBER;
+    -- Zwraca liczbe lekcji ucznia
     FUNCTION liczba_lekcji(p_id_ucznia NUMBER) RETURN NUMBER;
 END pkg_uczen;
 /
@@ -33,8 +40,10 @@ CREATE OR REPLACE PACKAGE BODY pkg_uczen AS
     ) IS
         v_wiek NUMBER;
     BEGIN
+        -- Oblicz wiek do wyswietlenia
         v_wiek := TRUNC(MONTHS_BETWEEN(SYSDATE, p_data_urodzenia) / 12);
-        
+
+        -- Wstaw nowego ucznia (trigger sprawdzi wiek >= 5)
         INSERT INTO t_uczen VALUES (
             t_uczen_obj(
                 seq_uczen.NEXTVAL,
@@ -45,7 +54,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_uczen AS
                 SYSDATE
             )
         );
-        
+
         DBMS_OUTPUT.PUT_LINE('Dodano ucznia: ' || p_imie || ' ' || p_nazwisko || 
                             ' (wiek: ' || v_wiek || ' lat)');
     END dodaj;
@@ -56,11 +65,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_uczen AS
         DBMS_OUTPUT.PUT_LINE(RPAD('ID', 5) || RPAD('Imie', 15) || 
                             RPAD('Nazwisko', 20) || RPAD('Wiek', 6) || 'Status');
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 60, '-'));
-        
+
+        -- Uzycie VALUE(u) do pobrania obiektu i wywolania metod
         FOR r IN (
             SELECT u.id_ucznia, u.imie, u.nazwisko, 
-                   TREAT(VALUE(u) AS t_uczen_obj).wiek() AS wiek,
-                   CASE WHEN TREAT(VALUE(u) AS t_uczen_obj).czy_dziecko() = 'T' 
+                   VALUE(u).wiek() AS wiek,
+                   CASE WHEN VALUE(u).czy_dziecko() = 'T' 
                         THEN 'dziecko' ELSE 'dorosly' END AS status
             FROM t_uczen u
             ORDER BY u.nazwisko, u.imie
@@ -81,13 +91,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_uczen AS
         DBMS_OUTPUT.PUT_LINE('=== LISTA DZIECI (ponizej 15 lat) ===');
         DBMS_OUTPUT.PUT_LINE('Lekcje mozliwe tylko: Pn-Pt, godz. 14:00-19:00');
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 50, '-'));
-        
+
         FOR r IN (
             SELECT u.id_ucznia, u.imie, u.nazwisko, 
-                   TREAT(VALUE(u) AS t_uczen_obj).wiek() AS wiek
+                   VALUE(u).wiek() AS wiek
             FROM t_uczen u
-            WHERE TREAT(VALUE(u) AS t_uczen_obj).czy_dziecko() = 'T'
-            ORDER BY TREAT(VALUE(u) AS t_uczen_obj).wiek(), u.nazwisko
+            WHERE VALUE(u).czy_dziecko() = 'T'
+            ORDER BY VALUE(u).wiek(), u.nazwisko
         ) LOOP
             DBMS_OUTPUT.PUT_LINE(
                 r.id_ucznia || '. ' || r.imie || ' ' || r.nazwisko || 
@@ -95,7 +105,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_uczen AS
             );
             v_count := v_count + 1;
         END LOOP;
-        
+
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 50, '-'));
         DBMS_OUTPUT.PUT_LINE('Razem dzieci: ' || v_count);
     END lista_dzieci;
@@ -105,13 +115,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_uczen AS
         v_lekcje NUMBER;
         v_srednia NUMBER;
     BEGIN
+        -- Pobierz obiekt ucznia
         SELECT VALUE(u) INTO v_uczen
         FROM t_uczen u
         WHERE u.id_ucznia = p_id_ucznia;
-        
+
+        -- Oblicz statystyki
         v_lekcje := liczba_lekcji(p_id_ucznia);
         v_srednia := srednia_ocen(p_id_ucznia);
-        
+
+        -- Wyswietl informacje
         DBMS_OUTPUT.PUT_LINE('=== INFORMACJE O UCZNIU ===');
         DBMS_OUTPUT.PUT_LINE('ID:           ' || v_uczen.id_ucznia);
         DBMS_OUTPUT.PUT_LINE('Imie:         ' || v_uczen.imie);
@@ -125,7 +138,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_uczen AS
         DBMS_OUTPUT.PUT_LINE('Data zapisu:  ' || TO_CHAR(v_uczen.data_zapisu, 'YYYY-MM-DD'));
         DBMS_OUTPUT.PUT_LINE('Liczba lekcji: ' || v_lekcje);
         DBMS_OUTPUT.PUT_LINE('Srednia ocen: ' || NVL(TO_CHAR(v_srednia, '0.00'), 'brak ocen'));
-        
+
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             DBMS_OUTPUT.PUT_LINE('Nie znaleziono ucznia o ID: ' || p_id_ucznia);
@@ -134,10 +147,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_uczen AS
     FUNCTION srednia_ocen(p_id_ucznia NUMBER) RETURN NUMBER IS
         v_srednia NUMBER;
     BEGIN
+        -- Uzycie DEREF do pobrania danych z referencji
         SELECT AVG(o.ocena) INTO v_srednia
         FROM t_ocena_postepu o
         WHERE DEREF(o.ref_uczen).id_ucznia = p_id_ucznia;
-        
+
         RETURN ROUND(v_srednia, 2);
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
@@ -150,7 +164,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_uczen AS
         SELECT COUNT(*) INTO v_count
         FROM t_lekcja l
         WHERE DEREF(l.ref_uczen).id_ucznia = p_id_ucznia;
-        
+
         RETURN v_count;
     END liczba_lekcji;
 
@@ -159,9 +173,11 @@ END pkg_uczen;
 
 -- ============================================================================
 -- PAKIET 2: PKG_LEKCJA
+-- Zarzadzanie lekcjami - planowanie, statusy, raporty
+-- Cala logika walidacji znajduje sie w procedurze zaplanuj()
 -- ============================================================================
-
 CREATE OR REPLACE PACKAGE pkg_lekcja AS
+    -- Planuje nowa lekcje z pelna walidacja
     PROCEDURE zaplanuj(
         p_id_ucznia     NUMBER,
         p_id_nauczyciela NUMBER,
@@ -171,10 +187,15 @@ CREATE OR REPLACE PACKAGE pkg_lekcja AS
         p_godzina       VARCHAR2,
         p_czas_trwania  NUMBER DEFAULT 45
     );
+    -- Oznacza lekcje jako odbyta
     PROCEDURE oznacz_odbyta(p_id_lekcji NUMBER);
+    -- Odwoluje lekcje
     PROCEDURE odwolaj(p_id_lekcji NUMBER);
+    -- Wyswietla plan dnia
     PROCEDURE plan_dnia(p_data DATE DEFAULT SYSDATE);
+    -- Wyswietla plan nauczyciela
     PROCEDURE plan_nauczyciela(p_id_nauczyciela NUMBER, p_data DATE DEFAULT SYSDATE);
+    -- Raport obciazenia nauczycieli
     PROCEDURE raport_obciazenia(p_data DATE DEFAULT SYSDATE);
 END pkg_lekcja;
 /
@@ -182,7 +203,8 @@ END pkg_lekcja;
 CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
 
     -- ========================================================================
-    -- ZAPLANUJ - cala logika walidacji PRZED insertem (unikamy Mutating Table)
+    -- ZAPLANUJ - glowna procedura z cala logika walidacji
+    -- Walidacje: kompetencje nauczyciela, limity, konflikty
     -- ========================================================================
     PROCEDURE zaplanuj(
         p_id_ucznia     NUMBER,
@@ -198,7 +220,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         v_ref_kurs      REF t_kurs_obj;
         v_ref_sala      REF t_sala_obj;
         v_id            NUMBER;
-        
+
         -- Zmienne do walidacji
         v_godz_start_new NUMBER;
         v_godz_end_new   NUMBER;
@@ -206,81 +228,96 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         v_suma_minut     NUMBER;
         v_instrument_kursu VARCHAR2(100);
     BEGIN
-        -- 1. Przelicz godziny na minuty
+        -- Przelicz godzine startu na minuty od polnocy
         v_godz_start_new := TO_NUMBER(SUBSTR(p_godzina, 1, 2)) * 60 + 
                            TO_NUMBER(SUBSTR(p_godzina, 4, 2));
         v_godz_end_new := v_godz_start_new + p_czas_trwania;
 
-        -- 2. SPRAWDZ KOMPETENCJE NAUCZYCIELA
+        -- =================================================================
+        -- WALIDACJA 1: Sprawdz kompetencje nauczyciela
+        -- Nauczyciel musi miec instrument kursu w swoim VARRAY
+        -- =================================================================
         SELECT i.nazwa INTO v_instrument_kursu
         FROM t_kurs k 
         JOIN t_instrument i ON DEREF(k.ref_instrument).id_instrumentu = i.id_instrumentu
         WHERE k.id_kursu = p_id_kursu;
-        
+
+        -- Porownanie z uzyciem UPPER dla bezpieczenstwa
         SELECT COUNT(*) INTO v_cnt
         FROM t_nauczyciel n, TABLE(n.instrumenty) t
         WHERE n.id_nauczyciela = p_id_nauczyciela 
-          AND t.COLUMN_VALUE = v_instrument_kursu;
-        
+          AND UPPER(t.COLUMN_VALUE) = UPPER(v_instrument_kursu);
+
         IF v_cnt = 0 THEN
             RAISE_APPLICATION_ERROR(-20030, 
                 'Nauczyciel nie uczy gry na: ' || v_instrument_kursu);
         END IF;
 
-        -- 3. SPRAWDZ LIMIT NAUCZYCIELA (max 6h = 360 min dziennie)
+        -- =================================================================
+        -- WALIDACJA 2: Limit nauczyciela (max 6h = 360 min dziennie)
+        -- =================================================================
         SELECT NVL(SUM(l.czas_trwania), 0) INTO v_suma_minut
         FROM t_lekcja l
         WHERE DEREF(l.ref_nauczyciel).id_nauczyciela = p_id_nauczyciela
           AND TRUNC(l.data_lekcji) = TRUNC(p_data)
           AND l.status IN ('zaplanowana', 'odbyta');
-          
+
         IF v_suma_minut + p_czas_trwania > 360 THEN
             RAISE_APPLICATION_ERROR(-20104, 
                 'Nauczyciel przekroczy limit 6h dziennie (obecnie: ' || 
                 v_suma_minut || ' min).');
         END IF;
 
-        -- 4. SPRAWDZ LIMIT UCZNIA (max 2 lekcje dziennie)
+        -- =================================================================
+        -- WALIDACJA 3: Limit ucznia (max 2 lekcje dziennie)
+        -- =================================================================
         SELECT COUNT(*) INTO v_cnt
         FROM t_lekcja l
         WHERE DEREF(l.ref_uczen).id_ucznia = p_id_ucznia
           AND TRUNC(l.data_lekcji) = TRUNC(p_data)
           AND l.status IN ('zaplanowana', 'odbyta');
-          
+
         IF v_cnt >= 2 THEN
             RAISE_APPLICATION_ERROR(-20105, 
                 'Uczen ma juz 2 lekcje tego dnia - limit wyczerpany.');
         END IF;
 
-        -- 5. SPRAWDZ KONFLIKT SALI
+        -- =================================================================
+        -- WALIDACJA 4: Konflikt sali (nakladajace sie terminy)
+        -- =================================================================
         SELECT COUNT(*) INTO v_cnt
         FROM t_lekcja l
         WHERE DEREF(l.ref_sala).id_sali = p_id_sali
           AND TRUNC(l.data_lekcji) = TRUNC(p_data)
           AND l.status = 'zaplanowana'
           AND (
+              -- Nowa lekcja zaczyna sie w trakcie istniejacej
               (v_godz_start_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
                                    TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))
                AND v_godz_start_new < TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
                                        TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania)
               OR
+              -- Nowa lekcja konczy sie w trakcie istniejacej
               (v_godz_end_new > TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
                                 TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))
                AND v_godz_end_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
                                       TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania)
               OR
+              -- Nowa lekcja obejmuje cala istniejaca
               (v_godz_start_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
                                     TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))
                AND v_godz_end_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
                                       TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania)
           );
-          
+
         IF v_cnt > 0 THEN
             RAISE_APPLICATION_ERROR(-20106, 
                 'Konflikt sali - termin jest juz zajety.');
         END IF;
 
-        -- 6. SPRAWDZ KONFLIKT NAUCZYCIELA
+        -- =================================================================
+        -- WALIDACJA 5: Konflikt nauczyciela
+        -- =================================================================
         SELECT COUNT(*) INTO v_cnt
         FROM t_lekcja l
         WHERE DEREF(l.ref_nauczyciel).id_nauczyciela = p_id_nauczyciela
@@ -302,13 +339,15 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
                AND v_godz_end_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
                                       TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania)
           );
-          
+
         IF v_cnt > 0 THEN
             RAISE_APPLICATION_ERROR(-20107, 
                 'Nauczyciel ma juz lekcje w tym czasie.');
         END IF;
 
-        -- 7. SPRAWDZ KONFLIKT UCZNIA
+        -- =================================================================
+        -- WALIDACJA 6: Konflikt ucznia
+        -- =================================================================
         SELECT COUNT(*) INTO v_cnt
         FROM t_lekcja l
         WHERE DEREF(l.ref_uczen).id_ucznia = p_id_ucznia
@@ -330,21 +369,22 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
                AND v_godz_end_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
                                       TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania)
           );
-          
+
         IF v_cnt > 0 THEN
             RAISE_APPLICATION_ERROR(-20108, 
                 'Uczen ma juz lekcje w tym czasie.');
         END IF;
 
-        -- === WALIDACJA OK - ROBIMY INSERT ===
-        
+        -- =================================================================
+        -- WALIDACJA OK - pobierz referencje i wstaw rekord
+        -- =================================================================
         SELECT REF(u) INTO v_ref_uczen FROM t_uczen u WHERE u.id_ucznia = p_id_ucznia;
         SELECT REF(n) INTO v_ref_naucz FROM t_nauczyciel n WHERE n.id_nauczyciela = p_id_nauczyciela;
         SELECT REF(k) INTO v_ref_kurs FROM t_kurs k WHERE k.id_kursu = p_id_kursu;
         SELECT REF(s) INTO v_ref_sala FROM t_sala s WHERE s.id_sali = p_id_sali;
-        
+
         v_id := seq_lekcja.NEXTVAL;
-        
+
         INSERT INTO t_lekcja VALUES (
             t_lekcja_obj(
                 v_id,
@@ -358,11 +398,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
                 v_ref_sala
             )
         );
-        
+
         DBMS_OUTPUT.PUT_LINE('Zaplanowano lekcje ID=' || v_id || 
                             ' na ' || TO_CHAR(p_data, 'YYYY-MM-DD') || 
                             ' godz. ' || p_godzina);
-        
+
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             RAISE_APPLICATION_ERROR(-20010, 
@@ -374,11 +414,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         UPDATE t_lekcja
         SET status = 'odbyta'
         WHERE id_lekcji = p_id_lekcji AND status = 'zaplanowana';
-        
+
         IF SQL%ROWCOUNT = 0 THEN
-            RAISE_APPLICATION_ERROR(-20011, 'Nie mozna oznaczyc - lekcja nie istnieje lub nie jest zaplanowana');
+            RAISE_APPLICATION_ERROR(-20011, 
+                'Nie mozna oznaczyc - lekcja nie istnieje lub nie jest zaplanowana');
         END IF;
-        
+
         DBMS_OUTPUT.PUT_LINE('Lekcja ID=' || p_id_lekcji || ' oznaczona jako odbyta');
     END oznacz_odbyta;
 
@@ -387,11 +428,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         UPDATE t_lekcja
         SET status = 'odwolana'
         WHERE id_lekcji = p_id_lekcji AND status = 'zaplanowana';
-        
+
         IF SQL%ROWCOUNT = 0 THEN
-            RAISE_APPLICATION_ERROR(-20012, 'Nie mozna odwolac - lekcja nie istnieje lub nie jest zaplanowana');
+            RAISE_APPLICATION_ERROR(-20012, 
+                'Nie mozna odwolac - lekcja nie istnieje lub nie jest zaplanowana');
         END IF;
-        
+
         DBMS_OUTPUT.PUT_LINE('Lekcja ID=' || p_id_lekcji || ' odwolana');
     END odwolaj;
 
@@ -401,7 +443,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         DBMS_OUTPUT.PUT_LINE(RPAD('Godz', 8) || RPAD('Sala', 10) || 
                             RPAD('Uczen', 20) || RPAD('Nauczyciel', 20) || 'Status');
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 75, '-'));
-        
+
+        -- Uzycie DEREF do pobrania danych z referencji
         FOR r IN (
             SELECT l.godzina_start,
                    DEREF(l.ref_sala).nazwa AS sala,
@@ -428,13 +471,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         SELECT VALUE(n) INTO v_naucz
         FROM t_nauczyciel n
         WHERE n.id_nauczyciela = p_id_nauczyciela;
-        
+
         DBMS_OUTPUT.PUT_LINE('=== PLAN: ' || v_naucz.imie || ' ' || v_naucz.nazwisko || 
                             ' (' || TO_CHAR(p_data, 'YYYY-MM-DD') || ') ===');
         DBMS_OUTPUT.PUT_LINE(RPAD('Godz', 8) || RPAD('Czas', 6) || 
                             RPAD('Sala', 10) || RPAD('Uczen', 25) || 'Kurs');
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 70, '-'));
-        
+
         FOR r IN (
             SELECT l.godzina_start, l.czas_trwania,
                    DEREF(l.ref_sala).nazwa AS sala,
@@ -448,13 +491,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         ) LOOP
             DBMS_OUTPUT.PUT_LINE(
                 RPAD(r.godzina_start, 8) ||
-                RPAD(r.czas_trwania || ' min', 6) ||
+                RPAD(r.czas_trwania || 'm', 6) ||
                 RPAD(r.sala, 10) ||
                 RPAD(r.uczen, 25) ||
                 r.kurs
             );
         END LOOP;
-        
+
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             DBMS_OUTPUT.PUT_LINE('Nie znaleziono nauczyciela o ID: ' || p_id_nauczyciela);
@@ -465,7 +508,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         DBMS_OUTPUT.PUT_LINE('=== OBCIAZENIE NAUCZYCIELI (' || TO_CHAR(p_data, 'YYYY-MM-DD') || ') ===');
         DBMS_OUTPUT.PUT_LINE('Limit: max 360 min (6h) dziennie');
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 50, '-'));
-        
+
         FOR r IN (
             SELECT 
                 DEREF(l.ref_nauczyciel).imie || ' ' || DEREF(l.ref_nauczyciel).nazwisko AS naucz,
@@ -493,9 +536,10 @@ END pkg_lekcja;
 
 -- ============================================================================
 -- PAKIET 3: PKG_OCENA
+-- Zarzadzanie ocenami postepow uczniow
 -- ============================================================================
-
 CREATE OR REPLACE PACKAGE pkg_ocena AS
+    -- Dodaje nowa ocene
     PROCEDURE dodaj(
         p_id_ucznia     NUMBER,
         p_id_nauczyciela NUMBER,
@@ -503,7 +547,9 @@ CREATE OR REPLACE PACKAGE pkg_ocena AS
         p_obszar        VARCHAR2,
         p_komentarz     VARCHAR2 DEFAULT NULL
     );
+    -- Wyswietla historie ocen ucznia
     PROCEDURE historia_ucznia(p_id_ucznia NUMBER);
+    -- Wyswietla raport postepu ucznia
     PROCEDURE raport_postepu(p_id_ucznia NUMBER);
 END pkg_ocena;
 /
@@ -520,9 +566,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
         v_ref_uczen REF t_uczen_obj;
         v_ref_naucz REF t_nauczyciel_obj;
     BEGIN
+        -- Pobierz referencje
         SELECT REF(u) INTO v_ref_uczen FROM t_uczen u WHERE u.id_ucznia = p_id_ucznia;
         SELECT REF(n) INTO v_ref_naucz FROM t_nauczyciel n WHERE n.id_nauczyciela = p_id_nauczyciela;
-        
+
+        -- Wstaw ocene
         INSERT INTO t_ocena_postepu VALUES (
             t_ocena_obj(
                 seq_ocena.NEXTVAL,
@@ -534,9 +582,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
                 v_ref_naucz
             )
         );
-        
+
         DBMS_OUTPUT.PUT_LINE('Dodano ocene ' || p_ocena || ' (' || p_obszar || ')');
-        
+
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             RAISE_APPLICATION_ERROR(-20020, 'Nie znaleziono ucznia lub nauczyciela');
@@ -546,12 +594,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
         v_uczen t_uczen_obj;
     BEGIN
         SELECT VALUE(u) INTO v_uczen FROM t_uczen u WHERE u.id_ucznia = p_id_ucznia;
-        
+
         DBMS_OUTPUT.PUT_LINE('=== HISTORIA OCEN: ' || v_uczen.imie || ' ' || v_uczen.nazwisko || ' ===');
         DBMS_OUTPUT.PUT_LINE(RPAD('Data', 12) || RPAD('Obszar', 15) || 
                             RPAD('Ocena', 7) || 'Komentarz');
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 60, '-'));
-        
+
         FOR r IN (
             SELECT TO_CHAR(o.data_oceny, 'YYYY-MM-DD') AS data,
                    o.obszar, o.ocena, o.komentarz
@@ -566,7 +614,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
                 NVL(r.komentarz, '')
             );
         END LOOP;
-        
+
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             DBMS_OUTPUT.PUT_LINE('Nie znaleziono ucznia o ID: ' || p_id_ucznia);
@@ -577,10 +625,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
         v_sr_ogolna NUMBER;
     BEGIN
         SELECT VALUE(u) INTO v_uczen FROM t_uczen u WHERE u.id_ucznia = p_id_ucznia;
-        
+
         DBMS_OUTPUT.PUT_LINE('=== RAPORT POSTEPU: ' || v_uczen.imie || ' ' || v_uczen.nazwisko || ' ===');
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 40, '-'));
-        
+
+        -- Srednie ocen w poszczegolnych obszarach
         FOR r IN (
             SELECT o.obszar, 
                    ROUND(AVG(o.ocena), 2) AS srednia,
@@ -596,14 +645,15 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
                 ' (' || r.liczba_ocen || ' ocen)'
             );
         END LOOP;
-        
+
+        -- Srednia ogolna
         SELECT ROUND(AVG(o.ocena), 2) INTO v_sr_ogolna
         FROM t_ocena_postepu o
         WHERE DEREF(o.ref_uczen).id_ucznia = p_id_ucznia;
-        
+
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 40, '-'));
         DBMS_OUTPUT.PUT_LINE('SREDNIA OGOLNA: ' || NVL(TO_CHAR(v_sr_ogolna, '0.00'), 'brak ocen'));
-        
+
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             DBMS_OUTPUT.PUT_LINE('Nie znaleziono ucznia o ID: ' || p_id_ucznia);
@@ -611,3 +661,15 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
 
 END pkg_ocena;
 /
+
+-- ============================================================================
+-- PODSUMOWANIE PAKIETOW
+-- ============================================================================
+-- Utworzono 3 pakiety:
+-- 1. pkg_uczen  - 4 procedury, 2 funkcje
+-- 2. pkg_lekcja - 6 procedur (zaplanuj zawiera cala logike walidacji)
+-- 3. pkg_ocena  - 3 procedury
+--
+-- Lacznie: 13 procedur/funkcji
+-- Demonstracja: kursory FOR, REF/DEREF, obsługa bledow, DBMS_OUTPUT
+-- ============================================================================

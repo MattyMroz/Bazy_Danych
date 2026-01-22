@@ -883,14 +883,14 @@ BEGIN
             v_test_fail := v_test_fail + 1;
     END;
     
-    -- Test 10.3: t_nauczyciel_obj.staz()
+    -- Test 10.3: t_nauczyciel_obj.lata_stazu()
     BEGIN
         SELECT VALUE(n) INTO v_naucz FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
-        DBMS_OUTPUT.PUT_LINE('[OK] Test 10.3: nauczyciel.staz() = ' || v_naucz.staz() || ' lat');
+        DBMS_OUTPUT.PUT_LINE('[OK] Test 10.3: nauczyciel.lata_stazu() = ' || v_naucz.lata_stazu() || ' lat');
         v_test_ok := v_test_ok + 1;
     EXCEPTION
         WHEN OTHERS THEN
-            DBMS_OUTPUT.PUT_LINE('[FAIL] Test 10.3: nauczyciel.staz() - ' || SQLERRM);
+            DBMS_OUTPUT.PUT_LINE('[FAIL] Test 10.3: nauczyciel.lata_stazu() - ' || SQLERRM);
             v_test_fail := v_test_fail + 1;
     END;
     
@@ -906,14 +906,14 @@ BEGIN
             v_test_fail := v_test_fail + 1;
     END;
     
-    -- Test 10.5: t_sala_obj.opis()
+    -- Test 10.5: t_sala_obj.opis_pelny()
     BEGIN
         SELECT VALUE(s) INTO v_sala FROM t_sala s WHERE s.id_sali = 1;
-        DBMS_OUTPUT.PUT_LINE('[OK] Test 10.5: sala.opis() = ' || v_sala.opis());
+        DBMS_OUTPUT.PUT_LINE('[OK] Test 10.5: sala.opis_pelny() = ' || v_sala.opis_pelny());
         v_test_ok := v_test_ok + 1;
     EXCEPTION
         WHEN OTHERS THEN
-            DBMS_OUTPUT.PUT_LINE('[FAIL] Test 10.5: sala.opis() - ' || SQLERRM);
+            DBMS_OUTPUT.PUT_LINE('[FAIL] Test 10.5: sala.opis_pelny() - ' || SQLERRM);
             v_test_fail := v_test_fail + 1;
     END;
     

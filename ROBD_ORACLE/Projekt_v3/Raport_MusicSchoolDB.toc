@@ -24,7 +24,7 @@
 \contentsline {subsection}{\numberline {3.9}Sekwencje}{9}{subsection.3.9}%
 \contentsline {section}{\numberline {4}Pakiety PL/SQL}{9}{section.4}%
 \contentsline {subsection}{\numberline {4.1}pkg\_uczen}{9}{subsection.4.1}%
-\contentsline {subsection}{\numberline {4.2}pkg\_lekcja}{9}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.2}pkg\_lekcja}{10}{subsection.4.2}%
 \contentsline {subsection}{\numberline {4.3}pkg\_ocena}{10}{subsection.4.3}%
 \contentsline {section}{\numberline {5}Wyzwalacze (Triggery)}{10}{section.5}%
 \contentsline {section}{\numberline {6}Obsługa błędów}{10}{section.6}%
@@ -40,11 +40,11 @@
 \contentsline {subsubsection}{\numberline {6.2.8}Scenariusz 8: Blokada usuwania}{12}{subsubsection.6.2.8}%
 \contentsline {subsubsection}{\numberline {6.2.9}Scenariusz 9: Pakiety CRUD}{12}{subsubsection.6.2.9}%
 \contentsline {subsubsection}{\numberline {6.2.10}Scenariusz 10: Metody obiektów}{12}{subsubsection.6.2.10}%
-\contentsline {section}{\numberline {7}Role użytkowników}{12}{section.7}%
+\contentsline {section}{\numberline {7}Role użytkowników}{13}{section.7}%
 \contentsline {subsection}{\numberline {7.1}Administrator (rola\_admin)}{13}{subsection.7.1}%
 \contentsline {subsection}{\numberline {7.2}Nauczyciel (rola\_nauczyciel)}{13}{subsection.7.2}%
 \contentsline {subsection}{\numberline {7.3}Sekretariat (rola\_sekretariat)}{13}{subsection.7.3}%
 \contentsline {subsection}{\numberline {7.4}Macierz uprawnień}{13}{subsection.7.4}%
-\contentsline {subsection}{\numberline {7.5}Użytkownicy testowi}{13}{subsection.7.5}%
+\contentsline {subsection}{\numberline {7.5}Użytkownicy testowi}{14}{subsection.7.5}%
 \contentsline {section}{\numberline {8}Diagram relacji obiektów}{14}{section.8}%
 \contentsline {section}{\numberline {9}Struktura plików projektu}{14}{section.9}%

@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2025.12.30)  21 JAN 2026 23:11
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2025.12.30)  22 JAN 2026 01:34
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**c:/Users/mateu/Desktop/PROJECTS/GitHub/Bazy_Danych/ROBD_ORACLE/Projekt_v3/Raport_MusicSchoolDB.tex
-(c:/Users/mateu/Desktop/PROJECTS/GitHub/Bazy_Danych/ROBD_ORACLE/Projekt_v3/Raport_MusicSchoolDB.tex
+**c:/Users/mateu/Desktop/PROJECTS/GitHub/Bazy_Danych/ROBD_ORACLE/Projekt_v4/Raport_MusicSchoolDB.tex
+(c:/Users/mateu/Desktop/PROJECTS/GitHub/Bazy_Danych/ROBD_ORACLE/Projekt_v4/Raport_MusicSchoolDB.tex
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
 (C:\Users\mateu\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
@@ -628,7 +628,7 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.44 ...strator (rola\_admin)}{13}{subsection.7.1}
+l.45 ...strator (rola\_admin)}{16}{subsection.7.1}
                                                   % [1])
 \tf@toc=\write5
 \openout5 = `Raport_MusicSchoolDB.toc'.
@@ -642,57 +642,42 @@ LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 65
 (C:\Users\mateu\AppData\Local\Programs\MiKTeX\tex/latex/lm\ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) [3{C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ts1.enc}] [4]
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 176.
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 177.
  (C:\Users\mateu\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-Overfull \hbox (13.15593pt too wide) in paragraph at lines 176--177
+Overfull \hbox (13.15593pt too wide) in paragraph at lines 177--178
 []\T1/lmtt/m/n/12 CREATE OR REPLACE TYPE t_lista_instrumentow AS VARRAY(5) OF VARCHAR2(50); 
  []
 
-[5] [6]
-Overfull \hbox (1.33652pt too wide) in paragraph at lines 313--326
- [][] 
+[5] [6] [7] [8]
+Overfull \hbox (0.80592pt too wide) in paragraph at lines 428--429
+[]\T1/lmtt/m/n/12 SELECT DEREF(l.ref_uczen).imie || ' ' || DEREF(l.ref_uczen).nazwisko AS
  []
 
-[7] [8]
-Overfull \hbox (0.80592pt too wide) in paragraph at lines 426--427
-[]\T1/lmtt/m/n/12 SELECT DEREF(l.ref_uczen).imi¦ || ' ' || DEREF(l.ref_uczen).nazwisko AS
- []
-
-[9]
-Underfull \hbox (badness 3735) in paragraph at lines 573--574
-[]|\T1/lmr/m/n/12 Nie zna-le-ziono ucznia, na-uczy-ciela,
- []
-
-[10] [11] [12]
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[13]
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[14] [15] (Raport_MusicSchoolDB.aux)
+[9] [10] [11]
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <10.95> on input line 527.
+ [12] [13] [14] [15] [16] [17] [18] [19] (Raport_MusicSchoolDB.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2025-12-24>
  ***********
 Package rerunfilecheck Info: File `Raport_MusicSchoolDB.out' has not changed.
-(rerunfilecheck)             Checksum: C0D772330F454072753362A8E7A2E9BD;7583.
+(rerunfilecheck)             Checksum: DA981BF5DA997C9DE53989A62FD71D9E;7808.
  ) 
 Here is how much of TeX's memory you used:
- 23166 strings out of 467871
- 438570 string characters out of 5418375
- 852048 words of memory out of 5000000
- 51554 multiletter control sequences out of 15000+600000
- 679783 words of font info for 80 fonts, out of 8000000 for 9000
+ 23176 strings out of 467871
+ 438696 string characters out of 5418375
+ 844944 words of memory out of 5000000
+ 51558 multiletter control sequences out of 15000+600000
+ 686791 words of font info for 86 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,10n,104p,534b,702s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr17.pfb><C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr8.pfb><C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb>
-Output written on Raport_MusicSchoolDB.pdf (16 pages, 257049 bytes).
+<C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr17.pfb><C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr8.pfb><C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb>
+Output written on Raport_MusicSchoolDB.pdf (20 pages, 294825 bytes).
 PDF statistics:
- 409 PDF objects out of 1000 (max. 8388607)
- 97 named destinations out of 1000 (max. 500000)
- 405 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 436 PDF objects out of 1000 (max. 8388607)
+ 102 named destinations out of 1000 (max. 500000)
+ 413 words of extra memory for PDF output out of 10000 (max. 10000000)
 

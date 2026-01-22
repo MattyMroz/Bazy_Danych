@@ -1,8 +1,7 @@
 -- ============================================================================
 -- Projekt: Obiektowa Baza Danych - Szkola Muzyczna
 -- Plik: 05_dane.sql
--- Opis: Dane testowe - instrumenty, sale, nauczyciele, uczniowie, kursy
--- Wersja: 3.0 (uproszczona)
+-- Opis: Dane testowe
 -- Autorzy: Igor Typinski (251237), Mateusz Mroz (251190)
 -- ============================================================================
 
@@ -23,21 +22,21 @@ INSERT INTO t_instrument VALUES (t_instrument_obj(seq_instrument.NEXTVAL, 'Perku
 COMMIT;
 
 -- ============================================================================
--- 2. SALE (5 sal)
+-- 2. SALE (5 sal z roznym wyposazeniem)
 -- ============================================================================
-INSERT INTO t_sala VALUES (t_sala_obj(seq_sala.NEXTVAL, 'Sala A1', 1, 'T', 'N'));   -- fortepian
-INSERT INTO t_sala VALUES (t_sala_obj(seq_sala.NEXTVAL, 'Sala A2', 1, 'T', 'N'));   -- fortepian
-INSERT INTO t_sala VALUES (t_sala_obj(seq_sala.NEXTVAL, 'Sala B1', 2, 'N', 'N'));   -- ogolna
-INSERT INTO t_sala VALUES (t_sala_obj(seq_sala.NEXTVAL, 'Sala B2', 3, 'N', 'N'));   -- ogolna wieksza
-INSERT INTO t_sala VALUES (t_sala_obj(seq_sala.NEXTVAL, 'Sala C1', 1, 'N', 'T'));   -- perkusja
+INSERT INTO t_sala VALUES (t_sala_obj(seq_sala.NEXTVAL, 'Sala A1', 1, 'T', 'N'));
+INSERT INTO t_sala VALUES (t_sala_obj(seq_sala.NEXTVAL, 'Sala A2', 1, 'T', 'N'));
+INSERT INTO t_sala VALUES (t_sala_obj(seq_sala.NEXTVAL, 'Sala B1', 2, 'N', 'N'));
+INSERT INTO t_sala VALUES (t_sala_obj(seq_sala.NEXTVAL, 'Sala B2', 3, 'N', 'N'));
+INSERT INTO t_sala VALUES (t_sala_obj(seq_sala.NEXTVAL, 'Sala C1', 1, 'N', 'T'));
 
 COMMIT;
 
 -- ============================================================================
--- 3. NAUCZYCIELE (5 nauczycieli z roznymi instrumentami)
+-- 3. NAUCZYCIELE (5 nauczycieli z VARRAY instrumentow)
 -- ============================================================================
 
--- Nauczyciel 1: pianista + skrzypce
+-- Jan Kowalski - Fortepian, Skrzypce
 INSERT INTO t_nauczyciel VALUES (
     t_nauczyciel_obj(
         seq_nauczyciel.NEXTVAL,
@@ -50,7 +49,7 @@ INSERT INTO t_nauczyciel VALUES (
     )
 );
 
--- Nauczyciel 2: gitarzysta (klasyczna + elektryczna)
+-- Anna Nowak - Gitara klasyczna, Gitara elektryczna
 INSERT INTO t_nauczyciel VALUES (
     t_nauczyciel_obj(
         seq_nauczyciel.NEXTVAL,
@@ -63,7 +62,7 @@ INSERT INTO t_nauczyciel VALUES (
     )
 );
 
--- Nauczyciel 3: dety (flet, klarnet, saksofon)
+-- Piotr Wisniewski - Flet, Klarnet, Saksofon
 INSERT INTO t_nauczyciel VALUES (
     t_nauczyciel_obj(
         seq_nauczyciel.NEXTVAL,
@@ -76,7 +75,7 @@ INSERT INTO t_nauczyciel VALUES (
     )
 );
 
--- Nauczyciel 4: perkusja + trabka
+-- Maria Dabrowska - Perkusja, Trabka
 INSERT INTO t_nauczyciel VALUES (
     t_nauczyciel_obj(
         seq_nauczyciel.NEXTVAL,
@@ -89,7 +88,7 @@ INSERT INTO t_nauczyciel VALUES (
     )
 );
 
--- Nauczyciel 5: wiolonczela + fortepian
+-- Tomasz Lewandowski - Wiolonczela, Fortepian
 INSERT INTO t_nauczyciel VALUES (
     t_nauczyciel_obj(
         seq_nauczyciel.NEXTVAL,
@@ -105,56 +104,56 @@ INSERT INTO t_nauczyciel VALUES (
 COMMIT;
 
 -- ============================================================================
--- 4. UCZNIOWIE (10 uczniow - mix dzieci i doroslych)
+-- 4. UCZNIOWIE (10 uczniow - dzieci i dorosli)
 -- ============================================================================
 
 -- Dzieci (ponizej 15 lat) - lekcje tylko 14:00-19:00
 INSERT INTO t_uczen VALUES (
     t_uczen_obj(seq_uczen.NEXTVAL, 'Kacper', 'Malinowski', DATE '2015-05-12', 'kacper.m@email.pl', SYSDATE)
-);  -- 9 lat (dziecko)
+);
 
 INSERT INTO t_uczen VALUES (
     t_uczen_obj(seq_uczen.NEXTVAL, 'Zofia', 'Wojcik', DATE '2013-08-23', 'zofia.w@email.pl', SYSDATE)
-);  -- 11 lat (dziecko)
+);
 
 INSERT INTO t_uczen VALUES (
     t_uczen_obj(seq_uczen.NEXTVAL, 'Jakub', 'Kaminski', DATE '2012-01-15', NULL, SYSDATE)
-);  -- 13 lat (dziecko)
+);
 
 INSERT INTO t_uczen VALUES (
     t_uczen_obj(seq_uczen.NEXTVAL, 'Maja', 'Zielinska', DATE '2011-11-30', 'maja.z@email.pl', SYSDATE)
-);  -- 13 lat (dziecko)
+);
 
--- Mlodziez (15-17 lat) - brak ograniczen godzinowych
+-- Mlodziez (15-17 lat) - bez ograniczen godzinowych
 INSERT INTO t_uczen VALUES (
     t_uczen_obj(seq_uczen.NEXTVAL, 'Adam', 'Szymanski', DATE '2008-04-05', 'adam.sz@email.pl', SYSDATE)
-);  -- 17 lat
+);
 
 INSERT INTO t_uczen VALUES (
     t_uczen_obj(seq_uczen.NEXTVAL, 'Natalia', 'Wozniak', DATE '2009-07-18', 'natalia.w@email.pl', SYSDATE)
-);  -- 16 lat
+);
 
 -- Dorosli (18+ lat)
 INSERT INTO t_uczen VALUES (
     t_uczen_obj(seq_uczen.NEXTVAL, 'Michal', 'Kozlowski', DATE '2000-02-28', 'michal.k@email.pl', SYSDATE)
-);  -- 25 lat
+);
 
 INSERT INTO t_uczen VALUES (
     t_uczen_obj(seq_uczen.NEXTVAL, 'Karolina', 'Jankowska', DATE '1995-12-10', 'karolina.j@email.pl', SYSDATE)
-);  -- 29 lat
+);
 
 INSERT INTO t_uczen VALUES (
     t_uczen_obj(seq_uczen.NEXTVAL, 'Rafal', 'Wrobel', DATE '1988-06-20', 'rafal.w@email.pl', SYSDATE)
-);  -- 36 lat
+);
 
 INSERT INTO t_uczen VALUES (
     t_uczen_obj(seq_uczen.NEXTVAL, 'Ewa', 'Olszewska', DATE '1975-03-08', 'ewa.o@email.pl', SYSDATE)
-);  -- 50 lat
+);
 
 COMMIT;
 
 -- ============================================================================
--- 5. KURSY (10 kursow - rozne poziomy i instrumenty)
+-- 5. KURSY (10 kursow z REF do instrumentow)
 -- ============================================================================
 DECLARE
     v_ref_fortepian REF t_instrument_obj;
@@ -174,7 +173,7 @@ BEGIN
     SELECT REF(i) INTO v_ref_perkusja FROM t_instrument i WHERE i.nazwa = 'Perkusja';
     SELECT REF(i) INTO v_ref_saksofon FROM t_instrument i WHERE i.nazwa = 'Saksofon';
     
-    -- Kursy fortepianowe
+    -- Kursy fortepianowe (3 poziomy)
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Fortepian - podstawy', 'poczatkujacy', 80, v_ref_fortepian)
     );
@@ -219,57 +218,48 @@ END;
 /
 
 -- ============================================================================
--- 6. PRZYKLADOWE LEKCJE (na przyszly poniedzialek)
+-- 6. PRZYKLADOWE LEKCJE (uzywamy pkg_lekcja.zaplanuj)
 -- ============================================================================
 DECLARE
     v_data DATE;
-    v_ref_uczen1 REF t_uczen_obj;
-    v_ref_uczen5 REF t_uczen_obj;
-    v_ref_uczen7 REF t_uczen_obj;
-    v_ref_naucz1 REF t_nauczyciel_obj;
-    v_ref_naucz2 REF t_nauczyciel_obj;
-    v_ref_kurs1 REF t_kurs_obj;
-    v_ref_kurs4 REF t_kurs_obj;
-    v_ref_sala1 REF t_sala_obj;
-    v_ref_sala3 REF t_sala_obj;
 BEGIN
-    -- Oblicz najblizszy poniedzialek
+    -- Znajdz najblizszy poniedzialek
     v_data := NEXT_DAY(SYSDATE, 'MONDAY');
     
-    -- Pobranie referencji
-    SELECT REF(u) INTO v_ref_uczen1 FROM t_uczen u WHERE u.id_ucznia = 1;    -- Kacper (dziecko)
-    SELECT REF(u) INTO v_ref_uczen5 FROM t_uczen u WHERE u.id_ucznia = 5;    -- Adam (17 lat)
-    SELECT REF(u) INTO v_ref_uczen7 FROM t_uczen u WHERE u.id_ucznia = 7;    -- Michal (25 lat)
-    
-    SELECT REF(n) INTO v_ref_naucz1 FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;  -- Jan
-    SELECT REF(n) INTO v_ref_naucz2 FROM t_nauczyciel n WHERE n.id_nauczyciela = 2;  -- Anna
-    
-    SELECT REF(k) INTO v_ref_kurs1 FROM t_kurs k WHERE k.id_kursu = 1;   -- Fortepian podstawy
-    SELECT REF(k) INTO v_ref_kurs4 FROM t_kurs k WHERE k.id_kursu = 4;   -- Gitara klasyczna
-    
-    SELECT REF(s) INTO v_ref_sala1 FROM t_sala s WHERE s.id_sali = 1;    -- Sala A1
-    SELECT REF(s) INTO v_ref_sala3 FROM t_sala s WHERE s.id_sali = 3;    -- Sala B1
-    
-    -- Lekcja 1: dziecko - godzina 14:00 (dozwolona)
-    INSERT INTO t_lekcja VALUES (
-        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data, '14:00', 45, 'zaplanowana',
-                     v_ref_uczen1, v_ref_naucz1, v_ref_kurs1, v_ref_sala1)
+    -- Lekcja 1: dziecko (Kacper) o 14:00 - dozwolona godzina dla dzieci
+    pkg_lekcja.zaplanuj(
+        p_id_ucznia     => 1,
+        p_id_nauczyciela => 1,
+        p_id_kursu      => 1,
+        p_id_sali       => 1,
+        p_data          => v_data,
+        p_godzina       => '14:00',
+        p_czas_trwania  => 45
     );
     
-    -- Lekcja 2: mlodziez - godzina 10:00 (dozwolona)
-    INSERT INTO t_lekcja VALUES (
-        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data, '10:00', 45, 'zaplanowana',
-                     v_ref_uczen5, v_ref_naucz2, v_ref_kurs4, v_ref_sala3)
+    -- Lekcja 2: mlodziez (Adam) o 10:00
+    pkg_lekcja.zaplanuj(
+        p_id_ucznia     => 5,
+        p_id_nauczyciela => 2,
+        p_id_kursu      => 4,
+        p_id_sali       => 3,
+        p_data          => v_data,
+        p_godzina       => '10:00',
+        p_czas_trwania  => 45
     );
     
-    -- Lekcja 3: dorosly - godzina 08:00 (dozwolona)
-    INSERT INTO t_lekcja VALUES (
-        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data, '08:00', 60, 'zaplanowana',
-                     v_ref_uczen7, v_ref_naucz1, v_ref_kurs1, v_ref_sala1)
+    -- Lekcja 3: dorosly (Michal) o 08:00
+    pkg_lekcja.zaplanuj(
+        p_id_ucznia     => 7,
+        p_id_nauczyciela => 1,
+        p_id_kursu      => 1,
+        p_id_sali       => 2,
+        p_data          => v_data,
+        p_godzina       => '08:00',
+        p_czas_trwania  => 60
     );
     
     COMMIT;
-    
     DBMS_OUTPUT.PUT_LINE('Dodano 3 przykladowe lekcje na: ' || TO_CHAR(v_data, 'YYYY-MM-DD'));
 END;
 /
@@ -311,7 +301,6 @@ BEGIN
     );
     
     COMMIT;
-    
     DBMS_OUTPUT.PUT_LINE('Dodano 6 przykladowych ocen');
 END;
 /
@@ -319,42 +308,11 @@ END;
 -- ============================================================================
 -- PODSUMOWANIE DANYCH TESTOWYCH
 -- ============================================================================
-/*
-Dane testowe obejmuja:
-
-1. INSTRUMENTY (10):
-   - klawiszowe: Fortepian
-   - strunowe: Gitara klasyczna, Gitara elektryczna, Skrzypce, Wiolonczela
-   - dete: Flet, Klarnet, Trabka, Saksofon
-   - perkusyjne: Perkusja
-
-2. SALE (5):
-   - 2 sale z fortepianem (A1, A2)
-   - 2 sale ogolne (B1, B2)
-   - 1 sala z perkusja (C1)
-
-3. NAUCZYCIELE (5):
-   - Jan Kowalski: Fortepian, Skrzypce
-   - Anna Nowak: Gitara klasyczna, Gitara elektryczna
-   - Piotr Wisniewski: Flet, Klarnet, Saksofon
-   - Maria Dabrowska: Perkusja, Trabka
-   - Tomasz Lewandowski: Wiolonczela, Fortepian
-
-4. UCZNIOWIE (10):
-   - 4 dzieci (9-13 lat) - ograniczenie 14:00-19:00
-   - 2 mlodziez (16-17 lat)
-   - 4 dorosli (25-50 lat)
-
-5. KURSY (10):
-   - 3 fortepianowe (poczatkujacy, sredni, zaawansowany)
-   - 2 gitarowe
-   - 2 skrzypcowe
-   - 2 dete
-   - 1 perkusyjny
-
-6. LEKCJE (3):
-   - Przykladowe lekcje na najblizszy poniedzialek
-
-7. OCENY (6):
-   - Po 3 oceny dla 2 uczniow
-*/
+-- 1. Instrumenty: 10 (rozne kategorie)
+-- 2. Sale: 5 (z fortepianem, perkusja, ogolne)
+-- 3. Nauczyciele: 5 (z VARRAY instrumentow)
+-- 4. Uczniowie: 10 (4 dzieci, 2 mlodziez, 4 dorosli)
+-- 5. Kursy: 10 (z REF do instrumentow)
+-- 6. Lekcje: 3 (przez pkg_lekcja.zaplanuj)
+-- 7. Oceny: 6
+-- ============================================================================

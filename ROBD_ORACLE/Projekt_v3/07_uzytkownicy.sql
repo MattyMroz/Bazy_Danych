@@ -9,6 +9,12 @@
 -- ============================================================================
 -- UWAGA: Ten skrypt wymaga uprawnien DBA
 -- Wykonaj jako uzytkownik SYSTEM lub z uprawnieniami GRANT OPTION
+-- 
+-- UWAGA DLA SRODOWISKA UCZELNIANEGO:
+-- Na serwerze studenckim zwykle NIE MA uprawnien do tworzenia rol i uzytkownikow.
+-- Ten plik nalezy traktowac jako "dokumentacje wdrożeniową" - pokazuje 
+-- jak wygladalaby konfiguracja produkcyjna, ale nie nalezy go uruchamiac
+-- na koncie studenta. Mozna go pokazac na obronie jako czesc projektu.
 -- ============================================================================
 
 -- ============================================================================

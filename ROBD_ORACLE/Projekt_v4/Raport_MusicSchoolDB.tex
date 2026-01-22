@@ -104,11 +104,11 @@ W projekcie przyjęto następujące ograniczenia biznesowe:
     
     \item \textbf{Skala ocen:} 1--6 (polska skala szkolna)
     
-    \item \textbf{Obszary oceny:} technika, teoria, słuch, rytm, interpretacja, ogólna
+    \item \textbf{Obszary oceny:} technika, teoria, słuch, interpretacja, improwizacja
     
-    \item \textbf{Poziomy kursów:} początkujący, średni, zaawansowany
+    \item \textbf{Poziomy kursów:} początkujący, średniozaawansowany, zaawansowany
     
-    \item \textbf{Statusy lekcji:} zaplanowana, odbyta, odwołana
+    \item \textbf{Statusy lekcji:} zaplanowana, odbyta, odwolana
     
     \item \textbf{Kategorie instrumentów:} dęte, strunowe, perkusyjne, klawiszowe
     
@@ -120,14 +120,15 @@ W projekcie przyjęto następujące ograniczenia biznesowe:
 \subsection{Technologia}
 
 \begin{itemize}
-    \item \textbf{Oracle Database} -- baza danych obiektowo-relacyjna
-    \item \textbf{Podejście obiektowo-relacyjne} -- typy obiektowe z metodami, referencje, VARRAY
-    \item \textbf{Język PL/SQL} -- pakiety, procedury, triggery, walidacja biznesowa
+    \item \textbf{Oracle Database}
+    \item \textbf{Podejście obiektowo-relacyjne}
+    \item \textbf{Język PL/SQL}
 \end{itemize}
 
 % =============================================================================
 % 2. TYPY OBIEKTOWE
 % =============================================================================
+\newpage
 \section{Typy obiektowe}
 
 W projekcie zdefiniowano 8 typów obiektowych z łącznie 14 metodami.
@@ -185,7 +186,7 @@ Reprezentuje salę lekcyjną z informacją o wyposażeniu.
 \begin{itemize}[nosep]
     \item id\_sali (NUMBER) -- unikalny identyfikator
     \item nazwa (VARCHAR2(50)) -- nazwa sali (unikalna, np. Sala A1)
-    \item pojemność (NUMBER) -- maksymalna liczba osób (1--20)
+    \item pojemnosc (NUMBER) -- maksymalna liczba osób (1--20)
     \item ma\_fortepian (CHAR(1)) -- 'T' lub 'N'
     \item ma\_perkusje (CHAR(1)) -- 'T' lub 'N'
 \end{itemize}
@@ -202,7 +203,7 @@ Reprezentuje nauczyciela szkoły muzycznej wraz z listą instrumentów.
 \textbf{Atrybuty:}
 \begin{itemize}[nosep]
     \item id\_nauczyciela (NUMBER) -- unikalny identyfikator
-    \item imię (VARCHAR2(50)) -- imię nauczyciela
+    \item imie (VARCHAR2(50)) -- imię nauczyciela
     \item nazwisko (VARCHAR2(50)) -- nazwisko nauczyciela
     \item email (VARCHAR2(100)) -- adres email (unikalny)
     \item telefon (VARCHAR2(20)) -- numer telefonu kontaktowego
@@ -224,7 +225,7 @@ Reprezentuje ucznia szkoły muzycznej.
 \textbf{Atrybuty:}
 \begin{itemize}[nosep]
     \item id\_ucznia (NUMBER) -- unikalny identyfikator
-    \item imię (VARCHAR2(50)) -- imię ucznia
+    \item imie (VARCHAR2(50)) -- imię ucznia
     \item nazwisko (VARCHAR2(50)) -- nazwisko ucznia
     \item data\_urodzenia (DATE) -- data urodzenia
     \item email (VARCHAR2(100)) -- adres email (opcjonalny)
@@ -247,7 +248,7 @@ Reprezentuje kurs nauki gry na instrumencie.
 \begin{itemize}[nosep]
     \item id\_kursu (NUMBER) -- unikalny identyfikator
     \item nazwa (VARCHAR2(100)) -- nazwa kursu
-    \item poziom (VARCHAR2(20)) -- początkujący, średni, zaawansowany
+    \item poziom (VARCHAR2(20)) -- poczatkujacy, sredniozaawansowany, zaawansowany
     \item cena\_za\_lekcje (NUMBER) -- cena jednej lekcji w PLN
     \item ref\_instrument (REF t\_instrument\_obj) -- referencja do instrumentu
 \end{itemize}
@@ -267,7 +268,7 @@ Reprezentuje pojedynczą lekcję muzyki.
     \item data\_lekcji (DATE) -- data lekcji
     \item godzina\_start (VARCHAR2(5)) -- godzina rozpoczęcia (HH:MM)
     \item czas\_trwania (NUMBER) -- czas w minutach (30, 45, 60, 90)
-    \item status (VARCHAR2(20)) -- zaplanowana, odbyta, odwołana
+    \item status (VARCHAR2(20)) -- zaplanowana, odbyta, odwolana
     \item ref\_uczen (REF t\_uczen\_obj) -- referencja do ucznia
     \item ref\_nauczyciel (REF t\_nauczyciel\_obj) -- referencja do nauczyciela
     \item ref\_kurs (REF t\_kurs\_obj) -- referencja do kursu
@@ -304,6 +305,7 @@ Reprezentuje ocenę postępu ucznia.
 % =============================================================================
 % 3. TABELE OBIEKTOWE
 % =============================================================================
+\newpage
 \section{Tabele obiektowe}
 
 Utworzono 7 tabel obiektowych przechowujących dane.
@@ -320,7 +322,7 @@ t\_nauczyciel & t\_nauczyciel\_obj & -- (zawiera VARRAY) \\
 t\_uczen & t\_uczen\_obj & -- \\
 t\_kurs & t\_kurs\_obj & ref\_instrument \\
 t\_lekcja & t\_lekcja\_obj & ref\_uczen, ref\_nauczyciel, ref\_kurs, ref\_sala \\
-t\_ocena\_postepu & t\_ocena\_obj & ref\_uczen, ref\_nauczyciel \\
+t\_ocena & t\_ocena\_obj & ref\_uczen, ref\_nauczyciel \\
 \hline
 \end{tabular}
 \caption{Tabele obiektowe i ich referencje}
@@ -333,7 +335,7 @@ Słownik instrumentów muzycznych.
 \begin{itemize}[nosep]
     \item Klucz główny: id\_instrumentu
     \item Ograniczenia NOT NULL: nazwa, kategoria
-    \item CHECK: kategoria IN ('dęte', 'strunowe', 'perkusyjne', 'klawiszowe')
+    \item CHECK: kategoria IN ('dete', 'strunowe', 'perkusyjne', 'klawiszowe')
 \end{itemize}
 
 \subsection{t\_sala}
@@ -343,7 +345,7 @@ Informacje o salach lekcyjnych z wyposażeniem.
 \begin{itemize}[nosep]
     \item Klucz główny: id\_sali
     \item Ograniczenie UNIQUE: nazwa
-    \item CHECK: pojemność BETWEEN 1 AND 20
+    \item CHECK: pojemnosc BETWEEN 1 AND 20
     \item CHECK: ma\_fortepian IN ('T', 'N')
     \item CHECK: ma\_perkusje IN ('T', 'N')
 \end{itemize}
@@ -355,7 +357,7 @@ Dane nauczycieli wraz z kolekcją instrumentów (VARRAY).
 \begin{itemize}[nosep]
     \item Klucz główny: id\_nauczyciela
     \item Ograniczenie UNIQUE: email
-    \item Ograniczenia NOT NULL: imię, nazwisko, email, data\_zatrudnienia
+    \item Ograniczenia NOT NULL: imie, nazwisko, email, data\_zatrudnienia
     \item CHECK: email LIKE '\%@\%'
     \item Zawiera kolekcję t\_lista\_instrumentow
 \end{itemize}
@@ -366,8 +368,8 @@ Dane uczniów szkoły muzycznej.
 
 \begin{itemize}[nosep]
     \item Klucz główny: id\_ucznia
-    \item Ograniczenie UNIQUE: email
-    \item Ograniczenia NOT NULL: imię, nazwisko, data\_urodzenia, data\_zapisu
+    \item Ograniczenie UNIQUE: email (jeśli podany)
+    \item Ograniczenia NOT NULL: imie, nazwisko, data\_urodzenia, data\_zapisu
     \item CHECK: email IS NULL OR email LIKE '\%@\%'
     \item Indeks: idx\_uczen\_nazwisko (nazwisko)
 \end{itemize}
@@ -379,7 +381,7 @@ Oferta kursów nauki gry na instrumentach.
 \begin{itemize}[nosep]
     \item Klucz główny: id\_kursu
     \item Ograniczenia NOT NULL: nazwa, poziom, cena\_za\_lekcje
-    \item CHECK: poziom IN ('początkujący', 'średni', 'zaawansowany')
+    \item CHECK: poziom IN ('poczatkujacy', 'sredniozaawansowany', 'zaawansowany')
     \item CHECK: cena\_za\_lekcje > 0
     \item Referencja: ref\_instrument SCOPE IS t\_instrument
 \end{itemize}
@@ -392,13 +394,13 @@ Zaplanowane i odbyte lekcje muzyki.
     \item Klucz główny: id\_lekcji
     \item Ograniczenia NOT NULL: data\_lekcji, godzina\_start, czas\_trwania, status
     \item CHECK: czas\_trwania IN (30, 45, 60, 90)
-    \item CHECK: status IN ('zaplanowana', 'odbyta', 'odwołana')
+    \item CHECK: status IN ('zaplanowana', 'odbyta', 'odwolana')
     \item CHECK: godzina\_start >= '08:00' AND godzina\_start <= '20:00'
     \item Referencje: ref\_uczen, ref\_nauczyciel, ref\_kurs, ref\_sala (wszystkie ze SCOPE IS)
     \item Indeksy: idx\_lekcja\_data, idx\_lekcja\_status
 \end{itemize}
 
-\subsection{t\_ocena\_postepu}
+\subsection{t\_ocena}
 
 Oceny postępu uczniów w różnych obszarach.
 
@@ -406,7 +408,7 @@ Oceny postępu uczniów w różnych obszarach.
     \item Klucz główny: id\_oceny
     \item Ograniczenia NOT NULL: data\_oceny, ocena, obszar
     \item CHECK: ocena BETWEEN 1 AND 6
-    \item CHECK: obszar IN ('technika', 'teoria', 'słuch', 'rytm', 'interpretacja', 'ogólna')
+    \item CHECK: obszar IN ('technika', 'teoria', 'sluch', 'interpretacja', 'improwizacja')
     \item Referencje: ref\_uczen, ref\_nauczyciel (ze SCOPE IS)
     \item Indeks: idx\_ocena\_data
 \end{itemize}
@@ -423,7 +425,7 @@ W projekcie zastosowano 7 referencji do modelowania relacji między obiektami:
 
 Dzięki DEREF możliwe jest odwołanie się do atrybutów i metod obiektu wskazywanego:
 
-\texttt{SELECT DEREF(l.ref\_uczen).imię || ' ' || DEREF(l.ref\_uczen).nazwisko AS uczeń,}
+\texttt{SELECT DEREF(l.ref\_uczen).imie || ' ' || DEREF(l.ref\_uczen).nazwisko AS uczen,}
 
 \texttt{\hspace{1.5cm}DEREF(l.ref\_sala).nazwa AS sala,}
 
@@ -442,15 +444,16 @@ Utworzono 7 sekwencji do generowania identyfikatorów:
     \item seq\_uczen -- dla t\_uczen
     \item seq\_kurs -- dla t\_kurs
     \item seq\_lekcja -- dla t\_lekcja
-    \item seq\_ocena -- dla t\_ocena\_postepu
+    \item seq\_ocena -- dla t\_ocena
 \end{itemize}
 
 % =============================================================================
 % 4. PAKIETY PL/SQL
 % =============================================================================
+\newpage
 \section{Pakiety PL/SQL}
 
-Logika biznesowa zaimplementowana w 3 pakietach z łącznie 15 podprogramami.
+Logika biznesowa zaimplementowana w 3 pakietach z łącznie 10 podprogramami.
 
 \begin{table}[h]
 \centering
@@ -458,11 +461,11 @@ Logika biznesowa zaimplementowana w 3 pakietach z łącznie 15 podprogramami.
 \hline
 \textbf{Pakiet} & \textbf{Podprogramy} & \textbf{Funkcjonalności} \\
 \hline
-pkg\_uczen & 6 & Zarządzanie uczniami \\
-pkg\_lekcja & 6 & Zarządzanie lekcjami \\
+pkg\_uczen & 3 & Zarządzanie uczniami \\
+pkg\_lekcja & 4 & Zarządzanie lekcjami \\
 pkg\_ocena & 3 & Zarządzanie ocenami \\
 \hline
-\multicolumn{2}{|r|}{\textbf{Razem:}} & \textbf{15 podprogramów} \\
+\multicolumn{2}{|r|}{\textbf{Razem:}} & \textbf{10 podprogramów} \\
 \hline
 \end{tabular}
 \caption{Pakiety PL/SQL}
@@ -474,30 +477,29 @@ Pakiet do zarządzania uczniami szkoły muzycznej.
 
 \textbf{Procedury:}
 \begin{itemize}[nosep]
-    \item dodaj(imię, nazwisko, data\_urodzenia, email) -- dodaje nowego ucznia z walidacją wieku (min. 5 lat)
+    \item dodaj(imie, nazwisko, data\_urodzenia, email) -- dodaje nowego ucznia z walidacją wieku (min. 5 lat)
     \item lista() -- wyświetla listę wszystkich uczniów z wiekiem i statusem
-    \item lista\_dzieci() -- wyświetla listę uczniów poniżej 15 lat
     \item info(id\_ucznia) -- wyświetla szczegółowe informacje o uczniu
-\end{itemize}
-
-\textbf{Funkcje:}
-\begin{itemize}[nosep]
-    \item srednia\_ocen(id\_ucznia) RETURN NUMBER -- oblicza średnią ocen ucznia
-    \item liczba\_lekcji(id\_ucznia) RETURN NUMBER -- zwraca liczbę lekcji ucznia
 \end{itemize}
 
 \subsection{pkg\_lekcja}
 
-Pakiet do zarządzania lekcjami i harmonogramem.
+Pakiet do zarządzania lekcjami i harmonogramem. Kluczowa procedura \texttt{zaplanuj} zawiera pełną walidację:
+\begin{itemize}[nosep]
+    \item Sprawdzenie kompetencji nauczyciela (czy zna instrument kursu)
+    \item Limit nauczyciela: max 6 godzin lekcji dziennie
+    \item Limit ucznia: max 2 lekcje dziennie
+    \item Konflikt sali: brak nakładających się terminów
+    \item Konflikt nauczyciela: brak nakładających się terminów
+    \item Konflikt ucznia: brak nakładających się terminów
+\end{itemize}
 
 \textbf{Procedury:}
 \begin{itemize}[nosep]
-    \item zaplanuj(id\_ucznia, id\_nauczyciela, id\_kursu, id\_sali, data, godzina, czas) -- planuje nową lekcję
+    \item zaplanuj(id\_ucznia, id\_nauczyciela, id\_kursu, id\_sali, data, godzina, czas) -- planuje nową lekcję z pełną walidacją
     \item oznacz\_odbyta(id\_lekcji) -- zmienia status lekcji na 'odbyta'
-    \item odwolaj(id\_lekcji) -- zmienia status lekcji na 'odwołana'
+    \item odwolaj(id\_lekcji) -- zmienia status lekcji na 'odwolana'
     \item plan\_dnia(data) -- wyświetla wszystkie lekcje danego dnia
-    \item plan\_nauczyciela(id\_nauczyciela, data) -- wyświetla plan nauczyciela
-    \item raport\_obciazenia(data) -- wyświetla obciążenie nauczycieli w minutach
 \end{itemize}
 
 \subsection{pkg\_ocena}
@@ -508,75 +510,60 @@ Pakiet do zarządzania ocenami postępu uczniów.
 \begin{itemize}[nosep]
     \item dodaj(id\_ucznia, id\_nauczyciela, ocena, obszar, komentarz) -- dodaje nową ocenę
     \item historia\_ucznia(id\_ucznia) -- wyświetla wszystkie oceny ucznia
-    \item raport\_postepu(id\_ucznia) -- wyświetla średnie oceny wg obszarów
+    \item statystyki(id\_ucznia) -- wyświetla średnie oceny wg obszarów
 \end{itemize}
 
 % =============================================================================
 % 5. WYZWALACZE
 % =============================================================================
+\newpage
 \section{Wyzwalacze (Triggery)}
 
-Zdefiniowano 10 wyzwalaczy realizujących reguły biznesowe.
+Zdefiniowano 5 wyzwalaczy realizujących reguły biznesowe. Walidacja limitów i konfliktów jest zaimplementowana w pakiecie \texttt{pkg\_lekcja.zaplanuj}, aby uniknąć błędu ORA-04091 (Mutating Table).
 
-\begin{longtable}{|l|l|p{6cm}|}
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{|l|l|p{5.5cm}|}
 \hline
 \textbf{Trigger} & \textbf{Typ} & \textbf{Działanie} \\
 \hline
-\endfirsthead
-\hline
-\textbf{Trigger} & \textbf{Typ} & \textbf{Działanie} \\
-\hline
-\endhead
-trg\_uczen\_wiek & BEFORE I/U & Walidacja minimalnego wieku (5 lat) \\
+trg\_uczen\_wiek & BEFORE INSERT & Walidacja minimalnego wieku (5 lat) \\
 \hline
 trg\_lekcja\_dni\_robocze & BEFORE I/U & Lekcje tylko w dni robocze (Pn--Pt) \\
 \hline
 trg\_lekcja\_godziny\_dziecka & BEFORE I/U & Dzieci: lekcje tylko 14:00--19:00 \\
 \hline
-trg\_lekcja\_limit\_nauczyciela & BEFORE I/U & Nauczyciel max 360 min/dzień \\
+trg\_blokada\_usun\_nauczyciela & BEFORE DELETE & Ochrona nauczyciela z lekcjami \\
 \hline
-trg\_lekcja\_limit\_ucznia & BEFORE I/U & Uczeń max 2 lekcje/dzień \\
+trg\_blokada\_usun\_ucznia & BEFORE DELETE & Ochrona ucznia z lekcjami \\
 \hline
-trg\_lekcja\_konflikt\_sali & BEFORE I/U & Brak nakładania lekcji w sali \\
-\hline
-trg\_lekcja\_konflikt\_nauczyciela & BEFORE I/U & Nauczyciel w jednym miejscu \\
-\hline
-trg\_lekcja\_konflikt\_ucznia & BEFORE I/U & Uczeń w jednym miejscu \\
-\hline
-trg\_blokada\_usun\_nauczyciela & BEFORE D & Ochrona nauczyciela z lekcjami \\
-\hline
-trg\_blokada\_usun\_ucznia & BEFORE D & Ochrona ucznia z lekcjami \\
-\hline
+\end{tabular}
 \caption{Wyzwalacze w projekcie}
-\end{longtable}
+\end{table}
 
 % =============================================================================
 % 6. OBSLUGA BLEDOW
 % =============================================================================
+\newpage
 \section{Obsługa błędów}
 
 W projekcie zastosowano mechanizmy obsługi wyjątków z własnymi kodami błędów.
 
 \subsection{Kody błędów aplikacji}
 
-\begin{longtable}{|c|l|p{7cm}|}
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{|c|l|p{6cm}|}
 \hline
 \textbf{Kod} & \textbf{Trigger/Procedura} & \textbf{Znaczenie} \\
 \hline
-\endfirsthead
+-20010 & pkg\_uczen.info & Nie znaleziono ucznia \\
 \hline
-\textbf{Kod} & \textbf{Trigger/Procedura} & \textbf{Znaczenie} \\
+-20020 & pkg\_lekcja & Nie znaleziono lekcji \\
 \hline
-\endhead
--20001 & pkg\_uczen.dodaj & Uczeń musi mieć co najmniej 5 lat \\
-\hline
--20010 & pkg\_lekcja.zaplanuj & Nie znaleziono ucznia, nauczyciela, kursu lub sali \\
-\hline
--20011 & pkg\_lekcja.oznacz\_odbyta & Lekcja nie istnieje lub nie jest zaplanowana \\
-\hline
--20012 & pkg\_lekcja.odwolaj & Lekcja nie istnieje lub nie jest zaplanowana \\
-\hline
--20020 & pkg\_ocena.dodaj & Nie znaleziono ucznia lub nauczyciela \\
+-20030 & pkg\_lekcja.zaplanuj & Nauczyciel nie ma kompetencji do kursu \\
 \hline
 -20101 & trg\_uczen\_wiek & Wiek ucznia poniżej 5 lat \\
 \hline
@@ -584,26 +571,27 @@ W projekcie zastosowano mechanizmy obsługi wyjątków z własnymi kodami błęd
 \hline
 -20103 & trg\_lekcja\_godziny\_dziecka & Dziecko poza godzinami 14:00--19:00 \\
 \hline
--20104 & trg\_lekcja\_limit\_nauczyciela & Nauczyciel przekracza 6h dziennie \\
+-20104 & pkg\_lekcja.zaplanuj & Nauczyciel przekracza 6h dziennie \\
 \hline
--20105 & trg\_lekcja\_limit\_ucznia & Uczeń ma już 2 lekcje w danym dniu \\
+-20105 & pkg\_lekcja.zaplanuj & Uczeń ma już 2 lekcje w danym dniu \\
 \hline
--20106 & trg\_lekcja\_konflikt\_sali & Konflikt rezerwacji sali \\
+-20106 & pkg\_lekcja.zaplanuj & Konflikt rezerwacji sali \\
 \hline
--20107 & trg\_lekcja\_konflikt\_nauczyciela & Nauczyciel ma inną lekcję w tym czasie \\
+-20107 & pkg\_lekcja.zaplanuj & Nauczyciel ma inną lekcję w tym czasie \\
 \hline
--20108 & trg\_lekcja\_konflikt\_ucznia & Uczeń ma inną lekcję w tym czasie \\
+-20108 & pkg\_lekcja.zaplanuj & Uczeń ma inną lekcję w tym czasie \\
 \hline
--20109 & trg\_blokada\_usun\_nauczyciela & Próba usunięcia nauczyciela z lekcjami \\
+-20201 & trg\_blokada\_usun\_nauczyciela & Próba usunięcia nauczyciela z lekcjami \\
 \hline
--20110 & trg\_blokada\_usun\_ucznia & Próba usunięcia ucznia z lekcjami \\
+-20202 & trg\_blokada\_usun\_ucznia & Próba usunięcia ucznia z lekcjami \\
 \hline
+\end{tabular}
 \caption{Kody błędów aplikacji}
-\end{longtable}
+\end{table}
 
 \subsection{Scenariusze testowe}
 
-Projekt zawiera kompleksowe testy w pliku 06\_testy.sql obejmujące 10 scenariuszy:
+Projekt zawiera kompleksowe testy w pliku 06\_testy.sql obejmujące 11 scenariuszy:
 
 \subsubsection{Scenariusz 1: Dane podstawowe}
 Weryfikacja poprawnego załadowania danych (instrumenty, sale, nauczyciele, uczniowie, kursy).
@@ -612,16 +600,13 @@ Weryfikacja poprawnego załadowania danych (instrumenty, sale, nauczyciele, uczn
 Test triggera trg\_uczen\_wiek:
 \begin{itemize}[nosep]
     \item 3-latek: odrzucony (błąd -20101)
-    \item 4-latek: odrzucony (błąd -20101)
     \item 5-latek: akceptowany
-    \item 10-latek: akceptowany
 \end{itemize}
 
 \subsubsection{Scenariusz 3: Dni robocze}
 Test triggera trg\_lekcja\_dni\_robocze:
 \begin{itemize}[nosep]
     \item Sobota: odrzucona (błąd -20102)
-    \item Niedziela: odrzucona (błąd -20102)
     \item Poniedziałek: akceptowany
 \end{itemize}
 
@@ -629,22 +614,19 @@ Test triggera trg\_lekcja\_dni\_robocze:
 Test triggera trg\_lekcja\_godziny\_dziecka:
 \begin{itemize}[nosep]
     \item Dziecko o 08:00: odrzucone (błąd -20103)
-    \item Dziecko o 13:00: odrzucone (błąd -20103)
-    \item Dziecko o 14:00: akceptowane
-    \item Dziecko 18:15--19:00: akceptowane
-    \item Dziecko 18:30--19:15: odrzucone (przekracza 19:00)
+    \item Dziecko o 15:00: akceptowane
     \item Dorosły o 08:00: akceptowany
 \end{itemize}
 
 \subsubsection{Scenariusz 5: Limit nauczyciela}
-Test triggera trg\_lekcja\_limit\_nauczyciela:
+Test procedury pkg\_lekcja.zaplanuj:
 \begin{itemize}[nosep]
     \item 6 lekcji po 60 minut (360 min): akceptowane
     \item 7. lekcja (30 min): odrzucona (błąd -20104)
 \end{itemize}
 
 \subsubsection{Scenariusz 6: Limit ucznia}
-Test triggera trg\_lekcja\_limit\_ucznia:
+Test procedury pkg\_lekcja.zaplanuj:
 \begin{itemize}[nosep]
     \item 1. lekcja: akceptowana
     \item 2. lekcja: akceptowana
@@ -652,31 +634,37 @@ Test triggera trg\_lekcja\_limit\_ucznia:
 \end{itemize}
 
 \subsubsection{Scenariusz 7: Konflikty czasowe}
-Test triggerów konfliktów:
+Test procedury pkg\_lekcja.zaplanuj:
 \begin{itemize}[nosep]
     \item Ta sama sala, nakładający się czas: odrzucone (błąd -20106)
     \item Ten sam nauczyciel, nakładający się czas: odrzucone (błąd -20107)
     \item Ten sam uczeń, nakładający się czas: odrzucone (błąd -20108)
 \end{itemize}
 
-\subsubsection{Scenariusz 8: Blokada usuwania}
-Test triggerów ochrony danych:
+\subsubsection{Scenariusz 8: Kompetencje nauczyciela}
+Test procedury pkg\_lekcja.zaplanuj:
 \begin{itemize}[nosep]
-    \item Usunięcie nauczyciela z lekcjami: odrzucone (błąd -20109)
-    \item Usunięcie ucznia z lekcjami: odrzucone (błąd -20110)
+    \item Nauczyciel z kompetencjami: akceptowany
+    \item Nauczyciel bez kompetencji: odrzucony (błąd -20030)
 \end{itemize}
 
-\subsubsection{Scenariusz 9: Pakiety CRUD}
+\subsubsection{Scenariusz 9: Blokada usuwania}
+Test triggerów ochrony danych:
+\begin{itemize}[nosep]
+    \item Usunięcie nauczyciela z lekcjami: odrzucone (błąd -20201)
+    \item Usunięcie ucznia z lekcjami: odrzucone (błąd -20202)
+\end{itemize}
+
+\subsubsection{Scenariusz 10: Pakiety CRUD}
 Test procedur pakietów:
 \begin{itemize}[nosep]
     \item pkg\_uczen.lista() -- wyświetla listę uczniów
-    \item pkg\_uczen.lista\_dzieci() -- wyświetla dzieci
     \item pkg\_uczen.info(1) -- szczegóły ucznia
     \item pkg\_lekcja.plan\_dnia(data) -- plan dnia
     \item pkg\_ocena.historia\_ucznia(1) -- historia ocen
 \end{itemize}
 
-\subsubsection{Scenariusz 10: Metody obiektów}
+\subsubsection{Scenariusz 11: Metody obiektów}
 Test metod typów obiektowych:
 \begin{itemize}[nosep]
     \item t\_uczen\_obj.wiek() -- oblicza wiek
@@ -689,6 +677,7 @@ Test metod typów obiektowych:
 % =============================================================================
 % 7. ROLE UZYTKOWNIKOW
 % =============================================================================
+\newpage
 \section{Role użytkowników}
 
 W projekcie zdefiniowano 3 role z różnymi poziomami uprawnień.
@@ -708,8 +697,8 @@ Pełny dostęp do systemu:
 Prowadzenie lekcji i ocenianie:
 \begin{itemize}[nosep]
     \item SELECT na wszystkich tabelach
-    \item UPDATE kolumny status w tabeli t\_lekcja
-    \item INSERT do tabeli t\_ocena\_postepu
+    \item UPDATE na tabeli t\_lekcja (zmiana statusu)
+    \item INSERT do tabeli t\_ocena
     \item Wykonywanie pakietów: pkg\_uczen, pkg\_lekcja, pkg\_ocena
 \end{itemize}
 
@@ -736,12 +725,14 @@ t\_sala & SIUD & S & S \\
 t\_nauczyciel & SIUD & S & S \\
 t\_uczen & SIUD & S & SIU \\
 t\_kurs & SIUD & S & S \\
-t\_lekcja & SIUD & SU* & SIU \\
-t\_ocena\_postepu & SIUD & SI & S \\
+t\_lekcja & SIUD & SU & SIU \\
+t\_ocena & SIUD & SI & S \\
 \hline
 \end{tabular}
-\caption{Macierz uprawnień (S=SELECT, I=INSERT, U=UPDATE, D=DELETE, *tylko status)}
+\caption{Macierz uprawnień (S=SELECT, I=INSERT, U=UPDATE, D=DELETE)}
 \end{table}
+
+\newpage
 
 \subsection{Użytkownicy testowi}
 
@@ -762,6 +753,7 @@ usr\_sekretariat & rola\_sekretariat & Sekr123! \\
 % =============================================================================
 % 8. DIAGRAM RELACJI OBIEKTOW
 % =============================================================================
+\newpage
 \section{Diagram relacji obiektów}
 
 \begin{center}
@@ -809,6 +801,7 @@ usr\_sekretariat & rola\_sekretariat & Sekr123! \\
 % =============================================================================
 % 9. STRUKTURA PLIKÓW
 % =============================================================================
+\newpage
 \section{Struktura plików projektu}
 
 \begin{table}[h]
@@ -819,11 +812,11 @@ usr\_sekretariat & rola\_sekretariat & Sekr123! \\
 \hline
 01\_typy.sql & Definicje 8 typów obiektowych z 14 metodami \\
 02\_tabele.sql & 7 tabel obiektowych, 7 sekwencji, 5 indeksów \\
-03\_pakiety.sql & 3 pakiety PL/SQL z 15 podprogramami \\
-04\_triggery.sql & 10 wyzwalaczy walidacyjnych \\
+03\_pakiety.sql & 3 pakiety PL/SQL z 10 podprogramami \\
+04\_triggery.sql & 5 wyzwalaczy walidacyjnych \\
 05\_dane.sql & Dane testowe (10 instr., 5 sal, 5 naucz., 10 uczn., 10 kursów) \\
-06\_testy.sql & 10 scenariuszy testowych \\
-07\_uzytkownicy.sql & 3 role, 3 użytkowników, synonimy \\
+06\_testy.sql & 11 scenariuszy testowych \\
+07\_uzytkownicy.sql & 3 role, 3 użytkowników \\
 \hline
 \end{tabular}
 \caption{Pliki projektu}
