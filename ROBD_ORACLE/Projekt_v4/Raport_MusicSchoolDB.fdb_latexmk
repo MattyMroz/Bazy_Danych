@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1769042492.27707 "c:/Users/mateu/Desktop/PROJECTS/GitHub/Bazy_Danych/ROBD_ORACLE/Projekt_v4/Raport_MusicSchoolDB.tex" "Raport_MusicSchoolDB.pdf" "Raport_MusicSchoolDB" 1769042495.04195 0
+["pdflatex"] 1769054008.8799 "c:/Users/mateu/Desktop/PROJECTS/GitHub/Bazy_Danych/ROBD_ORACLE/Projekt_v4/Raport_MusicSchoolDB.tex" "Raport_MusicSchoolDB.pdf" "Raport_MusicSchoolDB" 1769054010.68055 0
   "C:/Users/mateu/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1768949758 80909 eab91d9745dd2edfd62a31d53cd5fe15 ""
   "C:/Users/mateu/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1767102086 13333488 c51ab6e992d0e1a7086556a7434eafdb ""
   "C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc" 1256929440 2375 baa924870cfb487815765f9094cf3728 ""
@@ -15,7 +15,6 @@
   "C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/tfm/public/lm/ec-lmr10.tfm" 1256929440 12056 7e13df7fe4cbce21b072ba7c4f4deb6e ""
   "C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/tfm/public/lm/ec-lmr12.tfm" 1256929440 12092 7b1546e2d096cfd5dcbd4049b0b1ec2e ""
   "C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/tfm/public/lm/ec-lmr17.tfm" 1256929440 12156 ca1ae6a3c8564e89597f1f993fba1608 ""
-  "C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/tfm/public/lm/ec-lmr8.tfm" 1256929440 12064 9b9ade9f64cb32ce1d9a88d21fbd5c2d ""
   "C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/tfm/public/lm/ec-lmtt12.tfm" 1256929440 1368 6a60e6a5e029141041d64d339b87e533 ""
   "C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/tfm/public/lm/lmex10.tfm" 1256929440 992 ce925c9346c7613270a79afbee98c070 ""
   "C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/tfm/public/lm/lmmi10.tfm" 1256929440 1528 6d36b2385e0ca062a654de6ac59cb34f ""
@@ -36,7 +35,6 @@
   "C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb" 1256929440 119235 05e5c8d6d60439433e50047898c2c0e0 ""
   "C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb" 1256929440 113634 9384aebdf26f9881e046a4b5574566db ""
   "C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr17.pfb" 1256929440 119752 1bd8d06e4079df624bf59ce3ad7c9aa6 ""
-  "C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr8.pfb" 1256929440 122174 a2d5e73f396ddbeb3bdf5c79aea0993d ""
   "C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb" 1256929440 110323 19372944fba298bb4c4758abff959582 ""
   "C:/Users/mateu/AppData/Local/Programs/MiKTeX/tex/context/base/mkii/supp-pdf.mkii" 1580390158 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "C:/Users/mateu/AppData/Local/Programs/MiKTeX/tex/generic/babel/babel.sty" 1765441417 146654 eaac99efd6386094bb8a3980e34ec87b ""
@@ -170,11 +168,12 @@
   "C:/Users/mateu/AppData/Local/Programs/MiKTeX/tex/latex/tools/longtable.sty" 1761901070 16014 dfa4b4d4e04a78a3f05a90c19711737a ""
   "C:/Users/mateu/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/mateu/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1729265222 55384 b454dec21c2d9f45ec0b793f0995b992 ""
-  "Raport_MusicSchoolDB.aux" 1769042494 8238 993131450694c782d7ae88002f836f60 "pdflatex"
-  "Raport_MusicSchoolDB.out" 1769042494 8665 4698bba12b193eded4b380ab4e29521c "pdflatex"
-  "Raport_MusicSchoolDB.tex" 1769042490 32311 8860b20d8786dfa1d89834955be132a9 ""
-  "Raport_MusicSchoolDB.toc" 1769042494 4704 bfb4cec3872b574f99c38b5946d11a7b "pdflatex"
-  "c:/Users/mateu/Desktop/PROJECTS/GitHub/Bazy_Danych/ROBD_ORACLE/Projekt_v4/Raport_MusicSchoolDB.tex" 1769042490 32311 8860b20d8786dfa1d89834955be132a9 ""
+  "Raport_MusicSchoolDB.aux" 1769054010 8390 49fccc22d80c7f710bf2768b66034eed "pdflatex"
+  "Raport_MusicSchoolDB.out" 1769054010 8665 4698bba12b193eded4b380ab4e29521c "pdflatex"
+  "Raport_MusicSchoolDB.tex" 1769054004 30466 f1a9992e0704c373c17393074f747916 ""
+  "Raport_MusicSchoolDB.toc" 1769054010 4704 bfb4cec3872b574f99c38b5946d11a7b "pdflatex"
+  "Relational_1.png" 1769051022 55672 493580e11a5e5907654ba5186f928c33 ""
+  "c:/Users/mateu/Desktop/PROJECTS/GitHub/Bazy_Danych/ROBD_ORACLE/Projekt_v4/Raport_MusicSchoolDB.tex" 1769054004 30466 f1a9992e0704c373c17393074f747916 ""
   (generated)
   "Raport_MusicSchoolDB.aux"
   "Raport_MusicSchoolDB.log"

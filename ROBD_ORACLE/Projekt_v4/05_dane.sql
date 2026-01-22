@@ -235,7 +235,7 @@ DECLARE
 BEGIN
     -- Znajdz najblizszy poniedzialek
     v_data := TRUNC(SYSDATE, 'IW') + 7;
-    
+
     -- Pobranie ID na podstawie nazw/nazwisk
     SELECT id_ucznia INTO v_id_kacper FROM t_uczen WHERE nazwisko = 'Malinowski' AND ROWNUM = 1;
     SELECT id_ucznia INTO v_id_adam FROM t_uczen WHERE nazwisko = 'Szymanski' AND ROWNUM = 1;

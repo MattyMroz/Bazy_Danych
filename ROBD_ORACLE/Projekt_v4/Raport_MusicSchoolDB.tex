@@ -783,47 +783,11 @@ usr\_sekretariat & rola\_sekretariat & Sekr123! \\
 \newpage
 \section{Diagram relacji obiektów}
 
-\begin{center}
-\begin{tikzpicture}[
-    node distance=2cm,
-    every node/.style={font=\small},
-    type/.style={rectangle, draw, fill=blue!20, minimum width=3cm, minimum height=1cm, align=center},
-    varray/.style={rectangle, draw, fill=green!20, minimum width=2.5cm, minimum height=0.8cm, align=center},
-    arrow/.style={-{Stealth}, thick}
-]
-
-\node[type] (instrument) {T\_INSTRUMENT\\{\scriptsize(nazwa, kategoria)}};
-\node[type, right=3cm of instrument] (kurs) {T\_KURS\\{\scriptsize(poziom, cena)}};
-\node[type, below=1.5cm of instrument] (sala) {T\_SALA\\{\scriptsize(pojemnosc, wyposazenie)}};
-\node[type, below=1.5cm of sala] (nauczyciel) {T\_NAUCZYCIEL\\{\scriptsize(imie, nazwisko, staz)}};
-\node[type, right=3cm of nauczyciel] (lekcja) {T\_LEKCJA\\{\scriptsize(data, godzina, status)}};
-\node[type, below=1.5cm of nauczyciel] (uczen) {T\_UCZEN\\{\scriptsize(imie, nazwisko, wiek)}};
-\node[type, right=3cm of uczen] (ocena) {T\_OCENA\\{\scriptsize(ocena 1-6, obszar)}};
-
-\node[varray, left=1.5cm of nauczyciel] (varray) {VARRAY(5)\\{\scriptsize lista\_instrumentow}};
-
-\draw[arrow] (kurs) -- node[above, font=\scriptsize] {REF} (instrument);
-\draw[arrow] (lekcja) -- node[above, font=\scriptsize] {REF} (kurs);
-\draw[arrow] (lekcja) -- node[right, font=\scriptsize] {REF} (sala);
-\draw[arrow] (lekcja) -- node[left, font=\scriptsize] {REF} (nauczyciel);
-\draw[arrow] (lekcja) -- node[below, font=\scriptsize] {REF} (uczen);
-\draw[arrow] (ocena) -- node[left, font=\scriptsize] {REF} (nauczyciel);
-\draw[arrow] (ocena) -- node[above, font=\scriptsize] {REF} (uczen);
-
-\draw[arrow, dashed] (nauczyciel) -- (varray);
-
-\end{tikzpicture}
-\end{center}
-
-\vspace{0.5cm}
-
-\textbf{Legenda:}
-\begin{itemize}[nosep]
-    \item Strzałka ciągła -- referencja REF (wskaźnik do obiektu)
-    \item Strzałka przerywana -- zawiera VARRAY (kolekcja)
-    \item Niebieskie prostokąty -- typy obiektowe / tabele
-    \item Zielony prostokąt -- typ kolekcji VARRAY
-\end{itemize}
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth,keepaspectratio]{Relational_1.png}
+\caption{Diagram relacji obiektów w bazie danych}
+\end{figure}
 
 % =============================================================================
 % 9. STRUKTURA PLIKÓW
