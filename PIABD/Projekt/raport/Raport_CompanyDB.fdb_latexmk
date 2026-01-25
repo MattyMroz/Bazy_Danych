@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1768238984.97973 "c:/Users/mateu/Desktop/PROJECTS/GitHub/Bazy_Danych/PIABD/Projekt/raport/Raport_CompanyDB.tex" "Raport_CompanyDB.pdf" "Raport_CompanyDB" 1768238986.80975 0
-  "C:/Users/mateu/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1768238898 80909 eab91d9745dd2edfd62a31d53cd5fe15 ""
+["pdflatex"] 1769359112.98308 "c:/Users/mateu/Desktop/PROJECTS/GitHub/Bazy_Danych/PIABD/Projekt/raport/Raport_CompanyDB.tex" "Raport_CompanyDB.pdf" "Raport_CompanyDB" 1769359116.2166 0
+  "C:/Users/mateu/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1768949758 80909 eab91d9745dd2edfd62a31d53cd5fe15 ""
   "C:/Users/mateu/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1767102086 13333488 c51ab6e992d0e1a7086556a7434eafdb ""
   "C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc" 1256929440 2375 baa924870cfb487815765f9094cf3728 ""
   "C:/Users/mateu/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-mathsy.enc" 1256929440 2840 216e6e45ad352e2456e1149f28885bee ""
@@ -126,11 +126,12 @@
   "C:/Users/mateu/AppData/Local/Programs/MiKTeX/tex/latex/tools/tabularx.sty" 1761901070 7243 a2c17f18e2c9b702b84fad03d5f9c78b ""
   "C:/Users/mateu/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/mateu/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1729265222 55384 b454dec21c2d9f45ec0b793f0995b992 ""
-  "Raport_CompanyDB.aux" 1768238986 8688 7e6d1b2f14dab910d36ed4327a80f4d7 "pdflatex"
-  "Raport_CompanyDB.out" 1768238986 9368 384772ae674653d76bbcb87de057ccc7 "pdflatex"
-  "Raport_CompanyDB.tex" 1768238984 34026 7dea485c54285390e639e2c18d3ea16f ""
-  "Raport_CompanyDB.toc" 1768238986 4638 263c5a4cba3bb1019c0bab9e0ef243e5 "pdflatex"
-  "c:/Users/mateu/Desktop/PROJECTS/GitHub/Bazy_Danych/PIABD/Projekt/raport/Raport_CompanyDB.tex" 1768238984 34026 7dea485c54285390e639e2c18d3ea16f ""
+  "Raport_CompanyDB.aux" 1769359115 8688 33c054b54508af0924275d85d341fb0c "pdflatex"
+  "Raport_CompanyDB.out" 1769359115 9368 384772ae674653d76bbcb87de057ccc7 "pdflatex"
+  "Raport_CompanyDB.tex" 1769359109 33949 44e15b30539f019eca2ea4282e4108ed ""
+  "Raport_CompanyDB.toc" 1769359115 4638 b379a83e229d90ddcbb36104899f6a9b "pdflatex"
+  "c:/Users/mateu/Desktop/PROJECTS/GitHub/Bazy_Danych/PIABD/Projekt/raport/Raport_CompanyDB.tex" 1769359109 33949 44e15b30539f019eca2ea4282e4108ed ""
+  "diagram.png" 1769344639 452689 d5418d9e652423fa899c425fa71c2ec0 ""
   (generated)
   "Raport_CompanyDB.aux"
   "Raport_CompanyDB.log"

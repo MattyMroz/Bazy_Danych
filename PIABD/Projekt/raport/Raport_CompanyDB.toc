@@ -7,7 +7,7 @@
 \contentsline {section}{\numberline {2}Schemat bazy danych}{4}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Diagram ERD}{4}{subsection.2.1}%
 \contentsline {subsection}{\numberline {2.2}Opis struktury relacyjnej}{4}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}Normalizacja}{4}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.3}Normalizacja}{5}{subsection.2.3}%
 \contentsline {section}{\numberline {3}Obiekty bazy danych i ich opis}{6}{section.3}%
 \contentsline {subsection}{\numberline {3.1}Tabele}{6}{subsection.3.1}%
 \contentsline {subsubsection}{\numberline {3.1.1}1. Tabela crunchbase.Company}{6}{subsubsection.3.1.1}%
