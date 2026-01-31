@@ -163,7 +163,11 @@ CREATE TABLE uczniowie OF t_uczen_obj (
     CONSTRAINT chk_uczen_typ CHECK (
         typ_ucznia IN ('uczacy_sie_w_innej_szkole', 'ukonczyl_edukacje', 'tylko_muzyczna')
     ),
-    CONSTRAINT chk_uczen_status CHECK (status IN ('aktywny', 'zawieszony', 'absolwent', 'skreslony'))
+    CONSTRAINT chk_uczen_status CHECK (status IN ('aktywny', 'zawieszony', 'absolwent', 'skreslony')),
+    CONSTRAINT chk_uczen_email CHECK (email IS NULL OR REGEXP_LIKE(email, '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$')),
+    CONSTRAINT chk_uczen_telefon CHECK (telefon_rodzica IS NULL OR REGEXP_LIKE(telefon_rodzica, '^\+?[0-9]{9,15}$')),
+    CONSTRAINT uq_uczen_email UNIQUE (email),
+    CONSTRAINT uq_uczen_telefon UNIQUE (telefon_rodzica)
 );
 
 CREATE INDEX idx_uczen_nazwisko ON uczniowie(nazwisko);
