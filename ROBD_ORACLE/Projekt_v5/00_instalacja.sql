@@ -61,27 +61,24 @@ SET FEEDBACK OFF
 SET TIMING ON
 
 PROMPT
-PROMPT ╔═══════════════════════════════════════════════════════════════════════╗
-PROMPT ║                                                                       ║
-PROMPT ║   ██████╗ ███████╗██████╗                                             ║
-PROMPT ║   ██╔══██╗██╔════╝██╔══██╗                                            ║
-PROMPT ║   ██║  ██║█████╗  ██████╔╝                                            ║
-PROMPT ║   ██║  ██║██╔══╝  ██╔══██╗                                            ║
-PROMPT ║   ██████╔╝███████╗██████╔╝                                            ║
-PROMPT ║   ╚═════╝ ╚══════╝╚═════╝                                             ║
-PROMPT ║                                                                       ║
-PROMPT ║   SZKOŁA MUZYCZNA v5 - Obiektowa Baza Danych Oracle                   ║
-PROMPT ║   Autorzy: Igor Typiński (251237), Mateusz Mróz (251190)              ║
-PROMPT ║   Data: Styczeń 2026                                                  ║
-PROMPT ║                                                                       ║
-PROMPT ╚═══════════════════════════════════════════════════════════════════════╝
+PROMPT ========================================================================
+PROMPT   SZKOŁA MUZYCZNA v5 - Obiektowa Baza Danych Oracle
+PROMPT   Autorzy: Igor Typinski (251237), Mateusz Mroz (251190)
+PROMPT   Data: Styczen 2026
+PROMPT ========================================================================
 PROMPT
+
+-- ============================================================================
+-- KROK 0: RESET BAZY (usun stare obiekty)
+-- ============================================================================
+PROMPT [0/9] Czyszczenie bazy (00_reset.sql)...
+@00_reset.sql
 
 -- ============================================================================
 -- KROK 1: TYPY OBIEKTOWE
 -- ============================================================================
 PROMPT [1/9] Wykonywanie 01_typy.sql...
-PROMPT      → 12 typów obiektowych, 2 VARRAY
+PROMPT      -> 12 typow obiektowych, 2 VARRAY
 @01_typy.sql
 
 -- ============================================================================
@@ -89,7 +86,7 @@ PROMPT      → 12 typów obiektowych, 2 VARRAY
 -- ============================================================================
 PROMPT
 PROMPT [2/9] Wykonywanie 02_tabele.sql...
-PROMPT      → 10 tabel obiektowych, 10 sekwencji, indeksy
+PROMPT      -> 10 tabel obiektowych, 10 sekwencji, indeksy
 @02_tabele.sql
 
 -- ============================================================================
@@ -97,7 +94,7 @@ PROMPT      → 10 tabel obiektowych, 10 sekwencji, indeksy
 -- ============================================================================
 PROMPT
 PROMPT [3/9] Wykonywanie 03_triggery.sql...
-PROMPT      → 6 triggerów walidacyjnych
+PROMPT      -> 6 triggerow walidacyjnych
 @03_triggery.sql
 
 -- ============================================================================
