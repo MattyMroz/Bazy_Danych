@@ -5,6 +5,9 @@
 -- Autorzy: Igor Typinski (251237), Mateusz Mroz (251190)
 -- ============================================================================
 
+-- UWAGA: Ten skrypt nalezy uruchomic jako SYS lub SYSTEM (nie jako szkola_muzyczna!)
+-- Uzytkownik szkola_muzyczna nie ma uprawnien do tworzenia innych uzytkownikow.
+
 -- ============================================================================
 -- 1. USUWANIE ISTNIEJACYCH UZYTKOWNIKOW I ROL
 -- ============================================================================
@@ -48,62 +51,75 @@ CREATE ROLE rola_raport;
 -- ============================================================================
 
 -- ----- ROLA_DYREKTOR (wszystko) -----
-GRANT SELECT, INSERT, UPDATE, DELETE ON INSTRUMENTY TO rola_dyrektor;
-GRANT SELECT, INSERT, UPDATE, DELETE ON PRZEDMIOTY TO rola_dyrektor;
-GRANT SELECT, INSERT, UPDATE, DELETE ON NAUCZYCIELE TO rola_dyrektor;
-GRANT SELECT, INSERT, UPDATE, DELETE ON GRUPY TO rola_dyrektor;
-GRANT SELECT, INSERT, UPDATE, DELETE ON SALE TO rola_dyrektor;
-GRANT SELECT, INSERT, UPDATE, DELETE ON UCZNIOWIE TO rola_dyrektor;
-GRANT SELECT, INSERT, UPDATE, DELETE ON LEKCJE TO rola_dyrektor;
-GRANT SELECT, INSERT, UPDATE, DELETE ON OCENY TO rola_dyrektor;
+GRANT SELECT, INSERT, UPDATE, DELETE ON szkola_muzyczna.INSTRUMENTY TO rola_dyrektor;
+GRANT SELECT, INSERT, UPDATE, DELETE ON szkola_muzyczna.PRZEDMIOTY TO rola_dyrektor;
+GRANT SELECT, INSERT, UPDATE, DELETE ON szkola_muzyczna.NAUCZYCIELE TO rola_dyrektor;
+GRANT SELECT, INSERT, UPDATE, DELETE ON szkola_muzyczna.GRUPY TO rola_dyrektor;
+GRANT SELECT, INSERT, UPDATE, DELETE ON szkola_muzyczna.SALE TO rola_dyrektor;
+GRANT SELECT, INSERT, UPDATE, DELETE ON szkola_muzyczna.UCZNIOWIE TO rola_dyrektor;
+GRANT SELECT, INSERT, UPDATE, DELETE ON szkola_muzyczna.LEKCJE TO rola_dyrektor;
+GRANT SELECT, INSERT, UPDATE, DELETE ON szkola_muzyczna.OCENY TO rola_dyrektor;
+
+-- Sekwencje (potrzebne do INSERT przez pakiety)
+GRANT SELECT ON szkola_muzyczna.seq_instrumenty TO rola_dyrektor;
+GRANT SELECT ON szkola_muzyczna.seq_przedmioty TO rola_dyrektor;
+GRANT SELECT ON szkola_muzyczna.seq_nauczyciele TO rola_dyrektor;
+GRANT SELECT ON szkola_muzyczna.seq_grupy TO rola_dyrektor;
+GRANT SELECT ON szkola_muzyczna.seq_sale TO rola_dyrektor;
+GRANT SELECT ON szkola_muzyczna.seq_uczniowie TO rola_dyrektor;
+GRANT SELECT ON szkola_muzyczna.seq_lekcje TO rola_dyrektor;
+GRANT SELECT ON szkola_muzyczna.seq_oceny TO rola_dyrektor;
 
 -- Pakiety
-GRANT EXECUTE ON PKG_SLOWNIKI TO rola_dyrektor;
-GRANT EXECUTE ON PKG_OSOBY TO rola_dyrektor;
-GRANT EXECUTE ON PKG_LEKCJE TO rola_dyrektor;
-GRANT EXECUTE ON PKG_OCENY TO rola_dyrektor;
-GRANT EXECUTE ON PKG_RAPORTY TO rola_dyrektor;
+GRANT EXECUTE ON szkola_muzyczna.PKG_SLOWNIKI TO rola_dyrektor;
+GRANT EXECUTE ON szkola_muzyczna.PKG_OSOBY TO rola_dyrektor;
+GRANT EXECUTE ON szkola_muzyczna.PKG_LEKCJE TO rola_dyrektor;
+GRANT EXECUTE ON szkola_muzyczna.PKG_OCENY TO rola_dyrektor;
+GRANT EXECUTE ON szkola_muzyczna.PKG_RAPORTY TO rola_dyrektor;
 
 -- ----- ROLA_NAUCZYCIEL (ograniczony) -----
-GRANT SELECT ON INSTRUMENTY TO rola_nauczyciel;
-GRANT SELECT ON PRZEDMIOTY TO rola_nauczyciel;
-GRANT SELECT ON NAUCZYCIELE TO rola_nauczyciel;
-GRANT SELECT ON GRUPY TO rola_nauczyciel;
-GRANT SELECT ON SALE TO rola_nauczyciel;
-GRANT SELECT ON UCZNIOWIE TO rola_nauczyciel;
-GRANT SELECT ON LEKCJE TO rola_nauczyciel;
-GRANT SELECT, INSERT ON OCENY TO rola_nauczyciel;
+GRANT SELECT ON szkola_muzyczna.INSTRUMENTY TO rola_nauczyciel;
+GRANT SELECT ON szkola_muzyczna.PRZEDMIOTY TO rola_nauczyciel;
+GRANT SELECT ON szkola_muzyczna.NAUCZYCIELE TO rola_nauczyciel;
+GRANT SELECT ON szkola_muzyczna.GRUPY TO rola_nauczyciel;
+GRANT SELECT ON szkola_muzyczna.SALE TO rola_nauczyciel;
+GRANT SELECT ON szkola_muzyczna.UCZNIOWIE TO rola_nauczyciel;
+GRANT SELECT ON szkola_muzyczna.LEKCJE TO rola_nauczyciel;
+GRANT SELECT, INSERT ON szkola_muzyczna.OCENY TO rola_nauczyciel;
+GRANT SELECT ON szkola_muzyczna.seq_oceny TO rola_nauczyciel;
 
 -- Pakiety dla nauczyciela
-GRANT EXECUTE ON PKG_OCENY TO rola_nauczyciel;
-GRANT EXECUTE ON PKG_RAPORTY TO rola_nauczyciel;
+GRANT EXECUTE ON szkola_muzyczna.PKG_OCENY TO rola_nauczyciel;
+GRANT EXECUTE ON szkola_muzyczna.PKG_RAPORTY TO rola_nauczyciel;
 
 -- ----- ROLA_SEKRETARIAT (administracja) -----
-GRANT SELECT ON INSTRUMENTY TO rola_sekretariat;
-GRANT SELECT ON PRZEDMIOTY TO rola_sekretariat;
-GRANT SELECT ON NAUCZYCIELE TO rola_sekretariat;
-GRANT SELECT ON GRUPY TO rola_sekretariat;
-GRANT SELECT ON SALE TO rola_sekretariat;
-GRANT SELECT, INSERT, UPDATE ON UCZNIOWIE TO rola_sekretariat;
-GRANT SELECT, INSERT, UPDATE ON LEKCJE TO rola_sekretariat;
-GRANT SELECT ON OCENY TO rola_sekretariat;
+GRANT SELECT ON szkola_muzyczna.INSTRUMENTY TO rola_sekretariat;
+GRANT SELECT ON szkola_muzyczna.PRZEDMIOTY TO rola_sekretariat;
+GRANT SELECT ON szkola_muzyczna.NAUCZYCIELE TO rola_sekretariat;
+GRANT SELECT ON szkola_muzyczna.GRUPY TO rola_sekretariat;
+GRANT SELECT ON szkola_muzyczna.SALE TO rola_sekretariat;
+GRANT SELECT, INSERT, UPDATE ON szkola_muzyczna.UCZNIOWIE TO rola_sekretariat;
+GRANT SELECT, INSERT, UPDATE ON szkola_muzyczna.LEKCJE TO rola_sekretariat;
+GRANT SELECT ON szkola_muzyczna.OCENY TO rola_sekretariat;
+GRANT SELECT ON szkola_muzyczna.seq_uczniowie TO rola_sekretariat;
+GRANT SELECT ON szkola_muzyczna.seq_lekcje TO rola_sekretariat;
 
 -- Pakiety dla sekretariatu
-GRANT EXECUTE ON PKG_OSOBY TO rola_sekretariat;
-GRANT EXECUTE ON PKG_LEKCJE TO rola_sekretariat;
-GRANT EXECUTE ON PKG_RAPORTY TO rola_sekretariat;
+GRANT EXECUTE ON szkola_muzyczna.PKG_OSOBY TO rola_sekretariat;
+GRANT EXECUTE ON szkola_muzyczna.PKG_LEKCJE TO rola_sekretariat;
+GRANT EXECUTE ON szkola_muzyczna.PKG_RAPORTY TO rola_sekretariat;
 
 -- ----- ROLA_RAPORT (tylko odczyt) -----
-GRANT SELECT ON INSTRUMENTY TO rola_raport;
-GRANT SELECT ON PRZEDMIOTY TO rola_raport;
-GRANT SELECT ON NAUCZYCIELE TO rola_raport;
-GRANT SELECT ON GRUPY TO rola_raport;
-GRANT SELECT ON SALE TO rola_raport;
-GRANT SELECT ON UCZNIOWIE TO rola_raport;
-GRANT SELECT ON LEKCJE TO rola_raport;
-GRANT SELECT ON OCENY TO rola_raport;
+GRANT SELECT ON szkola_muzyczna.INSTRUMENTY TO rola_raport;
+GRANT SELECT ON szkola_muzyczna.PRZEDMIOTY TO rola_raport;
+GRANT SELECT ON szkola_muzyczna.NAUCZYCIELE TO rola_raport;
+GRANT SELECT ON szkola_muzyczna.GRUPY TO rola_raport;
+GRANT SELECT ON szkola_muzyczna.SALE TO rola_raport;
+GRANT SELECT ON szkola_muzyczna.UCZNIOWIE TO rola_raport;
+GRANT SELECT ON szkola_muzyczna.LEKCJE TO rola_raport;
+GRANT SELECT ON szkola_muzyczna.OCENY TO rola_raport;
 
-GRANT EXECUTE ON PKG_RAPORTY TO rola_raport;
+GRANT EXECUTE ON szkola_muzyczna.PKG_RAPORTY TO rola_raport;
 
 -- ============================================================================
 -- 4. TWORZENIE UZYTKOWNIKOW
@@ -146,6 +162,16 @@ CREATE OR REPLACE PUBLIC SYNONYM SALE FOR szkola_muzyczna.SALE;
 CREATE OR REPLACE PUBLIC SYNONYM UCZNIOWIE FOR szkola_muzyczna.UCZNIOWIE;
 CREATE OR REPLACE PUBLIC SYNONYM LEKCJE FOR szkola_muzyczna.LEKCJE;
 CREATE OR REPLACE PUBLIC SYNONYM OCENY FOR szkola_muzyczna.OCENY;
+
+-- Sekwencje
+CREATE OR REPLACE PUBLIC SYNONYM seq_instrumenty FOR szkola_muzyczna.seq_instrumenty;
+CREATE OR REPLACE PUBLIC SYNONYM seq_przedmioty FOR szkola_muzyczna.seq_przedmioty;
+CREATE OR REPLACE PUBLIC SYNONYM seq_nauczyciele FOR szkola_muzyczna.seq_nauczyciele;
+CREATE OR REPLACE PUBLIC SYNONYM seq_grupy FOR szkola_muzyczna.seq_grupy;
+CREATE OR REPLACE PUBLIC SYNONYM seq_sale FOR szkola_muzyczna.seq_sale;
+CREATE OR REPLACE PUBLIC SYNONYM seq_uczniowie FOR szkola_muzyczna.seq_uczniowie;
+CREATE OR REPLACE PUBLIC SYNONYM seq_lekcje FOR szkola_muzyczna.seq_lekcje;
+CREATE OR REPLACE PUBLIC SYNONYM seq_oceny FOR szkola_muzyczna.seq_oceny;
 
 -- Pakiety
 CREATE OR REPLACE PUBLIC SYNONYM PKG_SLOWNIKI FOR szkola_muzyczna.PKG_SLOWNIKI;

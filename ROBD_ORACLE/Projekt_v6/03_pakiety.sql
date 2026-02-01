@@ -67,6 +67,9 @@ CREATE OR REPLACE PACKAGE PKG_SLOWNIKI AS
     -- Pobieranie REF do grupy po kodzie
     FUNCTION get_ref_grupa(p_kod VARCHAR2) RETURN REF T_GRUPA;
 
+    -- Sprawdzenie czy instrument istnieje
+    FUNCTION czy_instrument_istnieje(p_nazwa VARCHAR2) RETURN BOOLEAN;
+
 END PKG_SLOWNIKI;
 /
 
@@ -145,8 +148,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SLOWNIKI AS
     FUNCTION get_ref_instrument(p_nazwa VARCHAR2) RETURN REF T_INSTRUMENT IS
         v_ref REF T_INSTRUMENT;
     BEGIN
-        SELECT REF(i) INTO v_ref 
-        FROM INSTRUMENTY i 
+        SELECT REF(i) INTO v_ref
+        FROM INSTRUMENTY i
         WHERE UPPER(i.nazwa) = UPPER(p_nazwa);
         RETURN v_ref;
     EXCEPTION
@@ -157,8 +160,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SLOWNIKI AS
     FUNCTION get_ref_przedmiot(p_nazwa VARCHAR2) RETURN REF T_PRZEDMIOT IS
         v_ref REF T_PRZEDMIOT;
     BEGIN
-        SELECT REF(p) INTO v_ref 
-        FROM PRZEDMIOTY p 
+        SELECT REF(p) INTO v_ref
+        FROM PRZEDMIOTY p
         WHERE UPPER(p.nazwa) = UPPER(p_nazwa);
         RETURN v_ref;
     EXCEPTION
@@ -169,8 +172,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_SLOWNIKI AS
     FUNCTION get_ref_sala(p_numer VARCHAR2) RETURN REF T_SALA IS
         v_ref REF T_SALA;
     BEGIN
-        SELECT REF(s) INTO v_ref 
-        FROM SALE s 
+        SELECT REF(s) INTO v_ref
+        FROM SALE s
         WHERE s.numer = p_numer;
         RETURN v_ref;
     EXCEPTION
@@ -181,13 +184,22 @@ CREATE OR REPLACE PACKAGE BODY PKG_SLOWNIKI AS
     FUNCTION get_ref_grupa(p_kod VARCHAR2) RETURN REF T_GRUPA IS
         v_ref REF T_GRUPA;
     BEGIN
-        SELECT REF(g) INTO v_ref 
-        FROM GRUPY g 
+        SELECT REF(g) INTO v_ref
+        FROM GRUPY g
         WHERE UPPER(g.kod) = UPPER(p_kod);
         RETURN v_ref;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             RAISE_APPLICATION_ERROR(-20004, 'Grupa nie znaleziona: ' || p_kod);
+    END;
+
+    FUNCTION czy_instrument_istnieje(p_nazwa VARCHAR2) RETURN BOOLEAN IS
+        v_count NUMBER;
+    BEGIN
+        SELECT COUNT(*) INTO v_count
+        FROM INSTRUMENTY i
+        WHERE UPPER(i.nazwa) = UPPER(p_nazwa);
+        RETURN v_count > 0;
     END;
 
 END PKG_SLOWNIKI;
@@ -208,7 +220,7 @@ CREATE OR REPLACE PACKAGE PKG_OSOBY AS
         p_telefon       VARCHAR2 DEFAULT NULL
     );
 
-    -- Dodawanie ucznia (automatycznie przypisuje do grupy i instrumentu)
+    -- Dodawanie ucznia
     PROCEDURE dodaj_ucznia(
         p_imie              VARCHAR2,
         p_nazwisko          VARCHAR2,
@@ -219,11 +231,17 @@ CREATE OR REPLACE PACKAGE PKG_OSOBY AS
         p_telefon_rodzica   VARCHAR2 DEFAULT NULL
     );
 
-    -- Pobieranie REF do nauczyciela po nazwisku
+    -- Pobieranie REF do nauczyciela po ID (BEZPIECZNE - zalecane)
+    FUNCTION get_ref_nauczyciel_by_id(p_id NUMBER) RETURN REF T_NAUCZYCIEL;
+
+    -- Pobieranie REF do nauczyciela po nazwisku (UWAGA: jesli duplikaty - blad!)
     FUNCTION get_ref_nauczyciel(p_nazwisko VARCHAR2) RETURN REF T_NAUCZYCIEL;
 
-    -- Pobieranie REF do ucznia po nazwisku i imieniu
-    FUNCTION get_ref_uczen(p_nazwisko VARCHAR2, p_imie VARCHAR2 DEFAULT NULL) RETURN REF T_UCZEN;
+    -- Pobieranie REF do ucznia po ID (BEZPIECZNE - zalecane)
+    FUNCTION get_ref_uczen_by_id(p_id NUMBER) RETURN REF T_UCZEN;
+
+    -- Pobieranie REF do ucznia po nazwisku i imieniu (WYMAGANE oba parametry)
+    FUNCTION get_ref_uczen(p_nazwisko VARCHAR2, p_imie VARCHAR2) RETURN REF T_UCZEN;
 
     -- Liczba uczniow nauczyciela
     FUNCTION liczba_uczniow_nauczyciela(p_id_nauczyciela NUMBER) RETURN NUMBER;
@@ -233,6 +251,9 @@ CREATE OR REPLACE PACKAGE PKG_OSOBY AS
 
     -- Lista uczniow danego nauczyciela (wg instrumentu)
     FUNCTION uczniowie_nauczyciela(p_nazwisko VARCHAR2) RETURN SYS_REFCURSOR;
+
+    -- Liczba uczniow w grupie (do walidacji limitu)
+    FUNCTION liczba_uczniow_w_grupie(p_kod_grupy VARCHAR2) RETURN NUMBER;
 
 END PKG_OSOBY;
 /
@@ -247,6 +268,17 @@ CREATE OR REPLACE PACKAGE BODY PKG_OSOBY AS
         p_telefon       VARCHAR2 DEFAULT NULL
     ) IS
     BEGIN
+        -- Walidacja: sprawdz czy wszystkie instrumenty istnieja w slowniku
+        IF p_instrumenty IS NOT NULL AND p_instrumenty.COUNT > 0 THEN
+            FOR i IN 1..p_instrumenty.COUNT LOOP
+                IF NOT PKG_SLOWNIKI.czy_instrument_istnieje(p_instrumenty(i)) THEN
+                    RAISE_APPLICATION_ERROR(-20030, 
+                        'Instrument "' || p_instrumenty(i) || '" nie istnieje w slowniku. ' ||
+                        'Dodaj go najpierw przez PKG_SLOWNIKI.dodaj_instrument()');
+                END IF;
+            END LOOP;
+        END IF;
+
         INSERT INTO NAUCZYCIELE VALUES (
             T_NAUCZYCIEL(
                 seq_nauczyciele.NEXTVAL,
@@ -271,12 +303,24 @@ CREATE OR REPLACE PACKAGE BODY PKG_OSOBY AS
         p_email_rodzica     VARCHAR2 DEFAULT NULL,
         p_telefon_rodzica   VARCHAR2 DEFAULT NULL
     ) IS
-        v_ref_grupa     REF T_GRUPA;
+        v_ref_grupa      REF T_GRUPA;
         v_ref_instrument REF T_INSTRUMENT;
+        v_liczba_uczniow NUMBER;
+        v_max_uczniow    CONSTANT NUMBER := 15;
     BEGIN
         -- Pobierz referencje do grupy i instrumentu
         v_ref_grupa := PKG_SLOWNIKI.get_ref_grupa(p_kod_grupy);
         v_ref_instrument := PKG_SLOWNIKI.get_ref_instrument(p_instrument);
+
+        -- Walidacja limitu uczniow w grupie
+        v_liczba_uczniow := liczba_uczniow_w_grupie(p_kod_grupy);
+
+        IF v_liczba_uczniow >= v_max_uczniow THEN
+            RAISE_APPLICATION_ERROR(-20116,
+                'Grupa ' || p_kod_grupy || ' osiagnela maksymalny limit ' ||
+                v_max_uczniow || ' uczniow. Utworz nowa grupe (np. ' ||
+                SUBSTR(p_kod_grupy, 1, 1) || 'B).');
+        END IF;
 
         INSERT INTO UCZNIOWIE VALUES (
             T_UCZEN(
@@ -294,37 +338,84 @@ CREATE OR REPLACE PACKAGE BODY PKG_OSOBY AS
         COMMIT;
     END;
 
-    FUNCTION get_ref_nauczyciel(p_nazwisko VARCHAR2) RETURN REF T_NAUCZYCIEL IS
+    FUNCTION get_ref_nauczyciel_by_id(p_id NUMBER) RETURN REF T_NAUCZYCIEL IS
         v_ref REF T_NAUCZYCIEL;
     BEGIN
-        SELECT REF(n) INTO v_ref 
-        FROM NAUCZYCIELE n 
-        WHERE UPPER(n.nazwisko) = UPPER(p_nazwisko)
-        AND ROWNUM = 1;  -- na wypadek powtorzonych nazwisk
+        SELECT REF(n) INTO v_ref
+        FROM NAUCZYCIELE n
+        WHERE n.id_nauczyciela = p_id;
         RETURN v_ref;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
-            RAISE_APPLICATION_ERROR(-20005, 'Nauczyciel nie znaleziony: ' || p_nazwisko);
+            RAISE_APPLICATION_ERROR(-20005, 'Nauczyciel o ID ' || p_id || ' nie istnieje');
     END;
 
-    FUNCTION get_ref_uczen(p_nazwisko VARCHAR2, p_imie VARCHAR2 DEFAULT NULL) RETURN REF T_UCZEN IS
+    FUNCTION get_ref_nauczyciel(p_nazwisko VARCHAR2) RETURN REF T_NAUCZYCIEL IS
+        v_ref REF T_NAUCZYCIEL;
+        v_count NUMBER;
+    BEGIN
+        -- Sprawdz czy nie ma duplikatow nazwisk
+        SELECT COUNT(*) INTO v_count
+        FROM NAUCZYCIELE n
+        WHERE UPPER(n.nazwisko) = UPPER(p_nazwisko);
+
+        IF v_count = 0 THEN
+            RAISE_APPLICATION_ERROR(-20005, 'Nauczyciel nie znaleziony: ' || p_nazwisko);
+        ELSIF v_count > 1 THEN
+            RAISE_APPLICATION_ERROR(-20007,
+                'Znaleziono ' || v_count || ' nauczycieli o nazwisku "' || p_nazwisko ||
+                '". Uzyj get_ref_nauczyciel_by_id(id) lub podaj pelne dane.');
+        END IF;
+
+        SELECT REF(n) INTO v_ref
+        FROM NAUCZYCIELE n
+        WHERE UPPER(n.nazwisko) = UPPER(p_nazwisko);
+        RETURN v_ref;
+    END;
+
+    FUNCTION get_ref_uczen_by_id(p_id NUMBER) RETURN REF T_UCZEN IS
         v_ref REF T_UCZEN;
     BEGIN
-        IF p_imie IS NOT NULL THEN
-            SELECT REF(u) INTO v_ref 
-            FROM UCZNIOWIE u 
-            WHERE UPPER(u.nazwisko) = UPPER(p_nazwisko)
-            AND UPPER(u.imie) = UPPER(p_imie);
-        ELSE
-            SELECT REF(u) INTO v_ref 
-            FROM UCZNIOWIE u 
-            WHERE UPPER(u.nazwisko) = UPPER(p_nazwisko)
-            AND ROWNUM = 1;
-        END IF;
+        SELECT REF(u) INTO v_ref
+        FROM UCZNIOWIE u
+        WHERE u.id_ucznia = p_id;
         RETURN v_ref;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
-            RAISE_APPLICATION_ERROR(-20006, 'Uczen nie znaleziony: ' || p_nazwisko);
+            RAISE_APPLICATION_ERROR(-20006, 'Uczen o ID ' || p_id || ' nie istnieje');
+    END;
+
+    FUNCTION get_ref_uczen(p_nazwisko VARCHAR2, p_imie VARCHAR2) RETURN REF T_UCZEN IS
+        v_ref REF T_UCZEN;
+        v_count NUMBER;
+    BEGIN
+        -- Imie jest WYMAGANE - bez niego nie mozna jednoznacznie zidentyfikowac ucznia
+        IF p_imie IS NULL THEN
+            RAISE_APPLICATION_ERROR(-20008,
+                'Imie ucznia jest wymagane. Podaj imie i nazwisko.');
+        END IF;
+
+        -- Sprawdz duplikaty (np. dwoch "Jan Kowalski" w szkole)
+        SELECT COUNT(*) INTO v_count
+        FROM UCZNIOWIE u
+        WHERE UPPER(u.nazwisko) = UPPER(p_nazwisko)
+        AND UPPER(u.imie) = UPPER(p_imie);
+
+        IF v_count = 0 THEN
+            RAISE_APPLICATION_ERROR(-20006,
+                'Uczen nie znaleziony: ' || p_imie || ' ' || p_nazwisko);
+        ELSIF v_count > 1 THEN
+            RAISE_APPLICATION_ERROR(-20009,
+                'Znaleziono ' || v_count || ' uczniow o imieniu i nazwisku "' ||
+                p_imie || ' ' || p_nazwisko ||
+                '". Uzyj get_ref_uczen_by_id(id) do jednoznacznej identyfikacji.');
+        END IF;
+
+        SELECT REF(u) INTO v_ref
+        FROM UCZNIOWIE u
+        WHERE UPPER(u.nazwisko) = UPPER(p_nazwisko)
+        AND UPPER(u.imie) = UPPER(p_imie);
+        RETURN v_ref;
     END;
 
     FUNCTION liczba_uczniow_nauczyciela(p_id_nauczyciela NUMBER) RETURN NUMBER IS
@@ -336,6 +427,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_OSOBY AS
         FROM NAUCZYCIELE n
         WHERE n.id_nauczyciela = p_id_nauczyciela;
 
+        -- Jesli nauczyciel nie uczy instrumentow (przedmioty grupowe)
+        IF v_instrumenty IS NULL OR v_instrumenty.COUNT = 0 THEN
+            RETURN 0;
+        END IF;
+
         -- Policz uczniow grajacych na tych instrumentach
         SELECT COUNT(*) INTO v_count
         FROM UCZNIOWIE u
@@ -345,8 +441,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_OSOBY AS
 
         RETURN v_count;
     EXCEPTION
-        WHEN OTHERS THEN
-            RETURN 0;
+        WHEN NO_DATA_FOUND THEN
+            RAISE_APPLICATION_ERROR(-20005,
+                'Nauczyciel o ID ' || p_id_nauczyciela || ' nie istnieje');
     END;
 
     FUNCTION uczniowie_w_grupie(p_kod_grupy VARCHAR2) RETURN SYS_REFCURSOR IS
@@ -358,7 +455,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_OSOBY AS
                    u.nazwisko,
                    DEREF(u.ref_instrument).nazwa AS instrument
             FROM UCZNIOWIE u
-            WHERE DEREF(u.ref_grupa).kod = p_kod_grupy
+            WHERE UPPER(DEREF(u.ref_grupa).kod) = UPPER(p_kod_grupy)
             ORDER BY u.nazwisko, u.imie;
         RETURN v_cursor;
     END;
@@ -371,6 +468,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_OSOBY AS
         SELECT n.instrumenty INTO v_instrumenty
         FROM NAUCZYCIELE n
         WHERE UPPER(n.nazwisko) = UPPER(p_nazwisko);
+
+        -- Jesli brak instrumentow, zwroc pusty kursor
+        IF v_instrumenty IS NULL OR v_instrumenty.COUNT = 0 THEN
+            OPEN v_cursor FOR
+                SELECT NULL AS id_ucznia, NULL AS imie, NULL AS nazwisko, 
+                       NULL AS instrument, NULL AS grupa, NULL AS klasa
+                FROM DUAL WHERE 1=0;
+            RETURN v_cursor;
+        END IF;
 
         -- Zwroc uczniow grajacych na tych instrumentach
         OPEN v_cursor FOR
@@ -386,6 +492,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_OSOBY AS
             )
             ORDER BY DEREF(u.ref_grupa).klasa, u.nazwisko;
         RETURN v_cursor;
+    END;
+
+    FUNCTION liczba_uczniow_w_grupie(p_kod_grupy VARCHAR2) RETURN NUMBER IS
+        v_count NUMBER;
+    BEGIN
+        SELECT COUNT(*) INTO v_count
+        FROM UCZNIOWIE u
+        WHERE UPPER(DEREF(u.ref_grupa).kod) = UPPER(p_kod_grupy);
+        RETURN v_count;
     END;
 
 END PKG_OSOBY;
@@ -515,34 +630,26 @@ CREATE OR REPLACE PACKAGE PKG_LEKCJE AS
     ) RETURN VARCHAR2;
 
     -- Automatyczne tworzenie lekcji z heurystyka doboru nauczyciela
-    -- System sam wybiera nauczyciela z najmniejsza liczba lekcji w danym terminie
-    -- Czas lekcji pobierany automatycznie z klasy ucznia (30 min dla I-III, 45 min dla IV-VI)
     PROCEDURE przydziel_lekcje_indywidualna(
         p_uczen_nazwisko    VARCHAR2,
         p_uczen_imie        VARCHAR2,
         p_data              DATE,
         p_godzina           VARCHAR2,
-        p_czas_min          NUMBER DEFAULT NULL  -- NULL = automatycznie z klasy
+        p_czas_min          NUMBER DEFAULT NULL
     );
 
     -- =======================================================================
     -- GENEROWANIE PLANU SEMESTRALNEGO
     -- =======================================================================
 
-    -- Generuje plan lekcji indywidualnych dla WSZYSTKICH uczniow na dany tydzien
-    -- Kazdy uczen dostaje 2 lekcje instrumentu (poniedzialek + sroda LUB wtorek + czwartek)
     PROCEDURE generuj_lekcje_indywidualne_tydzien(
-        p_data_poniedzialek DATE  -- poczatek tygodnia (poniedzialek)
+        p_data_poniedzialek DATE
     );
 
-    -- Generuje plan lekcji grupowych dla WSZYSTKICH grup na dany tydzien
-    -- Kazda grupa dostaje: Ksztalcenie sluchu, Rytmika, Audycje muzyczne
-    -- Klasy IV-VI dodatkowo: Chor lub Orkiestra
     PROCEDURE generuj_lekcje_grupowe_tydzien(
-        p_data_poniedzialek DATE  -- poczatek tygodnia (poniedzialek)
+        p_data_poniedzialek DATE
     );
 
-    -- Generuje KOMPLETNY plan tygodnia (indywidualne + grupowe)
     PROCEDURE generuj_plan_tygodnia(
         p_data_poniedzialek DATE
     );
@@ -552,22 +659,130 @@ END PKG_LEKCJE;
 
 CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
 
-    -- Funkcja pomocnicza: konwersja godziny na minuty od polnocy
+    -- =======================================================================
+    -- FUNKCJE POMOCNICZE
+    -- =======================================================================
+
+    -- Konwersja godziny na minuty od polnocy
     FUNCTION godzina_na_minuty(p_godzina VARCHAR2) RETURN NUMBER IS
     BEGIN
         RETURN TO_NUMBER(SUBSTR(p_godzina, 1, 2)) * 60 +
                TO_NUMBER(SUBSTR(p_godzina, 4, 2));
     END;
 
-    -- Funkcja pomocnicza: sprawdzenie nakladania sie czasow
-    FUNCTION czy_naklada_sie(
-        p_start1 NUMBER, p_koniec1 NUMBER,
-        p_start2 NUMBER, p_koniec2 NUMBER
+    FUNCTION czy_sala_wolna(
+        p_numer_sali    VARCHAR2,
+        p_data          DATE,
+        p_godzina_start VARCHAR2,
+        p_czas_min      NUMBER
     ) RETURN BOOLEAN IS
+        v_count NUMBER;
+        v_start_min NUMBER := godzina_na_minuty(p_godzina_start);
+        v_koniec_min NUMBER := v_start_min + p_czas_min;
     BEGIN
         -- Nakladanie: start1 < koniec2 AND start2 < koniec1
-        RETURN p_start1 < p_koniec2 AND p_start2 < p_koniec1;
+        SELECT COUNT(*) INTO v_count
+        FROM LEKCJE l
+        WHERE DEREF(l.ref_sala).numer = p_numer_sali
+        AND l.data_lekcji = p_data
+        AND l.status != 'odwolana'
+        AND (
+            -- Warunek nakladania sie czasow:
+            (TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
+             TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))) < v_koniec_min
+            AND
+            v_start_min < (TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
+                           TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania_min)
+        );
+
+        RETURN v_count = 0;
     END;
+
+    FUNCTION czy_nauczyciel_wolny(
+        p_nazwisko      VARCHAR2,
+        p_data          DATE,
+        p_godzina_start VARCHAR2,
+        p_czas_min      NUMBER
+    ) RETURN BOOLEAN IS
+        v_count NUMBER;
+        v_start_min NUMBER := godzina_na_minuty(p_godzina_start);
+        v_koniec_min NUMBER := v_start_min + p_czas_min;
+    BEGIN
+        SELECT COUNT(*) INTO v_count
+        FROM LEKCJE l
+        WHERE UPPER(DEREF(l.ref_nauczyciel).nazwisko) = UPPER(p_nazwisko)
+        AND l.data_lekcji = p_data
+        AND l.status != 'odwolana'
+        AND (
+            (TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
+             TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))) < v_koniec_min
+            AND
+            v_start_min < (TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+                           TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania_min)
+        );
+
+        RETURN v_count = 0;
+    END;
+
+    FUNCTION czy_uczen_wolny(
+        p_nazwisko      VARCHAR2,
+        p_imie          VARCHAR2,
+        p_data          DATE,
+        p_godzina_start VARCHAR2,
+        p_czas_min      NUMBER
+    ) RETURN BOOLEAN IS
+        v_count NUMBER;
+        v_start_min NUMBER := godzina_na_minuty(p_godzina_start);
+        v_koniec_min NUMBER := v_start_min + p_czas_min;
+        v_id_ucznia NUMBER;
+        v_kod_grupy VARCHAR2(10);
+    BEGIN
+        -- Pobierz ID ucznia i jego grupe
+        SELECT u.id_ucznia, DEREF(u.ref_grupa).kod
+        INTO v_id_ucznia, v_kod_grupy
+        FROM UCZNIOWIE u
+        WHERE UPPER(u.nazwisko) = UPPER(p_nazwisko)
+        AND UPPER(u.imie) = UPPER(p_imie);
+
+        -- Sprawdz lekcje indywidualne ucznia
+        SELECT COUNT(*) INTO v_count
+        FROM LEKCJE l
+        WHERE DEREF(l.ref_uczen).id_ucznia = v_id_ucznia
+        AND l.data_lekcji = p_data
+        AND l.status != 'odwolana'
+        AND (
+            (TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
+             TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))) < v_koniec_min
+            AND
+            v_start_min < (TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
+                           TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania_min)
+        );
+
+        IF v_count > 0 THEN RETURN FALSE; END IF;
+
+        -- Sprawdz lekcje grupowe ucznia
+        SELECT COUNT(*) INTO v_count
+        FROM LEKCJE l
+        WHERE UPPER(DEREF(l.ref_grupa).kod) = UPPER(v_kod_grupy)
+        AND l.data_lekcji = p_data
+        AND l.status != 'odwolana'
+        AND (
+            (TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
+             TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))) < v_koniec_min
+            AND
+            v_start_min < (TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
+                           TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania_min)
+        );
+
+        RETURN v_count = 0;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RETURN TRUE;  -- uczen nie istnieje = wolny (blad wychwyci insert)
+    END;
+
+    -- =======================================================================
+    -- PROCEDURY DODAWANIA LEKCJI
+    -- =======================================================================
 
     PROCEDURE dodaj_lekcje_indywidualna(
         p_przedmiot         VARCHAR2,
@@ -582,15 +797,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
     BEGIN
         -- Walidacja konfliktow
         IF NOT czy_sala_wolna(p_sala_numer, p_data, p_godzina, p_czas_min) THEN
-            RAISE_APPLICATION_ERROR(-20010, 'Sala zajeta w tym terminie');
+            RAISE_APPLICATION_ERROR(-20010, 'Sala ' || p_sala_numer || ' zajeta w tym terminie');
         END IF;
 
         IF NOT czy_nauczyciel_wolny(p_nauczyciel_nazwisko, p_data, p_godzina, p_czas_min) THEN
-            RAISE_APPLICATION_ERROR(-20011, 'Nauczyciel zajety w tym terminie');
+            RAISE_APPLICATION_ERROR(-20011, 'Nauczyciel ' || p_nauczyciel_nazwisko || ' zajety w tym terminie');
         END IF;
 
         IF NOT czy_uczen_wolny(p_uczen_nazwisko, p_uczen_imie, p_data, p_godzina, p_czas_min) THEN
-            RAISE_APPLICATION_ERROR(-20012, 'Uczen zajety w tym terminie');
+            RAISE_APPLICATION_ERROR(-20012, 'Uczen ' || p_uczen_imie || ' ' || p_uczen_nazwisko || ' zajety w tym terminie');
         END IF;
 
         INSERT INTO LEKCJE VALUES (
@@ -609,7 +824,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
                 NULL   -- komisja (NULL dla zwyklej lekcji)
             )
         );
-        COMMIT;
     END;
 
     PROCEDURE dodaj_lekcje_grupowa(
@@ -624,11 +838,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
     BEGIN
         -- Walidacja konfliktow
         IF NOT czy_sala_wolna(p_sala_numer, p_data, p_godzina, p_czas_min) THEN
-            RAISE_APPLICATION_ERROR(-20010, 'Sala zajeta w tym terminie');
+            RAISE_APPLICATION_ERROR(-20010, 'Sala ' || p_sala_numer || ' zajeta w tym terminie');
         END IF;
 
         IF NOT czy_nauczyciel_wolny(p_nauczyciel_nazwisko, p_data, p_godzina, p_czas_min) THEN
-            RAISE_APPLICATION_ERROR(-20011, 'Nauczyciel zajety w tym terminie');
+            RAISE_APPLICATION_ERROR(-20011, 'Nauczyciel ' || p_nauczyciel_nazwisko || ' zajety w tym terminie');
         END IF;
 
         INSERT INTO LEKCJE VALUES (
@@ -647,7 +861,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
                 NULL   -- komisja
             )
         );
-        COMMIT;
     END;
 
     PROCEDURE dodaj_egzamin(
@@ -666,15 +879,34 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
         v_instrument_nazwa VARCHAR2(50);
     BEGIN
         -- Pobierz ID nauczycieli do komisji
-        SELECT id_nauczyciela INTO v_id_naucz1 
+        SELECT id_nauczyciela INTO v_id_naucz1
         FROM NAUCZYCIELE WHERE UPPER(nazwisko) = UPPER(p_komisja_nazwisko1);
 
-        SELECT id_nauczyciela INTO v_id_naucz2 
+        SELECT id_nauczyciela INTO v_id_naucz2
         FROM NAUCZYCIELE WHERE UPPER(nazwisko) = UPPER(p_komisja_nazwisko2);
 
-        -- Sprawdz czy to rozni nauczyciele (trigger tez to sprawdzi)
+        -- Sprawdz czy to rozni nauczyciele
         IF v_id_naucz1 = v_id_naucz2 THEN
-            RAISE_APPLICATION_ERROR(-20013, 'Komisja musi skladac sie z 2 ROZNYCH nauczycieli');
+            RAISE_APPLICATION_ERROR(-20102, 'Komisja musi skladac sie z 2 ROZNYCH nauczycieli');
+        END IF;
+
+        -- Walidacja konfliktow - sala
+        IF NOT czy_sala_wolna(p_sala_numer, p_data, p_godzina, p_czas_min) THEN
+            RAISE_APPLICATION_ERROR(-20010, 'Sala ' || p_sala_numer || ' zajeta w tym terminie');
+        END IF;
+
+        -- Walidacja konfliktow - uczen
+        IF NOT czy_uczen_wolny(p_uczen_nazwisko, p_uczen_imie, p_data, p_godzina, p_czas_min) THEN
+            RAISE_APPLICATION_ERROR(-20012, 'Uczen ' || p_uczen_imie || ' ' || p_uczen_nazwisko || ' ma juz zajecia w tym terminie');
+        END IF;
+
+        -- Walidacja konfliktow - nauczyciele komisji
+        IF NOT czy_nauczyciel_wolny(p_komisja_nazwisko1, p_data, p_godzina, p_czas_min) THEN
+            RAISE_APPLICATION_ERROR(-20011, 'Nauczyciel ' || p_komisja_nazwisko1 || ' (komisja) zajety w tym terminie');
+        END IF;
+
+        IF NOT czy_nauczyciel_wolny(p_komisja_nazwisko2, p_data, p_godzina, p_czas_min) THEN
+            RAISE_APPLICATION_ERROR(-20011, 'Nauczyciel ' || p_komisja_nazwisko2 || ' (komisja) zajety w tym terminie');
         END IF;
 
         -- Pobierz referencje do ucznia i jego instrument
@@ -682,16 +914,17 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
 
         SELECT DEREF(u.ref_instrument).nazwa INTO v_instrument_nazwa
         FROM UCZNIOWIE u
-        WHERE u.imie = p_uczen_imie AND u.nazwisko = p_uczen_nazwisko;
+        WHERE UPPER(u.imie) = UPPER(p_uczen_imie)
+        AND UPPER(u.nazwisko) = UPPER(p_uczen_nazwisko);
 
         INSERT INTO LEKCJE VALUES (
             T_LEKCJA(
                 seq_lekcje.NEXTVAL,
-                PKG_SLOWNIKI.get_ref_przedmiot(v_instrument_nazwa),  -- przedmiot = instrument ucznia
-                PKG_OSOBY.get_ref_nauczyciel(p_komisja_nazwisko1),   -- pierwszy z komisji jako prowadzacy
+                PKG_SLOWNIKI.get_ref_przedmiot(v_instrument_nazwa),
+                PKG_OSOBY.get_ref_nauczyciel(p_komisja_nazwisko1),
                 PKG_SLOWNIKI.get_ref_sala(p_sala_numer),
                 v_ref_uczen,
-                NULL,  -- ref_grupa
+                NULL,
                 p_data,
                 p_godzina,
                 p_czas_min,
@@ -717,105 +950,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
         COMMIT;
     END;
 
-    FUNCTION czy_sala_wolna(
-        p_numer_sali    VARCHAR2,
-        p_data          DATE,
-        p_godzina_start VARCHAR2,
-        p_czas_min      NUMBER
-    ) RETURN BOOLEAN IS
-        v_count NUMBER;
-        v_start_min NUMBER := godzina_na_minuty(p_godzina_start);
-        v_koniec_min NUMBER := v_start_min + p_czas_min;
-    BEGIN
-        SELECT COUNT(*) INTO v_count
-        FROM LEKCJE l
-        WHERE DEREF(l.ref_sala).numer = p_numer_sali
-        AND l.data_lekcji = p_data
-        AND l.status != 'odwolana'
-        AND czy_naklada_sie(
-            godzina_na_minuty(l.godzina_start),
-            godzina_na_minuty(l.godzina_start) + l.czas_trwania_min,
-            v_start_min, v_koniec_min
-        );
-
-        RETURN v_count = 0;
-    END;
-
-    FUNCTION czy_nauczyciel_wolny(
-        p_nazwisko      VARCHAR2,
-        p_data          DATE,
-        p_godzina_start VARCHAR2,
-        p_czas_min      NUMBER
-    ) RETURN BOOLEAN IS
-        v_count NUMBER;
-        v_start_min NUMBER := godzina_na_minuty(p_godzina_start);
-        v_koniec_min NUMBER := v_start_min + p_czas_min;
-    BEGIN
-        SELECT COUNT(*) INTO v_count
-        FROM LEKCJE l
-        WHERE DEREF(l.ref_nauczyciel).nazwisko = p_nazwisko
-        AND l.data_lekcji = p_data
-        AND l.status != 'odwolana'
-        AND czy_naklada_sie(
-            godzina_na_minuty(l.godzina_start),
-            godzina_na_minuty(l.godzina_start) + l.czas_trwania_min,
-            v_start_min, v_koniec_min
-        );
-
-        RETURN v_count = 0;
-    END;
-
-    FUNCTION czy_uczen_wolny(
-        p_nazwisko      VARCHAR2,
-        p_imie          VARCHAR2,
-        p_data          DATE,
-        p_godzina_start VARCHAR2,
-        p_czas_min      NUMBER
-    ) RETURN BOOLEAN IS
-        v_count NUMBER;
-        v_start_min NUMBER := godzina_na_minuty(p_godzina_start);
-        v_koniec_min NUMBER := v_start_min + p_czas_min;
-        v_id_ucznia NUMBER;
-        v_kod_grupy VARCHAR2(10);
-    BEGIN
-        -- Pobierz ID ucznia i jego grupe
-        SELECT u.id_ucznia, DEREF(u.ref_grupa).kod 
-        INTO v_id_ucznia, v_kod_grupy
-        FROM UCZNIOWIE u
-        WHERE UPPER(u.nazwisko) = UPPER(p_nazwisko)
-        AND UPPER(u.imie) = UPPER(p_imie);
-
-        -- Sprawdz lekcje indywidualne ucznia
-        SELECT COUNT(*) INTO v_count
-        FROM LEKCJE l
-        WHERE DEREF(l.ref_uczen).id_ucznia = v_id_ucznia
-        AND l.data_lekcji = p_data
-        AND l.status != 'odwolana'
-        AND czy_naklada_sie(
-            godzina_na_minuty(l.godzina_start),
-            godzina_na_minuty(l.godzina_start) + l.czas_trwania_min,
-            v_start_min, v_koniec_min
-        );
-
-        IF v_count > 0 THEN RETURN FALSE; END IF;
-
-        -- Sprawdz lekcje grupowe ucznia
-        SELECT COUNT(*) INTO v_count
-        FROM LEKCJE l
-        WHERE DEREF(l.ref_grupa).kod = v_kod_grupy
-        AND l.data_lekcji = p_data
-        AND l.status != 'odwolana'
-        AND czy_naklada_sie(
-            godzina_na_minuty(l.godzina_start),
-            godzina_na_minuty(l.godzina_start) + l.czas_trwania_min,
-            v_start_min, v_koniec_min
-        );
-
-        RETURN v_count = 0;
-    EXCEPTION
-        WHEN NO_DATA_FOUND THEN
-            RETURN TRUE;  -- uczen nie istnieje = wolny (blad wychwyci insert)
-    END;
+    -- =======================================================================
+    -- FUNKCJE PLANOW
+    -- =======================================================================
 
     FUNCTION plan_ucznia(
         p_nazwisko VARCHAR2,
@@ -827,7 +964,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
         v_id_ucznia NUMBER;
         v_kod_grupy VARCHAR2(10);
     BEGIN
-        -- Pobierz ID ucznia i grupe
         SELECT u.id_ucznia, DEREF(u.ref_grupa).kod 
         INTO v_id_ucznia, v_kod_grupy
         FROM UCZNIOWIE u
@@ -845,7 +981,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
                    l.status
             FROM LEKCJE l
             WHERE (DEREF(l.ref_uczen).id_ucznia = v_id_ucznia
-                   OR DEREF(l.ref_grupa).kod = v_kod_grupy)
+                   OR UPPER(DEREF(l.ref_grupa).kod) = UPPER(v_kod_grupy))
             AND l.data_lekcji BETWEEN p_data_od AND p_data_do
             ORDER BY l.data_lekcji, l.godzina_start;
 
@@ -966,8 +1102,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
 
     -- =======================================================================
     -- HEURYSTYKA PRZYDZIALU NAUCZYCIELA
-    -- Wybiera nauczyciela od danego instrumentu z NAJMNIEJSZYM obciazeniem
-    -- w danym terminie (data + godzina). Jesli wielu ma tyle samo - bierze pierwszego.
     -- =======================================================================
 
     FUNCTION znajdz_nauczyciela_heurystyka(
@@ -977,65 +1111,86 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
         p_czas_min      NUMBER
     ) RETURN VARCHAR2 IS
         v_nazwisko VARCHAR2(100);
-    BEGIN
-        -- Znajdz nauczyciela ktory:
-        -- 1) Uczy danego instrumentu (ma go w VARRAY instrumenty)
-        -- 2) Jest wolny w danym terminie
-        -- 3) Ma NAJMNIEJ lekcji w tym dniu (rownomierne obciazenie)
-        SELECT n.nazwisko INTO v_nazwisko
-        FROM (
-            SELECT n.nazwisko,
-                   (SELECT COUNT(*) FROM LEKCJE l 
-                    WHERE DEREF(l.ref_nauczyciel).id_nauczyciela = n.id_nauczyciela
-                    AND l.data_lekcji = p_data
-                    AND l.status != 'odwolana') AS liczba_lekcji_dzis
+        v_start_min NUMBER := godzina_na_minuty(p_godzina);
+        v_koniec_min NUMBER := v_start_min + p_czas_min;
+        v_lekcje_dzis NUMBER;
+        v_godziny_dzis NUMBER;
+        v_godziny_tydzien NUMBER;
+        v_max_godzin_dzien NUMBER;
+        v_max_godzin_tydzien NUMBER;
+        v_jest_wolny BOOLEAN;
+        v_min_lekcji NUMBER := 999999;
+        v_poczatek_tyg DATE;
+        v_koniec_tyg DATE;
+
+        CURSOR c_nauczyciele IS
+            SELECT n.id_nauczyciela, n.nazwisko, n.max_godzin_dziennie, n.max_godzin_tydzien
             FROM NAUCZYCIELE n
             WHERE p_instrument IN (SELECT COLUMN_VALUE FROM TABLE(n.instrumenty))
-            -- Sprawdz dostepnosc w konkretnej godzinie
-            AND NOT EXISTS (
-                SELECT 1 FROM LEKCJE l
-                WHERE DEREF(l.ref_nauczyciel).id_nauczyciela = n.id_nauczyciela
-                AND l.data_lekcji = p_data
-                AND l.status != 'odwolana'
-                AND czy_naklada_sie(
-                    godzina_na_minuty(l.godzina_start),
-                    godzina_na_minuty(l.godzina_start) + l.czas_trwania_min,
-                    godzina_na_minuty(p_godzina),
-                    godzina_na_minuty(p_godzina) + p_czas_min
-                )
-            )
-            ORDER BY liczba_lekcji_dzis ASC  -- najmniej obciazony na gorze
-        ) n
-        WHERE ROWNUM = 1;
+            ORDER BY n.nazwisko;
+    BEGIN
+        -- Oblicz poczatek i koniec tygodnia (pon-pt)
+        v_poczatek_tyg := TRUNC(p_data, 'IW');  -- poniedzialek
+        v_koniec_tyg := v_poczatek_tyg + 4;     -- piatek
 
-        RETURN v_nazwisko;
-    EXCEPTION
-        WHEN NO_DATA_FOUND THEN
+        FOR naucz IN c_nauczyciele LOOP
+            -- Sprawdz czy nauczyciel jest wolny w danym terminie
+            v_jest_wolny := czy_nauczyciel_wolny(naucz.nazwisko, p_data, p_godzina, p_czas_min);
+
+            IF v_jest_wolny THEN
+                -- Policz godziny nauczyciela W DANYM DNIU
+                SELECT COUNT(*), NVL(SUM(l.czas_trwania_min), 0)
+                INTO v_lekcje_dzis, v_godziny_dzis
+                FROM LEKCJE l
+                WHERE DEREF(l.ref_nauczyciel).id_nauczyciela = naucz.id_nauczyciela
+                AND l.data_lekcji = p_data
+                AND l.status != 'odwolana';
+
+                -- Policz godziny nauczyciela W CALYM TYGODNIU (zgodnie z zalozeniem 22)
+                SELECT NVL(SUM(l.czas_trwania_min), 0)
+                INTO v_godziny_tydzien
+                FROM LEKCJE l
+                WHERE DEREF(l.ref_nauczyciel).id_nauczyciela = naucz.id_nauczyciela
+                AND l.data_lekcji BETWEEN v_poczatek_tyg AND v_koniec_tyg
+                AND l.status != 'odwolana';
+
+                v_max_godzin_dzien := NVL(naucz.max_godzin_dziennie, 6) * 60;   -- w minutach
+                v_max_godzin_tydzien := NVL(naucz.max_godzin_tydzien, 30) * 60; -- w minutach
+
+                -- Sprawdz limit dzienny I tygodniowy
+                IF (v_godziny_dzis + p_czas_min) <= v_max_godzin_dzien 
+                   AND (v_godziny_tydzien + p_czas_min) <= v_max_godzin_tydzien THEN
+                    -- Wybierz nauczyciela z najmniejsza liczba lekcji (load balancing)
+                    IF v_lekcje_dzis < v_min_lekcji THEN
+                        v_min_lekcji := v_lekcje_dzis;
+                        v_nazwisko := naucz.nazwisko;
+                    END IF;
+                END IF;
+            END IF;
+        END LOOP;
+
+        IF v_nazwisko IS NULL THEN
             RAISE_APPLICATION_ERROR(-20020, 
                 'Brak dostepnego nauczyciela od instrumentu: ' || p_instrument || 
                 ' w terminie ' || TO_CHAR(p_data, 'YYYY-MM-DD') || ' ' || p_godzina);
-    END;
+        END IF;
 
-    -- =======================================================================
-    -- AUTOMATYCZNE PRZYDZIELANIE LEKCJI (z heurystyka)
-    -- System sam wybiera nauczyciela i sale (najlzej obciazonych)
-    -- Czas lekcji pobierany automatycznie z klasy ucznia:
-    --   - Klasy I-III: 30 minut (zalozenie 10)
-    --   - Klasy IV-VI: 45 minut (zalozenie 10)
-    -- =======================================================================
+        RETURN v_nazwisko;
+    END;
 
     PROCEDURE przydziel_lekcje_indywidualna(
         p_uczen_nazwisko    VARCHAR2,
         p_uczen_imie        VARCHAR2,
         p_data              DATE,
         p_godzina           VARCHAR2,
-        p_czas_min          NUMBER DEFAULT NULL  -- NULL = automatycznie z klasy
+        p_czas_min          NUMBER DEFAULT NULL
     ) IS
         v_instrument VARCHAR2(50);
         v_nauczyciel VARCHAR2(100);
         v_sala       VARCHAR2(10);
         v_klasa      NUMBER;
         v_czas_lekcji NUMBER;
+        v_start_min  NUMBER := godzina_na_minuty(p_godzina);
     BEGIN
         -- Pobierz instrument ucznia i jego klase
         SELECT DEREF(u.ref_instrument).nazwa, 
@@ -1045,16 +1200,16 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
         WHERE UPPER(u.nazwisko) = UPPER(p_uczen_nazwisko)
         AND UPPER(u.imie) = UPPER(p_uczen_imie);
 
-        -- Ustal czas lekcji: parametr lub automatycznie z klasy (zalozenie 10)
+        -- Ustal czas lekcji
         IF p_czas_min IS NOT NULL THEN
             v_czas_lekcji := p_czas_min;
         ELSIF v_klasa <= 3 THEN
-            v_czas_lekcji := 30;  -- klasy I-III: 30 minut
+            v_czas_lekcji := 30;
         ELSE
-            v_czas_lekcji := 45;  -- klasy IV-VI: 45 minut
+            v_czas_lekcji := 45;
         END IF;
 
-        -- HEURYSTYKA: Znajdz nauczyciela z najmniejszym obciazeniem
+        -- Znajdz nauczyciela
         v_nauczyciel := znajdz_nauczyciela_heurystyka(v_instrument, p_data, p_godzina, v_czas_lekcji);
 
         -- Znajdz wolna sale indywidualna
@@ -1072,11 +1227,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
                     WHERE DEREF(l.ref_sala).id_sali = s.id_sali
                     AND l.data_lekcji = p_data
                     AND l.status != 'odwolana'
-                    AND czy_naklada_sie(
-                        godzina_na_minuty(l.godzina_start),
-                        godzina_na_minuty(l.godzina_start) + l.czas_trwania_min,
-                        godzina_na_minuty(p_godzina),
-                        godzina_na_minuty(p_godzina) + v_czas_lekcji
+                    AND (
+                        (TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
+                         TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))) < (v_start_min + v_czas_lekcji)
+                        AND
+                        v_start_min < (TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
+                                       TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania_min)
                     )
                 )
                 ORDER BY liczba_lekcji ASC
@@ -1084,8 +1240,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
             WHERE ROWNUM = 1;
         EXCEPTION
             WHEN NO_DATA_FOUND THEN
-                RAISE_APPLICATION_ERROR(-20021, 
-                    'Brak wolnej sali indywidualnej w terminie ' || 
+                RAISE_APPLICATION_ERROR(-20021,
+                    'Brak wolnej sali indywidualnej w terminie ' ||
                     TO_CHAR(p_data, 'YYYY-MM-DD') || ' ' || p_godzina);
         END;
 
@@ -1094,7 +1250,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
             RAISE_APPLICATION_ERROR(-20012, 'Uczen zajety w tym terminie');
         END IF;
 
-        -- Dodaj lekcje (wszystkie walidacje przeszly)
+        -- Dodaj lekcje
         INSERT INTO LEKCJE VALUES (
             T_LEKCJA(
                 seq_lekcje.NEXTVAL,
@@ -1102,16 +1258,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
                 PKG_OSOBY.get_ref_nauczyciel(v_nauczyciel),
                 PKG_SLOWNIKI.get_ref_sala(v_sala),
                 PKG_OSOBY.get_ref_uczen(p_uczen_nazwisko, p_uczen_imie),
-                NULL,  -- ref_grupa
+                NULL,
                 p_data,
                 p_godzina,
                 v_czas_lekcji,
                 'zwykla',
                 'zaplanowana',
-                NULL   -- komisja
+                NULL
             )
         );
-        COMMIT;
 
         DBMS_OUTPUT.PUT_LINE('Przydzielono lekcje: ' || p_uczen_nazwisko || ' ' || p_uczen_imie ||
                              ' (klasa ' || v_klasa || ', ' || v_czas_lekcji || ' min) -> ' || 
@@ -1119,167 +1274,230 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
     END;
 
     -- =======================================================================
-    -- GENEROWANIE PLANU SEMESTRALNEGO - IMPLEMENTACJA
+    -- GENEROWANIE PLANU SEMESTRALNEGO
     -- =======================================================================
 
     PROCEDURE generuj_lekcje_indywidualne_tydzien(
         p_data_poniedzialek DATE
     ) IS
-        v_godziny_start CONSTANT VARCHAR2(100) := '14:00,14:30,15:00,15:30,16:00,16:30,17:00,17:30,18:00,18:30,19:00';
-        v_slot_idx NUMBER := 0;
         v_dzien1 DATE;
         v_dzien2 DATE;
         v_godzina VARCHAR2(5);
         v_czas NUMBER;
         v_utworzono NUMBER := 0;
         v_bledy NUMBER := 0;
+        v_sukces BOOLEAN;
+        v_proba NUMBER;
 
         TYPE t_godziny IS TABLE OF VARCHAR2(5);
         v_godziny t_godziny := t_godziny('14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00');
+        v_slot_idx NUMBER := 0;
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== GENEROWANIE LEKCJI INDYWIDUALNYCH ===');
         DBMS_OUTPUT.PUT_LINE('Tydzien od: ' || TO_CHAR(p_data_poniedzialek, 'YYYY-MM-DD'));
 
-        -- Dla kazdego ucznia
         FOR uczen IN (
-            SELECT u.imie, u.nazwisko, 
+            SELECT u.id_ucznia, u.imie, u.nazwisko, 
                    DEREF(u.ref_instrument).nazwa AS instrument,
                    DEREF(u.ref_grupa).klasa AS klasa,
                    DEREF(u.ref_grupa).kod AS grupa
             FROM UCZNIOWIE u
             ORDER BY DEREF(u.ref_grupa).klasa, DEREF(u.ref_grupa).kod, u.nazwisko
         ) LOOP
-            -- Przydziel dni: parzyste grupy (A) -> pon+sr, nieparzyste (B) -> wt+czw
+            -- Przydziel dni
             IF SUBSTR(uczen.grupa, -1) = 'A' THEN
-                v_dzien1 := p_data_poniedzialek;      -- poniedzialek
-                v_dzien2 := p_data_poniedzialek + 2; -- sroda
+                v_dzien1 := p_data_poniedzialek;
+                v_dzien2 := p_data_poniedzialek + 2;
             ELSE
-                v_dzien1 := p_data_poniedzialek + 1; -- wtorek
-                v_dzien2 := p_data_poniedzialek + 3; -- czwartek
+                v_dzien1 := p_data_poniedzialek + 1;
+                v_dzien2 := p_data_poniedzialek + 3;
             END IF;
 
-            -- Czas lekcji z klasy
             IF uczen.klasa <= 3 THEN
                 v_czas := 30;
             ELSE
                 v_czas := 45;
             END IF;
 
-            -- Wybierz slot godzinowy (rotacja)
-            v_slot_idx := MOD(v_slot_idx, v_godziny.COUNT) + 1;
-            v_godzina := v_godziny(v_slot_idx);
+            -- LEKCJA 1
+            v_sukces := FALSE;
+            v_proba := 0;
+            WHILE NOT v_sukces AND v_proba < v_godziny.COUNT LOOP
+                v_slot_idx := MOD(v_slot_idx + v_proba, v_godziny.COUNT) + 1;
+                v_godzina := v_godziny(v_slot_idx);
+                v_proba := v_proba + 1;
 
-            -- Lekcja 1
-            BEGIN
-                przydziel_lekcje_indywidualna(uczen.nazwisko, uczen.imie, v_dzien1, v_godzina, v_czas);
-                v_utworzono := v_utworzono + 1;
-            EXCEPTION
-                WHEN OTHERS THEN
-                    v_bledy := v_bledy + 1;
-                    DBMS_OUTPUT.PUT_LINE('BLAD lekcja 1: ' || uczen.imie || ' ' || uczen.nazwisko || ' - ' || SQLERRM);
-            END;
+                BEGIN
+                    przydziel_lekcje_indywidualna(uczen.nazwisko, uczen.imie, v_dzien1, v_godzina, v_czas);
+                    v_utworzono := v_utworzono + 1;
+                    v_sukces := TRUE;
+                EXCEPTION
+                    WHEN OTHERS THEN
+                        NULL;
+                END;
+            END LOOP;
 
-            -- Lekcja 2 (przesun godzine o 1 slot)
-            v_slot_idx := MOD(v_slot_idx, v_godziny.COUNT) + 1;
-            v_godzina := v_godziny(v_slot_idx);
+            IF NOT v_sukces THEN
+                v_bledy := v_bledy + 1;
+                DBMS_OUTPUT.PUT_LINE('BLAD: Lekcja 1 dla ' || uczen.imie || ' ' || uczen.nazwisko);
+            END IF;
 
-            BEGIN
-                przydziel_lekcje_indywidualna(uczen.nazwisko, uczen.imie, v_dzien2, v_godzina, v_czas);
-                v_utworzono := v_utworzono + 1;
-            EXCEPTION
-                WHEN OTHERS THEN
-                    v_bledy := v_bledy + 1;
-                    DBMS_OUTPUT.PUT_LINE('BLAD lekcja 2: ' || uczen.imie || ' ' || uczen.nazwisko || ' - ' || SQLERRM);
-            END;
+            -- LEKCJA 2
+            v_sukces := FALSE;
+            v_proba := 0;
+            v_slot_idx := MOD(v_slot_idx + 1, v_godziny.COUNT);
+
+            WHILE NOT v_sukces AND v_proba < v_godziny.COUNT LOOP
+                v_slot_idx := MOD(v_slot_idx + v_proba, v_godziny.COUNT) + 1;
+                v_godzina := v_godziny(v_slot_idx);
+                v_proba := v_proba + 1;
+
+                BEGIN
+                    przydziel_lekcje_indywidualna(uczen.nazwisko, uczen.imie, v_dzien2, v_godzina, v_czas);
+                    v_utworzono := v_utworzono + 1;
+                    v_sukces := TRUE;
+                EXCEPTION
+                    WHEN OTHERS THEN
+                        NULL;
+                END;
+            END LOOP;
+
+            IF NOT v_sukces THEN
+                v_bledy := v_bledy + 1;
+                DBMS_OUTPUT.PUT_LINE('BLAD: Lekcja 2 dla ' || uczen.imie || ' ' || uczen.nazwisko);
+            END IF;
         END LOOP;
 
+        DBMS_OUTPUT.PUT_LINE('----------------------------------------');
         DBMS_OUTPUT.PUT_LINE('Utworzono lekcji indywidualnych: ' || v_utworzono);
-        DBMS_OUTPUT.PUT_LINE('Bledy: ' || v_bledy);
+        IF v_bledy > 0 THEN
+            DBMS_OUTPUT.PUT_LINE('UWAGA! Nieprzydzielonych lekcji: ' || v_bledy);
+        END IF;
     END;
 
     PROCEDURE generuj_lekcje_grupowe_tydzien(
         p_data_poniedzialek DATE
     ) IS
-        v_nauczyciel_grupowy VARCHAR2(100);
         v_utworzono NUMBER := 0;
+        v_bledy NUMBER := 0;
         v_dzien DATE;
+
+        TYPE t_nauczyciele IS TABLE OF VARCHAR2(100);
+        v_nauczyciele_grupowi t_nauczyciele;
+        v_idx_naucz NUMBER := 0;
+        v_nauczyciel VARCHAR2(100);
+
+        v_godzina_offset NUMBER;
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== GENEROWANIE LEKCJI GRUPOWYCH ===');
 
-        -- Dla kazdej grupy
+        SELECT nazwisko BULK COLLECT INTO v_nauczyciele_grupowi
+        FROM NAUCZYCIELE WHERE instrumenty IS NULL;
+
+        IF v_nauczyciele_grupowi.COUNT = 0 THEN
+            DBMS_OUTPUT.PUT_LINE('BLAD KRYTYCZNY: Brak nauczycieli przedmiotow grupowych!');
+            RETURN;
+        END IF;
+
         FOR grupa IN (
-            SELECT g.kod, g.klasa FROM GRUPY g ORDER BY g.klasa, g.kod
+            SELECT g.kod, g.klasa, ROWNUM AS nr FROM GRUPY g ORDER BY g.klasa, g.kod
         ) LOOP
-            -- Wybierz dzien dla grupy (rozlozenie rownomierne)
-            IF SUBSTR(grupa.kod, -1) = 'A' THEN
-                v_dzien := p_data_poniedzialek + 4; -- piatek dla grup A
-            ELSE
-                v_dzien := p_data_poniedzialek + 4; -- piatek dla grup B tez (lub inny dzien)
-            END IF;
+            -- Rozloz grupy na rozne dni
+            CASE MOD(grupa.nr - 1, 5)
+                WHEN 0 THEN v_dzien := p_data_poniedzialek;
+                WHEN 1 THEN v_dzien := p_data_poniedzialek + 1;
+                WHEN 2 THEN v_dzien := p_data_poniedzialek + 2;
+                WHEN 3 THEN v_dzien := p_data_poniedzialek + 3;
+                WHEN 4 THEN v_dzien := p_data_poniedzialek + 4;
+            END CASE;
 
-            -- Ksztalcenie sluchu (wszystkie grupy) - sala 201
+            -- Ksztalcenie sluchu
             BEGIN
-                -- Wybierz nauczyciela grupowego
-                SELECT nazwisko INTO v_nauczyciel_grupowy FROM NAUCZYCIELE 
-                WHERE instrumenty IS NULL AND ROWNUM = 1;
+                v_idx_naucz := MOD(v_idx_naucz, v_nauczyciele_grupowi.COUNT) + 1;
+                v_nauczyciel := v_nauczyciele_grupowi(v_idx_naucz);
 
-                dodaj_lekcje_grupowa('Ksztalcenie sluchu', v_nauczyciel_grupowy, '201', 
+                dodaj_lekcje_grupowa('Ksztalcenie sluchu', v_nauczyciel, '201', 
                                      grupa.kod, v_dzien, '14:00', 45);
                 v_utworzono := v_utworzono + 1;
             EXCEPTION
                 WHEN OTHERS THEN
+                    v_bledy := v_bledy + 1;
                     DBMS_OUTPUT.PUT_LINE('BLAD Ksztalcenie sluchu ' || grupa.kod || ': ' || SQLERRM);
             END;
 
-            -- Rytmika (wszystkie grupy) - sala 202
+            -- Rytmika
             BEGIN
-                SELECT nazwisko INTO v_nauczyciel_grupowy FROM NAUCZYCIELE 
-                WHERE instrumenty IS NULL AND ROWNUM = 1;
+                v_idx_naucz := MOD(v_idx_naucz, v_nauczyciele_grupowi.COUNT) + 1;
+                v_nauczyciel := v_nauczyciele_grupowi(v_idx_naucz);
 
-                dodaj_lekcje_grupowa('Rytmika', v_nauczyciel_grupowy, '202', 
+                dodaj_lekcje_grupowa('Rytmika', v_nauczyciel, '202', 
                                      grupa.kod, v_dzien, '15:00', 45);
                 v_utworzono := v_utworzono + 1;
             EXCEPTION
                 WHEN OTHERS THEN
+                    v_bledy := v_bledy + 1;
                     DBMS_OUTPUT.PUT_LINE('BLAD Rytmika ' || grupa.kod || ': ' || SQLERRM);
             END;
 
-            -- Audycje muzyczne (wszystkie grupy) - sala 201
+            -- Audycje muzyczne
             BEGIN
-                SELECT nazwisko INTO v_nauczyciel_grupowy FROM NAUCZYCIELE 
-                WHERE instrumenty IS NULL AND ROWNUM = 1;
+                v_idx_naucz := MOD(v_idx_naucz, v_nauczyciele_grupowi.COUNT) + 1;
+                v_nauczyciel := v_nauczyciele_grupowi(v_idx_naucz);
 
-                dodaj_lekcje_grupowa('Audycje muzyczne', v_nauczyciel_grupowy, '201', 
+                dodaj_lekcje_grupowa('Audycje muzyczne', v_nauczyciel, '201', 
                                      grupa.kod, v_dzien, '16:00', 45);
                 v_utworzono := v_utworzono + 1;
             EXCEPTION
                 WHEN OTHERS THEN
+                    v_bledy := v_bledy + 1;
                     DBMS_OUTPUT.PUT_LINE('BLAD Audycje ' || grupa.kod || ': ' || SQLERRM);
             END;
 
-            -- Chor/Orkiestra tylko dla klas IV-VI - sala 202
+            -- Chor i Orkiestra tylko dla klas IV-VI
+            -- Wg zalozen: grupa administracyjna (np. 4A) ma uczniow grajacych na roznych instrumentach
+            -- Chor: dla uczniow fortepian/gitara z tej grupy
+            -- Orkiestra: dla uczniow skrzypce/flet/perkusja z tej grupy
+            -- Planujemy OBA przedmioty, w ROZNE DNI tygodnia
             IF grupa.klasa >= 4 THEN
+                -- Chor - wtorek 17:00 (zgodnie z zalozeniami)
                 BEGIN
-                    SELECT nazwisko INTO v_nauczyciel_grupowy FROM NAUCZYCIELE 
-                    WHERE instrumenty IS NULL AND ROWNUM = 1;
+                    v_idx_naucz := MOD(v_idx_naucz, v_nauczyciele_grupowi.COUNT) + 1;
+                    v_nauczyciel := v_nauczyciele_grupowi(v_idx_naucz);
 
-                    -- Klasy parzyste -> Chor, nieparzyste -> Orkiestra
-                    IF MOD(grupa.klasa, 2) = 0 THEN
-                        dodaj_lekcje_grupowa('Chor', v_nauczyciel_grupowy, '202', 
-                                             grupa.kod, v_dzien, '17:00', 90);
-                    ELSE
-                        dodaj_lekcje_grupowa('Orkiestra', v_nauczyciel_grupowy, '202', 
-                                             grupa.kod, v_dzien, '17:00', 90);
-                    END IF;
+                    -- Wtorek = poniedzialek + 1
+                    dodaj_lekcje_grupowa('Chor', v_nauczyciel, '202', 
+                                         grupa.kod, p_data_poniedzialek + 1, '17:00', 90);
                     v_utworzono := v_utworzono + 1;
+                    DBMS_OUTPUT.PUT_LINE('  + Chor dla ' || grupa.kod || ' (wtorek 17:00)');
                 EXCEPTION
                     WHEN OTHERS THEN
-                        DBMS_OUTPUT.PUT_LINE('BLAD Chor/Orkiestra ' || grupa.kod || ': ' || SQLERRM);
+                        v_bledy := v_bledy + 1;
+                        DBMS_OUTPUT.PUT_LINE('BLAD Chor ' || grupa.kod || ': ' || SQLERRM);
+                END;
+
+                -- Orkiestra - czwartek 17:00 (zgodnie z zalozeniami)
+                BEGIN
+                    v_idx_naucz := MOD(v_idx_naucz, v_nauczyciele_grupowi.COUNT) + 1;
+                    v_nauczyciel := v_nauczyciele_grupowi(v_idx_naucz);
+
+                    -- Czwartek = poniedzialek + 3
+                    dodaj_lekcje_grupowa('Orkiestra', v_nauczyciel, '202', 
+                                         grupa.kod, p_data_poniedzialek + 3, '17:00', 90);
+                    v_utworzono := v_utworzono + 1;
+                    DBMS_OUTPUT.PUT_LINE('  + Orkiestra dla ' || grupa.kod || ' (czwartek 17:00)');
+                EXCEPTION
+                    WHEN OTHERS THEN
+                        v_bledy := v_bledy + 1;
+                        DBMS_OUTPUT.PUT_LINE('BLAD Orkiestra ' || grupa.kod || ': ' || SQLERRM);
                 END;
             END IF;
         END LOOP;
 
+        DBMS_OUTPUT.PUT_LINE('----------------------------------------');
         DBMS_OUTPUT.PUT_LINE('Utworzono lekcji grupowych: ' || v_utworzono);
+        IF v_bledy > 0 THEN
+            DBMS_OUTPUT.PUT_LINE('UWAGA! Bledy przy lekcjach grupowych: ' || v_bledy);
+        END IF;
     END;
 
     PROCEDURE generuj_plan_tygodnia(
@@ -1293,17 +1511,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
         DBMS_OUTPUT.PUT_LINE('========================================');
         DBMS_OUTPUT.PUT_LINE('');
 
-        -- Najpierw lekcje indywidualne
-        generuj_lekcje_indywidualne_tydzien(p_data_poniedzialek);
-
-        DBMS_OUTPUT.PUT_LINE('');
-
-        -- Potem lekcje grupowe
         generuj_lekcje_grupowe_tydzien(p_data_poniedzialek);
 
         DBMS_OUTPUT.PUT_LINE('');
+
+        -- Potem lekcje indywidualne (najbardziej elastyczne)
+        generuj_lekcje_indywidualne_tydzien(p_data_poniedzialek);
+
+        COMMIT;
+
+        DBMS_OUTPUT.PUT_LINE('');
         DBMS_OUTPUT.PUT_LINE('========================================');
-        DBMS_OUTPUT.PUT_LINE('PLAN TYGODNIA WYGENEROWANY');
+        DBMS_OUTPUT.PUT_LINE('PLAN TYGODNIA WYGENEROWANY I ZATWIERDZONY');
         DBMS_OUTPUT.PUT_LINE('========================================');
     END;
 
@@ -1316,7 +1535,6 @@ END PKG_LEKCJE;
 
 CREATE OR REPLACE PACKAGE PKG_OCENY AS
 
-    -- Wystawienie oceny biezacej
     PROCEDURE wystaw_ocene(
         p_uczen_nazwisko    VARCHAR2,
         p_uczen_imie        VARCHAR2,
@@ -1327,7 +1545,6 @@ CREATE OR REPLACE PACKAGE PKG_OCENY AS
         p_komentarz         VARCHAR2 DEFAULT NULL
     );
 
-    -- Wystawienie oceny semestralnej
     PROCEDURE wystaw_ocene_semestralna(
         p_uczen_nazwisko    VARCHAR2,
         p_uczen_imie        VARCHAR2,
@@ -1337,20 +1554,17 @@ CREATE OR REPLACE PACKAGE PKG_OCENY AS
         p_komentarz         VARCHAR2 DEFAULT NULL
     );
 
-    -- Srednia ocen ucznia z przedmiotu
     FUNCTION srednia_ucznia(
         p_uczen_nazwisko VARCHAR2,
         p_uczen_imie     VARCHAR2,
         p_przedmiot      VARCHAR2
     ) RETURN NUMBER;
 
-    -- Wszystkie oceny ucznia
     FUNCTION oceny_ucznia(
         p_uczen_nazwisko VARCHAR2,
         p_uczen_imie     VARCHAR2
     ) RETURN SYS_REFCURSOR;
 
-    -- Statystyki ucznia (srednie z wszystkich przedmiotow)
     PROCEDURE statystyki_ucznia(
         p_uczen_nazwisko VARCHAR2,
         p_uczen_imie     VARCHAR2
@@ -1381,7 +1595,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_OCENY AS
                 p_obszar,
                 SYSDATE,
                 p_komentarz,
-                'N'  -- nie semestralna
+                'N'
             )
         );
         COMMIT;
@@ -1406,7 +1620,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_OCENY AS
                 'ogolna',
                 SYSDATE,
                 p_komentarz,
-                'T'  -- semestralna
+                'T'
             )
         );
         COMMIT;
@@ -1421,10 +1635,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_OCENY AS
     BEGIN
         SELECT ROUND(AVG(o.wartosc), 2) INTO v_srednia
         FROM OCENY o
-        WHERE DEREF(o.ref_uczen).nazwisko = p_uczen_nazwisko
-        AND DEREF(o.ref_uczen).imie = p_uczen_imie
-        AND DEREF(o.ref_przedmiot).nazwa = p_przedmiot
-        AND o.czy_semestralna = 'N';  -- tylko oceny biezace
+        WHERE UPPER(DEREF(o.ref_uczen).nazwisko) = UPPER(p_uczen_nazwisko)
+        AND UPPER(DEREF(o.ref_uczen).imie) = UPPER(p_uczen_imie)
+        AND UPPER(DEREF(o.ref_przedmiot).nazwa) = UPPER(p_przedmiot)
+        AND o.czy_semestralna = 'N';
 
         RETURN NVL(v_srednia, 0);
     END;
@@ -1444,8 +1658,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_OCENY AS
                    o.czy_semestralna,
                    o.komentarz
             FROM OCENY o
-            WHERE DEREF(o.ref_uczen).nazwisko = p_uczen_nazwisko
-            AND DEREF(o.ref_uczen).imie = p_uczen_imie
+            WHERE UPPER(DEREF(o.ref_uczen).nazwisko) = UPPER(p_uczen_nazwisko)
+            AND UPPER(DEREF(o.ref_uczen).imie) = UPPER(p_uczen_imie)
             ORDER BY o.data_wystawienia DESC;
 
         RETURN v_cursor;
@@ -1461,14 +1675,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_OCENY AS
         v_liczba_ocen NUMBER;
         v_srednia_ogolna NUMBER;
     BEGIN
-        -- Pobierz dane ucznia
         SELECT DEREF(u.ref_grupa).kod, DEREF(u.ref_grupa).klasa, DEREF(u.ref_instrument).nazwa
         INTO v_grupa, v_klasa, v_instrument
         FROM UCZNIOWIE u
         WHERE UPPER(u.nazwisko) = UPPER(p_uczen_nazwisko)
         AND UPPER(u.imie) = UPPER(p_uczen_imie);
 
-        -- Ogolne statystyki
         SELECT COUNT(*), ROUND(AVG(o.wartosc), 2)
         INTO v_liczba_ocen, v_srednia_ogolna
         FROM OCENY o
@@ -1485,7 +1697,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_OCENY AS
         DBMS_OUTPUT.PUT_LINE('Srednia ogolna: ' || NVL(TO_CHAR(v_srednia_ogolna), 'brak'));
         DBMS_OUTPUT.PUT_LINE('');
 
-        -- Srednie z poszczegolnych przedmiotow
         DBMS_OUTPUT.PUT_LINE('Srednie z przedmiotow:');
         FOR r IN (
             SELECT DEREF(o.ref_przedmiot).nazwa AS przedmiot,
@@ -1514,19 +1725,10 @@ END PKG_OCENY;
 
 CREATE OR REPLACE PACKAGE PKG_RAPORTY AS
 
-    -- Liczba uczniow w kazdej grupie
     PROCEDURE raport_grup;
-
-    -- Obciazenie sal w danym dniu
     PROCEDURE raport_obciazenia_sal(p_data DATE);
-
-    -- Statystyki nauczycieli
     PROCEDURE raport_nauczycieli;
-
-    -- Rozklad instrumentow
     PROCEDURE raport_instrumentow;
-
-    -- Statystyki ocen z przedmiotu
     PROCEDURE statystyki_ocen_przedmiotu(p_przedmiot VARCHAR2);
 
 END PKG_RAPORTY;
@@ -1595,7 +1797,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_RAPORTY AS
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 35, '-'));
 
         FOR r IN (
-            SELECT i.nazwa, 
+            SELECT i.nazwa,
                    COUNT(u.id_ucznia) AS liczba,
                    ROUND(COUNT(u.id_ucznia) * 100.0 / NULLIF((SELECT COUNT(*) FROM UCZNIOWIE), 0), 1) AS procent
             FROM INSTRUMENTY i
@@ -1626,7 +1828,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_RAPORTY AS
         DBMS_OUTPUT.PUT_LINE('Max:          ' || NVL(TO_CHAR(v_max), 'brak'));
         DBMS_OUTPUT.PUT_LINE('');
 
-        -- Rozklad ocen
         DBMS_OUTPUT.PUT_LINE('Rozklad:');
         FOR r IN (
             SELECT o.wartosc, COUNT(*) AS ile
@@ -1649,7 +1850,6 @@ END PKG_RAPORTY;
 
 SELECT 'Pakiety utworzone pomyslnie!' AS status FROM DUAL;
 
--- Lista pakietow
 SELECT object_name, object_type, status
 FROM user_objects
 WHERE object_type IN ('PACKAGE', 'PACKAGE BODY')

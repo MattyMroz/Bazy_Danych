@@ -49,6 +49,14 @@ GRANT CREATE SEQUENCE TO szkola_muzyczna;
 -- Uprawnienie do debugowania (opcjonalne)
 GRANT DEBUG CONNECT SESSION TO szkola_muzyczna;
 
+-- Uprawnienia do tworzenia synonimow publicznych i zarzadzania uzytkownikami
+-- (potrzebne dla 06_uzytkownicy.sql)
+GRANT CREATE PUBLIC SYNONYM TO szkola_muzyczna;
+GRANT DROP PUBLIC SYNONYM TO szkola_muzyczna;
+GRANT CREATE ROLE TO szkola_muzyczna;
+GRANT CREATE USER TO szkola_muzyczna;
+GRANT GRANT ANY ROLE TO szkola_muzyczna;
+
 -- ============================================================================
 -- 4. INFORMACJA O POLACZENIU
 -- ============================================================================
