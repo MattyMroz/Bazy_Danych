@@ -262,87 +262,198 @@ END;
 /
 
 -- ============================================================================
--- 9. PRZYKLADOWE OCENY (uczniowie z roznych klas)
+-- 9. PRZYKLADOWE OCENY
+-- Dla 2-3 pierwszych uczniow z kazdej klasy (rozne przedmioty i obszary)
 -- ============================================================================
 
--- === KLASA 1A - Jan Kowalski (Fortepian) ===
+-- ============================================================================
+-- KLASA 1A
+-- ============================================================================
+
+-- Jan Kowalski (Fortepian)
 EXEC PKG_OCENY.wystaw_ocene('Kowalski', 'Jan', 'Kowalska', 'Fortepian', 4, 'technika', 'Dobra postawa przy instrumencie');
-EXEC PKG_OCENY.wystaw_ocene('Kowalski', 'Jan', 'Kowalska', 'Fortepian', 5, 'interpretacja', 'Ladna dynamika');
-EXEC PKG_OCENY.wystaw_ocene('Kowalski', 'Jan', 'Kowalska', 'Fortepian', 4, 'postepy', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Kowalski', 'Jan', 'Jankowska', 'Ksztalcenie sluchu', 4, 'sluch', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Kowalski', 'Jan', 'Jankowska', 'Ksztalcenie sluchu', 5, 'teoria', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Kowalski', 'Jan', 'Jankowska', 'Rytmika', 5, 'ogolna', 'Swietne poczucie rytmu');
+EXEC PKG_OCENY.wystaw_ocene('Kowalski', 'Jan', 'Kowalska', 'Fortepian', 5, 'interpretacja', 'Ladna dynamika w utworze');
+EXEC PKG_OCENY.wystaw_ocene('Kowalski', 'Jan', 'Kowalska', 'Fortepian', 4, 'postepy', 'Systematyczny postep');
+EXEC PKG_OCENY.wystaw_ocene('Kowalski', 'Jan', 'Jankowska', 'Ksztalcenie sluchu', 4, 'sluch', 'Rozpoznaje interwaly');
+EXEC PKG_OCENY.wystaw_ocene('Kowalski', 'Jan', 'Jankowska', 'Ksztalcenie sluchu', 5, 'teoria', 'Zna wartosci nut');
+EXEC PKG_OCENY.wystaw_ocene('Kowalski', 'Jan', 'Mazur', 'Rytmika', 5, 'ogolna', 'Swietne poczucie rytmu');
 
--- === KLASA 1A - Piotr Wisniewski (Skrzypce) ===
+-- Anna Nowak (Fortepian)
+EXEC PKG_OCENY.wystaw_ocene('Nowak', 'Anna', 'Kowalska', 'Fortepian', 5, 'technika', 'Bardzo dobra koordynacja rak');
+EXEC PKG_OCENY.wystaw_ocene('Nowak', 'Anna', 'Kowalska', 'Fortepian', 5, 'interpretacja', 'Muzykalna gra');
+EXEC PKG_OCENY.wystaw_ocene('Nowak', 'Anna', 'Kowalska', 'Fortepian', 5, 'postepy', 'Szybko sie uczy');
+EXEC PKG_OCENY.wystaw_ocene('Nowak', 'Anna', 'Jankowska', 'Ksztalcenie sluchu', 5, 'sluch', 'Swietny sluch melodyczny');
+EXEC PKG_OCENY.wystaw_ocene('Nowak', 'Anna', 'Mazur', 'Rytmika', 4, 'ogolna', NULL);
+
+-- Piotr Wisniewski (Skrzypce)
 EXEC PKG_OCENY.wystaw_ocene('Wisniewski', 'Piotr', 'Wisniewski', 'Skrzypce', 3, 'technika', 'Wymaga pracy nad intonacja');
-EXEC PKG_OCENY.wystaw_ocene('Wisniewski', 'Piotr', 'Wisniewski', 'Skrzypce', 4, 'postepy', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Wisniewski', 'Piotr', 'Wisniewski', 'Skrzypce', 4, 'postepy', 'Widoczna poprawa');
 EXEC PKG_OCENY.wystaw_ocene('Wisniewski', 'Piotr', 'Jankowska', 'Ksztalcenie sluchu', 4, 'sluch', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Wisniewski', 'Piotr', 'Mazur', 'Rytmika', 4, 'ogolna', NULL);
 
--- === KLASA 1B - Bartosz Krawczyk (Fortepian) ===
-EXEC PKG_OCENY.wystaw_ocene('Krawczyk', 'Bartosz', 'Nowak', 'Fortepian', 5, 'technika', 'Bardzo dobra technika');
-EXEC PKG_OCENY.wystaw_ocene('Krawczyk', 'Bartosz', 'Nowak', 'Fortepian', 5, 'interpretacja', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Krawczyk', 'Bartosz', 'Jankowska', 'Ksztalcenie sluchu', 5, 'sluch', NULL);
+-- ============================================================================
+-- KLASA 1B
+-- ============================================================================
 
--- === KLASA 2A - Oskar Walczak (Fortepian) ===
-EXEC PKG_OCENY.wystaw_ocene('Walczak', 'Oskar', 'Kowalska', 'Fortepian', 4, 'technika', NULL);
+-- Bartosz Krawczyk (Fortepian)
+EXEC PKG_OCENY.wystaw_ocene('Krawczyk', 'Bartosz', 'Nowak', 'Fortepian', 5, 'technika', 'Bardzo dobra technika palcowa');
+EXEC PKG_OCENY.wystaw_ocene('Krawczyk', 'Bartosz', 'Nowak', 'Fortepian', 5, 'interpretacja', 'Piekne frazowanie');
+EXEC PKG_OCENY.wystaw_ocene('Krawczyk', 'Bartosz', 'Nowak', 'Fortepian', 6, 'postepy', 'Wybitne postepy!');
+EXEC PKG_OCENY.wystaw_ocene('Krawczyk', 'Bartosz', 'Jankowska', 'Ksztalcenie sluchu', 5, 'sluch', 'Doskonaly sluch');
+EXEC PKG_OCENY.wystaw_ocene('Krawczyk', 'Bartosz', 'Mazur', 'Rytmika', 5, 'ogolna', NULL);
+
+-- Natalia Piotrowska (Skrzypce)
+EXEC PKG_OCENY.wystaw_ocene('Piotrowska', 'Natalia', 'Kaminski', 'Skrzypce', 4, 'technika', 'Poprawna pozycja smyczka');
+EXEC PKG_OCENY.wystaw_ocene('Piotrowska', 'Natalia', 'Kaminski', 'Skrzypce', 4, 'interpretacja', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Piotrowska', 'Natalia', 'Kaminski', 'Skrzypce', 4, 'postepy', 'Stabilny postep');
+EXEC PKG_OCENY.wystaw_ocene('Piotrowska', 'Natalia', 'Jankowska', 'Ksztalcenie sluchu', 4, 'teoria', NULL);
+
+-- Mateusz Grabowski (Gitara)
+EXEC PKG_OCENY.wystaw_ocene('Grabowski', 'Mateusz', 'Lewandowski', 'Gitara', 4, 'technika', 'Dobre akordy');
+EXEC PKG_OCENY.wystaw_ocene('Grabowski', 'Mateusz', 'Lewandowski', 'Gitara', 3, 'interpretacja', 'Pracuj nad dynamika');
+EXEC PKG_OCENY.wystaw_ocene('Grabowski', 'Mateusz', 'Jankowska', 'Ksztalcenie sluchu', 3, 'sluch', 'Wymaga cwiczen');
+
+-- ============================================================================
+-- KLASA 2A
+-- ============================================================================
+
+-- Oskar Walczak (Fortepian)
+EXEC PKG_OCENY.wystaw_ocene('Walczak', 'Oskar', 'Kowalska', 'Fortepian', 4, 'technika', 'Dobra technika legato');
 EXEC PKG_OCENY.wystaw_ocene('Walczak', 'Oskar', 'Kowalska', 'Fortepian', 4, 'interpretacja', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Walczak', 'Oskar', 'Kowalska', 'Fortepian', 5, 'postepy', 'Duzy postep');
-EXEC PKG_OCENY.wystaw_ocene('Walczak', 'Oskar', 'Jankowska', 'Ksztalcenie sluchu', 4, 'teoria', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Walczak', 'Oskar', 'Kowalska', 'Fortepian', 5, 'postepy', 'Duzy postep w tym semestrze');
+EXEC PKG_OCENY.wystaw_ocene('Walczak', 'Oskar', 'Jankowska', 'Ksztalcenie sluchu', 4, 'teoria', 'Zna klucze wiolinowy i basowy');
+EXEC PKG_OCENY.wystaw_ocene('Walczak', 'Oskar', 'Mazur', 'Rytmika', 4, 'ogolna', NULL);
 
--- === KLASA 2B - Tymon Wrobel (Fortepian) ===
+-- Hanna Gorska (Skrzypce)
+EXEC PKG_OCENY.wystaw_ocene('Gorska', 'Hanna', 'Kaminski', 'Skrzypce', 5, 'technika', 'Czysta intonacja');
+EXEC PKG_OCENY.wystaw_ocene('Gorska', 'Hanna', 'Kaminski', 'Skrzypce', 5, 'interpretacja', 'Ekspresyjna gra');
+EXEC PKG_OCENY.wystaw_ocene('Gorska', 'Hanna', 'Jankowska', 'Ksztalcenie sluchu', 5, 'sluch', 'Bardzo dobry sluch');
+
+-- Antoni Sikora (Gitara)
+EXEC PKG_OCENY.wystaw_ocene('Sikora', 'Antoni', 'Wojcik', 'Gitara', 4, 'technika', 'Dobre arpeggia');
+EXEC PKG_OCENY.wystaw_ocene('Sikora', 'Antoni', 'Wojcik', 'Gitara', 4, 'postepy', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Sikora', 'Antoni', 'Jankowska', 'Ksztalcenie sluchu', 4, 'teoria', NULL);
+
+-- ============================================================================
+-- KLASA 2B
+-- ============================================================================
+
+-- Tymon Wrobel (Fortepian)
 EXEC PKG_OCENY.wystaw_ocene('Wrobel', 'Tymon', 'Szymanski', 'Fortepian', 3, 'technika', 'Wymaga wiecej cwiczen');
-EXEC PKG_OCENY.wystaw_ocene('Wrobel', 'Tymon', 'Szymanski', 'Fortepian', 4, 'interpretacja', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Wrobel', 'Tymon', 'Szymanski', 'Fortepian', 4, 'interpretacja', 'Dobra muzykalnosc');
+EXEC PKG_OCENY.wystaw_ocene('Wrobel', 'Tymon', 'Szymanski', 'Fortepian', 3, 'postepy', 'Nieregularne cwiczenia');
 EXEC PKG_OCENY.wystaw_ocene('Wrobel', 'Tymon', 'Jankowska', 'Ksztalcenie sluchu', 3, 'sluch', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Wrobel', 'Tymon', 'Mazur', 'Rytmika', 4, 'ogolna', NULL);
 
--- === KLASA 3A - Tymoteusz Bak (Fortepian) ===
+-- Kornelia Kaczmarek (Skrzypce)
+EXEC PKG_OCENY.wystaw_ocene('Kaczmarek', 'Kornelia', 'Wisniewski', 'Skrzypce', 4, 'technika', 'Dobra postawa');
+EXEC PKG_OCENY.wystaw_ocene('Kaczmarek', 'Kornelia', 'Wisniewski', 'Skrzypce', 5, 'interpretacja', 'Piekne vibrato');
+EXEC PKG_OCENY.wystaw_ocene('Kaczmarek', 'Kornelia', 'Jankowska', 'Ksztalcenie sluchu', 5, 'sluch', 'Swietny sluch');
+
+-- Marcel Piotrowski (Gitara)
+EXEC PKG_OCENY.wystaw_ocene('Piotrowski', 'Marcel', 'Lewandowski', 'Gitara', 4, 'technika', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Piotrowski', 'Marcel', 'Lewandowski', 'Gitara', 4, 'postepy', 'Systematyczne postepy');
+EXEC PKG_OCENY.wystaw_ocene('Piotrowski', 'Marcel', 'Jankowska', 'Ksztalcenie sluchu', 4, 'teoria', NULL);
+
+-- ============================================================================
+-- KLASA 3A
+-- ============================================================================
+
+-- Tymoteusz Bak (Fortepian)
 EXEC PKG_OCENY.wystaw_ocene('Bak', 'Tymoteusz', 'Kowalska', 'Fortepian', 5, 'technika', 'Swietna technika');
 EXEC PKG_OCENY.wystaw_ocene('Bak', 'Tymoteusz', 'Kowalska', 'Fortepian', 5, 'interpretacja', 'Bardzo muzykalny');
 EXEC PKG_OCENY.wystaw_ocene('Bak', 'Tymoteusz', 'Kowalska', 'Fortepian', 6, 'postepy', 'Kandydat do wyroznienia');
-EXEC PKG_OCENY.wystaw_ocene('Bak', 'Tymoteusz', 'Jankowska', 'Ksztalcenie sluchu', 5, 'sluch', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Bak', 'Tymoteusz', 'Jankowska', 'Rytmika', 5, 'ogolna', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Bak', 'Tymoteusz', 'Jankowska', 'Ksztalcenie sluchu', 5, 'sluch', 'Doskonaly sluch harmoniczny');
+EXEC PKG_OCENY.wystaw_ocene('Bak', 'Tymoteusz', 'Jankowska', 'Ksztalcenie sluchu', 6, 'teoria', 'Znakomita znajomosc teorii');
+EXEC PKG_OCENY.wystaw_ocene('Bak', 'Tymoteusz', 'Mazur', 'Rytmika', 5, 'ogolna', NULL);
 
--- === KLASA 3A - Laura Pietrzak (Skrzypce) ===
-EXEC PKG_OCENY.wystaw_ocene('Pietrzak', 'Laura', 'Kaminski', 'Skrzypce', 4, 'technika', NULL);
+-- Laura Pietrzak (Skrzypce)
+EXEC PKG_OCENY.wystaw_ocene('Pietrzak', 'Laura', 'Kaminski', 'Skrzypce', 4, 'technika', 'Dobra technika smyczkowa');
 EXEC PKG_OCENY.wystaw_ocene('Pietrzak', 'Laura', 'Kaminski', 'Skrzypce', 5, 'interpretacja', 'Piekne frazowanie');
+EXEC PKG_OCENY.wystaw_ocene('Pietrzak', 'Laura', 'Kaminski', 'Skrzypce', 5, 'postepy', NULL);
 EXEC PKG_OCENY.wystaw_ocene('Pietrzak', 'Laura', 'Jankowska', 'Ksztalcenie sluchu', 4, 'teoria', NULL);
 
--- === KLASA 4A - Hubert Lis (Fortepian) ===
-EXEC PKG_OCENY.wystaw_ocene('Lis', 'Hubert', 'Nowak', 'Fortepian', 4, 'technika', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Lis', 'Hubert', 'Nowak', 'Fortepian', 4, 'interpretacja', NULL);
+-- Ksawery Tomczak (Gitara)
+EXEC PKG_OCENY.wystaw_ocene('Tomczak', 'Ksawery', 'Wojcik', 'Gitara', 4, 'technika', 'Dobra technika prawej reki');
+EXEC PKG_OCENY.wystaw_ocene('Tomczak', 'Ksawery', 'Wojcik', 'Gitara', 4, 'interpretacja', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Tomczak', 'Ksawery', 'Jankowska', 'Ksztalcenie sluchu', 4, 'sluch', NULL);
+
+-- ============================================================================
+-- KLASA 4A (IV-VI maja Chor/Orkiestre)
+-- ============================================================================
+
+-- Hubert Lis (Fortepian)
+EXEC PKG_OCENY.wystaw_ocene('Lis', 'Hubert', 'Nowak', 'Fortepian', 4, 'technika', 'Dobre gamy i pasaze');
+EXEC PKG_OCENY.wystaw_ocene('Lis', 'Hubert', 'Nowak', 'Fortepian', 4, 'interpretacja', 'Dobra interpretacja sonatiny');
 EXEC PKG_OCENY.wystaw_ocene('Lis', 'Hubert', 'Nowak', 'Fortepian', 4, 'postepy', 'Stabilny postep');
-EXEC PKG_OCENY.wystaw_ocene('Lis', 'Hubert', 'Jankowska', 'Ksztalcenie sluchu', 5, 'sluch', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Lis', 'Hubert', 'Jankowska', 'Ksztalcenie sluchu', 5, 'sluch', 'Rozpoznaje akordy');
 EXEC PKG_OCENY.wystaw_ocene('Lis', 'Hubert', 'Mazur', 'Audycje muzyczne', 5, 'ogolna', 'Aktywny na zajeciach');
-EXEC PKG_OCENY.wystaw_ocene('Lis', 'Hubert', 'Mazur', 'Chor', 4, 'ogolna', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Lis', 'Hubert', 'Krawczyk', 'Chor', 4, 'ogolna', 'Dobra emisja glosu');
 
--- === KLASA 4A - Weronika Mazurek (Skrzypce) ===
+-- Weronika Mazurek (Skrzypce)
 EXEC PKG_OCENY.wystaw_ocene('Mazurek', 'Weronika', 'Wisniewski', 'Skrzypce', 5, 'technika', 'Bardzo czysta intonacja');
-EXEC PKG_OCENY.wystaw_ocene('Mazurek', 'Weronika', 'Wisniewski', 'Skrzypce', 5, 'interpretacja', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Mazurek', 'Weronika', 'Krawczyk', 'Orkiestra', 5, 'ogolna', 'Liderka sekcji');
+EXEC PKG_OCENY.wystaw_ocene('Mazurek', 'Weronika', 'Wisniewski', 'Skrzypce', 5, 'interpretacja', 'Ekspresyjna gra');
+EXEC PKG_OCENY.wystaw_ocene('Mazurek', 'Weronika', 'Wisniewski', 'Skrzypce', 5, 'postepy', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Mazurek', 'Weronika', 'Jankowska', 'Ksztalcenie sluchu', 5, 'teoria', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Mazurek', 'Weronika', 'Krawczyk', 'Orkiestra', 5, 'ogolna', 'Liderka sekcji skrzypiec');
 
--- === KLASA 5A - Dominik Zakrzewski (Fortepian) ===
-EXEC PKG_OCENY.wystaw_ocene('Zakrzewski', 'Dominik', 'Szymanski', 'Fortepian', 5, 'technika', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Zakrzewski', 'Dominik', 'Szymanski', 'Fortepian', 6, 'interpretacja', 'Dojrzala interpretacja');
-EXEC PKG_OCENY.wystaw_ocene('Zakrzewski', 'Dominik', 'Szymanski', 'Fortepian', 5, 'postepy', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Zakrzewski', 'Dominik', 'Jankowska', 'Ksztalcenie sluchu', 5, 'teoria', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Zakrzewski', 'Dominik', 'Mazur', 'Audycje muzyczne', 5, 'ogolna', NULL);
+-- Radoslaw Szymczak (Gitara)
+EXEC PKG_OCENY.wystaw_ocene('Szymczak', 'Radoslaw', 'Lewandowski', 'Gitara', 4, 'technika', 'Dobre tremolo');
+EXEC PKG_OCENY.wystaw_ocene('Szymczak', 'Radoslaw', 'Lewandowski', 'Gitara', 4, 'interpretacja', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Szymczak', 'Radoslaw', 'Jankowska', 'Ksztalcenie sluchu', 4, 'sluch', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Szymczak', 'Radoslaw', 'Krawczyk', 'Chor', 4, 'ogolna', NULL);
 
--- === KLASA 5A - Klaudia Krajewski (Skrzypce) ===
-EXEC PKG_OCENY.wystaw_ocene('Krajewski', 'Klaudia', 'Kaminski', 'Skrzypce', 4, 'technika', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Krajewski', 'Klaudia', 'Kaminski', 'Skrzypce', 5, 'interpretacja', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Krajewski', 'Klaudia', 'Krawczyk', 'Orkiestra', 4, 'ogolna', NULL);
+-- ============================================================================
+-- KLASA 5A
+-- ============================================================================
 
--- === KLASA 6A - Maciej Bednarski (Fortepian) - DYPLOMANT ===
-EXEC PKG_OCENY.wystaw_ocene('Bednarski', 'Maciej', 'Kowalska', 'Fortepian', 5, 'technika', 'Przygotowany do egzaminu');
+-- Dominik Zakrzewski (Fortepian)
+EXEC PKG_OCENY.wystaw_ocene('Zakrzewski', 'Dominik', 'Szymanski', 'Fortepian', 5, 'technika', 'Zaawansowana technika');
+EXEC PKG_OCENY.wystaw_ocene('Zakrzewski', 'Dominik', 'Szymanski', 'Fortepian', 6, 'interpretacja', 'Dojrzala interpretacja Chopina');
+EXEC PKG_OCENY.wystaw_ocene('Zakrzewski', 'Dominik', 'Szymanski', 'Fortepian', 5, 'postepy', 'Przygotowany do konkursu');
+EXEC PKG_OCENY.wystaw_ocene('Zakrzewski', 'Dominik', 'Jankowska', 'Ksztalcenie sluchu', 5, 'teoria', 'Zna formy muzyczne');
+EXEC PKG_OCENY.wystaw_ocene('Zakrzewski', 'Dominik', 'Mazur', 'Audycje muzyczne', 5, 'ogolna', 'Zna epoki muzyczne');
+EXEC PKG_OCENY.wystaw_ocene('Zakrzewski', 'Dominik', 'Krawczyk', 'Chor', 5, 'ogolna', NULL);
+
+-- Klaudia Krajewski (Skrzypce)
+EXEC PKG_OCENY.wystaw_ocene('Krajewski', 'Klaudia', 'Kaminski', 'Skrzypce', 4, 'technika', 'Dobra technika pozycji');
+EXEC PKG_OCENY.wystaw_ocene('Krajewski', 'Klaudia', 'Kaminski', 'Skrzypce', 5, 'interpretacja', 'Piekne kantyleny');
+EXEC PKG_OCENY.wystaw_ocene('Krajewski', 'Klaudia', 'Kaminski', 'Skrzypce', 4, 'postepy', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Krajewski', 'Klaudia', 'Jankowska', 'Ksztalcenie sluchu', 4, 'sluch', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Krajewski', 'Klaudia', 'Krawczyk', 'Orkiestra', 4, 'ogolna', 'Solidna gra w zespole');
+
+-- Grzegorz Nowicki (Gitara)
+EXEC PKG_OCENY.wystaw_ocene('Nowicki', 'Grzegorz', 'Wojcik', 'Gitara', 5, 'technika', 'Swietne barre');
+EXEC PKG_OCENY.wystaw_ocene('Nowicki', 'Grzegorz', 'Wojcik', 'Gitara', 5, 'interpretacja', 'Doskonala interpretacja');
+EXEC PKG_OCENY.wystaw_ocene('Nowicki', 'Grzegorz', 'Jankowska', 'Ksztalcenie sluchu', 5, 'teoria', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Nowicki', 'Grzegorz', 'Krawczyk', 'Chor', 4, 'ogolna', NULL);
+
+-- ============================================================================
+-- KLASA 6A (DYPLOMANCI)
+-- ============================================================================
+
+-- Maciej Bednarski (Fortepian) - najlepszy uczen
+EXEC PKG_OCENY.wystaw_ocene('Bednarski', 'Maciej', 'Kowalska', 'Fortepian', 5, 'technika', 'Wirtuozowska technika');
 EXEC PKG_OCENY.wystaw_ocene('Bednarski', 'Maciej', 'Kowalska', 'Fortepian', 6, 'interpretacja', 'Wybitna muzykalnosc');
-EXEC PKG_OCENY.wystaw_ocene('Bednarski', 'Maciej', 'Kowalska', 'Fortepian', 5, 'postepy', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Bednarski', 'Maciej', 'Kowalska', 'Fortepian', 6, 'postepy', 'Przygotowany do egzaminu');
 EXEC PKG_OCENY.wystaw_ocene('Bednarski', 'Maciej', 'Jankowska', 'Ksztalcenie sluchu', 6, 'sluch', 'Absolutny sluch');
-EXEC PKG_OCENY.wystaw_ocene('Bednarski', 'Maciej', 'Mazur', 'Audycje muzyczne', 5, 'ogolna', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Bednarski', 'Maciej', 'Mazur', 'Chor', 5, 'ogolna', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Bednarski', 'Maciej', 'Jankowska', 'Ksztalcenie sluchu', 6, 'teoria', 'Pelnoprawna wiedza teoretyczna');
+EXEC PKG_OCENY.wystaw_ocene('Bednarski', 'Maciej', 'Mazur', 'Audycje muzyczne', 6, 'ogolna', 'Ekspert historii muzyki');
+EXEC PKG_OCENY.wystaw_ocene('Bednarski', 'Maciej', 'Krawczyk', 'Chor', 5, 'ogolna', 'Solista choru');
 
--- === KLASA 6A - Renata Kacprzak (Skrzypce) - DYPLOMANTKA ===
-EXEC PKG_OCENY.wystaw_ocene('Kacprzak', 'Renata', 'Wisniewski', 'Skrzypce', 5, 'technika', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Kacprzak', 'Renata', 'Wisniewski', 'Skrzypce', 5, 'interpretacja', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Kacprzak', 'Renata', 'Krawczyk', 'Orkiestra', 5, 'ogolna', 'Koncertmistrzyni');
+-- Renata Kacprzak (Skrzypce) - koncertmistrzyni
+EXEC PKG_OCENY.wystaw_ocene('Kacprzak', 'Renata', 'Wisniewski', 'Skrzypce', 5, 'technika', 'Doskonala technika');
+EXEC PKG_OCENY.wystaw_ocene('Kacprzak', 'Renata', 'Wisniewski', 'Skrzypce', 6, 'interpretacja', 'Dojrzala artystycznie');
+EXEC PKG_OCENY.wystaw_ocene('Kacprzak', 'Renata', 'Wisniewski', 'Skrzypce', 5, 'postepy', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Kacprzak', 'Renata', 'Jankowska', 'Ksztalcenie sluchu', 5, 'teoria', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Kacprzak', 'Renata', 'Krawczyk', 'Orkiestra', 6, 'ogolna', 'Koncertmistrzyni orkiestry');
+
+-- Marcin Duda (Gitara)
+EXEC PKG_OCENY.wystaw_ocene('Duda', 'Marcin', 'Lewandowski', 'Gitara', 5, 'technika', 'Zaawansowana technika');
+EXEC PKG_OCENY.wystaw_ocene('Duda', 'Marcin', 'Lewandowski', 'Gitara', 5, 'interpretacja', 'Swietna interpretacja');
+EXEC PKG_OCENY.wystaw_ocene('Duda', 'Marcin', 'Lewandowski', 'Gitara', 5, 'postepy', 'Gotowy do egzaminu');
+EXEC PKG_OCENY.wystaw_ocene('Duda', 'Marcin', 'Jankowska', 'Ksztalcenie sluchu', 5, 'sluch', NULL);
+EXEC PKG_OCENY.wystaw_ocene('Duda', 'Marcin', 'Krawczyk', 'Chor', 5, 'ogolna', NULL);
 
 -- ============================================================================
 -- 10. POTWIERDZENIE I STATYSTYKI
