@@ -313,7 +313,98 @@ END;
 /
 
 -- ============================================================================
--- 10. POTWIERDZENIE
+-- 10. TRIGGER: limit_uczniow_w_grupie
+-- ============================================================================
+-- Max 15 uczniow w grupie (zgodnie z zalozeniem 15).
+
+CREATE OR REPLACE TRIGGER trg_limit_uczniow_w_grupie
+BEFORE INSERT OR UPDATE ON UCZNIOWIE
+FOR EACH ROW
+DECLARE
+    v_liczba_uczniow NUMBER;
+    v_kod_grupy VARCHAR2(10);
+    v_max_uczniow CONSTANT NUMBER := 15;
+BEGIN
+    -- Pobierz kod grupy
+    SELECT DEREF(:NEW.ref_grupa).kod INTO v_kod_grupy FROM DUAL;
+
+    -- Policz uczniow w grupie (bez obecnego ucznia jesli UPDATE)
+    SELECT COUNT(*) INTO v_liczba_uczniow
+    FROM UCZNIOWIE u
+    WHERE DEREF(u.ref_grupa).kod = v_kod_grupy
+      AND (:NEW.id_ucznia IS NULL OR u.id_ucznia != :NEW.id_ucznia);
+
+    -- Sprawdz limit
+    IF v_liczba_uczniow >= v_max_uczniow THEN
+        RAISE_APPLICATION_ERROR(-20116,
+            'Grupa ' || v_kod_grupy || ' osiagnela maksymalny limit ' ||
+            v_max_uczniow || ' uczniow. Utworz nowa grupe.');
+    END IF;
+END;
+/
+
+-- ============================================================================
+-- 11. TRIGGER: max_godzin_nauczyciela
+-- ============================================================================
+-- Nauczyciel nie moze przekroczyc limitu godzin dziennie (6h) i tygodniowo (30h).
+
+CREATE OR REPLACE TRIGGER trg_max_godzin_nauczyciela
+BEFORE INSERT OR UPDATE ON LEKCJE
+FOR EACH ROW
+DECLARE
+    v_nauczyciel T_NAUCZYCIEL;
+    v_godziny_dzis NUMBER;
+    v_godziny_tydzien NUMBER;
+    v_max_dzien NUMBER;
+    v_max_tydzien NUMBER;
+    v_poczatek_tyg DATE;
+    v_koniec_tyg DATE;
+BEGIN
+    -- Pobierz dane nauczyciela
+    SELECT DEREF(:NEW.ref_nauczyciel) INTO v_nauczyciel FROM DUAL;
+    v_max_dzien := NVL(v_nauczyciel.max_godzin_dziennie, 6) * 60;    -- minuty
+    v_max_tydzien := NVL(v_nauczyciel.max_godzin_tydzien, 30) * 60;  -- minuty
+
+    -- Poczatek i koniec tygodnia (pon-pt)
+    v_poczatek_tyg := TRUNC(:NEW.data_lekcji, 'IW');
+    v_koniec_tyg := v_poczatek_tyg + 4;
+
+    -- Policz godziny w danym dniu (pomijajac obecna lekcje jesli UPDATE)
+    SELECT NVL(SUM(l.czas_trwania_min), 0) INTO v_godziny_dzis
+    FROM LEKCJE l
+    WHERE DEREF(l.ref_nauczyciel).id_nauczyciela = v_nauczyciel.id_nauczyciela
+      AND l.data_lekcji = :NEW.data_lekcji
+      AND l.status != 'odwolana'
+      AND (:NEW.id_lekcji IS NULL OR l.id_lekcji != :NEW.id_lekcji);
+
+    -- Policz godziny w calym tygodniu (pomijajac obecna lekcje jesli UPDATE)
+    SELECT NVL(SUM(l.czas_trwania_min), 0) INTO v_godziny_tydzien
+    FROM LEKCJE l
+    WHERE DEREF(l.ref_nauczyciel).id_nauczyciela = v_nauczyciel.id_nauczyciela
+      AND l.data_lekcji BETWEEN v_poczatek_tyg AND v_koniec_tyg
+      AND l.status != 'odwolana'
+      AND (:NEW.id_lekcji IS NULL OR l.id_lekcji != :NEW.id_lekcji);
+
+    -- Sprawdz limit dzienny
+    IF (v_godziny_dzis + :NEW.czas_trwania_min) > v_max_dzien THEN
+        RAISE_APPLICATION_ERROR(-20119,
+            'Nauczyciel ' || v_nauczyciel.nazwisko ||
+            ' przekroczyl limit ' || (v_max_dzien / 60) || ' godzin dziennie. ' ||
+            'Ma juz ' || ROUND(v_godziny_dzis / 60, 1) || 'h zaplanowanych.');
+    END IF;
+
+    -- Sprawdz limit tygodniowy
+    IF (v_godziny_tydzien + :NEW.czas_trwania_min) > v_max_tydzien THEN
+        RAISE_APPLICATION_ERROR(-20120,
+            'Nauczyciel ' || v_nauczyciel.nazwisko ||
+            ' przekroczyl limit ' || (v_max_tydzien / 60) || ' godzin tygodniowo. ' ||
+            'Ma juz ' || ROUND(v_godziny_tydzien / 60, 1) || 'h zaplanowanych.');
+    END IF;
+END;
+/
+
+-- ============================================================================
+-- 12. POTWIERDZENIE
 -- ============================================================================
 
 SELECT 'Triggery utworzone pomyslnie!' AS status FROM DUAL;
