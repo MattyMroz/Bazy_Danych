@@ -94,9 +94,9 @@ Jestem mamą Kasi (klasa III, flet) i Tomka (klasa V, gitara).
 Jestem nauczycielem fortepianu. Pracuję w tej szkole 8 lat.
 
 **Mój tydzień:**
-- Mam 12 uczniów indywidualnych (po 2 lekcje = 24 lekcje tygodniowo)
-- To jest ~16 godzin samych lekcji (młodsze klasy 30min, starsze 45min)
-- Plus: przygotowanie, przerwy, dokumentacja = ~22h w szkole
+- Mam 8 uczniów indywidualnych (po 2 lekcje = 16 lekcji tygodniowo)
+- To jest ~10 godzin samych lekcji (młodsze klasy 30min, starsze 45min)
+- Plus: przygotowanie, przerwy, dokumentacja = ~15h w szkole
 
 **Mój dzień (środa):**
 
@@ -136,10 +136,10 @@ Jestem sekretarką. To ja "sklejam" tę szkołę.
 **Największy problem: UKŁADANIE PLANU**
 
 Mam do ułożenia:
-- ~100 uczniów × 2 lekcje instrumentu = ~200 lekcji indywidualnych
-- 8 grup × 3-4 zajęcia grupowe = ~28 bloków grupowych
-- 12 nauczycieli z różnymi grafikami
-- 8 sal o różnym przeznaczeniu
+- ~48 uczniów × 2 lekcje instrumentu = ~96 lekcji indywidualnych
+- 6 grup × 3-4 zajęcia grupowe = ~20 bloków grupowych
+- 9 nauczycieli z różnymi grafikami
+- 6 sal o różnym przeznaczeniu
 
 Muszę zapewnić że:
 - Nikt nie jest w dwóch miejscach naraz
@@ -158,79 +158,74 @@ Muszę zapewnić że:
 | 101 | indywidualna | 3 | fortepian | lekcje fortepianu |
 | 102 | indywidualna | 3 | fortepian | lekcje fortepianu |
 | 103 | indywidualna | 3 | pianino, pulpit | skrzypce, flet |
-| 104 | indywidualna | 3 | pianino, pulpit | skrzypce, flet |
-| 105 | indywidualna | 3 | gitara, wzmacniacz | gitara |
-| 106 | indywidualna | 3 | perkusja | perkusja |
-| 201 | grupowa | 20 | tablica, pianino | kształcenie słuchu, audycje |
-| 202 | grupowa | 25 | lustra, nagłośnienie, pulpity | rytmika, chór, orkiestra |
+| 104 | indywidualna | 3 | gitara | gitara |
+| 105 | indywidualna | 3 | perkusja | perkusja |
+| 201 | grupowa | 20 | tablica, pianino, lustra, nagłośnienie, pulpity | wszystkie zajęcia grupowe |
 
-**Razem: 6 sal indywidualnych + 2 grupowe = 8 sal**
+**Razem: 5 sal indywidualnych + 1 grupowa = 6 sal**
 
 ### Nauczyciele:
 
 | Imię | Instrument | Prowadzi też | Uczniów |
 |------|------------|--------------|---------|
-| Kowalska | fortepian | kształcenie słuchu | 12 |
-| Nowak | fortepian | - | 12 |
-| Szymański | fortepian | - | 11 |
-| Wiśniewski | skrzypce | orkiestra | 13 |
-| Kamiński | skrzypce | - | 12 |
-| Zielińska | flet | kształcenie słuchu | 12 |
-| Lewandowski | gitara | - | 10 |
-| Wójcik | gitara | - | 10 |
-| Dąbrowski | perkusja | - | 7 |
-| Jankowska | - | rytmika | - |
-| Mazur | - | audycje, chór | - |
-| Krawczyk | - | orkiestra, kształcenie słuchu | - |
+| Kowalska | fortepian | kształcenie słuchu | 8 |
+| Nowak | fortepian | - | 8 |
+| Wiśniewski | skrzypce | orkiestra | 6 |
+| Kamiński | skrzypce | - | 6 |
+| Lewandowski | gitara | chór | 10 |
+| Zielińska | flet | - | 6 |
+| Dąbrowski | perkusja | - | 4 |
+| Jankowska | - | rytmika, audycje | - |
+| Krawczyk | - | kształcenie słuchu | - |
 
-**Razem: 12 nauczycieli (9 instrumentalistów + 3 przedmiotów grupowych), 99 uczniów**
+**Razem: 9 nauczycieli (7 instrumentalistów + 2 przedmiotów grupowych), 48 uczniów**
 
 ---
 
 # CZĘŚĆ 2: MATEMATYKA (CZY SIĘ MIEŚCI?)
 
-## 2.1 Piramida edukacyjna (REALISTYCZNA STRUKTURA)
+## 2.1 Piramida edukacyjna (MAŁA SZKOŁA)
 
-W szkołach muzycznych więcej dzieci startuje niż kończy, ale odsiew nie jest drastyczny - większość zostaje.
+To jest **mała szkoła muzyczna** - ok. 50 uczniów, 1 grupa na rocznik.
 
 **Struktura uczniów:**
 
 | Klasa | Uczniów | Grup | Nazwy grup | Komentarz |
-|-------|---------|------|------------|-----------|
-| I | 24 | 2 | 1A, 1B | Najliczniejsza - nowy nabór |
-| II | 20 | 2 | 2A, 2B | Lekki odsiew po pierwszym roku |
-| III | 16 | 1 | 3A | Środek cyklu |
-| IV | 14 | 1 | 4A | Zostają zmotywowani |
-| V | 13 | 1 | 5A | Prawie dyplomanci |
-| VI | 12 | 1 | 6A | Dyplomanci |
+|-------|---------|------|------------|-----------|-------|
+| I | 10 | 1 | 1A | Nowy nabór |
+| II | 10 | 1 | 2A | Lekki odsiew |
+| III | 8 | 1 | 3A | Środek cyklu |
+| IV | 8 | 1 | 4A | Zostają zmotywowani |
+| V | 6 | 1 | 5A | Prawie dyplomanci |
+| VI | 6 | 1 | 6A | Dyplomanci |
 
-**RAZEM: 99 uczniów w 8 grupach** (zaokrąglamy do ~100)
+**RAZEM: 48 uczniów w 6 grupach**
 
 ---
 
-## 2.2 Lekcje indywidualne (wąskie gardło!)
+## 2.2 Lekcje indywidualne
 
 **Dostępny czas:**
 ```
-6 sal indywidualnych × 6h dziennie × 5 dni = 180 godzin/tydzień
+5 sal indywidualnych × 6h dziennie × 5 dni = 150 godzin/tydzień
 ```
 
 **Zapotrzebowanie (różne czasy wg klasy!):**
 ```
-Klasy I-III (60 uczniów) × 2 lekcje × 30min = 60h/tydzień
-Klasy IV-VI (39 uczniów) × 2 lekcje × 45min = 58.5h/tydzień
+Klasy I-III (28 uczniów) × 2 lekcje × 30min = 28h/tydzień
+Klasy IV-VI (20 uczniów) × 2 lekcje × 45min = 30h/tydzień
 ---
-RAZEM: ~118.5 godzin/tydzień
+RAZEM: ~58 godzin/tydzień
 ```
 
-**Wykorzystanie: 118.5h / 180h = 66%**
+**Wykorzystanie: 58h / 150h = 39%**
 
-✅ **MIEŚCI SIĘ** z zapasem na przerwy (5-10 min między lekcjami) i testy
+✅ **MIEŚCI SIĘ** z dużym zapasem na przerwy i elastyczność
 
-**Maksymalna pojemność przy 80% wykorzystania:**
+**Maksymalna pojemność przy 70% wykorzystania:**
 ```
-180h × 80% = 144h dostępnych
-144h ÷ 1.2h (średnio na ucznia) = ~120 uczniów MAX
+150h × 70% = 105h dostępnych
+105h ÷ 1.2h (średnio na ucznia) = ~87 uczniów MAX
 ```
 
 ---
@@ -239,23 +234,23 @@ RAZEM: ~118.5 godzin/tydzień
 
 **Dostępny czas:**
 ```
-2 sale grupowe × 6h × 5 dni = 60 godzin/tydzień
+1 sala grupowa × 6h × 5 dni = 30 godzin/tydzień
 ```
 
-**Zapotrzebowanie (8 grup):**
+**Zapotrzebowanie (6 grup):**
 ```
-Kształcenie słuchu: 8 grup × 2 zajęcia × 45min = 12h
-Rytmika (kl I-III, 5 grup): 5 × 1 × 45min = 3.75h
+Kształcenie słuchu: 6 grup × 2 zajęcia × 45min = 9h
+Rytmika (kl I-III, 3 grupy): 3 × 1 × 45min = 2.25h
 Audycje (kl IV-VI, 3 grupy): 3 × 1 × 45min = 2.25h
 Chór (fortepian+gitara, kl IV-VI): 1 × 90min = 1.5h
 Orkiestra (skrzypce+flet+perkusja, kl IV-VI): 1 × 90min = 1.5h
 ---
-RAZEM: ~21 godzin/tydzień
+RAZEM: ~16.5 godzin/tydzień
 ```
 
-**Wykorzystanie: 21h / 60h = 35%**
+**Wykorzystanie: 16.5h / 30h = 55%**
 
-✅ **MIEŚCI SIĘ** z ogromnym zapasem
+✅ **MIEŚCI SIĘ** z zapasem
 
 ---
 
@@ -263,21 +258,20 @@ RAZEM: ~21 godzin/tydzień
 
 **Potrzebujemy nauczycieli instrumentów:**
 ```
-~100 uczniów × 2 lekcje × ~37.5min (średnia) = ~125h lekcji/tydzień
+48 uczniów × 2 lekcje × ~35min (średnia) = ~56h lekcji/tydzień
 
-Nauczyciel pracuje max 25h lekcji/tydzień (+ przerwy, dokumentacja)
-125h ÷ 25h = ~5 nauczycieli minimum
+Nauczyciel pracuje max 16-20 lekcji/tydzień (realistycznie z przerwami)
 
-Ale instrumenty są różne, więc potrzebujemy:
-- 3× fortepian (najpopularniejszy)
-- 2× skrzypce
-- 2× gitara
-- 1× flet
-- 1× perkusja
-= 9 nauczycieli instrumentów
-+ 3 nauczyciele przedmiotów grupowych (rytmika, audycje, chór, orkiestra, kszt. słuchu)
+Rozkład według instrumentu:
+- 2× fortepian (16 uczniów × 2 = 32 lekcje ÷ 2 = 16 lekcji/nauczyciela) ✓
+- 2× skrzypce (12 uczniów × 2 = 24 lekcje ÷ 2 = 12 lekcji/nauczyciela) ✓
+- 1× gitara (10 uczniów × 2 = 20 lekcji) ✓
+- 1× flet (6 uczniów × 2 = 12 lekcji) ✓
+- 1× perkusja (4 uczniów × 2 = 8 lekcji) ✓
+= 7 nauczycieli instrumentów
++ 2 nauczyciele przedmiotów grupowych (rytmika, audycje, chór, orkiestra, kszt. słuchu)
 ---
-RAZEM: 12 nauczycieli
+RAZEM: 9 nauczycieli
 ```
 
 ---
@@ -286,13 +280,13 @@ RAZEM: 12 nauczycieli
 
 | Zasób | Dostępne | Potrzebne | Wykorzystanie | Zapas |
 |-------|----------|-----------|---------------|-------|
-| Sale indywidualne | 180h | 118.5h | 66% | 34% |
-| Sale grupowe | 60h | 21h | 35% | 65% |
-| Nauczyciele (12) | 300h | 140h | 47% | 53% |
+| Sale indywidualne (5) | 150h | 58h | 39% | 61% |
+| Sala grupowa (1) | 30h | 16.5h | 55% | 45% |
+| Nauczyciele (9) | 180h | 75h | 42% | 58% |
 
-**Wąskie gardło: SALE INDYWIDUALNE** (ale mamy 34% zapasu)
+**System ma duży zapas - wszystko się mieści z marginesem!**
 
-**Przyjmujemy: ~100 uczniów w 8 grupach**
+**Przyjmujemy: 48 uczniów w 6 grupach**
 
 ---
 
@@ -347,27 +341,27 @@ RAZEM: 12 nauczycieli
     - Klasy IV-VI: 2 × 45 minut
 11. Uczeń ma zajęcia grupowe zgodne z klasą (patrz 3.2).
 12. Uczeń nie może mieć dwóch zajęć w tym samym czasie.
-13. Szkoła przyjmuje **~100 uczniów** (ograniczenie sal indywidualnych).
+13. Szkoła przyjmuje **~48 uczniów** (mała szkoła).
 
 ---
 
-## 3.4 GRUPY (KLASY) - PIRAMIDA EDUKACYJNA
+## 3.4 GRUPY (KLASY) - MAŁA SZKOŁA
 
 14. Grupa = uczniowie tej samej klasy (np. "3A" = klasa III, grupa A).
-15. Wielkość grupy: **od 6 do 15 uczniów** (klasy młodsze liczniejsze, starsze mniejsze).
-16. Jeśli w roczniku jest więcej niż 15 uczniów, tworzymy drugą grupę (1A, 1B).
+15. Wielkość grupy: **od 6 do 10 uczniów**.
+16. Jedna grupa na rocznik (mała szkoła).
 17. Zajęcia grupowe odbywają się dla całej grupy naraz.
-18. Struktura szkoły (piramida):
+18. Struktura szkoły:
 
 | Klasa | Uczniów | Grup | Kody |
 |-------|---------|------|------|
-| I | 24 | 2 | 1A, 1B |
-| II | 20 | 2 | 2A, 2B |
-| III | 16 | 1 | 3A |
-| IV | 14 | 1 | 4A |
-| V | 13 | 1 | 5A |
-| VI | 12 | 1 | 6A |
-| **RAZEM** | **99** | **8** | - |
+| I | 10 | 1 | 1A |
+| II | 10 | 1 | 2A |
+| III | 8 | 1 | 3A |
+| IV | 8 | 1 | 4A |
+| V | 6 | 1 | 5A |
+| VI | 6 | 1 | 6A |
+| **RAZEM** | **48** | **6** | - |
 
 ---
 
@@ -375,18 +369,18 @@ RAZEM: 12 nauczycieli
 
 Przybliżony rozkład uczniów według instrumentu:
 
-| Instrument | Uczniów | % | Nauczyciele | Chór/Orkiestra |
-|------------|---------|---|-------------|----------------|
-| Fortepian | 35 | 35% | Kowalska, Nowak, Szymański | Chór |
-| Skrzypce | 25 | 25% | Wiśniewski, Kamiński | Orkiestra |
-| Gitara | 20 | 20% | Lewandowski, Wójcik | Chór |
-| Flet | 12 | 12% | Zielińska | Orkiestra |
-| Perkusja | 7 | 7% | Dąbrowski | Orkiestra |
-| **RAZEM** | **99** | 100% | **9 nauczycieli** | - |
+| Instrument | Uczniów | % | Nauczyciele | Lekcji/tydzień | Chór/Orkiestra |
+|------------|---------|---|-------------|----------------|----------------|
+| Fortepian | 16 | 33% | Kowalska, Nowak | 32 (16/os) | Chór |
+| Skrzypce | 12 | 25% | Wiśniewski, Kamiński | 24 (12/os) | Orkiestra |
+| Gitara | 10 | 21% | Lewandowski | 20 | Chór |
+| Flet | 6 | 13% | Zielińska | 12 | Orkiestra |
+| Perkusja | 4 | 8% | Dąbrowski | 8 | Orkiestra |
+| **RAZEM** | **48** | 100% | **7 nauczycieli** | **96** | - |
 
-**Podział na chór/orkiestrę (tylko klasy IV-VI, 39 uczniów):**
-- Chór: fortepian + gitara = ~22 uczniów
-- Orkiestra: skrzypce + flet + perkusja = ~17 uczniów
+**Podział na chór/orkiestrę (tylko klasy IV-VI, 20 uczniów):**
+- Chór: fortepian + gitara = ~11 uczniów
+- Orkiestra: skrzypce + flet + perkusja = ~9 uczniów
 
 ---
 
@@ -485,15 +479,15 @@ Przybliżony rozkład uczniów według instrumentu:
 
 ```
 KROK 1: CHÓR I ORKIESTRA (najtrudniejsze)
-- Blokują największą salę (202) - osobno chór, osobno orkiestra
-- Chór blokuje uczniów IV-VI grających fortepian/gitarę (~22 os.)
-- Orkiestra blokuje uczniów IV-VI grających skrzypce/flet/perkusję (~17 os.)
+- Blokują salę grupową (201) - osobno chór, osobno orkiestra
+- Chór blokuje uczniów IV-VI grających fortepian/gitarę (~11 os.)
+- Orkiestra blokuje uczniów IV-VI grających skrzypce/flet/perkusję (~9 os.)
 - Każde raz w tygodniu, 90 min
 - Zazwyczaj: chór wtorek 17:00, orkiestra czwartek 17:00
 
 KROK 2: ZAJĘCIA GRUPOWE (kształcenie słuchu, rytmika, audycje)
 - Blokują salę grupową
-- Blokują 10-15 uczniów (całą grupę)
+- Blokują 6-10 uczniów (całą grupę)
 - Każda grupa potrzebuje 3-4 bloki tygodniowo
 
 KROK 3: LEKCJE INDYWIDUALNE
@@ -544,12 +538,12 @@ KROK 3: LEKCJE INDYWIDUALNE
 |---|--------|------|----------|
 | 1 | INSTRUMENTY | słownik instrumentów | 5 |
 | 2 | PRZEDMIOTY | słownik zajęć (+ typ, czas, wyposażenie) | 10 |
-| 3 | NAUCZYCIELE | kadra + VARRAY instrumentów | 12 |
-| 4 | GRUPY | klasy/grupy (1A, 2A...) | 8 |
-| 5 | UCZNIOWIE | uczniowie + REF do grupy/instrumentu | ~100 |
-| 6 | SALE | pomieszczenia + VARRAY wyposażenia | 8 |
-| 7 | LEKCJE | harmonogram + REF przedmiot + VARRAY komisja (dla egzaminów) | 250-350/tydzień |
-| 8 | OCENY | oceny bieżące i semestralne + REF przedmiot | 800+/semestr |
+| 3 | NAUCZYCIELE | kadra + VARRAY instrumentów | 9 |
+| 4 | GRUPY | klasy/grupy (1A, 2A...) | 6 |
+| 5 | UCZNIOWIE | uczniowie + REF do grupy/instrumentu | 48 |
+| 6 | SALE | pomieszczenia + VARRAY wyposażenia | 6 |
+| 7 | LEKCJE | harmonogram + REF przedmiot + VARRAY komisja (dla egzaminów) | ~120/tydzień |
+| 8 | OCENY | oceny bieżące i semestralne + REF przedmiot | 400+/semestr |
 
 **Razem: 8 tabel**
 

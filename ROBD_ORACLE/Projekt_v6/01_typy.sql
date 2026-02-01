@@ -105,8 +105,8 @@ CREATE OR REPLACE TYPE T_NAUCZYCIEL AS OBJECT (
     instrumenty         T_INSTRUMENTY_TAB,    -- VARRAY instrumentow (max 5)
     email               VARCHAR2(100),
     telefon             VARCHAR2(20),
-    max_godzin_dziennie NUMBER DEFAULT 6,     -- zgodnie z zalozeniem 21
-    max_godzin_tydzien  NUMBER DEFAULT 30,    -- zgodnie z zalozeniem 22
+    max_godzin_dziennie NUMBER,               -- zgodnie z zalozeniem 21 (domyslnie 6)
+    max_godzin_tydzien  NUMBER,               -- zgodnie z zalozeniem 22 (domyslnie 30)
 
     -- Pelne imie i nazwisko
     MEMBER FUNCTION pelne_nazwisko RETURN VARCHAR2,
@@ -338,7 +338,7 @@ CREATE OR REPLACE TYPE T_OCENA AS OBJECT (
     obszar              VARCHAR2(50),         -- technika, interpretacja, postepy, teoria, sluch
     data_wystawienia    DATE,
     komentarz           VARCHAR2(500),
-    czy_semestralna     CHAR(1) DEFAULT 'N',  -- T = semestralna, N = biezaca
+    czy_semestralna     CHAR(1),              -- T = semestralna, N = biezaca
 
     -- Walidacja oceny (1-6)
     MEMBER FUNCTION czy_poprawna RETURN BOOLEAN,

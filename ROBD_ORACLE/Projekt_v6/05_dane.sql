@@ -4,6 +4,12 @@
 -- Opis: Wstawienie danych poczatkowych (slowniki + przykladowe dane)
 -- Autorzy: Igor Typinski (251237), Mateusz Mroz (251190)
 -- ============================================================================
+-- WERSJA: MALA SZKOLA (48 uczniow, 9 nauczycieli, 6 sal, 6 grup)
+-- ============================================================================
+-- UWAGA: Ten plik wymaga uzycia 03_pakiety_v2.sql i 04_triggery_v2.sql!
+-- ============================================================================
+
+SET SERVEROUTPUT ON SIZE UNLIMITED;
 
 -- ============================================================================
 -- 1. CZYSZCZENIE DANYCH (w kolejnosci zaleznosci)
@@ -20,7 +26,6 @@ DELETE FROM INSTRUMENTY;
 COMMIT;
 
 -- Reset sekwencji (Oracle 12c+ skladnia)
--- Jesli uzywasz starszej wersji, uzyj: DROP SEQUENCE + CREATE SEQUENCE
 DECLARE
     PROCEDURE reset_seq(p_seq_name VARCHAR2) IS
         v_val NUMBER;
@@ -30,7 +35,7 @@ DECLARE
         EXECUTE IMMEDIATE 'SELECT ' || p_seq_name || '.NEXTVAL FROM DUAL' INTO v_val;
         EXECUTE IMMEDIATE 'ALTER SEQUENCE ' || p_seq_name || ' INCREMENT BY 1 MINVALUE 0';
     EXCEPTION
-        WHEN OTHERS THEN NULL;  -- ignoruj bledy
+        WHEN OTHERS THEN NULL;
     END;
 BEGIN
     reset_seq('seq_instrumenty');
@@ -45,441 +50,459 @@ END;
 /
 
 -- ============================================================================
--- 2. INSTRUMENTY (5 rekordow - zgodnie z zalozeniami)
+-- 2. INSTRUMENTY (5 rekordow)
 -- ============================================================================
-
--- Fortepian i gitara -> chor (N), reszta -> orkiestra (T)
-EXEC PKG_SLOWNIKI.dodaj_instrument('Fortepian', 'N');
-EXEC PKG_SLOWNIKI.dodaj_instrument('Skrzypce', 'T');
-EXEC PKG_SLOWNIKI.dodaj_instrument('Gitara', 'N');
-EXEC PKG_SLOWNIKI.dodaj_instrument('Flet', 'T');
-EXEC PKG_SLOWNIKI.dodaj_instrument('Perkusja', 'T');
-
--- ============================================================================
--- 3. PRZEDMIOTY (10 rekordow - zgodnie z zalozeniami)
--- ============================================================================
-
--- Indywidualne - instrumenty
-EXEC PKG_SLOWNIKI.dodaj_przedmiot('Fortepian', 'indywidualny', 45, T_WYPOSAZENIE('fortepian'));
-EXEC PKG_SLOWNIKI.dodaj_przedmiot('Skrzypce', 'indywidualny', 45, T_WYPOSAZENIE('pianino', 'pulpit'));
-EXEC PKG_SLOWNIKI.dodaj_przedmiot('Gitara', 'indywidualny', 45, NULL);
-EXEC PKG_SLOWNIKI.dodaj_przedmiot('Flet', 'indywidualny', 45, T_WYPOSAZENIE('pianino', 'pulpit'));
-EXEC PKG_SLOWNIKI.dodaj_przedmiot('Perkusja', 'indywidualny', 45, T_WYPOSAZENIE('perkusja'));
-
--- Grupowe
-EXEC PKG_SLOWNIKI.dodaj_przedmiot('Ksztalcenie sluchu', 'grupowy', 45, T_WYPOSAZENIE('tablica', 'pianino'));
-EXEC PKG_SLOWNIKI.dodaj_przedmiot('Rytmika', 'grupowy', 45, T_WYPOSAZENIE('lustra'));
-EXEC PKG_SLOWNIKI.dodaj_przedmiot('Audycje muzyczne', 'grupowy', 45, T_WYPOSAZENIE('tablica'));
-EXEC PKG_SLOWNIKI.dodaj_przedmiot('Chor', 'grupowy', 90, T_WYPOSAZENIE('naglosnienie'));
-EXEC PKG_SLOWNIKI.dodaj_przedmiot('Orkiestra', 'grupowy', 90, T_WYPOSAZENIE('pulpity'));
-
--- ============================================================================
--- 4. SALE (8 rekordow - zgodnie z zalozeniami)
--- ============================================================================
-
--- Sale indywidualne (6)
-EXEC PKG_SLOWNIKI.dodaj_sale('101', 'indywidualna', 3, T_WYPOSAZENIE('fortepian'));
-EXEC PKG_SLOWNIKI.dodaj_sale('102', 'indywidualna', 3, T_WYPOSAZENIE('fortepian'));
-EXEC PKG_SLOWNIKI.dodaj_sale('103', 'indywidualna', 3, T_WYPOSAZENIE('pianino', 'pulpit'));
-EXEC PKG_SLOWNIKI.dodaj_sale('104', 'indywidualna', 3, T_WYPOSAZENIE('pianino', 'pulpit'));
-EXEC PKG_SLOWNIKI.dodaj_sale('105', 'indywidualna', 3, T_WYPOSAZENIE('gitara', 'wzmacniacz'));
-EXEC PKG_SLOWNIKI.dodaj_sale('106', 'indywidualna', 3, T_WYPOSAZENIE('perkusja'));
-
--- Sale grupowe (2)
-EXEC PKG_SLOWNIKI.dodaj_sale('201', 'grupowa', 20, T_WYPOSAZENIE('tablica', 'pianino'));
-EXEC PKG_SLOWNIKI.dodaj_sale('202', 'grupowa', 25, T_WYPOSAZENIE('lustra', 'naglosnienie', 'pulpity'));
-
--- ============================================================================
--- 5. GRUPY (8 rekordow - piramida edukacyjna)
--- ============================================================================
-
--- Klasy I-III (5 grup)
-EXEC PKG_SLOWNIKI.dodaj_grupe('1A', 1, '2025/2026');
-EXEC PKG_SLOWNIKI.dodaj_grupe('1B', 1, '2025/2026');
-EXEC PKG_SLOWNIKI.dodaj_grupe('2A', 2, '2025/2026');
-EXEC PKG_SLOWNIKI.dodaj_grupe('2B', 2, '2025/2026');
-EXEC PKG_SLOWNIKI.dodaj_grupe('3A', 3, '2025/2026');
-
--- Klasy IV-VI (3 grupy)
-EXEC PKG_SLOWNIKI.dodaj_grupe('4A', 4, '2025/2026');
-EXEC PKG_SLOWNIKI.dodaj_grupe('5A', 5, '2025/2026');
-EXEC PKG_SLOWNIKI.dodaj_grupe('6A', 6, '2025/2026');
-
--- ============================================================================
--- 6. NAUCZYCIELE (12 rekordow)
--- ============================================================================
-
--- Nauczyciele instrumentow (9)
-EXEC PKG_OSOBY.dodaj_nauczyciela('Anna', 'Kowalska', T_INSTRUMENTY_TAB('Fortepian'), 'kowalska@szkola.pl', '601111111');
-EXEC PKG_OSOBY.dodaj_nauczyciela('Jan', 'Nowak', T_INSTRUMENTY_TAB('Fortepian'), 'nowak@szkola.pl', '602222222');
-EXEC PKG_OSOBY.dodaj_nauczyciela('Piotr', 'Szymanski', T_INSTRUMENTY_TAB('Fortepian'), 'szymanski@szkola.pl', '603333333');
-EXEC PKG_OSOBY.dodaj_nauczyciela('Marek', 'Wisniewski', T_INSTRUMENTY_TAB('Skrzypce'), 'wisniewski@szkola.pl', '604444444');
-EXEC PKG_OSOBY.dodaj_nauczyciela('Tomasz', 'Kaminski', T_INSTRUMENTY_TAB('Skrzypce'), 'kaminski@szkola.pl', '605555555');
-EXEC PKG_OSOBY.dodaj_nauczyciela('Ewa', 'Zielinska', T_INSTRUMENTY_TAB('Flet'), 'zielinska@szkola.pl', '606666666');
-EXEC PKG_OSOBY.dodaj_nauczyciela('Adam', 'Lewandowski', T_INSTRUMENTY_TAB('Gitara'), 'lewandowski@szkola.pl', '607777777');
-EXEC PKG_OSOBY.dodaj_nauczyciela('Pawel', 'Wojcik', T_INSTRUMENTY_TAB('Gitara'), 'wojcik@szkola.pl', '608888888');
-EXEC PKG_OSOBY.dodaj_nauczyciela('Krzysztof', 'Dabrowski', T_INSTRUMENTY_TAB('Perkusja'), 'dabrowski@szkola.pl', '609999999');
-
--- Nauczyciele przedmiotow grupowych (3)
-EXEC PKG_OSOBY.dodaj_nauczyciela('Maria', 'Jankowska', NULL, 'jankowska@szkola.pl', '610000000');
-EXEC PKG_OSOBY.dodaj_nauczyciela('Katarzyna', 'Mazur', NULL, 'mazur@szkola.pl', '611111111');
-EXEC PKG_OSOBY.dodaj_nauczyciela('Robert', 'Krawczyk', NULL, 'krawczyk@szkola.pl', '612222222');
-
--- ============================================================================
--- 7. UCZNIOWIE (przykladowi - po kilku z kazdej grupy)
--- ============================================================================
-
--- Klasa 1A (12 uczniow) - Fortepian dominuje
-EXEC PKG_OSOBY.dodaj_ucznia('Jan', 'Kowalski', DATE '2019-03-15', '1A', 'Fortepian', 'kowalski.rodzic@email.pl', '500100101');
-EXEC PKG_OSOBY.dodaj_ucznia('Anna', 'Nowak', DATE '2019-05-20', '1A', 'Fortepian', 'nowak.rodzic@email.pl', '500100102');
-EXEC PKG_OSOBY.dodaj_ucznia('Piotr', 'Wisniewski', DATE '2019-01-10', '1A', 'Skrzypce', 'wisniewski.rodzic@email.pl', '500100103');
-EXEC PKG_OSOBY.dodaj_ucznia('Maria', 'Wojcik', DATE '2019-07-25', '1A', 'Gitara', 'wojcik.rodzic@email.pl', '500100104');
-EXEC PKG_OSOBY.dodaj_ucznia('Tomasz', 'Kaminski', DATE '2019-02-28', '1A', 'Flet', 'kaminski.rodzic@email.pl', '500100105');
-EXEC PKG_OSOBY.dodaj_ucznia('Ewa', 'Lewandowska', DATE '2019-09-12', '1A', 'Fortepian', 'lewandowska.rodzic@email.pl', '500100106');
-EXEC PKG_OSOBY.dodaj_ucznia('Adam', 'Zielinski', DATE '2019-04-08', '1A', 'Skrzypce', 'zielinski.rodzic@email.pl', '500100107');
-EXEC PKG_OSOBY.dodaj_ucznia('Katarzyna', 'Szymanska', DATE '2019-11-30', '1A', 'Fortepian', 'szymanska.rodzic@email.pl', '500100108');
-EXEC PKG_OSOBY.dodaj_ucznia('Michal', 'Dabrowski', DATE '2019-06-18', '1A', 'Gitara', 'dabrowski.rodzic@email.pl', '500100109');
-EXEC PKG_OSOBY.dodaj_ucznia('Zofia', 'Kozlowska', DATE '2019-08-22', '1A', 'Fortepian', 'kozlowska.rodzic@email.pl', '500100110');
-EXEC PKG_OSOBY.dodaj_ucznia('Jakub', 'Jankowski', DATE '2019-10-05', '1A', 'Perkusja', 'jankowski.rodzic@email.pl', '500100111');
-EXEC PKG_OSOBY.dodaj_ucznia('Aleksandra', 'Mazurek', DATE '2019-12-14', '1A', 'Skrzypce', 'mazurek.rodzic@email.pl', '500100112');
-
--- Klasa 1B (12 uczniow)
-EXEC PKG_OSOBY.dodaj_ucznia('Bartosz', 'Krawczyk', DATE '2019-02-11', '1B', 'Fortepian', 'krawczyk.rodzic@email.pl', '500100201');
-EXEC PKG_OSOBY.dodaj_ucznia('Natalia', 'Piotrowska', DATE '2019-04-23', '1B', 'Skrzypce', 'piotrowska.rodzic@email.pl', '500100202');
-EXEC PKG_OSOBY.dodaj_ucznia('Mateusz', 'Grabowski', DATE '2019-06-30', '1B', 'Gitara', 'grabowski.rodzic@email.pl', '500100203');
-EXEC PKG_OSOBY.dodaj_ucznia('Wiktoria', 'Pawlak', DATE '2019-08-17', '1B', 'Fortepian', 'pawlak.rodzic@email.pl', '500100204');
-EXEC PKG_OSOBY.dodaj_ucznia('Filip', 'Michalski', DATE '2019-01-29', '1B', 'Flet', 'michalski.rodzic@email.pl', '500100205');
-EXEC PKG_OSOBY.dodaj_ucznia('Oliwia', 'Zajac', DATE '2019-03-08', '1B', 'Fortepian', 'zajac.rodzic@email.pl', '500100206');
-EXEC PKG_OSOBY.dodaj_ucznia('Szymon', 'Krol', DATE '2019-05-14', '1B', 'Skrzypce', 'krol.rodzic@email.pl', '500100207');
-EXEC PKG_OSOBY.dodaj_ucznia('Maja', 'Wozniak', DATE '2019-07-21', '1B', 'Gitara', 'wozniak.rodzic@email.pl', '500100208');
-EXEC PKG_OSOBY.dodaj_ucznia('Kacper', 'Stepien', DATE '2019-09-03', '1B', 'Fortepian', 'stepien.rodzic@email.pl', '500100209');
-EXEC PKG_OSOBY.dodaj_ucznia('Julia', 'Adamczyk', DATE '2019-11-16', '1B', 'Skrzypce', 'adamczyk.rodzic@email.pl', '500100210');
-EXEC PKG_OSOBY.dodaj_ucznia('Nikodem', 'Dudek', DATE '2019-10-27', '1B', 'Perkusja', 'dudek.rodzic@email.pl', '500100211');
-EXEC PKG_OSOBY.dodaj_ucznia('Lena', 'Pawlowska', DATE '2019-12-09', '1B', 'Flet', 'pawlowska.rodzic@email.pl', '500100212');
-
--- Klasa 2A (10 uczniow)
-EXEC PKG_OSOBY.dodaj_ucznia('Oskar', 'Walczak', DATE '2018-02-14', '2A', 'Fortepian', 'walczak.rodzic@email.pl', '500100301');
-EXEC PKG_OSOBY.dodaj_ucznia('Hanna', 'Gorska', DATE '2018-04-19', '2A', 'Skrzypce', 'gorska.rodzic@email.pl', '500100302');
-EXEC PKG_OSOBY.dodaj_ucznia('Antoni', 'Sikora', DATE '2018-06-25', '2A', 'Gitara', 'sikora.rodzic@email.pl', '500100303');
-EXEC PKG_OSOBY.dodaj_ucznia('Emilia', 'Baran', DATE '2018-08-11', '2A', 'Fortepian', 'baran.rodzic@email.pl', '500100304');
-EXEC PKG_OSOBY.dodaj_ucznia('Leon', 'Laskowski', DATE '2018-01-07', '2A', 'Flet', 'laskowski.rodzic@email.pl', '500100305');
-EXEC PKG_OSOBY.dodaj_ucznia('Amelia', 'Kucharska', DATE '2018-03-22', '2A', 'Fortepian', 'kucharska.rodzic@email.pl', '500100306');
-EXEC PKG_OSOBY.dodaj_ucznia('Franciszek', 'Kalinowski', DATE '2018-05-30', '2A', 'Skrzypce', 'kalinowski.rodzic@email.pl', '500100307');
-EXEC PKG_OSOBY.dodaj_ucznia('Antonina', 'Mazurkiewicz', DATE '2018-07-15', '2A', 'Gitara', 'mazurkiewicz.rodzic@email.pl', '500100308');
-EXEC PKG_OSOBY.dodaj_ucznia('Ignacy', 'Kubiak', DATE '2018-09-28', '2A', 'Fortepian', 'kubiak.rodzic@email.pl', '500100309');
-EXEC PKG_OSOBY.dodaj_ucznia('Nadia', 'Kwiatkowska', DATE '2018-11-04', '2A', 'Perkusja', 'kwiatkowska.rodzic@email.pl', '500100310');
-
--- Klasa 2B (10 uczniow)
-EXEC PKG_OSOBY.dodaj_ucznia('Tymon', 'Wrobel', DATE '2018-01-19', '2B', 'Fortepian', 'wrobel.rodzic@email.pl', '500100401');
-EXEC PKG_OSOBY.dodaj_ucznia('Kornelia', 'Kaczmarek', DATE '2018-03-26', '2B', 'Skrzypce', 'kaczmarek.rodzic@email.pl', '500100402');
-EXEC PKG_OSOBY.dodaj_ucznia('Marcel', 'Piotrowski', DATE '2018-05-12', '2B', 'Gitara', 'piotrowski.rodzic@email.pl', '500100403');
-EXEC PKG_OSOBY.dodaj_ucznia('Lilianna', 'Wieczorek', DATE '2018-07-08', '2B', 'Fortepian', 'wieczorek.rodzic@email.pl', '500100404');
-EXEC PKG_OSOBY.dodaj_ucznia('Borys', 'Jablonski', DATE '2018-09-21', '2B', 'Flet', 'jablonski.rodzic@email.pl', '500100405');
-EXEC PKG_OSOBY.dodaj_ucznia('Nela', 'Chmielewski', DATE '2018-11-30', '2B', 'Fortepian', 'chmielewski.rodzic@email.pl', '500100406');
-EXEC PKG_OSOBY.dodaj_ucznia('Olaf', 'Olszewski', DATE '2018-02-08', '2B', 'Skrzypce', 'olszewski.rodzic@email.pl', '500100407');
-EXEC PKG_OSOBY.dodaj_ucznia('Gabriela', 'Urbaniak', DATE '2018-04-15', '2B', 'Gitara', 'urbaniak.rodzic@email.pl', '500100408');
-EXEC PKG_OSOBY.dodaj_ucznia('Bruno', 'Witkowski', DATE '2018-06-29', '2B', 'Fortepian', 'witkowski.rodzic@email.pl', '500100409');
-EXEC PKG_OSOBY.dodaj_ucznia('Helena', 'Sadowska', DATE '2018-08-04', '2B', 'Skrzypce', 'sadowska.rodzic@email.pl', '500100410');
-
--- Klasa 3A (16 uczniow)
-EXEC PKG_OSOBY.dodaj_ucznia('Tymoteusz', 'Bak', DATE '2017-01-11', '3A', 'Fortepian', 'bak.rodzic@email.pl', '500100501');
-EXEC PKG_OSOBY.dodaj_ucznia('Laura', 'Pietrzak', DATE '2017-03-18', '3A', 'Skrzypce', 'pietrzak.rodzic@email.pl', '500100502');
-EXEC PKG_OSOBY.dodaj_ucznia('Ksawery', 'Tomczak', DATE '2017-05-25', '3A', 'Gitara', 'tomczak.rodzic@email.pl', '500100503');
-EXEC PKG_OSOBY.dodaj_ucznia('Marcelina', 'Jaworski', DATE '2017-07-02', '3A', 'Fortepian', 'jaworski.rodzic@email.pl', '500100504');
-EXEC PKG_OSOBY.dodaj_ucznia('Kajetan', 'Malinowski', DATE '2017-09-14', '3A', 'Flet', 'malinowski.rodzic@email.pl', '500100505');
-EXEC PKG_OSOBY.dodaj_ucznia('Blanka', 'Pawlik', DATE '2017-11-21', '3A', 'Fortepian', 'pawlik.rodzic@email.pl', '500100506');
-EXEC PKG_OSOBY.dodaj_ucznia('Ryszard', 'Gorski', DATE '2017-02-07', '3A', 'Skrzypce', 'gorski.rodzic@email.pl', '500100507');
-EXEC PKG_OSOBY.dodaj_ucznia('Iga', 'Szewczyk', DATE '2017-04-13', '3A', 'Gitara', 'szewczyk.rodzic@email.pl', '500100508');
-EXEC PKG_OSOBY.dodaj_ucznia('Fabian', 'Ostrowski', DATE '2017-06-20', '3A', 'Fortepian', 'ostrowski.rodzic@email.pl', '500100509');
-EXEC PKG_OSOBY.dodaj_ucznia('Jagoda', 'Ciesielski', DATE '2017-08-27', '3A', 'Perkusja', 'ciesielski.rodzic@email.pl', '500100510');
-EXEC PKG_OSOBY.dodaj_ucznia('Krystian', 'Kolodziej', DATE '2017-10-04', '3A', 'Skrzypce', 'kolodziej.rodzic@email.pl', '500100511');
-EXEC PKG_OSOBY.dodaj_ucznia('Rozalia', 'Blaszczyk', DATE '2017-12-11', '3A', 'Flet', 'blaszczyk.rodzic@email.pl', '500100512');
-EXEC PKG_OSOBY.dodaj_ucznia('Damian', 'Kubicki', DATE '2017-01-28', '3A', 'Gitara', 'kubicki.rodzic@email.pl', '500100513');
-EXEC PKG_OSOBY.dodaj_ucznia('Patrycja', 'Baranowska', DATE '2017-03-05', '3A', 'Fortepian', 'baranowska.rodzic@email.pl', '500100514');
-EXEC PKG_OSOBY.dodaj_ucznia('Norbert', 'Szulc', DATE '2017-05-12', '3A', 'Skrzypce', 'szulc.rodzic@email.pl', '500100515');
-EXEC PKG_OSOBY.dodaj_ucznia('Martyna', 'Wlodarczyk', DATE '2017-07-19', '3A', 'Fortepian', 'wlodarczyk.rodzic@email.pl', '500100516');
-
--- Klasa 4A (14 uczniow)
-EXEC PKG_OSOBY.dodaj_ucznia('Hubert', 'Lis', DATE '2016-02-08', '4A', 'Fortepian', 'lis.rodzic@email.pl', '500100601');
-EXEC PKG_OSOBY.dodaj_ucznia('Weronika', 'Mazurek', DATE '2016-04-15', '4A', 'Skrzypce', 'mazurek2.rodzic@email.pl', '500100602');
-EXEC PKG_OSOBY.dodaj_ucznia('Radoslaw', 'Szymczak', DATE '2016-06-22', '4A', 'Gitara', 'szymczak.rodzic@email.pl', '500100603');
-EXEC PKG_OSOBY.dodaj_ucznia('Milena', 'Zawadzki', DATE '2016-08-29', '4A', 'Fortepian', 'zawadzki.rodzic@email.pl', '500100604');
-EXEC PKG_OSOBY.dodaj_ucznia('Arkadiusz', 'Sobczak', DATE '2016-10-06', '4A', 'Flet', 'sobczak.rodzic@email.pl', '500100605');
-EXEC PKG_OSOBY.dodaj_ucznia('Aurelia', 'Przybylski', DATE '2016-12-13', '4A', 'Fortepian', 'przybylski.rodzic@email.pl', '500100606');
-EXEC PKG_OSOBY.dodaj_ucznia('Dawid', 'Borkowski', DATE '2016-01-20', '4A', 'Skrzypce', 'borkowski.rodzic@email.pl', '500100607');
-EXEC PKG_OSOBY.dodaj_ucznia('Malwina', 'Sadowski', DATE '2016-03-27', '4A', 'Gitara', 'sadowski.rodzic@email.pl', '500100608');
-EXEC PKG_OSOBY.dodaj_ucznia('Eryk', 'Glowacki', DATE '2016-05-04', '4A', 'Fortepian', 'glowacki.rodzic@email.pl', '500100609');
-EXEC PKG_OSOBY.dodaj_ucznia('Jowita', 'Wasilewski', DATE '2016-07-11', '4A', 'Perkusja', 'wasilewski.rodzic@email.pl', '500100610');
-EXEC PKG_OSOBY.dodaj_ucznia('Przemyslaw', 'Chmiel', DATE '2016-09-18', '4A', 'Skrzypce', 'chmiel.rodzic@email.pl', '500100611');
-EXEC PKG_OSOBY.dodaj_ucznia('Sara', 'Rutkowski', DATE '2016-11-25', '4A', 'Flet', 'rutkowski.rodzic@email.pl', '500100612');
-EXEC PKG_OSOBY.dodaj_ucznia('Sebastian', 'Michalak', DATE '2016-02-02', '4A', 'Gitara', 'michalak.rodzic@email.pl', '500100613');
-EXEC PKG_OSOBY.dodaj_ucznia('Adrianna', 'Bielecki', DATE '2016-04-09', '4A', 'Fortepian', 'bielecki.rodzic@email.pl', '500100614');
-
--- Klasa 5A (13 uczniow)
-EXEC PKG_OSOBY.dodaj_ucznia('Dominik', 'Zakrzewski', DATE '2015-01-16', '5A', 'Fortepian', 'zakrzewski.rodzic@email.pl', '500100701');
-EXEC PKG_OSOBY.dodaj_ucznia('Klaudia', 'Krajewski', DATE '2015-03-23', '5A', 'Skrzypce', 'krajewski.rodzic@email.pl', '500100702');
-EXEC PKG_OSOBY.dodaj_ucznia('Grzegorz', 'Nowicki', DATE '2015-05-30', '5A', 'Gitara', 'nowicki.rodzic@email.pl', '500100703');
-EXEC PKG_OSOBY.dodaj_ucznia('Karolina', 'Adamski', DATE '2015-07-07', '5A', 'Fortepian', 'adamski.rodzic@email.pl', '500100704');
-EXEC PKG_OSOBY.dodaj_ucznia('Artur', 'Sikorski', DATE '2015-09-14', '5A', 'Flet', 'sikorski.rodzic@email.pl', '500100705');
-EXEC PKG_OSOBY.dodaj_ucznia('Monika', 'Krawczuk', DATE '2015-11-21', '5A', 'Fortepian', 'krawczuk.rodzic@email.pl', '500100706');
-EXEC PKG_OSOBY.dodaj_ucznia('Rafal', 'Mroz', DATE '2015-02-28', '5A', 'Skrzypce', 'mroz.rodzic@email.pl', '500100707');
-EXEC PKG_OSOBY.dodaj_ucznia('Agata', 'Zimowski', DATE '2015-04-05', '5A', 'Gitara', 'zimowski.rodzic@email.pl', '500100708');
-EXEC PKG_OSOBY.dodaj_ucznia('Robert', 'Kwiecien', DATE '2015-06-12', '5A', 'Fortepian', 'kwiecien.rodzic@email.pl', '500100709');
-EXEC PKG_OSOBY.dodaj_ucznia('Ewelina', 'Maj', DATE '2015-08-19', '5A', 'Perkusja', 'maj.rodzic@email.pl', '500100710');
-EXEC PKG_OSOBY.dodaj_ucznia('Lukasz', 'Czerwinski', DATE '2015-10-26', '5A', 'Skrzypce', 'czerwinski.rodzic@email.pl', '500100711');
-EXEC PKG_OSOBY.dodaj_ucznia('Beata', 'Lipinski', DATE '2015-12-03', '5A', 'Flet', 'lipinski.rodzic@email.pl', '500100712');
-EXEC PKG_OSOBY.dodaj_ucznia('Konrad', 'Wilk', DATE '2015-01-10', '5A', 'Gitara', 'wilk.rodzic@email.pl', '500100713');
-
--- Klasa 6A (12 uczniow - dyplomanci)
-EXEC PKG_OSOBY.dodaj_ucznia('Maciej', 'Bednarski', DATE '2014-02-17', '6A', 'Fortepian', 'bednarski.rodzic@email.pl', '500100801');
-EXEC PKG_OSOBY.dodaj_ucznia('Renata', 'Kacprzak', DATE '2014-04-24', '6A', 'Skrzypce', 'kacprzak.rodzic@email.pl', '500100802');
-EXEC PKG_OSOBY.dodaj_ucznia('Marcin', 'Duda', DATE '2014-06-01', '6A', 'Gitara', 'duda.rodzic@email.pl', '500100803');
-EXEC PKG_OSOBY.dodaj_ucznia('Izabela', 'Kurek', DATE '2014-08-08', '6A', 'Fortepian', 'kurek.rodzic@email.pl', '500100804');
-EXEC PKG_OSOBY.dodaj_ucznia('Stanislaw', 'Wojciechowski', DATE '2014-10-15', '6A', 'Flet', 'wojciechowski.rodzic@email.pl', '500100805');
-EXEC PKG_OSOBY.dodaj_ucznia('Justyna', 'Kowalczyk', DATE '2014-12-22', '6A', 'Fortepian', 'kowalczyk.rodzic@email.pl', '500100806');
-EXEC PKG_OSOBY.dodaj_ucznia('Andrzej', 'Sobieski', DATE '2014-01-29', '6A', 'Skrzypce', 'sobieski.rodzic@email.pl', '500100807');
-EXEC PKG_OSOBY.dodaj_ucznia('Teresa', 'Grabowska', DATE '2014-03-08', '6A', 'Gitara', 'grabowska.rodzic@email.pl', '500100808');
-EXEC PKG_OSOBY.dodaj_ucznia('Marek', 'Jasinski', DATE '2014-05-15', '6A', 'Fortepian', 'jasinski.rodzic@email.pl', '500100809');
-EXEC PKG_OSOBY.dodaj_ucznia('Anna', 'Borkowska', DATE '2014-07-22', '6A', 'Perkusja', 'borkowska.rodzic@email.pl', '500100810');
-EXEC PKG_OSOBY.dodaj_ucznia('Piotr', 'Nawrocki', DATE '2014-09-29', '6A', 'Skrzypce', 'nawrocki.rodzic@email.pl', '500100811');
-EXEC PKG_OSOBY.dodaj_ucznia('Dorota', 'Kowalewski', DATE '2014-11-06', '6A', 'Flet', 'kowalewski.rodzic@email.pl', '500100812');
-
--- ============================================================================
--- 8. GENEROWANIE PLANU LEKCJI NA TYDZIEN
--- ============================================================================
-
--- Wygeneruj plan na pierwszy tydzien semestru (2026-02-02 to poniedzialek)
--- Kazdy uczen dostanie:
---   - 2 lekcje instrumentu (indywidualne) w tygodniu
---   - Lekcje grupowe: Ksztalcenie sluchu, Rytmika, Audycje muzyczne
---   - Klasy IV-VI dodatkowo: Chor lub Orkiestra
-
-SET SERVEROUTPUT ON SIZE UNLIMITED;
 
 BEGIN
-    PKG_LEKCJE.generuj_plan_tygodnia(DATE '2026-02-02');
+    PKG_SLOWNIKI.dodaj_instrument('Fortepian', 'N');
+    PKG_SLOWNIKI.dodaj_instrument('Skrzypce', 'T');
+    PKG_SLOWNIKI.dodaj_instrument('Gitara', 'N');
+    PKG_SLOWNIKI.dodaj_instrument('Flet', 'T');
+    PKG_SLOWNIKI.dodaj_instrument('Perkusja', 'T');
+    DBMS_OUTPUT.PUT_LINE('Dodano 5 instrumentow');
 END;
 /
 
 -- ============================================================================
--- 9. PRZYKLADOWE OCENY
--- Dla 2-3 pierwszych uczniow z kazdej klasy (rozne przedmioty i obszary)
+-- 3. PRZEDMIOTY (10 rekordow)
 -- ============================================================================
 
--- ============================================================================
--- KLASA 1A
--- ============================================================================
+BEGIN
+    -- Indywidualne - instrumenty
+    PKG_SLOWNIKI.dodaj_przedmiot('Fortepian', 'indywidualny', 45, T_WYPOSAZENIE('fortepian'));
+    PKG_SLOWNIKI.dodaj_przedmiot('Skrzypce', 'indywidualny', 45, T_WYPOSAZENIE('pianino', 'pulpit'));
+    PKG_SLOWNIKI.dodaj_przedmiot('Gitara', 'indywidualny', 45, NULL);
+    PKG_SLOWNIKI.dodaj_przedmiot('Flet', 'indywidualny', 45, T_WYPOSAZENIE('pianino', 'pulpit'));
+    PKG_SLOWNIKI.dodaj_przedmiot('Perkusja', 'indywidualny', 45, T_WYPOSAZENIE('perkusja'));
 
--- Jan Kowalski (Fortepian)
-EXEC PKG_OCENY.wystaw_ocene('Kowalski', 'Jan', 'Kowalska', 'Fortepian', 4, 'technika', 'Dobra postawa przy instrumencie');
-EXEC PKG_OCENY.wystaw_ocene('Kowalski', 'Jan', 'Kowalska', 'Fortepian', 5, 'interpretacja', 'Ladna dynamika w utworze');
-EXEC PKG_OCENY.wystaw_ocene('Kowalski', 'Jan', 'Kowalska', 'Fortepian', 4, 'postepy', 'Systematyczny postep');
-EXEC PKG_OCENY.wystaw_ocene('Kowalski', 'Jan', 'Jankowska', 'Ksztalcenie sluchu', 4, 'sluch', 'Rozpoznaje interwaly');
-EXEC PKG_OCENY.wystaw_ocene('Kowalski', 'Jan', 'Jankowska', 'Ksztalcenie sluchu', 5, 'teoria', 'Zna wartosci nut');
-EXEC PKG_OCENY.wystaw_ocene('Kowalski', 'Jan', 'Mazur', 'Rytmika', 5, 'ogolna', 'Swietne poczucie rytmu');
-
--- Anna Nowak (Fortepian)
-EXEC PKG_OCENY.wystaw_ocene('Nowak', 'Anna', 'Kowalska', 'Fortepian', 5, 'technika', 'Bardzo dobra koordynacja rak');
-EXEC PKG_OCENY.wystaw_ocene('Nowak', 'Anna', 'Kowalska', 'Fortepian', 5, 'interpretacja', 'Muzykalna gra');
-EXEC PKG_OCENY.wystaw_ocene('Nowak', 'Anna', 'Kowalska', 'Fortepian', 5, 'postepy', 'Szybko sie uczy');
-EXEC PKG_OCENY.wystaw_ocene('Nowak', 'Anna', 'Jankowska', 'Ksztalcenie sluchu', 5, 'sluch', 'Swietny sluch melodyczny');
-EXEC PKG_OCENY.wystaw_ocene('Nowak', 'Anna', 'Mazur', 'Rytmika', 4, 'ogolna', NULL);
-
--- Piotr Wisniewski (Skrzypce)
-EXEC PKG_OCENY.wystaw_ocene('Wisniewski', 'Piotr', 'Wisniewski', 'Skrzypce', 3, 'technika', 'Wymaga pracy nad intonacja');
-EXEC PKG_OCENY.wystaw_ocene('Wisniewski', 'Piotr', 'Wisniewski', 'Skrzypce', 4, 'postepy', 'Widoczna poprawa');
-EXEC PKG_OCENY.wystaw_ocene('Wisniewski', 'Piotr', 'Jankowska', 'Ksztalcenie sluchu', 4, 'sluch', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Wisniewski', 'Piotr', 'Mazur', 'Rytmika', 4, 'ogolna', NULL);
+    -- Grupowe
+    PKG_SLOWNIKI.dodaj_przedmiot('Ksztalcenie sluchu', 'grupowy', 45, T_WYPOSAZENIE('tablica', 'pianino'));
+    PKG_SLOWNIKI.dodaj_przedmiot('Rytmika', 'grupowy', 45, T_WYPOSAZENIE('lustra'));
+    PKG_SLOWNIKI.dodaj_przedmiot('Audycje muzyczne', 'grupowy', 45, T_WYPOSAZENIE('tablica'));
+    PKG_SLOWNIKI.dodaj_przedmiot('Chor', 'grupowy', 90, T_WYPOSAZENIE('naglosnienie'));
+    PKG_SLOWNIKI.dodaj_przedmiot('Orkiestra', 'grupowy', 90, T_WYPOSAZENIE('pulpity'));
+    
+    DBMS_OUTPUT.PUT_LINE('Dodano 10 przedmiotow');
+END;
+/
 
 -- ============================================================================
--- KLASA 1B
+-- 4. SALE (15 rekordow - 12 indywidualnych + 3 grupowe)
 -- ============================================================================
 
--- Bartosz Krawczyk (Fortepian)
-EXEC PKG_OCENY.wystaw_ocene('Krawczyk', 'Bartosz', 'Nowak', 'Fortepian', 5, 'technika', 'Bardzo dobra technika palcowa');
-EXEC PKG_OCENY.wystaw_ocene('Krawczyk', 'Bartosz', 'Nowak', 'Fortepian', 5, 'interpretacja', 'Piekne frazowanie');
-EXEC PKG_OCENY.wystaw_ocene('Krawczyk', 'Bartosz', 'Nowak', 'Fortepian', 6, 'postepy', 'Wybitne postepy!');
-EXEC PKG_OCENY.wystaw_ocene('Krawczyk', 'Bartosz', 'Jankowska', 'Ksztalcenie sluchu', 5, 'sluch', 'Doskonaly sluch');
-EXEC PKG_OCENY.wystaw_ocene('Krawczyk', 'Bartosz', 'Mazur', 'Rytmika', 5, 'ogolna', NULL);
+BEGIN
+    -- Sale indywidualne (12) - maksimum zasobów
+    PKG_SLOWNIKI.dodaj_sale('101', 'indywidualna', 3, T_WYPOSAZENIE('fortepian'));
+    PKG_SLOWNIKI.dodaj_sale('102', 'indywidualna', 3, T_WYPOSAZENIE('fortepian'));
+    PKG_SLOWNIKI.dodaj_sale('103', 'indywidualna', 3, T_WYPOSAZENIE('fortepian'));
+    PKG_SLOWNIKI.dodaj_sale('104', 'indywidualna', 3, T_WYPOSAZENIE('fortepian'));
+    PKG_SLOWNIKI.dodaj_sale('105', 'indywidualna', 3, T_WYPOSAZENIE('pianino', 'pulpit'));
+    PKG_SLOWNIKI.dodaj_sale('106', 'indywidualna', 3, T_WYPOSAZENIE('pianino', 'pulpit'));
+    PKG_SLOWNIKI.dodaj_sale('107', 'indywidualna', 3, T_WYPOSAZENIE('pianino', 'pulpit'));
+    PKG_SLOWNIKI.dodaj_sale('108', 'indywidualna', 3, T_WYPOSAZENIE('pianino', 'pulpit'));
+    PKG_SLOWNIKI.dodaj_sale('109', 'indywidualna', 3, T_WYPOSAZENIE('gitara'));
+    PKG_SLOWNIKI.dodaj_sale('110', 'indywidualna', 3, T_WYPOSAZENIE('gitara'));
+    PKG_SLOWNIKI.dodaj_sale('111', 'indywidualna', 3, T_WYPOSAZENIE('perkusja'));
+    PKG_SLOWNIKI.dodaj_sale('112', 'indywidualna', 3, T_WYPOSAZENIE('perkusja'));
 
--- Natalia Piotrowska (Skrzypce)
-EXEC PKG_OCENY.wystaw_ocene('Piotrowska', 'Natalia', 'Kaminski', 'Skrzypce', 4, 'technika', 'Poprawna pozycja smyczka');
-EXEC PKG_OCENY.wystaw_ocene('Piotrowska', 'Natalia', 'Kaminski', 'Skrzypce', 4, 'interpretacja', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Piotrowska', 'Natalia', 'Kaminski', 'Skrzypce', 4, 'postepy', 'Stabilny postep');
-EXEC PKG_OCENY.wystaw_ocene('Piotrowska', 'Natalia', 'Jankowska', 'Ksztalcenie sluchu', 4, 'teoria', NULL);
-
--- Mateusz Grabowski (Gitara)
-EXEC PKG_OCENY.wystaw_ocene('Grabowski', 'Mateusz', 'Lewandowski', 'Gitara', 4, 'technika', 'Dobre akordy');
-EXEC PKG_OCENY.wystaw_ocene('Grabowski', 'Mateusz', 'Lewandowski', 'Gitara', 3, 'interpretacja', 'Pracuj nad dynamika');
-EXEC PKG_OCENY.wystaw_ocene('Grabowski', 'Mateusz', 'Jankowska', 'Ksztalcenie sluchu', 3, 'sluch', 'Wymaga cwiczen');
-
--- ============================================================================
--- KLASA 2A
--- ============================================================================
-
--- Oskar Walczak (Fortepian)
-EXEC PKG_OCENY.wystaw_ocene('Walczak', 'Oskar', 'Kowalska', 'Fortepian', 4, 'technika', 'Dobra technika legato');
-EXEC PKG_OCENY.wystaw_ocene('Walczak', 'Oskar', 'Kowalska', 'Fortepian', 4, 'interpretacja', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Walczak', 'Oskar', 'Kowalska', 'Fortepian', 5, 'postepy', 'Duzy postep w tym semestrze');
-EXEC PKG_OCENY.wystaw_ocene('Walczak', 'Oskar', 'Jankowska', 'Ksztalcenie sluchu', 4, 'teoria', 'Zna klucze wiolinowy i basowy');
-EXEC PKG_OCENY.wystaw_ocene('Walczak', 'Oskar', 'Mazur', 'Rytmika', 4, 'ogolna', NULL);
-
--- Hanna Gorska (Skrzypce)
-EXEC PKG_OCENY.wystaw_ocene('Gorska', 'Hanna', 'Kaminski', 'Skrzypce', 5, 'technika', 'Czysta intonacja');
-EXEC PKG_OCENY.wystaw_ocene('Gorska', 'Hanna', 'Kaminski', 'Skrzypce', 5, 'interpretacja', 'Ekspresyjna gra');
-EXEC PKG_OCENY.wystaw_ocene('Gorska', 'Hanna', 'Jankowska', 'Ksztalcenie sluchu', 5, 'sluch', 'Bardzo dobry sluch');
-
--- Antoni Sikora (Gitara)
-EXEC PKG_OCENY.wystaw_ocene('Sikora', 'Antoni', 'Wojcik', 'Gitara', 4, 'technika', 'Dobre arpeggia');
-EXEC PKG_OCENY.wystaw_ocene('Sikora', 'Antoni', 'Wojcik', 'Gitara', 4, 'postepy', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Sikora', 'Antoni', 'Jankowska', 'Ksztalcenie sluchu', 4, 'teoria', NULL);
+    -- Sale grupowe (3) - wyposażone we wszystko
+    PKG_SLOWNIKI.dodaj_sale('201', 'grupowa', 20, T_WYPOSAZENIE('tablica', 'pianino', 'lustra', 'naglosnienie', 'pulpity'));
+    PKG_SLOWNIKI.dodaj_sale('202', 'grupowa', 20, T_WYPOSAZENIE('tablica', 'pianino', 'lustra', 'naglosnienie', 'pulpity'));
+    PKG_SLOWNIKI.dodaj_sale('203', 'grupowa', 20, T_WYPOSAZENIE('tablica', 'pianino', 'lustra', 'naglosnienie', 'pulpity'));
+    
+    DBMS_OUTPUT.PUT_LINE('Dodano 15 sal (12 indywidualnych + 3 grupowe)');
+END;
+/
 
 -- ============================================================================
--- KLASA 2B
+-- 5. GRUPY (6 rekordow - 1 grupa na rocznik)
 -- ============================================================================
 
--- Tymon Wrobel (Fortepian)
-EXEC PKG_OCENY.wystaw_ocene('Wrobel', 'Tymon', 'Szymanski', 'Fortepian', 3, 'technika', 'Wymaga wiecej cwiczen');
-EXEC PKG_OCENY.wystaw_ocene('Wrobel', 'Tymon', 'Szymanski', 'Fortepian', 4, 'interpretacja', 'Dobra muzykalnosc');
-EXEC PKG_OCENY.wystaw_ocene('Wrobel', 'Tymon', 'Szymanski', 'Fortepian', 3, 'postepy', 'Nieregularne cwiczenia');
-EXEC PKG_OCENY.wystaw_ocene('Wrobel', 'Tymon', 'Jankowska', 'Ksztalcenie sluchu', 3, 'sluch', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Wrobel', 'Tymon', 'Mazur', 'Rytmika', 4, 'ogolna', NULL);
+BEGIN
+    -- Klasy I-III 
+    PKG_SLOWNIKI.dodaj_grupe('1A', 1, '2025/2026');
+    PKG_SLOWNIKI.dodaj_grupe('2A', 2, '2025/2026');
+    PKG_SLOWNIKI.dodaj_grupe('3A', 3, '2025/2026');
 
--- Kornelia Kaczmarek (Skrzypce)
-EXEC PKG_OCENY.wystaw_ocene('Kaczmarek', 'Kornelia', 'Wisniewski', 'Skrzypce', 4, 'technika', 'Dobra postawa');
-EXEC PKG_OCENY.wystaw_ocene('Kaczmarek', 'Kornelia', 'Wisniewski', 'Skrzypce', 5, 'interpretacja', 'Piekne vibrato');
-EXEC PKG_OCENY.wystaw_ocene('Kaczmarek', 'Kornelia', 'Jankowska', 'Ksztalcenie sluchu', 5, 'sluch', 'Swietny sluch');
-
--- Marcel Piotrowski (Gitara)
-EXEC PKG_OCENY.wystaw_ocene('Piotrowski', 'Marcel', 'Lewandowski', 'Gitara', 4, 'technika', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Piotrowski', 'Marcel', 'Lewandowski', 'Gitara', 4, 'postepy', 'Systematyczne postepy');
-EXEC PKG_OCENY.wystaw_ocene('Piotrowski', 'Marcel', 'Jankowska', 'Ksztalcenie sluchu', 4, 'teoria', NULL);
+    -- Klasy IV-VI
+    PKG_SLOWNIKI.dodaj_grupe('4A', 4, '2025/2026');
+    PKG_SLOWNIKI.dodaj_grupe('5A', 5, '2025/2026');
+    PKG_SLOWNIKI.dodaj_grupe('6A', 6, '2025/2026');
+    
+    DBMS_OUTPUT.PUT_LINE('Dodano 6 grup');
+END;
+/
 
 -- ============================================================================
--- KLASA 3A
+-- 6. NAUCZYCIELE (15 rekordow - 12 instrumentalistow + 3 grupowych)
+-- ============================================================================
+-- Rozklad obciazenia (więcej nauczycieli = mniejsze obciążenie):
+-- - Fortepian: 16 uczniow / 4 nauczycieli = 8 lekcji/tydzien/os
+-- - Skrzypce: 12 uczniow / 3 nauczycieli = 8 lekcji/tydzien/os
+-- - Gitara: 10 uczniow / 2 nauczycieli = 10 lekcji/tydzien/os
+-- - Flet: 6 uczniow / 2 nauczycieli = 6 lekcji/tydzien/os
+-- - Perkusja: 4 uczniow / 1 nauczyciel = 8 lekcji/tydzien
 -- ============================================================================
 
--- Tymoteusz Bak (Fortepian)
-EXEC PKG_OCENY.wystaw_ocene('Bak', 'Tymoteusz', 'Kowalska', 'Fortepian', 5, 'technika', 'Swietna technika');
-EXEC PKG_OCENY.wystaw_ocene('Bak', 'Tymoteusz', 'Kowalska', 'Fortepian', 5, 'interpretacja', 'Bardzo muzykalny');
-EXEC PKG_OCENY.wystaw_ocene('Bak', 'Tymoteusz', 'Kowalska', 'Fortepian', 6, 'postepy', 'Kandydat do wyroznienia');
-EXEC PKG_OCENY.wystaw_ocene('Bak', 'Tymoteusz', 'Jankowska', 'Ksztalcenie sluchu', 5, 'sluch', 'Doskonaly sluch harmoniczny');
-EXEC PKG_OCENY.wystaw_ocene('Bak', 'Tymoteusz', 'Jankowska', 'Ksztalcenie sluchu', 6, 'teoria', 'Znakomita znajomosc teorii');
-EXEC PKG_OCENY.wystaw_ocene('Bak', 'Tymoteusz', 'Mazur', 'Rytmika', 5, 'ogolna', NULL);
+BEGIN
+    -- Nauczyciele instrumentow (12) - więcej nauczycieli na popularne instrumenty
+    PKG_OSOBY.dodaj_nauczyciela('Anna', 'Kowalska', T_INSTRUMENTY_TAB('Fortepian'), 'kowalska@szkola.pl', '601111111');
+    PKG_OSOBY.dodaj_nauczyciela('Jan', 'Nowak', T_INSTRUMENTY_TAB('Fortepian'), 'nowak@szkola.pl', '602222222');
+    PKG_OSOBY.dodaj_nauczyciela('Piotr', 'Szymanski', T_INSTRUMENTY_TAB('Fortepian'), 'szymanski@szkola.pl', '603333333');
+    PKG_OSOBY.dodaj_nauczyciela('Monika', 'Nowicka', T_INSTRUMENTY_TAB('Fortepian'), 'nowicka@szkola.pl', '601444444');
+    PKG_OSOBY.dodaj_nauczyciela('Marek', 'Wisniewski', T_INSTRUMENTY_TAB('Skrzypce'), 'wisniewski@szkola.pl', '604444444');
+    PKG_OSOBY.dodaj_nauczyciela('Tomasz', 'Kaminski', T_INSTRUMENTY_TAB('Skrzypce'), 'kaminski@szkola.pl', '605555555');
+    PKG_OSOBY.dodaj_nauczyciela('Agnieszka', 'Kubiak', T_INSTRUMENTY_TAB('Skrzypce'), 'kubiak@szkola.pl', '605666666');
+    PKG_OSOBY.dodaj_nauczyciela('Adam', 'Lewandowski', T_INSTRUMENTY_TAB('Gitara'), 'lewandowski@szkola.pl', '607777777');
+    PKG_OSOBY.dodaj_nauczyciela('Pawel', 'Wojcik', T_INSTRUMENTY_TAB('Gitara'), 'wojcik@szkola.pl', '608888888');
+    PKG_OSOBY.dodaj_nauczyciela('Ewa', 'Zielinska', T_INSTRUMENTY_TAB('Flet'), 'zielinska@szkola.pl', '606666666');
+    PKG_OSOBY.dodaj_nauczyciela('Katarzyna', 'Olszewska', T_INSTRUMENTY_TAB('Flet'), 'olszewska@szkola.pl', '606777777');
+    PKG_OSOBY.dodaj_nauczyciela('Krzysztof', 'Dabrowski', T_INSTRUMENTY_TAB('Perkusja'), 'dabrowski@szkola.pl', '609999999');
 
--- Laura Pietrzak (Skrzypce)
-EXEC PKG_OCENY.wystaw_ocene('Pietrzak', 'Laura', 'Kaminski', 'Skrzypce', 4, 'technika', 'Dobra technika smyczkowa');
-EXEC PKG_OCENY.wystaw_ocene('Pietrzak', 'Laura', 'Kaminski', 'Skrzypce', 5, 'interpretacja', 'Piekne frazowanie');
-EXEC PKG_OCENY.wystaw_ocene('Pietrzak', 'Laura', 'Kaminski', 'Skrzypce', 5, 'postepy', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Pietrzak', 'Laura', 'Jankowska', 'Ksztalcenie sluchu', 4, 'teoria', NULL);
-
--- Ksawery Tomczak (Gitara)
-EXEC PKG_OCENY.wystaw_ocene('Tomczak', 'Ksawery', 'Wojcik', 'Gitara', 4, 'technika', 'Dobra technika prawej reki');
-EXEC PKG_OCENY.wystaw_ocene('Tomczak', 'Ksawery', 'Wojcik', 'Gitara', 4, 'interpretacja', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Tomczak', 'Ksawery', 'Jankowska', 'Ksztalcenie sluchu', 4, 'sluch', NULL);
-
--- ============================================================================
--- KLASA 4A (IV-VI maja Chor/Orkiestre)
--- ============================================================================
-
--- Hubert Lis (Fortepian)
-EXEC PKG_OCENY.wystaw_ocene('Lis', 'Hubert', 'Nowak', 'Fortepian', 4, 'technika', 'Dobre gamy i pasaze');
-EXEC PKG_OCENY.wystaw_ocene('Lis', 'Hubert', 'Nowak', 'Fortepian', 4, 'interpretacja', 'Dobra interpretacja sonatiny');
-EXEC PKG_OCENY.wystaw_ocene('Lis', 'Hubert', 'Nowak', 'Fortepian', 4, 'postepy', 'Stabilny postep');
-EXEC PKG_OCENY.wystaw_ocene('Lis', 'Hubert', 'Jankowska', 'Ksztalcenie sluchu', 5, 'sluch', 'Rozpoznaje akordy');
-EXEC PKG_OCENY.wystaw_ocene('Lis', 'Hubert', 'Mazur', 'Audycje muzyczne', 5, 'ogolna', 'Aktywny na zajeciach');
-EXEC PKG_OCENY.wystaw_ocene('Lis', 'Hubert', 'Krawczyk', 'Chor', 4, 'ogolna', 'Dobra emisja glosu');
-
--- Weronika Mazurek (Skrzypce)
-EXEC PKG_OCENY.wystaw_ocene('Mazurek', 'Weronika', 'Wisniewski', 'Skrzypce', 5, 'technika', 'Bardzo czysta intonacja');
-EXEC PKG_OCENY.wystaw_ocene('Mazurek', 'Weronika', 'Wisniewski', 'Skrzypce', 5, 'interpretacja', 'Ekspresyjna gra');
-EXEC PKG_OCENY.wystaw_ocene('Mazurek', 'Weronika', 'Wisniewski', 'Skrzypce', 5, 'postepy', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Mazurek', 'Weronika', 'Jankowska', 'Ksztalcenie sluchu', 5, 'teoria', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Mazurek', 'Weronika', 'Krawczyk', 'Orkiestra', 5, 'ogolna', 'Liderka sekcji skrzypiec');
-
--- Radoslaw Szymczak (Gitara)
-EXEC PKG_OCENY.wystaw_ocene('Szymczak', 'Radoslaw', 'Lewandowski', 'Gitara', 4, 'technika', 'Dobre tremolo');
-EXEC PKG_OCENY.wystaw_ocene('Szymczak', 'Radoslaw', 'Lewandowski', 'Gitara', 4, 'interpretacja', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Szymczak', 'Radoslaw', 'Jankowska', 'Ksztalcenie sluchu', 4, 'sluch', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Szymczak', 'Radoslaw', 'Krawczyk', 'Chor', 4, 'ogolna', NULL);
+    -- Nauczyciele przedmiotow grupowych (3) - więcej dla lepszego rozkładu
+    PKG_OSOBY.dodaj_nauczyciela('Maria', 'Jankowska', NULL, 'jankowska@szkola.pl', '610000000');
+    PKG_OSOBY.dodaj_nauczyciela('Robert', 'Krawczyk', NULL, 'krawczyk@szkola.pl', '612222222');
+    PKG_OSOBY.dodaj_nauczyciela('Barbara', 'Mazur', NULL, 'mazur@szkola.pl', '613333333');
+    
+    DBMS_OUTPUT.PUT_LINE('Dodano 15 nauczycieli (12 instrumentalistow + 3 grupowych)');
+END;
+/
 
 -- ============================================================================
--- KLASA 5A
+-- 7. UCZNIOWIE (48 uczniow rozlozonych w 6 grupach)
+-- ============================================================================
+-- Struktura:
+-- - Klasa 1A: 10 uczniow (F:4, S:2, G:2, Fl:1, P:1)
+-- - Klasa 2A: 10 uczniow (F:3, S:2, G:2, Fl:2, P:1)
+-- - Klasa 3A: 8 uczniow  (F:3, S:2, G:2, Fl:1, P:0)
+-- - Klasa 4A: 8 uczniow  (F:2, S:2, G:2, Fl:1, P:1)
+-- - Klasa 5A: 6 uczniow  (F:2, S:2, G:1, Fl:1, P:0)
+-- - Klasa 6A: 6 uczniow  (F:2, S:2, G:1, Fl:0, P:1)
+-- RAZEM: 48 uczniow (F:16, S:12, G:10, Fl:6, P:4)
 -- ============================================================================
 
--- Dominik Zakrzewski (Fortepian)
-EXEC PKG_OCENY.wystaw_ocene('Zakrzewski', 'Dominik', 'Szymanski', 'Fortepian', 5, 'technika', 'Zaawansowana technika');
-EXEC PKG_OCENY.wystaw_ocene('Zakrzewski', 'Dominik', 'Szymanski', 'Fortepian', 6, 'interpretacja', 'Dojrzala interpretacja Chopina');
-EXEC PKG_OCENY.wystaw_ocene('Zakrzewski', 'Dominik', 'Szymanski', 'Fortepian', 5, 'postepy', 'Przygotowany do konkursu');
-EXEC PKG_OCENY.wystaw_ocene('Zakrzewski', 'Dominik', 'Jankowska', 'Ksztalcenie sluchu', 5, 'teoria', 'Zna formy muzyczne');
-EXEC PKG_OCENY.wystaw_ocene('Zakrzewski', 'Dominik', 'Mazur', 'Audycje muzyczne', 5, 'ogolna', 'Zna epoki muzyczne');
-EXEC PKG_OCENY.wystaw_ocene('Zakrzewski', 'Dominik', 'Krawczyk', 'Chor', 5, 'ogolna', NULL);
+BEGIN
+    -- Klasa 1A (10 uczniow)
+    PKG_OSOBY.dodaj_ucznia('Jan', 'Kowalski', DATE '2019-03-15', '1A', 'Fortepian', 'kowalski.rodzic@email.pl', '500100101');
+    PKG_OSOBY.dodaj_ucznia('Anna', 'Nowak', DATE '2019-05-20', '1A', 'Fortepian', 'nowak.rodzic@email.pl', '500100102');
+    PKG_OSOBY.dodaj_ucznia('Piotr', 'Wisniewski', DATE '2019-01-10', '1A', 'Skrzypce', 'wisniewski.rodzic@email.pl', '500100103');
+    PKG_OSOBY.dodaj_ucznia('Maria', 'Wojcik', DATE '2019-07-25', '1A', 'Gitara', 'wojcik.rodzic@email.pl', '500100104');
+    PKG_OSOBY.dodaj_ucznia('Tomasz', 'Kaminski', DATE '2019-02-28', '1A', 'Flet', 'kaminski.rodzic@email.pl', '500100105');
+    PKG_OSOBY.dodaj_ucznia('Ewa', 'Lewandowska', DATE '2019-09-12', '1A', 'Fortepian', 'lewandowska.rodzic@email.pl', '500100106');
+    PKG_OSOBY.dodaj_ucznia('Adam', 'Zielinski', DATE '2019-04-08', '1A', 'Skrzypce', 'zielinski.rodzic@email.pl', '500100107');
+    PKG_OSOBY.dodaj_ucznia('Katarzyna', 'Szymanska', DATE '2019-11-30', '1A', 'Fortepian', 'szymanska.rodzic@email.pl', '500100108');
+    PKG_OSOBY.dodaj_ucznia('Michal', 'Dabrowski', DATE '2019-06-18', '1A', 'Gitara', 'dabrowski.rodzic@email.pl', '500100109');
+    PKG_OSOBY.dodaj_ucznia('Jakub', 'Jankowski', DATE '2019-10-05', '1A', 'Perkusja', 'jankowski.rodzic@email.pl', '500100110');
+    
+    DBMS_OUTPUT.PUT_LINE('Dodano 10 uczniow klasy 1A');
+END;
+/
 
--- Klaudia Krajewski (Skrzypce)
-EXEC PKG_OCENY.wystaw_ocene('Krajewski', 'Klaudia', 'Kaminski', 'Skrzypce', 4, 'technika', 'Dobra technika pozycji');
-EXEC PKG_OCENY.wystaw_ocene('Krajewski', 'Klaudia', 'Kaminski', 'Skrzypce', 5, 'interpretacja', 'Piekne kantyleny');
-EXEC PKG_OCENY.wystaw_ocene('Krajewski', 'Klaudia', 'Kaminski', 'Skrzypce', 4, 'postepy', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Krajewski', 'Klaudia', 'Jankowska', 'Ksztalcenie sluchu', 4, 'sluch', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Krajewski', 'Klaudia', 'Krawczyk', 'Orkiestra', 4, 'ogolna', 'Solidna gra w zespole');
+BEGIN
+    -- Klasa 2A (10 uczniow)
+    PKG_OSOBY.dodaj_ucznia('Oskar', 'Walczak', DATE '2018-02-14', '2A', 'Fortepian', 'walczak.rodzic@email.pl', '500100201');
+    PKG_OSOBY.dodaj_ucznia('Hanna', 'Gorska', DATE '2018-04-19', '2A', 'Skrzypce', 'gorska.rodzic@email.pl', '500100202');
+    PKG_OSOBY.dodaj_ucznia('Antoni', 'Sikora', DATE '2018-06-25', '2A', 'Gitara', 'sikora.rodzic@email.pl', '500100203');
+    PKG_OSOBY.dodaj_ucznia('Emilia', 'Baran', DATE '2018-08-11', '2A', 'Fortepian', 'baran.rodzic@email.pl', '500100204');
+    PKG_OSOBY.dodaj_ucznia('Leon', 'Laskowski', DATE '2018-01-07', '2A', 'Flet', 'laskowski.rodzic@email.pl', '500100205');
+    PKG_OSOBY.dodaj_ucznia('Amelia', 'Kucharska', DATE '2018-03-22', '2A', 'Fortepian', 'kucharska.rodzic@email.pl', '500100206');
+    PKG_OSOBY.dodaj_ucznia('Franciszek', 'Kalinowski', DATE '2018-05-30', '2A', 'Skrzypce', 'kalinowski.rodzic@email.pl', '500100207');
+    PKG_OSOBY.dodaj_ucznia('Antonina', 'Mazurkiewicz', DATE '2018-07-15', '2A', 'Gitara', 'mazurkiewicz.rodzic@email.pl', '500100208');
+    PKG_OSOBY.dodaj_ucznia('Nadia', 'Kwiatkowska', DATE '2018-11-04', '2A', 'Perkusja', 'kwiatkowska.rodzic@email.pl', '500100209');
+    PKG_OSOBY.dodaj_ucznia('Borys', 'Jablonski', DATE '2018-09-21', '2A', 'Flet', 'jablonski.rodzic@email.pl', '500100210');
+    
+    DBMS_OUTPUT.PUT_LINE('Dodano 10 uczniow klasy 2A');
+END;
+/
 
--- Grzegorz Nowicki (Gitara)
-EXEC PKG_OCENY.wystaw_ocene('Nowicki', 'Grzegorz', 'Wojcik', 'Gitara', 5, 'technika', 'Swietne barre');
-EXEC PKG_OCENY.wystaw_ocene('Nowicki', 'Grzegorz', 'Wojcik', 'Gitara', 5, 'interpretacja', 'Doskonala interpretacja');
-EXEC PKG_OCENY.wystaw_ocene('Nowicki', 'Grzegorz', 'Jankowska', 'Ksztalcenie sluchu', 5, 'teoria', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Nowicki', 'Grzegorz', 'Krawczyk', 'Chor', 4, 'ogolna', NULL);
+BEGIN
+    -- Klasa 3A (8 uczniow)
+    PKG_OSOBY.dodaj_ucznia('Tymoteusz', 'Bak', DATE '2017-01-11', '3A', 'Fortepian', 'bak.rodzic@email.pl', '500100301');
+    PKG_OSOBY.dodaj_ucznia('Laura', 'Pietrzak', DATE '2017-03-18', '3A', 'Skrzypce', 'pietrzak.rodzic@email.pl', '500100302');
+    PKG_OSOBY.dodaj_ucznia('Ksawery', 'Tomczak', DATE '2017-05-25', '3A', 'Gitara', 'tomczak.rodzic@email.pl', '500100303');
+    PKG_OSOBY.dodaj_ucznia('Marcelina', 'Jaworski', DATE '2017-07-02', '3A', 'Fortepian', 'jaworski.rodzic@email.pl', '500100304');
+    PKG_OSOBY.dodaj_ucznia('Kajetan', 'Malinowski', DATE '2017-09-14', '3A', 'Flet', 'malinowski.rodzic@email.pl', '500100305');
+    PKG_OSOBY.dodaj_ucznia('Blanka', 'Pawlik', DATE '2017-11-21', '3A', 'Fortepian', 'pawlik.rodzic@email.pl', '500100306');
+    PKG_OSOBY.dodaj_ucznia('Ryszard', 'Gorski', DATE '2017-02-07', '3A', 'Skrzypce', 'gorski.rodzic@email.pl', '500100307');
+    PKG_OSOBY.dodaj_ucznia('Iga', 'Szewczyk', DATE '2017-04-13', '3A', 'Gitara', 'szewczyk.rodzic@email.pl', '500100308');
+    
+    DBMS_OUTPUT.PUT_LINE('Dodano 8 uczniow klasy 3A');
+END;
+/
+
+BEGIN
+    -- Klasa 4A (8 uczniow)
+    PKG_OSOBY.dodaj_ucznia('Hubert', 'Lis', DATE '2016-02-08', '4A', 'Fortepian', 'lis.rodzic@email.pl', '500100401');
+    PKG_OSOBY.dodaj_ucznia('Weronika', 'Mazurek', DATE '2016-04-15', '4A', 'Skrzypce', 'mazurek.rodzic@email.pl', '500100402');
+    PKG_OSOBY.dodaj_ucznia('Radoslaw', 'Szymczak', DATE '2016-06-22', '4A', 'Gitara', 'szymczak.rodzic@email.pl', '500100403');
+    PKG_OSOBY.dodaj_ucznia('Milena', 'Zawadzki', DATE '2016-08-29', '4A', 'Fortepian', 'zawadzki.rodzic@email.pl', '500100404');
+    PKG_OSOBY.dodaj_ucznia('Arkadiusz', 'Sobczak', DATE '2016-10-06', '4A', 'Flet', 'sobczak.rodzic@email.pl', '500100405');
+    PKG_OSOBY.dodaj_ucznia('Dawid', 'Borkowski', DATE '2016-01-20', '4A', 'Skrzypce', 'borkowski.rodzic@email.pl', '500100406');
+    PKG_OSOBY.dodaj_ucznia('Malwina', 'Sadowski', DATE '2016-03-27', '4A', 'Gitara', 'sadowski.rodzic@email.pl', '500100407');
+    PKG_OSOBY.dodaj_ucznia('Jowita', 'Wasilewski', DATE '2016-07-11', '4A', 'Perkusja', 'wasilewski.rodzic@email.pl', '500100408');
+    
+    DBMS_OUTPUT.PUT_LINE('Dodano 8 uczniow klasy 4A');
+END;
+/
+
+BEGIN
+    -- Klasa 5A (6 uczniow)
+    PKG_OSOBY.dodaj_ucznia('Dominik', 'Zakrzewski', DATE '2015-01-16', '5A', 'Fortepian', 'zakrzewski.rodzic@email.pl', '500100501');
+    PKG_OSOBY.dodaj_ucznia('Klaudia', 'Krajewski', DATE '2015-03-23', '5A', 'Skrzypce', 'krajewski.rodzic@email.pl', '500100502');
+    PKG_OSOBY.dodaj_ucznia('Grzegorz', 'Nowicki', DATE '2015-05-30', '5A', 'Gitara', 'nowicki.rodzic@email.pl', '500100503');
+    PKG_OSOBY.dodaj_ucznia('Karolina', 'Adamski', DATE '2015-07-07', '5A', 'Fortepian', 'adamski.rodzic@email.pl', '500100504');
+    PKG_OSOBY.dodaj_ucznia('Artur', 'Sikorski', DATE '2015-09-14', '5A', 'Flet', 'sikorski.rodzic@email.pl', '500100505');
+    PKG_OSOBY.dodaj_ucznia('Rafal', 'Mroz', DATE '2015-02-28', '5A', 'Skrzypce', 'mroz.rodzic@email.pl', '500100506');
+    
+    DBMS_OUTPUT.PUT_LINE('Dodano 6 uczniow klasy 5A');
+END;
+/
+
+BEGIN
+    -- Klasa 6A (6 uczniow - dyplomanci)
+    PKG_OSOBY.dodaj_ucznia('Maciej', 'Bednarski', DATE '2014-02-17', '6A', 'Fortepian', 'bednarski.rodzic@email.pl', '500100601');
+    PKG_OSOBY.dodaj_ucznia('Renata', 'Kacprzak', DATE '2014-04-24', '6A', 'Skrzypce', 'kacprzak.rodzic@email.pl', '500100602');
+    PKG_OSOBY.dodaj_ucznia('Marcin', 'Duda', DATE '2014-06-01', '6A', 'Gitara', 'duda.rodzic@email.pl', '500100603');
+    PKG_OSOBY.dodaj_ucznia('Izabela', 'Kurek', DATE '2014-08-08', '6A', 'Fortepian', 'kurek.rodzic@email.pl', '500100604');
+    PKG_OSOBY.dodaj_ucznia('Andrzej', 'Sobieski', DATE '2014-01-29', '6A', 'Skrzypce', 'sobieski.rodzic@email.pl', '500100605');
+    PKG_OSOBY.dodaj_ucznia('Anna', 'Borkowska', DATE '2014-07-22', '6A', 'Perkusja', 'borkowska.rodzic@email.pl', '500100606');
+    
+    DBMS_OUTPUT.PUT_LINE('Dodano 6 uczniow klasy 6A (dyplomanci)');
+END;
+/
+
+COMMIT;
 
 -- ============================================================================
--- KLASA 6A (DYPLOMANCI)
+-- 8. AUTOMATYCZNE GENEROWANIE PLANU LEKCJI (HEURYSTYKA)
+-- ============================================================================
+-- System automatycznie generuje plan dla WSZYSTKICH uczniow:
+-- - 2 lekcje indywidualne instrumentu tygodniowo na ucznia
+-- - Lekcje grupowe dla kazdej grupy
+-- - Chor i Orkiestra dla klas IV-VI
 -- ============================================================================
 
--- Maciej Bednarski (Fortepian) - najlepszy uczen
-EXEC PKG_OCENY.wystaw_ocene('Bednarski', 'Maciej', 'Kowalska', 'Fortepian', 5, 'technika', 'Wirtuozowska technika');
-EXEC PKG_OCENY.wystaw_ocene('Bednarski', 'Maciej', 'Kowalska', 'Fortepian', 6, 'interpretacja', 'Wybitna muzykalnosc');
-EXEC PKG_OCENY.wystaw_ocene('Bednarski', 'Maciej', 'Kowalska', 'Fortepian', 6, 'postepy', 'Przygotowany do egzaminu');
-EXEC PKG_OCENY.wystaw_ocene('Bednarski', 'Maciej', 'Jankowska', 'Ksztalcenie sluchu', 6, 'sluch', 'Absolutny sluch');
-EXEC PKG_OCENY.wystaw_ocene('Bednarski', 'Maciej', 'Jankowska', 'Ksztalcenie sluchu', 6, 'teoria', 'Pelnoprawna wiedza teoretyczna');
-EXEC PKG_OCENY.wystaw_ocene('Bednarski', 'Maciej', 'Mazur', 'Audycje muzyczne', 6, 'ogolna', 'Ekspert historii muzyki');
-EXEC PKG_OCENY.wystaw_ocene('Bednarski', 'Maciej', 'Krawczyk', 'Chor', 5, 'ogolna', 'Solista choru');
+PROMPT
+PROMPT ============================================================
+PROMPT   GENEROWANIE PELNEGO PLANU LEKCJI (AUTOMATYCZNIE)
+PROMPT   Szkola: 48 uczniow, 15 nauczycieli, 15 sal, 6 grup
+PROMPT ============================================================
+PROMPT
 
--- Renata Kacprzak (Skrzypce) - koncertmistrzyni
-EXEC PKG_OCENY.wystaw_ocene('Kacprzak', 'Renata', 'Wisniewski', 'Skrzypce', 5, 'technika', 'Doskonala technika');
-EXEC PKG_OCENY.wystaw_ocene('Kacprzak', 'Renata', 'Wisniewski', 'Skrzypce', 6, 'interpretacja', 'Dojrzala artystycznie');
-EXEC PKG_OCENY.wystaw_ocene('Kacprzak', 'Renata', 'Wisniewski', 'Skrzypce', 5, 'postepy', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Kacprzak', 'Renata', 'Jankowska', 'Ksztalcenie sluchu', 5, 'teoria', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Kacprzak', 'Renata', 'Krawczyk', 'Orkiestra', 6, 'ogolna', 'Koncertmistrzyni orkiestry');
+-- Generuj plan dla 4 tygodni semestru (luty 2026)
+-- Tydzien 1: 2026-02-02 (poniedzialek)
+-- Tydzien 2: 2026-02-09
+-- Tydzien 3: 2026-02-16
+-- Tydzien 4: 2026-02-23
 
--- Marcin Duda (Gitara)
-EXEC PKG_OCENY.wystaw_ocene('Duda', 'Marcin', 'Lewandowski', 'Gitara', 5, 'technika', 'Zaawansowana technika');
-EXEC PKG_OCENY.wystaw_ocene('Duda', 'Marcin', 'Lewandowski', 'Gitara', 5, 'interpretacja', 'Swietna interpretacja');
-EXEC PKG_OCENY.wystaw_ocene('Duda', 'Marcin', 'Lewandowski', 'Gitara', 5, 'postepy', 'Gotowy do egzaminu');
-EXEC PKG_OCENY.wystaw_ocene('Duda', 'Marcin', 'Jankowska', 'Ksztalcenie sluchu', 5, 'sluch', NULL);
-EXEC PKG_OCENY.wystaw_ocene('Duda', 'Marcin', 'Krawczyk', 'Chor', 5, 'ogolna', NULL);
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('');
+    DBMS_OUTPUT.PUT_LINE('========================================');
+    DBMS_OUTPUT.PUT_LINE('GENEROWANIE PLANU - TYDZIEN 1');
+    DBMS_OUTPUT.PUT_LINE('Data: 2026-02-02 (poniedzialek)');
+    DBMS_OUTPUT.PUT_LINE('========================================');
+    
+    PKG_LEKCJE.generuj_plan_tygodnia(DATE '2026-02-02');
+END;
+/
+
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('');
+    DBMS_OUTPUT.PUT_LINE('========================================');
+    DBMS_OUTPUT.PUT_LINE('GENEROWANIE PLANU - TYDZIEN 2');
+    DBMS_OUTPUT.PUT_LINE('Data: 2026-02-09 (poniedzialek)');
+    DBMS_OUTPUT.PUT_LINE('========================================');
+    
+    PKG_LEKCJE.generuj_plan_tygodnia(DATE '2026-02-09');
+END;
+/
+
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('');
+    DBMS_OUTPUT.PUT_LINE('========================================');
+    DBMS_OUTPUT.PUT_LINE('GENEROWANIE PLANU - TYDZIEN 3');
+    DBMS_OUTPUT.PUT_LINE('Data: 2026-02-16 (poniedzialek)');
+    DBMS_OUTPUT.PUT_LINE('========================================');
+    
+    PKG_LEKCJE.generuj_plan_tygodnia(DATE '2026-02-16');
+END;
+/
+
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('');
+    DBMS_OUTPUT.PUT_LINE('========================================');
+    DBMS_OUTPUT.PUT_LINE('GENEROWANIE PLANU - TYDZIEN 4');
+    DBMS_OUTPUT.PUT_LINE('Data: 2026-02-23 (poniedzialek)');
+    DBMS_OUTPUT.PUT_LINE('========================================');
+    
+    PKG_LEKCJE.generuj_plan_tygodnia(DATE '2026-02-23');
+END;
+/
+
+COMMIT;
 
 -- ============================================================================
--- 10. POTWIERDZENIE I STATYSTYKI
+-- 9. EGZAMINY DLA KLASY 6A (DYPLOMANCI)
 -- ============================================================================
 
-SELECT 'Dane wstawione pomyslnie!' AS status FROM DUAL;
+PROMPT
+PROMPT ============================================================
+PROMPT   EGZAMINY SEMESTRALNE - KLASA 6A
+PROMPT ============================================================
+PROMPT
 
--- Podsumowanie danych
-SELECT 'INSTRUMENTY' AS tabela, COUNT(*) AS rekordow FROM INSTRUMENTY UNION ALL
-SELECT 'PRZEDMIOTY', COUNT(*) FROM PRZEDMIOTY UNION ALL
-SELECT 'NAUCZYCIELE', COUNT(*) FROM NAUCZYCIELE UNION ALL
-SELECT 'GRUPY', COUNT(*) FROM GRUPY UNION ALL
-SELECT 'SALE', COUNT(*) FROM SALE UNION ALL
-SELECT 'UCZNIOWIE', COUNT(*) FROM UCZNIOWIE UNION ALL
-SELECT 'LEKCJE', COUNT(*) FROM LEKCJE UNION ALL
-SELECT 'OCENY', COUNT(*) FROM OCENY;
+DECLARE
+    v_data_egz DATE := DATE '2026-02-27';  -- piatek
+    v_godzina VARCHAR2(5) := '14:00';
+    v_godzina_num NUMBER := 14;
+    v_ile NUMBER := 0;
+BEGIN
+    FOR rec IN (
+        SELECT u.imie, u.nazwisko
+        FROM UCZNIOWIE u
+        WHERE DEREF(u.ref_grupa).kod = '6A'
+        ORDER BY u.nazwisko
+    ) LOOP
+        BEGIN
+            PKG_LEKCJE.dodaj_egzamin(
+                p_uczen_nazwisko => rec.nazwisko,
+                p_uczen_imie => rec.imie,
+                p_sala_numer => '203',
+                p_data => v_data_egz,
+                p_godzina => v_godzina,
+                p_komisja_nazwisko1 => 'Kowalska',
+                p_komisja_nazwisko2 => 'Nowak',
+                p_czas_min => 30
+            );
+            DBMS_OUTPUT.PUT_LINE('Egzamin dla: ' || rec.imie || ' ' || rec.nazwisko || ' o ' || v_godzina);
+            v_ile := v_ile + 1;
+            
+            v_godzina_num := v_godzina_num + 1;
+            IF v_godzina_num >= 20 THEN
+                v_godzina_num := 14;
+                v_data_egz := v_data_egz + 7;
+            END IF;
+            v_godzina := TO_CHAR(v_godzina_num, 'FM00') || ':00';
+        EXCEPTION
+            WHEN OTHERS THEN
+                DBMS_OUTPUT.PUT_LINE('Blad egzaminu dla ' || rec.imie || ' ' || rec.nazwisko || ': ' || SQLERRM);
+        END;
+    END LOOP;
+    
+    DBMS_OUTPUT.PUT_LINE('Dodano ' || v_ile || ' egzaminow dla klasy 6A');
+END;
+/
 
--- Statystyka lekcji
-SELECT 'Lekcje indywidualne' AS typ, COUNT(*) AS ilosc
-FROM LEKCJE WHERE ref_uczen IS NOT NULL
-UNION ALL
-SELECT 'Lekcje grupowe', COUNT(*)
-FROM LEKCJE WHERE ref_grupa IS NOT NULL;
+COMMIT;
 
--- Rozklad uczniow w grupach
-SELECT DEREF(ref_grupa).kod AS grupa, COUNT(*) AS uczniow
-FROM UCZNIOWIE
-GROUP BY DEREF(ref_grupa).kod
-ORDER BY DEREF(ref_grupa).kod;
+-- ============================================================================
+-- 10. PRZYKLADOWE OCENY
+-- ============================================================================
+
+PROMPT
+PROMPT ============================================================
+PROMPT   OCENY - PRZYKLADOWE DANE
+PROMPT ============================================================
+PROMPT
+
+DECLARE
+    v_ocena NUMBER;
+    v_obszar VARCHAR2(20);
+    v_ile_ocen NUMBER := 0;
+    v_nauczyciel VARCHAR2(100);
+BEGIN
+    FOR rec IN (
+        SELECT u.imie, u.nazwisko, DEREF(u.ref_instrument).nazwa AS instrument
+        FROM UCZNIOWIE u
+        ORDER BY u.nazwisko
+    ) LOOP
+        -- Znajdz nauczyciela od tego instrumentu
+        BEGIN
+            SELECT n.nazwisko INTO v_nauczyciel
+            FROM NAUCZYCIELE n, TABLE(n.instrumenty) i
+            WHERE i.COLUMN_VALUE = rec.instrument
+            AND ROWNUM = 1;
+        EXCEPTION
+            WHEN NO_DATA_FOUND THEN v_nauczyciel := NULL;
+        END;
+        
+        IF v_nauczyciel IS NOT NULL THEN
+            -- 2 oceny na ucznia
+            FOR j IN 1..2 LOOP
+                v_ocena := ROUND(DBMS_RANDOM.VALUE(3, 6));
+                
+                CASE MOD(j, 3)
+                    WHEN 0 THEN v_obszar := 'technika';
+                    WHEN 1 THEN v_obszar := 'interpretacja';
+                    WHEN 2 THEN v_obszar := 'postepy';
+                END CASE;
+                
+                BEGIN
+                    PKG_OCENY.wystaw_ocene(
+                        p_uczen_nazwisko => rec.nazwisko,
+                        p_uczen_imie => rec.imie,
+                        p_nauczyciel_nazwisko => v_nauczyciel,
+                        p_przedmiot => rec.instrument,
+                        p_wartosc => v_ocena,
+                        p_obszar => v_obszar,
+                        p_komentarz => 'Ocena ' || v_obszar
+                    );
+                    v_ile_ocen := v_ile_ocen + 1;
+                EXCEPTION
+                    WHEN OTHERS THEN NULL;
+                END;
+            END LOOP;
+        END IF;
+    END LOOP;
+    
+    DBMS_OUTPUT.PUT_LINE('Dodano ' || v_ile_ocen || ' ocen');
+END;
+/
+
+COMMIT;
+
+-- ============================================================================
+-- 11. PODSUMOWANIE
+-- ============================================================================
+
+PROMPT
+PROMPT ============================================================
+PROMPT   PODSUMOWANIE WSTAWIONYCH DANYCH
+PROMPT ============================================================
+PROMPT
+
+SELECT 'INSTRUMENTY' AS tabela, COUNT(*) AS liczba FROM INSTRUMENTY
+UNION ALL SELECT 'PRZEDMIOTY', COUNT(*) FROM PRZEDMIOTY
+UNION ALL SELECT 'SALE', COUNT(*) FROM SALE
+UNION ALL SELECT 'GRUPY', COUNT(*) FROM GRUPY
+UNION ALL SELECT 'NAUCZYCIELE', COUNT(*) FROM NAUCZYCIELE
+UNION ALL SELECT 'UCZNIOWIE', COUNT(*) FROM UCZNIOWIE
+UNION ALL SELECT 'LEKCJE', COUNT(*) FROM LEKCJE
+UNION ALL SELECT 'OCENY', COUNT(*) FROM OCENY;
+
+-- Rozklad uczniow wg instrumentu
+PROMPT
+PROMPT Rozklad uczniow wg instrumentu:
+SELECT i.nazwa AS instrument, COUNT(*) AS uczniow
+FROM UCZNIOWIE u
+JOIN INSTRUMENTY i ON u.ref_instrument.id_instrumentu = i.id_instrumentu
+GROUP BY i.nazwa
+ORDER BY COUNT(*) DESC;
+
+-- Rozklad lekcji wg typu
+PROMPT
+PROMPT Rozklad lekcji wg typu:
+SELECT 
+    CASE WHEN ref_uczen IS NOT NULL THEN 'indywidualna' ELSE 'grupowa' END AS typ_lekcji,
+    typ_lekcji AS rodzaj,
+    COUNT(*) AS liczba
+FROM LEKCJE
+GROUP BY CASE WHEN ref_uczen IS NOT NULL THEN 'indywidualna' ELSE 'grupowa' END, typ_lekcji
+ORDER BY 1, 2;
+
+PROMPT
+PROMPT ============================================================
+PROMPT   ZAKONCZONO WSTAWIANIE DANYCH
+PROMPT   Szkola: 48 uczniow, 15 nauczycieli, 15 sal, 6 grup
+PROMPT ============================================================
+PROMPT

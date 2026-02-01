@@ -12,120 +12,123 @@
 -- ============================================================================
 
 -- Schemat glowny (wlasciciel obiektow)
-BEGIN EXECUTE IMMEDIATE 'DROP USER sm_admin CASCADE'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -1918 THEN RAISE; END IF; END;
+BEGIN EXECUTE IMMEDIATE 'DROP USER SM_ADMIN CASCADE'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -1918 THEN RAISE; END IF; END;
 /
 
 -- Uzytkownicy dostepu
-BEGIN EXECUTE IMMEDIATE 'DROP USER admin CASCADE'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -1918 THEN RAISE; END IF; END;
+BEGIN EXECUTE IMMEDIATE 'DROP USER ADMIN CASCADE'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -1918 THEN RAISE; END IF; END;
 /
-BEGIN EXECUTE IMMEDIATE 'DROP USER sekretariat CASCADE'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -1918 THEN RAISE; END IF; END;
+BEGIN EXECUTE IMMEDIATE 'DROP USER SEKRETARIAT CASCADE'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -1918 THEN RAISE; END IF; END;
 /
-BEGIN EXECUTE IMMEDIATE 'DROP USER nauczyciel CASCADE'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -1918 THEN RAISE; END IF; END;
+BEGIN EXECUTE IMMEDIATE 'DROP USER NAUCZYCIEL CASCADE'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -1918 THEN RAISE; END IF; END;
 /
-BEGIN EXECUTE IMMEDIATE 'DROP USER uczen CASCADE'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -1918 THEN RAISE; END IF; END;
+BEGIN EXECUTE IMMEDIATE 'DROP USER UCZEN CASCADE'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -1918 THEN RAISE; END IF; END;
 /
 
 -- Role
-BEGIN EXECUTE IMMEDIATE 'DROP ROLE rola_admin'; EXCEPTION WHEN OTHERS THEN NULL; END;
+BEGIN EXECUTE IMMEDIATE 'DROP ROLE ROLA_ADMIN'; EXCEPTION WHEN OTHERS THEN NULL; END;
 /
-BEGIN EXECUTE IMMEDIATE 'DROP ROLE rola_sekretariat'; EXCEPTION WHEN OTHERS THEN NULL; END;
+BEGIN EXECUTE IMMEDIATE 'DROP ROLE ROLA_SEKRETARIAT'; EXCEPTION WHEN OTHERS THEN NULL; END;
 /
-BEGIN EXECUTE IMMEDIATE 'DROP ROLE rola_nauczyciel'; EXCEPTION WHEN OTHERS THEN NULL; END;
+BEGIN EXECUTE IMMEDIATE 'DROP ROLE ROLA_NAUCZYCIEL'; EXCEPTION WHEN OTHERS THEN NULL; END;
 /
-BEGIN EXECUTE IMMEDIATE 'DROP ROLE rola_uczen'; EXCEPTION WHEN OTHERS THEN NULL; END;
+BEGIN EXECUTE IMMEDIATE 'DROP ROLE ROLA_UCZEN'; EXCEPTION WHEN OTHERS THEN NULL; END;
 /
 
 -- ============================================================================
 -- 2. TWORZENIE SCHEMATU GLOWNEGO (SM_ADMIN)
 -- ============================================================================
--- sm_admin = "School Music Admin" - wlasciciel wszystkich obiektow bazy
--- Ten uzytkownik nie jest przeznaczony do codziennej pracy - tylko do tworzenia obiektow
+-- SM_ADMIN - wlasciciel wszystkich obiektow bazy
 
-CREATE USER sm_admin IDENTIFIED BY sm_admin123
+CREATE USER SM_ADMIN IDENTIFIED BY sm_admin123
     DEFAULT TABLESPACE USERS
     TEMPORARY TABLESPACE TEMP
     QUOTA UNLIMITED ON USERS;
 
 -- Uprawnienia do tworzenia obiektow
-GRANT CONNECT, RESOURCE TO sm_admin;
-GRANT CREATE SESSION TO sm_admin;
-GRANT CREATE TABLE TO sm_admin;
-GRANT CREATE VIEW TO sm_admin;
-GRANT CREATE PROCEDURE TO sm_admin;
-GRANT CREATE TRIGGER TO sm_admin;
-GRANT CREATE TYPE TO sm_admin;
-GRANT CREATE SEQUENCE TO sm_admin;
-GRANT DEBUG CONNECT SESSION TO sm_admin;
+GRANT CONNECT, RESOURCE TO SM_ADMIN;
+GRANT CREATE SESSION TO SM_ADMIN;
+GRANT CREATE TABLE TO SM_ADMIN;
+GRANT CREATE VIEW TO SM_ADMIN;
+GRANT CREATE PROCEDURE TO SM_ADMIN;
+GRANT CREATE TRIGGER TO SM_ADMIN;
+GRANT CREATE TYPE TO SM_ADMIN;
+GRANT CREATE SEQUENCE TO SM_ADMIN;
+GRANT DEBUG CONNECT SESSION TO SM_ADMIN;
 
 -- ============================================================================
 -- 3. TWORZENIE ROL
 -- ============================================================================
 
 -- ROLA_ADMIN - pelny dostep (administrator systemu)
-CREATE ROLE rola_admin;
+CREATE ROLE ROLA_ADMIN;
 
 -- ROLA_SEKRETARIAT - zarzadzanie uczniami i lekcjami
-CREATE ROLE rola_sekretariat;
+CREATE ROLE ROLA_SEKRETARIAT;
 
 -- ROLA_NAUCZYCIEL - odczyt danych + wystawianie ocen
-CREATE ROLE rola_nauczyciel;
+CREATE ROLE ROLA_NAUCZYCIEL;
 
 -- ROLA_UCZEN - tylko odczyt swoich danych
-CREATE ROLE rola_uczen;
+CREATE ROLE ROLA_UCZEN;
 
 -- ============================================================================
 -- 4. TWORZENIE UZYTKOWNIKOW DOSTEPU
 -- ============================================================================
 
 -- ADMIN - administrator systemu (pelny dostep)
-CREATE USER admin IDENTIFIED BY admin123
+CREATE USER ADMIN IDENTIFIED BY admin123
     DEFAULT TABLESPACE USERS
     QUOTA UNLIMITED ON USERS;
 
-GRANT CREATE SESSION TO admin;
-GRANT rola_admin TO admin;
+GRANT CREATE SESSION TO ADMIN;
+GRANT ROLA_ADMIN TO ADMIN;
 
 -- SEKRETARIAT - pracownik sekretariatu
-CREATE USER sekretariat IDENTIFIED BY sekretariat123
+CREATE USER SEKRETARIAT IDENTIFIED BY sekretariat123
     DEFAULT TABLESPACE USERS
     QUOTA 50M ON USERS;
 
-GRANT CREATE SESSION TO sekretariat;
-GRANT rola_sekretariat TO sekretariat;
+GRANT CREATE SESSION TO SEKRETARIAT;
+GRANT ROLA_SEKRETARIAT TO SEKRETARIAT;
 
 -- NAUCZYCIEL - nauczyciel szkoly
-CREATE USER nauczyciel IDENTIFIED BY nauczyciel123
+CREATE USER NAUCZYCIEL IDENTIFIED BY nauczyciel123
     DEFAULT TABLESPACE USERS
     QUOTA 10M ON USERS;
 
-GRANT CREATE SESSION TO nauczyciel;
-GRANT rola_nauczyciel TO nauczyciel;
+GRANT CREATE SESSION TO NAUCZYCIEL;
+GRANT ROLA_NAUCZYCIEL TO NAUCZYCIEL;
 
 -- UCZEN - uczen/rodzic (tylko odczyt)
-CREATE USER uczen IDENTIFIED BY uczen123
+CREATE USER UCZEN IDENTIFIED BY uczen123
     DEFAULT TABLESPACE USERS
     QUOTA 5M ON USERS;
 
-GRANT CREATE SESSION TO uczen;
-GRANT rola_uczen TO uczen;
+GRANT CREATE SESSION TO UCZEN;
+GRANT ROLA_UCZEN TO UCZEN;
 
 -- ============================================================================
 -- 5. INFORMACJA O POLACZENIU
 -- ============================================================================
 
+-- LOGOWANIE DZIAŁA - POTWIERDZONE 01.02.2026
+--
 -- Po wykonaniu tego skryptu:
 --
--- 1. Polacz sie jako sm_admin: sm_admin / sm_admin123
+-- 1. Polacz sie jako SM_ADMIN: SM_ADMIN / sm_admin123
+--    - Upewnij się, że Role jest ustawiona na DEFAULT (nie SYSDBA)
+--    - Service name: PDB
 --
 -- 2. Nastepnie wykonaj skrypt 06_uzytkownicy.sql jako SYS/SYSTEM
 --
 -- 3. Uzytkownicy koncowi loguja sie jako:
---    - admin / admin123         (administrator - pelny dostep)
---    - sekretariat / sekretariat123  (sekretariat - zarzadzanie)
---    - nauczyciel / nauczyciel123    (nauczyciel - oceny)
---    - uczen / uczen123              (uczen - tylko odczyt)
+--    - ADMIN / admin123              (administrator - pelny dostep)
+--    - SEKRETARIAT / sekretariat123  (sekretariat - zarzadzanie)
+--    - NAUCZYCIEL / nauczyciel123    (nauczyciel - oceny)
+--    - UCZEN / uczen123              (uczen - tylko odczyt)
 
-SELECT 'Schemat sm_admin i uzytkownicy utworzeni pomyslnie!' AS status FROM DUAL;
+SELECT 'Schemat SM_ADMIN i uzytkownicy utworzeni pomyslnie!' AS status FROM DUAL;
 
 -- Lista utworzonych uzytkownikow
 SELECT username, account_status, default_tablespace
