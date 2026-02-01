@@ -342,61 +342,7 @@ END;
 COMMIT;
 
 -- ============================================================================
--- 9. EGZAMINY DLA KLASY 6A (DYPLOMANCI)
--- ============================================================================
-
-PROMPT
-PROMPT ============================================================
-PROMPT   EGZAMINY SEMESTRALNE - KLASA 6A
-PROMPT ============================================================
-PROMPT
-
-DECLARE
-    v_data_egz DATE := DATE '2026-02-27';  -- piatek
-    v_godzina VARCHAR2(5) := '14:00';
-    v_godzina_num NUMBER := 14;
-    v_ile NUMBER := 0;
-BEGIN
-    FOR rec IN (
-        SELECT u.imie, u.nazwisko
-        FROM UCZNIOWIE u
-        WHERE DEREF(u.ref_grupa).kod = '6A'
-        ORDER BY u.nazwisko
-    ) LOOP
-        BEGIN
-            PKG_LEKCJE.dodaj_egzamin(
-                p_uczen_nazwisko => rec.nazwisko,
-                p_uczen_imie => rec.imie,
-                p_sala_numer => '203',
-                p_data => v_data_egz,
-                p_godzina => v_godzina,
-                p_komisja_nazwisko1 => 'Kowalska',
-                p_komisja_nazwisko2 => 'Nowak',
-                p_czas_min => 30
-            );
-            DBMS_OUTPUT.PUT_LINE('Egzamin dla: ' || rec.imie || ' ' || rec.nazwisko || ' o ' || v_godzina);
-            v_ile := v_ile + 1;
-            
-            v_godzina_num := v_godzina_num + 1;
-            IF v_godzina_num >= 20 THEN
-                v_godzina_num := 14;
-                v_data_egz := v_data_egz + 7;
-            END IF;
-            v_godzina := TO_CHAR(v_godzina_num, 'FM00') || ':00';
-        EXCEPTION
-            WHEN OTHERS THEN
-                DBMS_OUTPUT.PUT_LINE('Blad egzaminu dla ' || rec.imie || ' ' || rec.nazwisko || ': ' || SQLERRM);
-        END;
-    END LOOP;
-    
-    DBMS_OUTPUT.PUT_LINE('Dodano ' || v_ile || ' egzaminow dla klasy 6A');
-END;
-/
-
-COMMIT;
-
--- ============================================================================
--- 10. PRZYKLADOWE OCENY
+-- 9. PRZYKLADOWE OCENY
 -- ============================================================================
 
 PROMPT
@@ -425,18 +371,18 @@ BEGIN
         EXCEPTION
             WHEN NO_DATA_FOUND THEN v_nauczyciel := NULL;
         END;
-        
+
         IF v_nauczyciel IS NOT NULL THEN
             -- 2 oceny na ucznia
             FOR j IN 1..2 LOOP
                 v_ocena := ROUND(DBMS_RANDOM.VALUE(3, 6));
-                
+
                 CASE MOD(j, 3)
                     WHEN 0 THEN v_obszar := 'technika';
                     WHEN 1 THEN v_obszar := 'interpretacja';
                     WHEN 2 THEN v_obszar := 'postepy';
                 END CASE;
-                
+
                 BEGIN
                     PKG_OCENY.wystaw_ocene(
                         p_uczen_nazwisko => rec.nazwisko,
@@ -454,7 +400,7 @@ BEGIN
             END LOOP;
         END IF;
     END LOOP;
-    
+
     DBMS_OUTPUT.PUT_LINE('Dodano ' || v_ile_ocen || ' ocen');
 END;
 /
@@ -462,7 +408,7 @@ END;
 COMMIT;
 
 -- ============================================================================
--- 11. PODSUMOWANIE
+-- 10. PODSUMOWANIE
 -- ============================================================================
 
 PROMPT
@@ -493,12 +439,11 @@ ORDER BY COUNT(*) DESC;
 PROMPT
 PROMPT Rozklad lekcji wg typu:
 SELECT 
-    CASE WHEN ref_uczen IS NOT NULL THEN 'indywidualna' ELSE 'grupowa' END AS typ_lekcji,
-    typ_lekcji AS rodzaj,
+    CASE WHEN ref_uczen IS NOT NULL THEN 'indywidualna' ELSE 'grupowa' END AS typ,
     COUNT(*) AS liczba
 FROM LEKCJE
-GROUP BY CASE WHEN ref_uczen IS NOT NULL THEN 'indywidualna' ELSE 'grupowa' END, typ_lekcji
-ORDER BY 1, 2;
+GROUP BY CASE WHEN ref_uczen IS NOT NULL THEN 'indywidualna' ELSE 'grupowa' END
+ORDER BY 1;
 
 PROMPT
 PROMPT ============================================================

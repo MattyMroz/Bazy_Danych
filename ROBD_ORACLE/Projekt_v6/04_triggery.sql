@@ -16,8 +16,6 @@
 -- 1. USUNIECIE ISTNIEJACYCH TRIGGEROW
 -- ============================================================================
 
-BEGIN EXECUTE IMMEDIATE 'DROP TRIGGER trg_komisja_rozni'; EXCEPTION WHEN OTHERS THEN NULL; END;
-/
 BEGIN EXECUTE IMMEDIATE 'DROP TRIGGER trg_ocena_zakres'; EXCEPTION WHEN OTHERS THEN NULL; END;
 /
 BEGIN EXECUTE IMMEDIATE 'DROP TRIGGER trg_godziny_pracy'; EXCEPTION WHEN OTHERS THEN NULL; END;
@@ -32,44 +30,13 @@ BEGIN EXECUTE IMMEDIATE 'DROP TRIGGER trg_nauczyciel_uczy_instrumentu'; EXCEPTIO
 /
 BEGIN EXECUTE IMMEDIATE 'DROP TRIGGER trg_chor_orkiestra_walidacja'; EXCEPTION WHEN OTHERS THEN NULL; END;
 /
-BEGIN EXECUTE IMMEDIATE 'DROP TRIGGER trg_auto_status_lekcji'; EXCEPTION WHEN OTHERS THEN NULL; END;
-/
 BEGIN EXECUTE IMMEDIATE 'DROP TRIGGER trg_limit_uczniow_w_grupie'; EXCEPTION WHEN OTHERS THEN NULL; END;
 /
 BEGIN EXECUTE IMMEDIATE 'DROP TRIGGER trg_max_godzin_nauczyciela'; EXCEPTION WHEN OTHERS THEN NULL; END;
 /
 
 -- ============================================================================
--- 2. TRIGGER: Walidacja komisji egzaminacyjnej
--- ============================================================================
--- Egzamin musi miec komisje z 2 ROZNYCH nauczycieli.
--- Ten trigger NIE uzywa DEREF - sprawdza tylko VARRAY komisja.
-
-CREATE OR REPLACE TRIGGER trg_komisja_rozni
-BEFORE INSERT OR UPDATE ON LEKCJE
-FOR EACH ROW
-WHEN (NEW.typ_lekcji = 'egzamin')
-DECLARE
-BEGIN
-    IF :NEW.komisja IS NULL THEN
-        RAISE_APPLICATION_ERROR(-20101, 
-            'Egzamin wymaga komisji skladajacej sie z 2 nauczycieli');
-    END IF;
-
-    IF :NEW.komisja.COUNT < 2 THEN
-        RAISE_APPLICATION_ERROR(-20101, 
-            'Komisja egzaminacyjna musi miec 2 czlonkow');
-    END IF;
-
-    IF :NEW.komisja(1) = :NEW.komisja(2) THEN
-        RAISE_APPLICATION_ERROR(-20102, 
-            'Komisja musi skladac sie z 2 ROZNYCH nauczycieli');
-    END IF;
-END;
-/
-
--- ============================================================================
--- 3. TRIGGER: Walidacja zakresu oceny (1-6)
+-- 2. TRIGGER: Walidacja zakresu oceny (1-6)
 -- ============================================================================
 -- Nie wymaga DEREF - sprawdza tylko wartosc liczbowa.
 
@@ -86,7 +53,7 @@ END;
 /
 
 -- ============================================================================
--- 4. TRIGGER: XOR uczeń/grupa w lekcji
+-- 3. TRIGGER: XOR uczeń/grupa w lekcji
 -- ============================================================================
 -- Lekcja musi miec ALBO ucznia ALBO grupe (nie oba, nie zadnego).
 -- Sprawdza tylko czy REF jest NULL/NOT NULL - bez DEREF.
@@ -110,26 +77,7 @@ END;
 /
 
 -- ============================================================================
--- 5. TRIGGER: Automatyczna zmiana statusu lekcji
--- ============================================================================
--- Przy UPDATE zmienia status na 'odbyta' jesli data minela.
--- Nie wymaga DEREF.
-
-CREATE OR REPLACE TRIGGER trg_auto_status_lekcji
-BEFORE UPDATE ON LEKCJE
-FOR EACH ROW
-DECLARE
-BEGIN
-    IF :NEW.data_lekcji < TRUNC(SYSDATE) 
-       AND :OLD.status = 'zaplanowana' 
-       AND :NEW.status = 'zaplanowana' THEN
-        :NEW.status := 'odbyta';
-    END IF;
-END;
-/
-
--- ============================================================================
--- 6. TRIGGER: Walidacja czasu trwania
+-- 4. TRIGGER: Walidacja czasu trwania
 -- ============================================================================
 -- Czas trwania musi byc 30, 45, 60 lub 90 minut.
 
@@ -146,7 +94,7 @@ END;
 /
 
 -- ============================================================================
--- 7. TRIGGER: Walidacja formatu godziny
+-- 5. TRIGGER: Walidacja formatu godziny
 -- ============================================================================
 -- Godzina musi byc w formacie HH:MI (np. '14:00', '15:30').
 
@@ -193,39 +141,7 @@ END;
 /
 
 -- ============================================================================
--- 8. TRIGGER: Walidacja typu lekcji
--- ============================================================================
-
-CREATE OR REPLACE TRIGGER trg_typ_lekcji
-BEFORE INSERT OR UPDATE ON LEKCJE
-FOR EACH ROW
-DECLARE
-BEGIN
-    IF :NEW.typ_lekcji NOT IN ('zwykla', 'egzamin') THEN
-        RAISE_APPLICATION_ERROR(-20123,
-            'Typ lekcji musi byc "zwykla" lub "egzamin". Podano: ' || :NEW.typ_lekcji);
-    END IF;
-END;
-/
-
--- ============================================================================
--- 9. TRIGGER: Walidacja statusu lekcji
--- ============================================================================
-
-CREATE OR REPLACE TRIGGER trg_status_lekcji
-BEFORE INSERT OR UPDATE ON LEKCJE
-FOR EACH ROW
-DECLARE
-BEGIN
-    IF :NEW.status NOT IN ('zaplanowana', 'odbyta', 'odwolana') THEN
-        RAISE_APPLICATION_ERROR(-20124,
-            'Status lekcji musi byc "zaplanowana", "odbyta" lub "odwolana". Podano: ' || :NEW.status);
-    END IF;
-END;
-/
-
--- ============================================================================
--- 10. TRIGGER: Walidacja obszaru oceny
+-- 6. TRIGGER: Walidacja obszaru oceny
 -- ============================================================================
 
 CREATE OR REPLACE TRIGGER trg_obszar_oceny
@@ -242,7 +158,7 @@ END;
 /
 
 -- ============================================================================
--- 11. TRIGGER: Walidacja flagi semestralnej oceny
+-- 7. TRIGGER: Walidacja flagi semestralnej oceny
 -- ============================================================================
 
 CREATE OR REPLACE TRIGGER trg_czy_semestralna
@@ -259,7 +175,7 @@ END;
 /
 
 -- ============================================================================
--- 12. POTWIERDZENIE
+-- 8. POTWIERDZENIE
 -- ============================================================================
 
 SELECT 'Triggery utworzone pomyslnie!' AS status FROM DUAL;

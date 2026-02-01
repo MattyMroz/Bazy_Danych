@@ -59,8 +59,7 @@ Jestem w 5. klasie, gram na fortepianie. Mój tydzień:
 - Nauczyciel wymaga - jak nie poćwiczę, lekcja to męczarnia
 - Chór jest fajny (integracja), ale kończy się późno
 - Muszę pogodzić dwie szkoły - często odrabiam lekcje w szatni
-- Egzaminy są stresujące - komisja, strój galowy, wszystko z pamięci
-- Boję się że nie zdam - ocena z instrumentu decyduje o promocji
+- Oceny są ważne - ocena z instrumentu decyduje o promocji
 
 ---
 
@@ -78,14 +77,11 @@ Jestem mamą Kasi (klasa III, flet) i Tomka (klasa V, gitara).
 - Pilnuję czy dzieci ćwiczą (codzienne awantury)
 - Wożę, czekam, wożę - pół życia na parkingu
 - Płacę czesne (szkoła prywatna) lub kupuję instrumenty
-- Stresuję się egzaminami bardziej niż dzieci
 - Ale widzę postępy i jestem dumna
 
 **Czego potrzebuję od szkoły:**
 - Jasny plan lekcji na cały semestr
 - Informacja o postępach (oceny)
-- Powiadomienia o odwołanych lekcjach
-- Harmonogram egzaminów i występów
 
 ---
 
@@ -110,14 +106,12 @@ Jestem nauczycielem fortepianu. Pracuję w tej szkole 8 lat.
 | 16:45 | Przerwa | - | - |
 | 17:00 | Piotr N. | III | Gamy, palcówki |
 | 17:45 | Przerwa | - | - |
-| 18:00 | Julia B. | VI | Przygotowanie do egzaminu |
+| 18:00 | Julia B. | VI | Etiudy Chopina |
 | 18:45 | Koniec | - | - |
 
 **Co mnie dotyczy:**
 - Muszę znać grafik wszystkich moich uczniów
 - Muszę wystawiać oceny (bieżące + semestralne)
-- Jestem w komisjach egzaminacyjnych
-- Muszę zgłosić gdy jestem chory (zastępstwo)
 
 ---
 
@@ -392,7 +386,6 @@ Przybliżony rozkład uczniów według instrumentu:
 22. Nauczyciel pracuje **max 30 godzin tygodniowo**.
 23. Nauczyciel nie może mieć dwóch lekcji w tym samym czasie.
 24. Nauczyciel wystawia **oceny bieżące** po lekcjach.
-25. Nauczyciel uczestniczy w **komisjach egzaminacyjnych**.
 
 ---
 
@@ -441,41 +434,27 @@ Przybliżony rozkład uczniów według instrumentu:
 38. Lekcja grupowa: 1 grupa + 1 nauczyciel + 1 sala + 1 przedmiot.
 39. Przedmiot pochodzi z tabeli PRZEDMIOTY (REF, nie VARCHAR).
 40. Czas trwania: **30, 45, 60 lub 90 minut**.
-41. **Typ lekcji**: zwykła, egzamin.
-42. **Status lekcji**: zaplanowana, odbyta, odwołana.
-43. Każda lekcja ma: datę, godzinę rozpoczęcia.
-44. **Nie może być konfliktów**: ta sama sala/nauczyciel/uczeń w tym samym czasie.
-45. Lekcja typu 'egzamin' ma dodatkowe pole: **komisja** (VARRAY 2 nauczycieli).
+41. Każda lekcja ma: datę, godzinę rozpoczęcia.
+42. **Nie może być konfliktów**: ta sama sala/nauczyciel/uczeń w tym samym czasie.
 
 ---
 
-## 3.10 EGZAMINY
+## 3.10 OCENY
 
-46. Egzamin semestralny: każdy uczeń zdaje **na koniec semestru**.
-47. Egzamin z instrumentu przed **komisją 2 nauczycieli**.
-48. Komisja musi składać się z **2 różnych osób** (trigger walidujący).
-49. Uczeń gra **z pamięci** program przygotowany przez semestr.
-50. Ocena z egzaminu: 1-6 (decyduje o promocji).
-51. Egzamin to rekord w tabeli LEKCJE z typ='egzamin' i wypełnioną komisją.
-
----
-
-## 3.11 OCENY
-
-52. Skala polska: **1, 2, 3, 4, 5, 6**.
-53. Oceny bieżące: wystawiane przez nauczyciela po lekcjach.
-54. Ocena powiązana z uczniem, nauczycielem i **przedmiotem** (REF).
-55. Obszary oceny: technika, interpretacja, postępy, teoria, słuch.
-56. Ocena semestralna: średnia ocen bieżących + egzamin.
-57. Ocena z instrumentu **decyduje o promocji** do następnej klasy.
+43. Skala polska: **1, 2, 3, 4, 5, 6**.
+44. Oceny bieżące: wystawiane przez nauczyciela po lekcjach.
+45. Ocena powiązana z uczniem, nauczycielem i **przedmiotem** (REF).
+46. Obszary oceny: technika, interpretacja, postępy, teoria, słuch.
+47. Ocena semestralna: średnia ocen bieżących.
+48. Ocena z instrumentu **decyduje o promocji** do następnej klasy.
 
 ---
 
-## 3.12 PLANOWANIE LEKCJI (HEURYSTYKA)
+## 3.11 PLANOWANIE LEKCJI (HEURYSTYKA)
 
-58. Plan układamy **na cały semestr z góry**.
+49. Plan układamy **na cały semestr z góry**.
 
-59. **KOLEJNOŚĆ PLANOWANIA:**
+50. **KOLEJNOŚĆ PLANOWANIA:**
 
 ```
 KROK 1: CHÓR I ORKIESTRA (najtrudniejsze)
@@ -496,14 +475,14 @@ KROK 3: LEKCJE INDYWIDUALNE
 - Łatwo znaleźć wolny slot
 ```
 
-60. **PRZY DODAWANIU NOWEGO UCZNIA:**
+51. **PRZY DODAWANIU NOWEGO UCZNIA:**
 - System sprawdza kiedy są zajęcia grupowe jego klasy (musi pasować)
 - Szuka 2 wolnych slotów na instrument gdzie:
   - Nauczyciel od jego instrumentu jest wolny
   - Jakaś sala indywidualna jest wolna
   - Uczeń nie ma wtedy innych zajęć
 
-61. **WALIDACJA KONFLIKTÓW:**
+52. **WALIDACJA KONFLIKTÓW:**
 - Sala: czy nie ma innej lekcji w tym czasie
 - Nauczyciel: czy nie ma innej lekcji w tym czasie
 - Uczeń: czy nie ma innej lekcji w tym czasie
@@ -542,7 +521,7 @@ KROK 3: LEKCJE INDYWIDUALNE
 | 4 | GRUPY | klasy/grupy (1A, 2A...) | 6 |
 | 5 | UCZNIOWIE | uczniowie + REF do grupy/instrumentu | 48 |
 | 6 | SALE | pomieszczenia + VARRAY wyposażenia | 6 |
-| 7 | LEKCJE | harmonogram + REF przedmiot + VARRAY komisja (dla egzaminów) | ~120/tydzień |
+| 7 | LEKCJE | harmonogram + REF przedmiot | ~120/tydzień |
 | 8 | OCENY | oceny bieżące i semestralne + REF przedmiot | 400+/semestr |
 
 **Razem: 8 tabel**
@@ -569,9 +548,7 @@ GRUPY ←── REF ── UCZNIOWIE ── REF ──────────�
               │
               ├── REF ──→ PRZEDMIOTY
               │
-              ├── REF ──→ NAUCZYCIELE (prowadzący)
-              │
-              └── VARRAY REF ──→ NAUCZYCIELE (komisja, tylko egzaminy)
+              └── REF ──→ NAUCZYCIELE (prowadzący)
 
 OCENY ── REF ──→ UCZNIOWIE
       ── REF ──→ NAUCZYCIELE
@@ -595,15 +572,13 @@ Sekretariat zarządza całą szkołą - uczniami, grupami, planem lekcji.
 | S5 | **Generuj plan tygodnia** | Automatycznie tworzy lekcje dla wszystkich | `PKG_LEKCJE.generuj_plan_tygodnia()` |
 | S6 | Dodaj lekcję indywidualną (ręcznie) | Tworzy pojedynczą lekcję | `PKG_LEKCJE.dodaj_lekcje_indywidualna()` |
 | S7 | Dodaj lekcję grupową | Tworzy lekcję dla całej grupy | `PKG_LEKCJE.dodaj_lekcje_grupowa()` |
-| S8 | Dodaj egzamin | Tworzy egzamin z komisją 2 nauczycieli | `PKG_LEKCJE.dodaj_egzamin()` |
-| S9 | Zmień status lekcji | Odwołaj/przywróć lekcję | `PKG_LEKCJE.zmien_status_lekcji()` |
-| S10 | **Pokaż plan grupy** | Wyświetla wszystkie zajęcia grupy | `PKG_LEKCJE.plan_grupy()` |
-| S11 | Pokaż plan sali | Wyświetla obłożenie sali w danym dniu | `PKG_LEKCJE.plan_sali()` |
-| S12 | **Pokaż plan nauczyciela** | Wyświetla wszystkie lekcje nauczyciela | `PKG_LEKCJE.plan_nauczyciela()` |
-| S13 | Raport grup | Ile uczniów w każdej grupie | `PKG_RAPORTY.raport_grup()` |
-| S14 | Raport obłożenia sal | Ile lekcji w każdej sali | `PKG_RAPORTY.raport_obciazenia_sal()` |
-| S15 | Raport instrumentów | Rozkład uczniów wg instrumentu | `PKG_RAPORTY.raport_instrumentow()` |
-| S16 | Lista uczniów w grupie | Kto jest w danej grupie | `PKG_OSOBY.uczniowie_w_grupie()` |
+| S8 | **Pokaż plan grupy** | Wyświetla wszystkie zajęcia grupy | `PKG_LEKCJE.plan_grupy()` |
+| S9 | Pokaż plan sali | Wyświetla obłożenie sali w danym dniu | `PKG_LEKCJE.plan_sali()` |
+| S10 | **Pokaż plan nauczyciela** | Wyświetla wszystkie lekcje nauczyciela | `PKG_LEKCJE.plan_nauczyciela()` |
+| S11 | Raport grup | Ile uczniów w każdej grupie | `PKG_RAPORTY.raport_grup()` |
+| S12 | Raport obłożenia sal | Ile lekcji w każdej sali | `PKG_RAPORTY.raport_obciazenia_sal()` |
+| S13 | Raport instrumentów | Rozkład uczniów wg instrumentu | `PKG_RAPORTY.raport_instrumentow()` |
+| S14 | Lista uczniów w grupie | Kto jest w danej grupie | `PKG_OSOBY.uczniowie_w_grupie()` |
 
 ---
 
@@ -620,7 +595,6 @@ Nauczyciel prowadzi lekcje, wystawia oceny, widzi swój grafik.
 | N5 | Pokaż oceny ucznia | Wszystkie oceny danego ucznia | `PKG_OCENY.oceny_ucznia()` |
 | N6 | Średnia ucznia z przedmiotu | Oblicza średnią ocen | `PKG_OCENY.srednia_ucznia()` |
 | N7 | **Statystyki ocen przedmiotu** | Ile ocen, średnia, rozkład | `PKG_RAPORTY.statystyki_ocen_przedmiotu()` |
-| N8 | Pokaż nadchodzące egzaminy | Egzaminy w których jestem w komisji | `PKG_LEKCJE.egzaminy_nauczyciela()` |
 
 ---
 
@@ -633,8 +607,7 @@ Uczeń/rodzic sprawdza swój plan i oceny.
 | U1 | **Pokaż mój plan** | Moje lekcje na dany tydzień | `PKG_LEKCJE.plan_ucznia()` |
 | U2 | **Pokaż moje oceny** | Wszystkie moje oceny | `PKG_OCENY.oceny_ucznia()` |
 | U3 | Średnia z przedmiotu | Moja średnia z danego przedmiotu | `PKG_OCENY.srednia_ucznia()` |
-| U4 | Pokaż moje egzaminy | Kiedy mam egzaminy | `PKG_LEKCJE.egzaminy_ucznia()` |
-| U5 | Moje statystyki | Ogólna średnia i średnie z przedmiotów | `PKG_OCENY.statystyki_ucznia()` |
+| U4 | Moje statystyki | Ogólna średnia i średnie z przedmiotów | `PKG_OCENY.statystyki_ucznia()` |
 
 ---
 
@@ -651,12 +624,11 @@ System automatycznie pilnuje reguł biznesowych.
 | W5 | Dni robocze (pon-pt) | Przy INSERT/UPDATE | `trg_dzien_tygodnia` |
 | W6 | XOR uczeń/grupa | Przy INSERT/UPDATE | `trg_lekcja_xor` + CHECK |
 | W7 | Ocena 1-6 | Przy INSERT/UPDATE | `trg_ocena_zakres` + CHECK |
-| W8 | Komisja = 2 różni nauczyciele | Przy egzaminie | `trg_komisja_rozni` |
-| W9 | Sala ma wyposażenie | Przy INSERT/UPDATE | `trg_sala_wyposazenie` |
-| W10 | Nauczyciel uczy instrumentu | Przy INSERT/UPDATE | `trg_nauczyciel_uczy_instrumentu` |
-| W11 | Przedmiot = instrument ucznia | Przy INSERT/UPDATE | `trg_przedmiot_instrument_ucznia` |
-| W12 | Max 15 uczniów w grupie | Przy INSERT ucznia | `trg_limit_uczniow_w_grupie` |
-| W13 | Chór/Orkiestra tylko IV-VI | Przy INSERT/UPDATE | `trg_chor_orkiestra_instrument` |
+| W8 | Sala ma wyposażenie | Przy INSERT/UPDATE | `trg_sala_wyposazenie` |
+| W9 | Nauczyciel uczy instrumentu | Przy INSERT/UPDATE | `trg_nauczyciel_uczy_instrumentu` |
+| W10 | Przedmiot = instrument ucznia | Przy INSERT/UPDATE | `trg_przedmiot_instrument_ucznia` |
+| W11 | Max 15 uczniów w grupie | Przy INSERT ucznia | `trg_limit_uczniow_w_grupie` |
+| W12 | Chór/Orkiestra tylko IV-VI | Przy INSERT/UPDATE | `trg_chor_orkiestra_instrument` |
 
 ---
 
@@ -672,7 +644,6 @@ Co się dzieje gdy coś nie pasuje:
 | Sala zajęta | "Sala zajęta w tym terminie" | -20010 |
 | Nauczyciel zajęty | "Nauczyciel zajęty w tym terminie" | -20011 |
 | Uczeń zajęty | "Uczeń zajęty w tym terminie" | -20012 |
-| Komisja = ten sam nauczyciel 2x | "Komisja musi składać się z 2 RÓŻNYCH nauczycieli" | -20102 |
 | Ocena = 7 | "Ocena musi być w zakresie 1-6" | -20106 |
 | Brak wolnego nauczyciela | "Brak dostępnego nauczyciela od instrumentu X" | -20020 |
 | Brak wolnej sali | "Brak wolnej sali indywidualnej w terminie..." | -20021 |
@@ -700,13 +671,10 @@ Co się dzieje gdy coś nie pasuje:
 5. **Wstaw ocenę dla ucznia**
    → Nauczyciel → uczeń → przedmiot → obszar → wartość 1-6
 
-6. **Stwórz egzamin**
-   → Komisja 2 nauczycieli (różnych!) → data → sala → uczeń
-
-7. **Spróbuj dodać konfliktującą lekcję**
+6. **Spróbuj dodać konfliktującą lekcję**
    → System odmawia (sala/nauczyciel/uczeń zajęty)
 
-8. **Uruchom heurystykę planowania**
+7. **Uruchom heurystykę planowania**
    → System układa plan dla nowej grupy
 
 ---

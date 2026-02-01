@@ -142,10 +142,7 @@ CREATE TABLE LEKCJE OF T_LEKCJA (
     ref_grupa           SCOPE IS GRUPY,              -- NULL dla lekcji indywidualnych
     data_lekcji         NOT NULL,
     godzina_start       NOT NULL,
-    czas_trwania_min    NOT NULL CHECK (czas_trwania_min IN (30, 45, 60, 90)),
-    typ_lekcji          NOT NULL CHECK (typ_lekcji IN ('zwykla', 'egzamin')),
-    status              DEFAULT 'zaplanowana' NOT NULL
-                        CHECK (status IN ('zaplanowana', 'odbyta', 'odwolana'))
+    czas_trwania_min    NOT NULL CHECK (czas_trwania_min IN (30, 45, 60, 90))
 )
 OBJECT IDENTIFIER IS PRIMARY KEY;
 
@@ -178,7 +175,6 @@ OBJECT IDENTIFIER IS PRIMARY KEY;
 
 -- Indeksy na kolumnach czesto uzywanych w WHERE
 CREATE INDEX idx_lekcje_data ON LEKCJE(data_lekcji);
-CREATE INDEX idx_lekcje_status ON LEKCJE(status);
 CREATE INDEX idx_oceny_data ON OCENY(data_wystawienia);
 CREATE INDEX idx_uczniowie_nazwisko ON UCZNIOWIE(nazwisko);
 CREATE INDEX idx_nauczyciele_nazwisko ON NAUCZYCIELE(nazwisko);

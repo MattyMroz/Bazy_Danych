@@ -25,8 +25,6 @@ BEGIN EXECUTE IMMEDIATE 'DROP TYPE T_PRZEDMIOT FORCE'; EXCEPTION WHEN OTHERS THE
 /
 BEGIN EXECUTE IMMEDIATE 'DROP TYPE T_INSTRUMENT FORCE'; EXCEPTION WHEN OTHERS THEN NULL; END;
 /
-BEGIN EXECUTE IMMEDIATE 'DROP TYPE T_KOMISJA FORCE'; EXCEPTION WHEN OTHERS THEN NULL; END;
-/
 BEGIN EXECUTE IMMEDIATE 'DROP TYPE T_WYPOSAZENIE FORCE'; EXCEPTION WHEN OTHERS THEN NULL; END;
 /
 BEGIN EXECUTE IMMEDIATE 'DROP TYPE T_INSTRUMENTY_TAB FORCE'; EXCEPTION WHEN OTHERS THEN NULL; END;
@@ -42,10 +40,6 @@ CREATE OR REPLACE TYPE T_INSTRUMENTY_TAB AS VARRAY(5) OF VARCHAR2(50);
 
 -- Wyposazenie sali (max 10 elementow)
 CREATE OR REPLACE TYPE T_WYPOSAZENIE AS VARRAY(10) OF VARCHAR2(50);
-/
-
--- Komisja egzaminacyjna (dokladnie 2 nauczycieli - zgodnie z zalozeniem 47)
-CREATE OR REPLACE TYPE T_KOMISJA AS VARRAY(2) OF NUMBER;
 /
 
 -- ============================================================================
@@ -276,18 +270,12 @@ CREATE OR REPLACE TYPE T_LEKCJA AS OBJECT (
     data_lekcji         DATE,
     godzina_start       VARCHAR2(5),          -- format 'HH24:MI', np. '14:00'
     czas_trwania_min    NUMBER,               -- 30, 45, 60 lub 90
-    typ_lekcji          VARCHAR2(20),         -- 'zwykla' lub 'egzamin'
-    status              VARCHAR2(20),         -- 'zaplanowana', 'odbyta', 'odwolana'
-    komisja             T_KOMISJA,            -- VARRAY 2 ID nauczycieli (tylko dla egzaminu)
 
     -- Oblicza godzine zakonczenia
     MEMBER FUNCTION godzina_koniec RETURN VARCHAR2,
 
     -- Sprawdza czy lekcja jest indywidualna
-    MEMBER FUNCTION czy_indywidualna RETURN BOOLEAN,
-
-    -- Sprawdza czy to egzamin
-    MEMBER FUNCTION czy_egzamin RETURN BOOLEAN
+    MEMBER FUNCTION czy_indywidualna RETURN BOOLEAN
 );
 /
 
@@ -316,11 +304,6 @@ CREATE OR REPLACE TYPE BODY T_LEKCJA AS
     MEMBER FUNCTION czy_indywidualna RETURN BOOLEAN IS
     BEGIN
         RETURN ref_uczen IS NOT NULL AND ref_grupa IS NULL;
-    END;
-
-    MEMBER FUNCTION czy_egzamin RETURN BOOLEAN IS
-    BEGIN
-        RETURN typ_lekcji = 'egzamin';
     END;
 END;
 /

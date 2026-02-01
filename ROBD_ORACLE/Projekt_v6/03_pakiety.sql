@@ -397,8 +397,6 @@ END PKG_OSOBY;
 CREATE OR REPLACE PACKAGE PKG_LEKCJE AS
     PROCEDURE dodaj_lekcje_indywidualna(p_przedmiot VARCHAR2, p_nauczyciel_nazwisko VARCHAR2, p_sala_numer VARCHAR2, p_uczen_nazwisko VARCHAR2, p_uczen_imie VARCHAR2, p_data DATE, p_godzina VARCHAR2, p_czas_min NUMBER DEFAULT 45);
     PROCEDURE dodaj_lekcje_grupowa(p_przedmiot VARCHAR2, p_nauczyciel_nazwisko VARCHAR2, p_sala_numer VARCHAR2, p_grupa_kod VARCHAR2, p_data DATE, p_godzina VARCHAR2, p_czas_min NUMBER DEFAULT 45);
-    PROCEDURE dodaj_egzamin(p_uczen_nazwisko VARCHAR2, p_uczen_imie VARCHAR2, p_sala_numer VARCHAR2, p_data DATE, p_godzina VARCHAR2, p_komisja_nazwisko1 VARCHAR2, p_komisja_nazwisko2 VARCHAR2, p_czas_min NUMBER DEFAULT 45);
-    PROCEDURE zmien_status_lekcji(p_id_lekcji NUMBER, p_nowy_status VARCHAR2);
     FUNCTION czy_sala_wolna(p_id_sali NUMBER, p_data DATE, p_godzina_start VARCHAR2, p_czas_min NUMBER) RETURN BOOLEAN;
     FUNCTION czy_nauczyciel_wolny(p_id_nauczyciela NUMBER, p_data DATE, p_godzina_start VARCHAR2, p_czas_min NUMBER) RETURN BOOLEAN;
     FUNCTION czy_uczen_wolny(p_id_ucznia NUMBER, p_data DATE, p_godzina_start VARCHAR2, p_czas_min NUMBER) RETURN BOOLEAN;
@@ -411,8 +409,6 @@ CREATE OR REPLACE PACKAGE PKG_LEKCJE AS
     FUNCTION plan_sali(p_numer_sali VARCHAR2, p_data DATE) RETURN SYS_REFCURSOR;
     FUNCTION plan_nauczyciela(p_nazwisko VARCHAR2, p_data_od DATE, p_data_do DATE) RETURN SYS_REFCURSOR;
     FUNCTION plan_grupy(p_kod_grupy VARCHAR2, p_data_od DATE, p_data_do DATE) RETURN SYS_REFCURSOR;
-    FUNCTION egzaminy_ucznia(p_nazwisko VARCHAR2, p_imie VARCHAR2) RETURN SYS_REFCURSOR;
-    FUNCTION egzaminy_nauczyciela(p_nazwisko VARCHAR2) RETURN SYS_REFCURSOR;
 
     -- =======================================================================
     -- HEURYSTYKA PRZYDZIALU NAUCZYCIELA
@@ -487,7 +483,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
         FROM LEKCJE l
         WHERE DEREF(l.ref_sala).id_sali = p_id_sali
           AND l.data_lekcji = p_data
-          AND l.status != 'odwolana'
           AND (
               -- Konwersja godziny na minuty w SQL
               (TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))) < v_koniec_min
@@ -506,7 +501,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
         FROM LEKCJE l
         WHERE DEREF(l.ref_nauczyciel).id_nauczyciela = p_id_nauczyciela
           AND l.data_lekcji = p_data
-          AND l.status != 'odwolana'
           AND (
               (TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))) < v_koniec_min
               AND
@@ -529,7 +523,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
         WHERE l.ref_uczen IS NOT NULL
           AND DEREF(l.ref_uczen).id_ucznia = p_id_ucznia
           AND l.data_lekcji = p_data
-          AND l.status != 'odwolana'
           AND (
               (TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))) < v_koniec_min
               AND
@@ -545,7 +538,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
             WHERE l.ref_grupa IS NOT NULL
               AND UPPER(DEREF(l.ref_grupa).kod) = UPPER(v_kod_grupy)
               AND l.data_lekcji = p_data
-              AND l.status != 'odwolana'
               AND (
                   (TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))) < v_koniec_min
                   AND
@@ -662,8 +654,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
         v_ref_sala := PKG_SLOWNIKI.get_ref_sala(p_sala_numer);
         v_ref_uczen := PKG_OSOBY.get_ref_uczen(p_uczen_nazwisko, p_uczen_imie);
 
-        INSERT INTO LEKCJE (id_lekcji, ref_przedmiot, ref_nauczyciel, ref_sala, ref_uczen, ref_grupa, data_lekcji, godzina_start, czas_trwania_min, typ_lekcji, status, komisja)
-        VALUES (seq_lekcje.NEXTVAL, v_ref_przedmiot, v_ref_nauczyciel, v_ref_sala, v_ref_uczen, NULL, p_data, p_godzina, p_czas_min, 'zwykla', 'zaplanowana', NULL);
+        INSERT INTO LEKCJE (id_lekcji, ref_przedmiot, ref_nauczyciel, ref_sala, ref_uczen, ref_grupa, data_lekcji, godzina_start, czas_trwania_min)
+        VALUES (seq_lekcje.NEXTVAL, v_ref_przedmiot, v_ref_nauczyciel, v_ref_sala, v_ref_uczen, NULL, p_data, p_godzina, p_czas_min);
         COMMIT;
         DBMS_OUTPUT.PUT_LINE('Dodano lekcje: ' || p_przedmiot || ' dla ' || p_uczen_imie || ' ' || p_uczen_nazwisko);
     END;
@@ -699,70 +691,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
         v_ref_sala := PKG_SLOWNIKI.get_ref_sala(p_sala_numer);
         v_ref_grupa := PKG_SLOWNIKI.get_ref_grupa(p_grupa_kod);
 
-        INSERT INTO LEKCJE (id_lekcji, ref_przedmiot, ref_nauczyciel, ref_sala, ref_uczen, ref_grupa, data_lekcji, godzina_start, czas_trwania_min, typ_lekcji, status, komisja)
-        VALUES (seq_lekcje.NEXTVAL, v_ref_przedmiot, v_ref_nauczyciel, v_ref_sala, NULL, v_ref_grupa, p_data, p_godzina, p_czas_min, 'zwykla', 'zaplanowana', NULL);
+        INSERT INTO LEKCJE (id_lekcji, ref_przedmiot, ref_nauczyciel, ref_sala, ref_uczen, ref_grupa, data_lekcji, godzina_start, czas_trwania_min)
+        VALUES (seq_lekcje.NEXTVAL, v_ref_przedmiot, v_ref_nauczyciel, v_ref_sala, NULL, v_ref_grupa, p_data, p_godzina, p_czas_min);
         COMMIT;
         DBMS_OUTPUT.PUT_LINE('Dodano lekcje grupowa: ' || p_przedmiot || ' dla ' || p_grupa_kod);
-    END;
-
-    PROCEDURE dodaj_egzamin(p_uczen_nazwisko VARCHAR2, p_uczen_imie VARCHAR2, p_sala_numer VARCHAR2, p_data DATE, p_godzina VARCHAR2, p_komisja_nazwisko1 VARCHAR2, p_komisja_nazwisko2 VARCHAR2, p_czas_min NUMBER DEFAULT 45) IS
-        v_id_naucz1 NUMBER;
-        v_id_naucz2 NUMBER;
-        v_id_ucznia NUMBER;
-        v_id_sali NUMBER;
-        v_instrument_nazwa VARCHAR2(50);
-        v_id_przedmiotu NUMBER;
-        v_ref_uczen REF T_UCZEN;
-        v_ref_przedmiot REF T_PRZEDMIOT;
-        v_ref_nauczyciel REF T_NAUCZYCIEL;
-        v_ref_sala REF T_SALA;
-    BEGIN
-        v_id_naucz1 := PKG_OSOBY.get_id_nauczyciel(p_komisja_nazwisko1);
-        v_id_naucz2 := PKG_OSOBY.get_id_nauczyciel(p_komisja_nazwisko2);
-        v_id_ucznia := PKG_OSOBY.get_id_uczen(p_uczen_nazwisko, p_uczen_imie);
-        v_id_sali := PKG_SLOWNIKI.get_id_sala(p_sala_numer);
-
-        IF v_id_naucz1 = v_id_naucz2 THEN
-            RAISE_APPLICATION_ERROR(-20102, 'Komisja musi skladac sie z 2 ROZNYCH nauczycieli');
-        END IF;
-
-        v_instrument_nazwa := PKG_OSOBY.get_instrument_ucznia(v_id_ucznia);
-        v_id_przedmiotu := PKG_SLOWNIKI.get_id_przedmiot(v_instrument_nazwa);
-
-        waliduj_godziny_pracy(p_godzina, p_czas_min);
-        waliduj_dzien_tygodnia(p_data);
-
-        IF NOT czy_sala_wolna(v_id_sali, p_data, p_godzina, p_czas_min) THEN
-            RAISE_APPLICATION_ERROR(-20010, 'Sala ' || p_sala_numer || ' zajeta');
-        END IF;
-        IF NOT czy_uczen_wolny(v_id_ucznia, p_data, p_godzina, p_czas_min) THEN
-            RAISE_APPLICATION_ERROR(-20012, 'Uczen ma juz zajecia w tym terminie');
-        END IF;
-        IF NOT czy_nauczyciel_wolny(v_id_naucz1, p_data, p_godzina, p_czas_min) THEN
-            RAISE_APPLICATION_ERROR(-20011, 'Nauczyciel ' || p_komisja_nazwisko1 || ' (komisja) zajety');
-        END IF;
-        IF NOT czy_nauczyciel_wolny(v_id_naucz2, p_data, p_godzina, p_czas_min) THEN
-            RAISE_APPLICATION_ERROR(-20011, 'Nauczyciel ' || p_komisja_nazwisko2 || ' (komisja) zajety');
-        END IF;
-
-        v_ref_uczen := PKG_OSOBY.get_ref_uczen(p_uczen_nazwisko, p_uczen_imie);
-        v_ref_przedmiot := PKG_SLOWNIKI.get_ref_przedmiot(v_instrument_nazwa);
-        v_ref_nauczyciel := PKG_OSOBY.get_ref_nauczyciel_by_id(v_id_naucz1);
-        v_ref_sala := PKG_SLOWNIKI.get_ref_sala(p_sala_numer);
-
-        INSERT INTO LEKCJE (id_lekcji, ref_przedmiot, ref_nauczyciel, ref_sala, ref_uczen, ref_grupa, data_lekcji, godzina_start, czas_trwania_min, typ_lekcji, status, komisja)
-        VALUES (seq_lekcje.NEXTVAL, v_ref_przedmiot, v_ref_nauczyciel, v_ref_sala, v_ref_uczen, NULL, p_data, p_godzina, p_czas_min, 'egzamin', 'zaplanowana', T_KOMISJA(v_id_naucz1, v_id_naucz2));
-        COMMIT;
-        DBMS_OUTPUT.PUT_LINE('Dodano egzamin dla: ' || p_uczen_imie || ' ' || p_uczen_nazwisko);
-    END;
-
-    PROCEDURE zmien_status_lekcji(p_id_lekcji NUMBER, p_nowy_status VARCHAR2) IS
-    BEGIN
-        UPDATE LEKCJE SET status = p_nowy_status WHERE id_lekcji = p_id_lekcji;
-        IF SQL%ROWCOUNT = 0 THEN
-            RAISE_APPLICATION_ERROR(-20014, 'Lekcja o podanym ID nie istnieje');
-        END IF;
-        COMMIT;
     END;
 
     -- =======================================================================
@@ -781,8 +713,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
             SELECT l.data_lekcji, l.godzina_start, l.czas_trwania_min,
                    DEREF(l.ref_przedmiot).nazwa AS przedmiot,
                    DEREF(l.ref_nauczyciel).nazwisko AS nauczyciel,
-                   DEREF(l.ref_sala).numer AS sala,
-                   l.typ_lekcji, l.status
+                   DEREF(l.ref_sala).numer AS sala
             FROM LEKCJE l
             WHERE ((l.ref_uczen IS NOT NULL AND DEREF(l.ref_uczen).id_ucznia = v_id_ucznia)
                    OR (l.ref_grupa IS NOT NULL AND UPPER(DEREF(l.ref_grupa).kod) = UPPER(v_kod_grupy)))
@@ -799,8 +730,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
                    DEREF(l.ref_przedmiot).nazwa AS przedmiot,
                    DEREF(l.ref_nauczyciel).nazwisko AS nauczyciel,
                    CASE WHEN l.ref_uczen IS NOT NULL THEN DEREF(l.ref_uczen).imie || ' ' || DEREF(l.ref_uczen).nazwisko
-                        ELSE DEREF(l.ref_grupa).kod END AS kto,
-                   l.typ_lekcji, l.status
+                        ELSE DEREF(l.ref_grupa).kod END AS kto
             FROM LEKCJE l
             WHERE DEREF(l.ref_sala).numer = p_numer_sali AND l.data_lekcji = p_data
             ORDER BY l.godzina_start;
@@ -815,8 +745,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
                    DEREF(l.ref_przedmiot).nazwa AS przedmiot,
                    DEREF(l.ref_sala).numer AS sala,
                    CASE WHEN l.ref_uczen IS NOT NULL THEN DEREF(l.ref_uczen).imie || ' ' || DEREF(l.ref_uczen).nazwisko
-                        ELSE DEREF(l.ref_grupa).kod END AS kto,
-                   l.typ_lekcji, l.status
+                        ELSE DEREF(l.ref_grupa).kod END AS kto
             FROM LEKCJE l
             WHERE UPPER(DEREF(l.ref_nauczyciel).nazwisko) = UPPER(p_nazwisko)
               AND l.data_lekcji BETWEEN p_data_od AND p_data_do
@@ -831,53 +760,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
             SELECT l.data_lekcji, l.godzina_start, l.czas_trwania_min,
                    DEREF(l.ref_przedmiot).nazwa AS przedmiot,
                    DEREF(l.ref_nauczyciel).nazwisko AS nauczyciel,
-                   DEREF(l.ref_sala).numer AS sala,
-                   l.typ_lekcji, l.status
+                   DEREF(l.ref_sala).numer AS sala
             FROM LEKCJE l
             WHERE l.ref_grupa IS NOT NULL
               AND UPPER(DEREF(l.ref_grupa).kod) = UPPER(p_kod_grupy)
               AND l.data_lekcji BETWEEN p_data_od AND p_data_do
             ORDER BY l.data_lekcji, l.godzina_start;
-        RETURN v_cursor;
-    END;
-
-    FUNCTION egzaminy_ucznia(p_nazwisko VARCHAR2, p_imie VARCHAR2) RETURN SYS_REFCURSOR IS
-        v_cursor SYS_REFCURSOR;
-        v_id_ucznia NUMBER;
-    BEGIN
-        v_id_ucznia := PKG_OSOBY.get_id_uczen(p_nazwisko, p_imie);
-        OPEN v_cursor FOR
-            SELECT l.data_lekcji, l.godzina_start,
-                   DEREF(l.ref_przedmiot).nazwa AS przedmiot,
-                   DEREF(l.ref_sala).numer AS sala,
-                   l.komisja, l.status
-            FROM LEKCJE l
-            WHERE l.typ_lekcji = 'egzamin'
-              AND l.ref_uczen IS NOT NULL
-              AND DEREF(l.ref_uczen).id_ucznia = v_id_ucznia
-            ORDER BY l.data_lekcji;
-        RETURN v_cursor;
-    END;
-
-    -- Naprawione: zamiast l.komisja(1) uzywamy kursora FOR LOOP
-    FUNCTION egzaminy_nauczyciela(p_nazwisko VARCHAR2) RETURN SYS_REFCURSOR IS
-        v_cursor SYS_REFCURSOR;
-        v_id_nauczyciela NUMBER;
-    BEGIN
-        v_id_nauczyciela := PKG_OSOBY.get_id_nauczyciel(p_nazwisko);
-        
-        -- Najpierw zbieramy ID lekcji gdzie nauczyciel jest w komisji
-        -- Uzywamy tabeli tymczasowej lub podzapytania z TABLE()
-        OPEN v_cursor FOR
-            SELECT l.data_lekcji, l.godzina_start,
-                   DEREF(l.ref_uczen).imie || ' ' || DEREF(l.ref_uczen).nazwisko AS uczen,
-                   DEREF(l.ref_przedmiot).nazwa AS przedmiot,
-                   DEREF(l.ref_sala).numer AS sala,
-                   l.status
-            FROM LEKCJE l, TABLE(l.komisja) k
-            WHERE l.typ_lekcji = 'egzamin'
-              AND k.COLUMN_VALUE = v_id_nauczyciela
-            ORDER BY l.data_lekcji;
         RETURN v_cursor;
     END;
 
@@ -916,15 +804,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
                 INTO v_lekcje_dzis, v_godziny_dzis
                 FROM LEKCJE l
                 WHERE DEREF(l.ref_nauczyciel).id_nauczyciela = naucz.id_nauczyciela
-                  AND l.data_lekcji = p_data
-                  AND l.status != 'odwolana';
+                  AND l.data_lekcji = p_data;
 
                 SELECT NVL(SUM(l.czas_trwania_min), 0)
                 INTO v_godziny_tydzien
                 FROM LEKCJE l
                 WHERE DEREF(l.ref_nauczyciel).id_nauczyciela = naucz.id_nauczyciela
-                  AND l.data_lekcji BETWEEN v_poczatek_tyg AND v_koniec_tyg
-                  AND l.status != 'odwolana';
+                  AND l.data_lekcji BETWEEN v_poczatek_tyg AND v_koniec_tyg;
 
                 v_max_godzin_dzien := NVL(naucz.max_godzin_dziennie, 6) * 60;
                 v_max_godzin_tydzien := NVL(naucz.max_godzin_tydzien, 30) * 60;
@@ -986,7 +872,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
                     SELECT 1 FROM LEKCJE l
                     WHERE DEREF(l.ref_sala).id_sali = s.id_sali
                       AND l.data_lekcji = p_data
-                      AND l.status != 'odwolana'
                       AND (TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))) < (v_start_min + v_czas_lekcji)
                       AND v_start_min < (TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania_min)
                 )
@@ -1006,8 +891,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
         v_ref_sala := PKG_SLOWNIKI.get_ref_sala(v_sala);
         v_ref_uczen := PKG_OSOBY.get_ref_uczen(p_uczen_nazwisko, p_uczen_imie);
 
-        INSERT INTO LEKCJE (id_lekcji, ref_przedmiot, ref_nauczyciel, ref_sala, ref_uczen, ref_grupa, data_lekcji, godzina_start, czas_trwania_min, typ_lekcji, status, komisja)
-        VALUES (seq_lekcje.NEXTVAL, v_ref_przedmiot, v_ref_nauczyciel, v_ref_sala, v_ref_uczen, NULL, p_data, p_godzina, v_czas_lekcji, 'zwykla', 'zaplanowana', NULL);
+        INSERT INTO LEKCJE (id_lekcji, ref_przedmiot, ref_nauczyciel, ref_sala, ref_uczen, ref_grupa, data_lekcji, godzina_start, czas_trwania_min)
+        VALUES (seq_lekcje.NEXTVAL, v_ref_przedmiot, v_ref_nauczyciel, v_ref_sala, v_ref_uczen, NULL, p_data, p_godzina, v_czas_lekcji);
 
         DBMS_OUTPUT.PUT_LINE('Przydzielono: ' || p_uczen_imie || ' ' || p_uczen_nazwisko || ' (' || v_instrument || ', ' || v_czas_lekcji || ' min) -> ' || v_nauczyciel || ', sala ' || v_sala);
     END;
@@ -1132,8 +1017,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
                 v_ref_nauczyciel := PKG_OSOBY.get_ref_nauczyciel(v_nauczyciel);
                 v_ref_sala := PKG_SLOWNIKI.get_ref_sala('201');
                 v_ref_grupa := PKG_SLOWNIKI.get_ref_grupa(grupa.kod);
-                INSERT INTO LEKCJE (id_lekcji, ref_przedmiot, ref_nauczyciel, ref_sala, ref_uczen, ref_grupa, data_lekcji, godzina_start, czas_trwania_min, typ_lekcji, status, komisja)
-                VALUES (seq_lekcje.NEXTVAL, v_ref_przedmiot, v_ref_nauczyciel, v_ref_sala, NULL, v_ref_grupa, v_dzien, '14:00', 45, 'zwykla', 'zaplanowana', NULL);
+                INSERT INTO LEKCJE (id_lekcji, ref_przedmiot, ref_nauczyciel, ref_sala, ref_uczen, ref_grupa, data_lekcji, godzina_start, czas_trwania_min)
+                VALUES (seq_lekcje.NEXTVAL, v_ref_przedmiot, v_ref_nauczyciel, v_ref_sala, NULL, v_ref_grupa, v_dzien, '14:00', 45);
                 v_utworzono := v_utworzono + 1;
             EXCEPTION WHEN OTHERS THEN v_bledy := v_bledy + 1; DBMS_OUTPUT.PUT_LINE('BLAD Ksztalcenie sluchu ' || grupa.kod); END;
 
@@ -1145,8 +1030,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
                 v_ref_nauczyciel := PKG_OSOBY.get_ref_nauczyciel(v_nauczyciel);
                 v_ref_sala := PKG_SLOWNIKI.get_ref_sala('202');
                 v_ref_grupa := PKG_SLOWNIKI.get_ref_grupa(grupa.kod);
-                INSERT INTO LEKCJE (id_lekcji, ref_przedmiot, ref_nauczyciel, ref_sala, ref_uczen, ref_grupa, data_lekcji, godzina_start, czas_trwania_min, typ_lekcji, status, komisja)
-                VALUES (seq_lekcje.NEXTVAL, v_ref_przedmiot, v_ref_nauczyciel, v_ref_sala, NULL, v_ref_grupa, v_dzien, '15:00', 45, 'zwykla', 'zaplanowana', NULL);
+                INSERT INTO LEKCJE (id_lekcji, ref_przedmiot, ref_nauczyciel, ref_sala, ref_uczen, ref_grupa, data_lekcji, godzina_start, czas_trwania_min)
+                VALUES (seq_lekcje.NEXTVAL, v_ref_przedmiot, v_ref_nauczyciel, v_ref_sala, NULL, v_ref_grupa, v_dzien, '15:00', 45);
                 v_utworzono := v_utworzono + 1;
             EXCEPTION WHEN OTHERS THEN v_bledy := v_bledy + 1; DBMS_OUTPUT.PUT_LINE('BLAD Rytmika ' || grupa.kod); END;
 
@@ -1158,8 +1043,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
                 v_ref_nauczyciel := PKG_OSOBY.get_ref_nauczyciel(v_nauczyciel);
                 v_ref_sala := PKG_SLOWNIKI.get_ref_sala('201');
                 v_ref_grupa := PKG_SLOWNIKI.get_ref_grupa(grupa.kod);
-                INSERT INTO LEKCJE (id_lekcji, ref_przedmiot, ref_nauczyciel, ref_sala, ref_uczen, ref_grupa, data_lekcji, godzina_start, czas_trwania_min, typ_lekcji, status, komisja)
-                VALUES (seq_lekcje.NEXTVAL, v_ref_przedmiot, v_ref_nauczyciel, v_ref_sala, NULL, v_ref_grupa, v_dzien, '16:00', 45, 'zwykla', 'zaplanowana', NULL);
+                INSERT INTO LEKCJE (id_lekcji, ref_przedmiot, ref_nauczyciel, ref_sala, ref_uczen, ref_grupa, data_lekcji, godzina_start, czas_trwania_min)
+                VALUES (seq_lekcje.NEXTVAL, v_ref_przedmiot, v_ref_nauczyciel, v_ref_sala, NULL, v_ref_grupa, v_dzien, '16:00', 45);
                 v_utworzono := v_utworzono + 1;
             EXCEPTION WHEN OTHERS THEN v_bledy := v_bledy + 1; DBMS_OUTPUT.PUT_LINE('BLAD Audycje ' || grupa.kod); END;
 
@@ -1172,8 +1057,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
                     v_ref_nauczyciel := PKG_OSOBY.get_ref_nauczyciel(v_nauczyciel);
                     v_ref_sala := PKG_SLOWNIKI.get_ref_sala('202');
                     v_ref_grupa := PKG_SLOWNIKI.get_ref_grupa(grupa.kod);
-                    INSERT INTO LEKCJE (id_lekcji, ref_przedmiot, ref_nauczyciel, ref_sala, ref_uczen, ref_grupa, data_lekcji, godzina_start, czas_trwania_min, typ_lekcji, status, komisja)
-                    VALUES (seq_lekcje.NEXTVAL, v_ref_przedmiot, v_ref_nauczyciel, v_ref_sala, NULL, v_ref_grupa, p_data_poniedzialek + 1, '17:00', 90, 'zwykla', 'zaplanowana', NULL);
+                    INSERT INTO LEKCJE (id_lekcji, ref_przedmiot, ref_nauczyciel, ref_sala, ref_uczen, ref_grupa, data_lekcji, godzina_start, czas_trwania_min)
+                    VALUES (seq_lekcje.NEXTVAL, v_ref_przedmiot, v_ref_nauczyciel, v_ref_sala, NULL, v_ref_grupa, p_data_poniedzialek + 1, '17:00', 90);
                     v_utworzono := v_utworzono + 1;
                 EXCEPTION WHEN OTHERS THEN v_bledy := v_bledy + 1; DBMS_OUTPUT.PUT_LINE('BLAD Chor ' || grupa.kod); END;
 
@@ -1184,8 +1069,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
                     v_ref_nauczyciel := PKG_OSOBY.get_ref_nauczyciel(v_nauczyciel);
                     v_ref_sala := PKG_SLOWNIKI.get_ref_sala('202');
                     v_ref_grupa := PKG_SLOWNIKI.get_ref_grupa(grupa.kod);
-                    INSERT INTO LEKCJE (id_lekcji, ref_przedmiot, ref_nauczyciel, ref_sala, ref_uczen, ref_grupa, data_lekcji, godzina_start, czas_trwania_min, typ_lekcji, status, komisja)
-                    VALUES (seq_lekcje.NEXTVAL, v_ref_przedmiot, v_ref_nauczyciel, v_ref_sala, NULL, v_ref_grupa, p_data_poniedzialek + 3, '17:00', 90, 'zwykla', 'zaplanowana', NULL);
+                    INSERT INTO LEKCJE (id_lekcji, ref_przedmiot, ref_nauczyciel, ref_sala, ref_uczen, ref_grupa, data_lekcji, godzina_start, czas_trwania_min)
+                    VALUES (seq_lekcje.NEXTVAL, v_ref_przedmiot, v_ref_nauczyciel, v_ref_sala, NULL, v_ref_grupa, p_data_poniedzialek + 3, '17:00', 90);
                     v_utworzono := v_utworzono + 1;
                 EXCEPTION WHEN OTHERS THEN v_bledy := v_bledy + 1; DBMS_OUTPUT.PUT_LINE('BLAD Orkiestra ' || grupa.kod); END;
             END IF;
@@ -1353,7 +1238,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_RAPORTY AS
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 35, '-'));
         FOR r IN (
             SELECT s.numer, s.typ, COUNT(l.id_lekcji) AS liczba
-            FROM SALE s LEFT JOIN LEKCJE l ON DEREF(l.ref_sala).id_sali = s.id_sali AND l.data_lekcji = p_data AND l.status != 'odwolana'
+            FROM SALE s LEFT JOIN LEKCJE l ON DEREF(l.ref_sala).id_sali = s.id_sali AND l.data_lekcji = p_data
             GROUP BY s.numer, s.typ ORDER BY s.numer
         ) LOOP
             DBMS_OUTPUT.PUT_LINE(RPAD(r.numer, 8) || RPAD(r.typ, 15) || r.liczba);
