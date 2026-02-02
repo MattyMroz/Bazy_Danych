@@ -95,14 +95,91 @@ SELECT
 FROM lekcje l WHERE ROWNUM <= 5;
 
 -- ============================================================================
--- 8. TESTY WALIDACJI (TRIGGERY)
+-- 8. TESTY WALIDACJI (TRIGGERY I PAKIETY)
 -- ============================================================================
+
+-- ----------------------------------------------------------------------------
+-- 8.1 TESTY TRIGGERÓW
+-- ----------------------------------------------------------------------------
 
 -- Test XOR (powinien zgłosić błąd - ani uczeń ani grupa)
 -- EXEC pkg_lekcje.dodaj_lekcje_indywidualna(1, 1, 1, NULL, DATE '2025-06-10', 14);
 
 -- Test zakresu ocen (powinien zgłosić błąd - ocena 7)
 -- EXEC pkg_oceny.wystaw_ocene(1, 1, 1, 7);
+
+-- ----------------------------------------------------------------------------
+-- 8.2 TESTY WALIDACJI KONFLIKTÓW TERMINÓW
+-- ----------------------------------------------------------------------------
+
+-- Test kolizji sali (sala 1 zajęta 2025-06-02 o 14:00)
+-- EXEC pkg_lekcje.dodaj_lekcje_indywidualna(1, 1, 1, 4, DATE '2025-06-02', 14);
+-- Oczekiwany błąd: ORA-20020: Błąd planowania: Sala jest już zajęta w tym terminie!
+
+-- Test kolizji nauczyciela (nauczyciel 1 ma lekcję 2025-06-02 o 14:00)
+-- EXEC pkg_lekcje.dodaj_lekcje_indywidualna(1, 1, 2, 4, DATE '2025-06-02', 14);
+-- Oczekiwany błąd: ORA-20020: Błąd planowania: Nauczyciel ma już lekcję w tym terminie!
+
+-- ----------------------------------------------------------------------------
+-- 8.3 TESTY WALIDACJI KOMPETENCJI NAUCZYCIELA (-20030)
+-- ----------------------------------------------------------------------------
+
+-- Nauczyciel 1 (Anna Kowalska) uczy Fortepianu (przedmiot 1)
+-- Próba przypisania jej do lekcji Skrzypiec (przedmiot 2) - powinien być błąd
+-- EXEC pkg_lekcje.dodaj_lekcje_indywidualna(2, 1, 2, 2, DATE '2025-06-10', 14);
+-- Oczekiwany błąd: ORA-20030: Ten nauczyciel nie uczy tego przedmiotu!
+
+-- Test dla lekcji grupowej - nauczyciel 1 nie uczy Kształcenia słuchu (przedmiot 4)
+-- EXEC pkg_lekcje.dodaj_lekcje_grupowa(4, 1, 3, 1, DATE '2025-06-10', 14);
+-- Oczekiwany błąd: ORA-20030: Ten nauczyciel nie uczy tego przedmiotu!
+
+-- ----------------------------------------------------------------------------
+-- 8.4 TESTY WALIDACJI TYPU SALI (-20031)
+-- ----------------------------------------------------------------------------
+
+-- Sala 1 (101) jest typu 'indywidualna'
+-- Próba dodania lekcji grupowej w tej sali - powinien być błąd
+-- EXEC pkg_lekcje.dodaj_lekcje_grupowa(4, 4, 1, 1, DATE '2025-06-10', 14);
+-- Oczekiwany błąd: ORA-20031: Nie można prowadzić lekcji grupowej w sali indywidualnej!
+
+-- ----------------------------------------------------------------------------
+-- 8.5 TESTY WALIDACJI PRZEPEŁNIENIA SALI (-20035)
+-- ----------------------------------------------------------------------------
+
+-- Sala 103 ma pojemność 20 osób, grupa 1A ma 3 uczniów - powinno przejść
+-- Aby przetestować błąd, trzeba by stworzyć grupę z >20 uczniami lub salę z mniejszą pojemnością
+
+-- Przykład testu (gdyby sala miała pojemność 2, a grupa 3 uczniów):
+-- EXEC pkg_lekcje.dodaj_lekcje_grupowa(4, 4, 3, 1, DATE '2025-06-10', 17);
+-- Oczekiwany błąd: ORA-20035: Sala jest za mała! Grupa liczy 3 osób, a sala mieści tylko 2.
+
+-- ----------------------------------------------------------------------------
+-- 8.6 TESTY WALIDACJI INSTRUMENTU UCZNIA (-20032)
+-- ----------------------------------------------------------------------------
+
+-- Uczeń 1 (Adam Adamski) gra na Fortepianie
+-- Próba zapisania go na lekcję Skrzypiec - powinien być błąd
+-- EXEC pkg_lekcje.dodaj_lekcje_indywidualna(2, 2, 2, 1, DATE '2025-06-10', 14);
+-- Oczekiwany błąd: ORA-20032: Uczeń gra na instrumencie Fortepian, a lekcja dotyczy przedmiotu Skrzypce!
+
+-- Uczeń 2 (Barbara Barańska) gra na Skrzypcach
+-- Próba zapisania jej na lekcję Gitary - powinien być błąd
+-- EXEC pkg_lekcje.dodaj_lekcje_indywidualna(3, 3, 2, 2, DATE '2025-06-10', 15);
+-- Oczekiwany błąd: ORA-20032: Uczeń gra na instrumencie Skrzypce, a lekcja dotyczy przedmiotu Gitara!
+
+-- ----------------------------------------------------------------------------
+-- 8.7 TESTY WALIDACJI UPRAWNIEŃ DO OCENIANIA (-20033)
+-- ----------------------------------------------------------------------------
+
+-- Nauczyciel 1 (Anna Kowalska) uczy Fortepianu (przedmiot 1)
+-- Próba wystawienia przez nią oceny z Rytmiki (przedmiot 5) - powinien być błąd
+-- EXEC pkg_oceny.wystaw_ocene(1, 1, 5, 5);
+-- Oczekiwany błąd: ORA-20033: Ten nauczyciel nie może wystawiać ocen z tego przedmiotu!
+
+-- Nauczyciel 2 (Jan Nowak) uczy Skrzypiec (przedmiot 2)
+-- Próba wystawienia przez niego oceny semestralnej z Fortepianu - powinien być błąd
+-- EXEC pkg_oceny.wystaw_ocene_semestralna(1, 2, 1, 5);
+-- Oczekiwany błąd: ORA-20033: Ten nauczyciel nie może wystawiać ocen z tego przedmiotu!
 
 -- ============================================================================
 -- 9. PODSUMOWANIE - co zostało zademonstrowane
@@ -129,13 +206,21 @@ VARRAY:
 PAKIETY:
 - pkg_slowniki (dodawanie, listy, get_ref)
 - pkg_osoby (dodawanie, listy, get_ref)
-- pkg_lekcje (dodawanie lekcji, plany)
-- pkg_oceny (wystawianie, listy, średnia)
+- pkg_lekcje (dodawanie lekcji, plany, walidacja konfliktów i spójności)
+- pkg_oceny (wystawianie, listy, średnia, walidacja uprawnień)
 - pkg_raporty (statystyki)
 
 TRIGGERY:
 - trg_lekcja_xor (XOR: uczeń/grupa)
 - trg_ocena_zakres (1-6)
+
+WALIDACJE W PAKIETACH:
+- Konflikty terminów (sala/nauczyciel/uczeń/grupa zajęty)
+- Kompetencje nauczyciela (czy uczy danego przedmiotu)
+- Typ sali (lekcja grupowa wymaga sali grupowej)
+- Przepełnienie sali (czy grupa zmieści się w sali)
+- Instrument ucznia (zgodność z przedmiotem lekcji)
+- Uprawnienia do oceniania (nauczyciel ocenia tylko swój przedmiot)
 
 KURSORY:
 - Jawny w lista_uczniow_grupy

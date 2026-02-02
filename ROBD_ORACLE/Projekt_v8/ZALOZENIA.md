@@ -211,14 +211,30 @@ System **waliduje dostępność zasobów** przy planowaniu lekcji. Próba dodani
 
 > 💡 **Implementacja:** Walidacja realizowana wewnątrz pakietu `pkg_lekcje` (funkcja prywatna), co pozwala uniknąć problemu "mutating table" występującego przy triggerach.
 
-### 7.3 Funkcjonalności poza zakresem walidacji
+### 7.3 Walidacja spójności danych ✅
+
+System **waliduje logiczną spójność** przy dodawaniu lekcji i ocen:
+
+| Reguła | Walidacja | Komunikat błędu |
+|--------|-----------|-----------------|
+| **Kompetencje nauczyciela** | ✅ `pkg_lekcje` | "Ten nauczyciel nie uczy tego przedmiotu!" |
+| **Typ sali dla lekcji grupowej** | ✅ `pkg_lekcje` | "Nie można prowadzić lekcji grupowej w sali indywidualnej!" |
+| **Instrument ucznia** | ✅ `pkg_lekcje` | "Uczeń gra na innym instrumencie niż przedmiot lekcji!" |
+| **Uprawnienia do oceniania** | ✅ `pkg_oceny` | "Ten nauczyciel nie może wystawiać ocen z tego przedmiotu!" |
+
+> 💡 **Szczegóły walidacji:**
+> - **Kompetencje nauczyciela:** Nauczyciel może prowadzić tylko lekcje z przedmiotu, który jest przypisany do niego (REF w `t_nauczyciel`).
+> - **Typ sali:** Lekcje grupowe wymagają sali typu 'grupowa'. Lekcje indywidualne mogą odbywać się w dowolnej sali.
+> - **Instrument ucznia:** Przy lekcjach indywidualnych z przedmiotów instrumentalnych (`typ='indywidualny'`) sprawdzane jest, czy instrument ucznia odpowiada nazwie przedmiotu (np. uczeń grający na fortepianie może mieć tylko lekcje z przedmiotu "Fortepian"). Przedmioty grupowe (Kształcenie słuchu, Rytmika) nie podlegają tej walidacji.
+> - **Uprawnienia do oceniania:** Nauczyciel może wystawiać oceny tylko z przedmiotu, którego uczy.
+
+### 7.4 Funkcjonalności poza zakresem walidacji
 
 | Co NIE jest walidowane | Uzasadnienie |
 |------------------------|-------------|
 | **Kompletność planu** - 5 lekcji/tydzień | Uproszczenie projektu |
-| **Zgodność sali z przedmiotem** | System nie sprawdza wyposażenia |
 
-### 7.4 Ograniczenia poza zakresem projektu
+### 7.5 Ograniczenia poza zakresem projektu
 
 | Funkcjonalność | Status |
 |----------------|--------|
@@ -258,6 +274,11 @@ System wykorzystuje **podstawową** obsługę błędów Oracle:
 | `-20014` | Nie znaleziono ucznia o podanym ID |
 | `-20020` | Konflikt terminów przy lekcji indywidualnej (sala/nauczyciel/uczeń zajęty) |
 | `-20021` | Konflikt terminów przy lekcji grupowej (sala/nauczyciel/grupa zajęta) |
+| `-20030` | Nauczyciel nie uczy podanego przedmiotu (niezgodność kompetencji) |
+| `-20031` | Lekcja grupowa w sali indywidualnej (niezgodność typu sali) |
+| `-20032` | Instrument ucznia niezgodny z przedmiotem lekcji |
+| `-20033` | Nauczyciel nie ma uprawnień do wystawiania ocen z tego przedmiotu |
+| `-20035` | Przepełnienie sali (grupa jest większa niż pojemność sali) |
 
 ---
 

@@ -312,6 +312,10 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         v_ref_sala REF t_sala;
         v_ref_uczen REF t_uczen;
         v_blad VARCHAR2(200);
+        v_id_przedmiotu_nauczyciela NUMBER;
+        v_nazwa_przedmiotu VARCHAR2(50);
+        v_typ_przedmiotu VARCHAR2(20);
+        v_instrument_ucznia VARCHAR2(50);
     BEGIN
         -- Pobranie referencji
         v_ref_przedmiot := pkg_slowniki.get_ref_przedmiot(p_id_przedmiotu);
@@ -319,9 +323,32 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         v_ref_sala := pkg_slowniki.get_ref_sala(p_id_sali);
         v_ref_uczen := pkg_osoby.get_ref_uczen(p_id_ucznia);
 
+        -- WALIDACJA: Kompetencje nauczyciela (czy uczy tego przedmiotu)
+        SELECT DEREF(n.ref_przedmiot).id INTO v_id_przedmiotu_nauczyciela
+        FROM nauczyciele n WHERE n.id = p_id_nauczyciela;
+
+        IF v_id_przedmiotu_nauczyciela != p_id_przedmiotu THEN
+            RAISE_APPLICATION_ERROR(-20030, 'Ten nauczyciel nie uczy tego przedmiotu!');
+        END IF;
+
+        -- WALIDACJA: Instrument ucznia (tylko dla przedmiotów indywidualnych/instrumentalnych)
+        SELECT p.nazwa, p.typ INTO v_nazwa_przedmiotu, v_typ_przedmiotu
+        FROM przedmioty p WHERE p.id = p_id_przedmiotu;
+
+        IF v_typ_przedmiotu = 'indywidualny' THEN
+            SELECT u.instrument INTO v_instrument_ucznia
+            FROM uczniowie u WHERE u.id = p_id_ucznia;
+
+            IF UPPER(v_instrument_ucznia) != UPPER(v_nazwa_przedmiotu) THEN
+                RAISE_APPLICATION_ERROR(-20032, 
+                    'Uczeń gra na instrumencie ' || v_instrument_ucznia || 
+                    ', a lekcja dotyczy przedmiotu ' || v_nazwa_przedmiotu || '!');
+            END IF;
+        END IF;
+
         -- WALIDACJA KONFLIKTÓW
         v_blad := sprawdz_kolizje(p_data, p_godz, v_ref_nauczyciel, v_ref_sala, v_ref_uczen, NULL);
-        
+
         IF v_blad IS NOT NULL THEN
             RAISE_APPLICATION_ERROR(-20020, 'Błąd planowania: ' || v_blad);
         END IF;
@@ -346,6 +373,10 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         v_ref_sala REF t_sala;
         v_ref_grupa REF t_grupa;
         v_blad VARCHAR2(200);
+        v_id_przedmiotu_nauczyciela NUMBER;
+        v_typ_sali VARCHAR2(20);
+        v_liczba_uczniow NUMBER;
+        v_pojemnosc_sali NUMBER;
     BEGIN
         -- Pobranie referencji
         v_ref_przedmiot := pkg_slowniki.get_ref_przedmiot(p_id_przedmiotu);
@@ -353,9 +384,37 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         v_ref_sala := pkg_slowniki.get_ref_sala(p_id_sali);
         v_ref_grupa := pkg_slowniki.get_ref_grupa(p_id_grupy);
 
+        -- WALIDACJA: Kompetencje nauczyciela (czy uczy tego przedmiotu)
+        SELECT DEREF(n.ref_przedmiot).id INTO v_id_przedmiotu_nauczyciela
+        FROM nauczyciele n WHERE n.id = p_id_nauczyciela;
+
+        IF v_id_przedmiotu_nauczyciela != p_id_przedmiotu THEN
+            RAISE_APPLICATION_ERROR(-20030, 'Ten nauczyciel nie uczy tego przedmiotu!');
+        END IF;
+
+        -- WALIDACJA: Typ sali (lekcja grupowa wymaga sali grupowej)
+        SELECT s.typ, s.pojemnosc INTO v_typ_sali, v_pojemnosc_sali 
+        FROM sale s WHERE s.id = p_id_sali;
+
+        IF v_typ_sali = 'indywidualna' THEN
+            RAISE_APPLICATION_ERROR(-20031, 
+                'Nie można prowadzić lekcji grupowej w sali indywidualnej!');
+        END IF;
+
+        -- WALIDACJA: Przepełnienie sali (czy grupa zmieści się w sali)
+        SELECT COUNT(*) INTO v_liczba_uczniow 
+        FROM uczniowie u 
+        WHERE DEREF(u.ref_grupa).id = p_id_grupy;
+
+        IF v_liczba_uczniow > v_pojemnosc_sali THEN
+            RAISE_APPLICATION_ERROR(-20035, 
+                'Sala jest za mała! Grupa liczy ' || v_liczba_uczniow || 
+                ' osób, a sala mieści tylko ' || v_pojemnosc_sali || '.');
+        END IF;
+
         -- WALIDACJA KONFLIKTÓW
         v_blad := sprawdz_kolizje(p_data, p_godz, v_ref_nauczyciel, v_ref_sala, NULL, v_ref_grupa);
-        
+
         IF v_blad IS NOT NULL THEN
             RAISE_APPLICATION_ERROR(-20021, 'Błąd planowania: ' || v_blad);
         END IF;
@@ -379,9 +438,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         SELECT u.pelne_nazwisko(), DEREF(u.ref_grupa).id 
         INTO v_uczen, v_id_grupy 
         FROM uczniowie u WHERE u.id = p_id_ucznia;
-        
+
         DBMS_OUTPUT.PUT_LINE('=== PLAN UCZNIA: ' || v_uczen || ' ===');
-        
+
         -- Lekcje indywidualne + grupowe (UNION)
         FOR r IN (
             SELECT l.data_lekcji, l.godz_rozp,
@@ -404,7 +463,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         v_nauczyciel VARCHAR2(100);
     BEGIN
         SELECT n.pelne_nazwisko() INTO v_nauczyciel FROM nauczyciele n WHERE n.id = p_id_nauczyciela;
-        
+
         DBMS_OUTPUT.PUT_LINE('=== PLAN NAUCZYCIELA: ' || v_nauczyciel || ' ===');
         FOR r IN (
             SELECT l.data_lekcji, l.godz_rozp,
@@ -462,9 +521,30 @@ END pkg_oceny;
 
 CREATE OR REPLACE PACKAGE BODY pkg_oceny AS
 
+    -- ========================================================================
+    -- FUNKCJA PRYWATNA - sprawdza uprawnienia nauczyciela do oceniania
+    -- ========================================================================
+    PROCEDURE sprawdz_uprawnienia_oceniania(
+        p_id_nauczyciela NUMBER, 
+        p_id_przedmiotu NUMBER
+    ) IS
+        v_id_przedmiotu_nauczyciela NUMBER;
+    BEGIN
+        SELECT DEREF(n.ref_przedmiot).id INTO v_id_przedmiotu_nauczyciela
+        FROM nauczyciele n WHERE n.id = p_id_nauczyciela;
+
+        IF v_id_przedmiotu_nauczyciela != p_id_przedmiotu THEN
+            RAISE_APPLICATION_ERROR(-20033, 
+                'Ten nauczyciel nie może wystawiać ocen z tego przedmiotu!');
+        END IF;
+    END;
+
     PROCEDURE wystaw_ocene(p_id_ucznia NUMBER, p_id_nauczyciela NUMBER,
                            p_id_przedmiotu NUMBER, p_wartosc NUMBER) IS
     BEGIN
+        -- WALIDACJA: Uprawnienia do oceniania
+        sprawdz_uprawnienia_oceniania(p_id_nauczyciela, p_id_przedmiotu);
+
         INSERT INTO oceny VALUES (
             t_ocena(
                 seq_oceny.NEXTVAL,
@@ -480,6 +560,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_oceny AS
     PROCEDURE wystaw_ocene_semestralna(p_id_ucznia NUMBER, p_id_nauczyciela NUMBER,
                                        p_id_przedmiotu NUMBER, p_wartosc NUMBER) IS
     BEGIN
+        -- WALIDACJA: Uprawnienia do oceniania
+        sprawdz_uprawnienia_oceniania(p_id_nauczyciela, p_id_przedmiotu);
+
         INSERT INTO oceny VALUES (
             t_ocena(
                 seq_oceny.NEXTVAL,
@@ -496,7 +579,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_oceny AS
         v_uczen VARCHAR2(100);
     BEGIN
         SELECT u.pelne_nazwisko() INTO v_uczen FROM uczniowie u WHERE u.id = p_id_ucznia;
-        
+
         DBMS_OUTPUT.PUT_LINE('=== OCENY UCZNIA: ' || v_uczen || ' ===');
         FOR r IN (
             SELECT DEREF(o.ref_przedmiot).nazwa AS przedmiot,
