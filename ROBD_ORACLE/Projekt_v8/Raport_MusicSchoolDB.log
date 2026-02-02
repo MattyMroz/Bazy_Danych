@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.1.31)  2 FEB 2026 23:26
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.1.31)  3 FEB 2026 00:05
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -638,101 +638,101 @@ LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 65
  (C:\Users\MattyMroz\AppData\Local\Programs\MiKTeX\tex/latex/lm\ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) [3{C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ts1.enc}] [4]
-Underfull \hbox (badness 10000) in paragraph at lines 141--142
+Underfull \hbox (badness 10000) in paragraph at lines 143--144
 []|\T1/lmr/m/n/12 Przedmiot na-ucza-nia (in-dy-wi-du-
  []
 
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 159.
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 161.
 (C:\Users\MattyMroz\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) [5] [6] [7] [8] [9] [10]
-Overfull \hbox (18.2369pt too wide) in paragraph at lines 488--489
+Overfull \hbox (18.2369pt too wide) in paragraph at lines 490--491
 []\T1/lmr/m/n/12 lista_sal() -- wy-±wie-tla li-st¦ sal z wy-po-sa-»e-niem (wy-wo-ªuje me-tod¦ li-sta_wyposazenia()) 
  []
 
 
-Overfull \hbox (5.04817pt too wide) in paragraph at lines 511--512
+Overfull \hbox (5.04817pt too wide) in paragraph at lines 513--514
 []\T1/lmr/m/n/12 lista_uczniow_grupy(p_id_grupy) -- wy-±wie-tla uczniów da-nej grupy (\T1/lmr/bx/n/12 kursor jawny
  []
 
 [11] [12] [13]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 592.
+(Font)              <10.95> on input line 594.
 
-Underfull \hbox (badness 10000) in paragraph at lines 596--597
+Underfull \hbox (badness 10000) in paragraph at lines 598--599
 []|\T1/lmr/m/n/10.95 Weryfikacja uczest-ni-ków: lek-cja
  []
 
 
-Underfull \hbox (badness 1728) in paragraph at lines 596--597
+Underfull \hbox (badness 1728) in paragraph at lines 598--599
 \T1/lmr/m/n/10.95 musi mie¢ ALBO ucznia ALBO
  []
 
 
-Overfull \hbox (38.75613pt too wide) in paragraph at lines 619--619
+Overfull \hbox (38.75613pt too wide) in paragraph at lines 621--621
 []            \T1/lmtt/m/n/12 'Lekcja musi miec ALBO ucznia (indywidualna) ALBO grupe (grupowa)');[] 
  []
 
 [14]
-Underfull \hbox (badness 10000) in paragraph at lines 672--673
+Underfull \hbox (badness 10000) in paragraph at lines 674--675
 []|\T1/lmr/m/n/10.95 Nauczyciel nie uczy po-da-nego
  []
 
 
-Underfull \hbox (badness 8113) in paragraph at lines 676--677
+Underfull \hbox (badness 8113) in paragraph at lines 678--679
 []|\T1/lmr/m/n/10.95 Instrument ucznia nie-zgodny z
  []
 
 [15]
-Underfull \hbox (badness 10000) in paragraph at lines 721--722
+Underfull \hbox (badness 10000) in paragraph at lines 727--728
 []|\T1/lmr/m/n/12 Funkcja \T1/lmtt/m/n/12 sala_ma_instrument() \T1/lmr/m/n/12 prze-szu-kuje
  []
 
 
-Underfull \hbox (badness 2359) in paragraph at lines 721--722
+Underfull \hbox (badness 2359) in paragraph at lines 727--728
 \T1/lmr/m/n/12 pa-su-j¡-cego do in-stru-mentu ucznia. Ob-sªu-guje
  []
 
 
-Overfull \hbox (32.58113pt too wide) in paragraph at lines 753--753
+Overfull \hbox (32.58113pt too wide) in paragraph at lines 759--759
 []    \T1/lmtt/m/n/12 SELECT s.wyposazenie INTO v_wyposazenie FROM sale s WHERE s.id = p_id_sali;[] 
  []
 
 
-Overfull \hbox (26.40613pt too wide) in paragraph at lines 753--753
+Overfull \hbox (26.40613pt too wide) in paragraph at lines 759--759
 []        \T1/lmtt/m/n/12 IF UPPER(v_wyposazenie(i)) LIKE '%' || UPPER(p_instrument) || '%' THEN[] 
  []
 
 [16] [17]
-Overfull \hbox (0.2058pt too wide) in paragraph at lines 769--770
+Overfull \hbox (0.2058pt too wide) in paragraph at lines 775--776
 []\T1/lmtt/m/n/12 pkg_slowniki.dodaj_sale('105', 'indywidualna', 4, t_wyposazenie('Flet
  []
 
 
-Overfull \hbox (6.35176pt too wide) in paragraph at lines 770--771
+Overfull \hbox (6.35176pt too wide) in paragraph at lines 776--777
 []\T1/lmtt/m/n/12 pkg_osoby.dodaj_nauczyciela('Tomasz', 'Flecista', 6) \T1/lmr/m/n/12 -- REF do przed-miotu
  []
 
 
-Overfull \hbox (12.5558pt too wide) in paragraph at lines 779--780
+Overfull \hbox (12.5558pt too wide) in paragraph at lines 785--786
 []\T1/lmtt/m/n/12 pkg_osoby.dodaj_ucznia('Jakub', 'Melodyjny', DATE '2014-07-20', 'Flet',
  []
 
 
-Overfull \hbox (39.59882pt too wide) in paragraph at lines 797--798
+Overfull \hbox (39.59882pt too wide) in paragraph at lines 803--804
 []\T1/lmr/bx/n/12 Sukces: \T1/lmtt/m/n/12 pkg_lekcje.dodaj_lekcje_indywidualna(6, 6, 5, 10, DATE '2025-06-09',
  []
 
 
-Overfull \hbox (6.19878pt too wide) in paragraph at lines 817--818
+Overfull \hbox (6.19878pt too wide) in paragraph at lines 823--824
 []\T1/lmtt/m/n/12 pkg_oceny.oceny_ucznia(10) \T1/lmr/m/n/12 -- li-sta ocen z opi-sem sªow-nym (me-toda opis_oceny()) 
  []
 
 [18] [19]
-<Relational_1.png, id=388, 1117.17375pt x 749.80125pt>
+<Relational_1.png, id=389, 1117.17375pt x 749.80125pt>
 File: Relational_1.png Graphic file (type png)
 <use Relational_1.png>
-Package pdftex.def Info: Relational_1.png  used on input line 884.
+Package pdftex.def Info: Relational_1.png  used on input line 890.
 (pdftex.def)             Requested size: 455.24411pt x 305.54417pt.
  [20 <./Relational_1.png>] [21] (Raport_MusicSchoolDB.aux)
  ***********
@@ -743,17 +743,17 @@ Package rerunfilecheck Info: File `Raport_MusicSchoolDB.out' has not changed.
 (rerunfilecheck)             Checksum: AD6F08D540AD9F8474D439C210E4CE0A;8706.
  ) 
 Here is how much of TeX's memory you used:
- 23069 strings out of 467866
- 437513 string characters out of 5416383
- 844032 words of memory out of 5000000
+ 23070 strings out of 467866
+ 437520 string characters out of 5416383
+ 844030 words of memory out of 5000000
  51448 multiletter control sequences out of 15000+600000
  683799 words of font info for 85 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,10n,104p,531b,638s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr17.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb>
-Output written on Raport_MusicSchoolDB.pdf (22 pages, 305846 bytes).
+Output written on Raport_MusicSchoolDB.pdf (22 pages, 306414 bytes).
 PDF statistics:
- 463 PDF objects out of 1000 (max. 8388607)
- 111 named destinations out of 1000 (max. 500000)
+ 464 PDF objects out of 1000 (max. 8388607)
+ 112 named destinations out of 1000 (max. 500000)
  442 words of extra memory for PDF output out of 10000 (max. 10000000)
 

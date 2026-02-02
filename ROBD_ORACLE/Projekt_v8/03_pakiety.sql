@@ -459,10 +459,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
             RAISE_APPLICATION_ERROR(-20030, 'Ten nauczyciel nie uczy tego przedmiotu!');
         END IF;
 
-        -- WALIDACJA: Instrument ucznia (tylko dla przedmiotów indywidualnych/instrumentalnych)
+        -- WALIDACJA: Typ przedmiotu (lekcja indywidualna wymaga przedmiotu indywidualnego)
         SELECT p.nazwa, p.typ INTO v_nazwa_przedmiotu, v_typ_przedmiotu
         FROM przedmioty p WHERE p.id = p_id_przedmiotu;
 
+        IF v_typ_przedmiotu = 'grupowy' THEN
+            RAISE_APPLICATION_ERROR(-20036,
+                'Przedmiot ' || v_nazwa_przedmiotu || ' jest grupowy - nie mozna prowadzic go jako lekcje indywidualna!');
+        END IF;
+
+        -- WALIDACJA: Instrument ucznia
         IF v_typ_przedmiotu = 'indywidualny' THEN
             SELECT u.instrument INTO v_instrument_ucznia
             FROM uczniowie u WHERE u.id = p_id_ucznia;
@@ -537,6 +543,20 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         IF v_id_przedmiotu_nauczyciela != p_id_przedmiotu THEN
             RAISE_APPLICATION_ERROR(-20030, 'Ten nauczyciel nie uczy tego przedmiotu!');
         END IF;
+
+        -- WALIDACJA: Typ przedmiotu (lekcja grupowa wymaga przedmiotu grupowego)
+        DECLARE
+            v_typ_przedmiotu VARCHAR2(20);
+            v_nazwa_przedmiotu VARCHAR2(50);
+        BEGIN
+            SELECT p.typ, p.nazwa INTO v_typ_przedmiotu, v_nazwa_przedmiotu
+            FROM przedmioty p WHERE p.id = p_id_przedmiotu;
+
+            IF v_typ_przedmiotu = 'indywidualny' THEN
+                RAISE_APPLICATION_ERROR(-20037,
+                    'Przedmiot ' || v_nazwa_przedmiotu || ' jest indywidualny - nie mozna prowadzic go jako lekcje grupowa!');
+            END IF;
+        END;
 
         -- WALIDACJA: Typ sali (lekcja grupowa wymaga sali grupowej)
         SELECT s.typ, s.pojemnosc INTO v_typ_sali, v_pojemnosc_sali

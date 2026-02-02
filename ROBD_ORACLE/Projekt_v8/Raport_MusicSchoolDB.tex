@@ -113,6 +113,8 @@ W projekcie przyjęto następujące ograniczenia biznesowe:
     \item \textbf{Walidacja kompetencji:} nauczyciel może prowadzić tylko lekcje z przedmiotu, który jest do niego przypisany
     
     \item \textbf{Walidacja typu sali:} lekcje grupowe wymagają sali typu 'grupowa'
+    
+    \item \textbf{Zgodność typu przedmiotu z typem lekcji:} przedmiot indywidualny (np. Fortepian) może być prowadzony tylko jako lekcja indywidualna, przedmiot grupowy (np. Kształcenie słuchu) może być prowadzony tylko jako lekcja grupowa
 \end{enumerate}
 
 \subsection{Technologia}
@@ -678,6 +680,10 @@ W projekcie zastosowano mechanizmy obsługi wyjątków z własnymi kodami błęd
 -20033 & pkg\_oceny & Nauczyciel nie ma uprawnień do oceniania \\
 \hline
 -20035 & pkg\_lekcje & Przepełnienie sali (grupa > pojemność) \\
+\hline
+-20036 & pkg\_lekcje & Przedmiot grupowy nie może być prowadzony jako lekcja indywidualna \\
+\hline
+-20037 & pkg\_lekcje & Przedmiot indywidualny nie może być prowadzony jako lekcja grupowa \\
 \hline
 \end{tabular}
 \caption{Kody błędów aplikacji}
