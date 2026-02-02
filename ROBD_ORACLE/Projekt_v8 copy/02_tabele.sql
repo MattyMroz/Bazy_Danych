@@ -6,6 +6,8 @@
 -- ============================================================================
 -- CZYSZCZENIE - usunięcie istniejących obiektów
 -- ============================================================================
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE nauczyciel_przedmiot CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
+/
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE oceny CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
 /
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE lekcje CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
@@ -38,9 +40,12 @@ BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE seq_oceny'; EXCEPTION WHEN OTHERS THEN NU
 -- ============================================================================
 -- 1. PRZEDMIOTY - słownik przedmiotów
 -- ============================================================================
+-- UWAGA: CHECK (czas_min = 45) wymusza stały czas trwania.
+-- Aby obsłużyć różne czasy (30/45/60 min), zmień na CHECK (czas_min IN (30, 45, 60))
+-- ============================================================================
 CREATE TABLE przedmioty OF t_przedmiot (
     id PRIMARY KEY,
-    nazwa NOT NULL UNIQUE,
+    nazwa NOT NULL,
     typ NOT NULL CHECK (typ IN ('indywidualny', 'grupowy')),
     czas_min NOT NULL CHECK (czas_min = 45)
 );
@@ -57,14 +62,13 @@ CREATE TABLE grupy OF t_grupa (
 /
 
 -- ============================================================================
--- 3. NAUCZYCIELE - z REF do przedmiotu (każdy uczy jednego przedmiotu)
+-- 3. NAUCZYCIELE
 -- ============================================================================
 CREATE TABLE nauczyciele OF t_nauczyciel (
     id PRIMARY KEY,
     imie NOT NULL,
     nazwisko NOT NULL,
     data_zatr NOT NULL
-    -- ref_przedmiot - referencja do przedmiotu jest w typie!
 );
 /
 
@@ -88,17 +92,22 @@ CREATE TABLE uczniowie OF t_uczen (
     nazwisko NOT NULL,
     data_ur NOT NULL,
     instrument NOT NULL
-    -- ref_grupa - referencja do grupy jest w typie!
 );
 /
 
 -- ============================================================================
--- 6. LEKCJE - z wieloma REF (XOR: uczeń lub grupa)
+-- 6. LEKCJE - z wieloma REF
+-- ============================================================================
+-- UWAGA: Hardcoded ograniczenia godzin i czasu trwania.
+-- Aby zmienić godziny pracy, zmień:
+-- 1. CHECK constraint poniżej
+-- 2. pkg_lekcje.c_godz_min, c_godz_max (stałe konfiguracyjne)
+-- 3. trg_lekcja_godziny (trigger walidacyjny)
 -- ============================================================================
 CREATE TABLE lekcje OF t_lekcja (
     id PRIMARY KEY,
     data_lekcji NOT NULL,
-    godz_rozp NOT NULL CHECK (godz_rozp BETWEEN 8 AND 20),
+    godz_rozp NOT NULL CHECK (godz_rozp BETWEEN 14 AND 19),
     czas_min NOT NULL CHECK (czas_min = 45)
 );
 /
@@ -124,6 +133,15 @@ CREATE SEQUENCE seq_sale START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE seq_uczniowie START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE seq_lekcje START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE seq_oceny START WITH 1 INCREMENT BY 1;
+
+-- ============================================================================
+-- TABELA POWIĄZAŃ: Nauczyciel - Przedmiot (który nauczyciel uczy którego przedmiotu)
+-- ============================================================================
+CREATE TABLE nauczyciel_przedmiot (
+    id_nauczyciela  NUMBER NOT NULL,
+    id_przedmiotu   NUMBER NOT NULL,
+    PRIMARY KEY (id_nauczyciela, id_przedmiotu)
+);
 
 -- ============================================================================
 -- Weryfikacja
