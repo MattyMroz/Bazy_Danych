@@ -624,7 +624,7 @@ FROM sale s;
 
 -- 11.5 Metody typu T_LEKCJA
 SELECT l.id,
-       l.godz_rozp || ':00' AS start,
+       l.godz_rozp || ':00' AS godz_start,
        l.godzina_koniec() AS koniec_dec,
        l.czy_indywidualna() AS indywidualna
 FROM lekcje l

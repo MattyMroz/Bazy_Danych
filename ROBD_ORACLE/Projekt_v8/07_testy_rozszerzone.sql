@@ -994,7 +994,7 @@ CONNECT BY LEVEL <= 6;
 PROMPT
 PROMPT [21.6] Metoda godzina_koniec() - weryfikacja obliczen:
 PROMPT       Lekcja o 14:00 (45 min) konczy sie o 14:45 (14.75 dziesietnie):
-SELECT l.godz_rozp || ':00' AS start, 
+SELECT l.godz_rozp || ':00' AS godz_start, 
        l.czas_min || ' min' AS czas,
        l.godzina_koniec() AS koniec_dziesietnie,
        TO_CHAR(TRUNC(l.godzina_koniec())) || ':' || 
