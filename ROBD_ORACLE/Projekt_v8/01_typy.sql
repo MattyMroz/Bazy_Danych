@@ -96,7 +96,7 @@ CREATE OR REPLACE TYPE t_sala AS OBJECT (
     numer           VARCHAR2(10),
     typ             VARCHAR2(20),       -- 'indywidualna' lub 'grupowa'
     pojemnosc       NUMBER,
-    wyposazenie     t_wyposazenie,      -- VARRAY wyposażenia!
+    wyposazenie     t_wyposazenie,      -- VARRAY wyposażenia
 
     MEMBER FUNCTION czy_grupowa RETURN VARCHAR2,
     MEMBER FUNCTION lista_wyposazenia RETURN VARCHAR2
