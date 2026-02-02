@@ -117,6 +117,14 @@ W projekcie przyjęto następujące ograniczenia biznesowe:
     \item \textbf{Zgodność typu przedmiotu z typem lekcji:} przedmiot indywidualny (np. Fortepian) może być prowadzony tylko jako lekcja indywidualna, przedmiot grupowy (np. Kształcenie słuchu) może być prowadzony tylko jako lekcja grupowa
     
     \item \textbf{Brak limitów godzin:} system nie narzuca limitów tygodniowych liczby lekcji dla nauczyciela lub ucznia (jedynym ograniczeniem jest dostępność czasowa i brak konfliktów w planie)
+    
+    \item \textbf{Synonimiczność instrumentów:} system automatycznie uznaje "Pianino" i "Fortepian" za ten sam instrument przy sprawdzaniu wyposażenia sal i uprawnień ucznia
+    
+    \item \textbf{Wyłączność oceniania:} nauczyciel może wystawiać oceny wyłącznie z przedmiotu, do którego jest przypisany w systemie
+    
+    \item \textbf{Logika średniej ocen:} średnia ocen z przedmiotu obliczana jest automatycznie z wyłączeniem ocen semestralnych
+    
+    \item \textbf{Horyzont planowania:} heurystyka doboru wolnych terminów przeszukuje grafik w przód na maksymalnie 7 dni od podanej daty
 \end{enumerate}
 
 \subsection{Technologia}
