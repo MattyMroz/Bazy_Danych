@@ -4,7 +4,7 @@
 -- ============================================================================
 
 -- ============================================================================
--- CZYSZCZENIE (w odwrotnej kolejności zależności)
+-- CZYSZCZENIE
 -- ============================================================================
 BEGIN EXECUTE IMMEDIATE 'DROP TYPE t_ocena FORCE'; EXCEPTION WHEN OTHERS THEN NULL; END;
 /

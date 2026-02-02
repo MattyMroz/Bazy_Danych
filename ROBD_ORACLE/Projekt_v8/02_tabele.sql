@@ -4,7 +4,7 @@
 -- ============================================================================
 
 -- ============================================================================
--- CZYSZCZENIE - usunięcie istniejących obiektów
+-- CZYSZCZENIE
 -- ============================================================================
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE oceny CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
 /
@@ -64,7 +64,6 @@ CREATE TABLE nauczyciele OF t_nauczyciel (
     imie NOT NULL,
     nazwisko NOT NULL,
     data_zatr NOT NULL
-    -- ref_przedmiot - referencja do przedmiotu jest w typie!
 );
 /
 
@@ -88,7 +87,6 @@ CREATE TABLE uczniowie OF t_uczen (
     nazwisko NOT NULL,
     data_ur NOT NULL,
     instrument NOT NULL
-    -- ref_grupa - referencja do grupy jest w typie!
 );
 /
 
@@ -98,7 +96,7 @@ CREATE TABLE uczniowie OF t_uczen (
 CREATE TABLE lekcje OF t_lekcja (
     id PRIMARY KEY,
     data_lekcji NOT NULL,
-    godz_rozp NOT NULL CHECK (godz_rozp BETWEEN 8 AND 20),
+    godz_rozp NOT NULL CHECK (godz_rozp BETWEEN 14 AND 19),
     czas_min NOT NULL CHECK (czas_min = 45)
 );
 /

@@ -355,8 +355,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         -- Pętla po dniach (max 7 dni)
         FOR dzien IN 0..c_max_dni LOOP
 
-            -- Pętla po godzinach (zakładamy godziny pracy szkoły 14-20)
-            WHILE v_godz < 20 LOOP
+            -- Pętla po godzinach (zakładamy godziny pracy szkoły 14-19, ostatnia lekcja 19:00-19:45)
+            WHILE v_godz <= 19 LOOP
 
                 -- Pętla po salach - szukamy odpowiedniej sali
                 FOR sala IN (
@@ -401,7 +401,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
             v_godz := 14; -- Start pracy szkoły
         END LOOP;
 
-        RETURN 'Brak wolnych terminow w najblizszym tygodniu.';
+        -- Brak wolnych terminów - zwróć precyzyjny komunikat
+        IF v_jest_grupowa THEN
+            RETURN 'Brak sal grupowych (pojemnosc >= ' || p_liczba_uczniow || 
+                   ') w najblizszym tygodniu.';
+        ELSE
+            RETURN 'Brak sal z instrumentem "' || p_instrument || 
+                   '" w najblizszym tygodniu.';
+        END IF;
     END;
 
     -- ========================================================================
@@ -445,9 +452,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
             FROM uczniowie u WHERE u.id = p_id_ucznia;
 
             IF UPPER(v_instrument_ucznia) != UPPER(v_nazwa_przedmiotu) THEN
-                RAISE_APPLICATION_ERROR(-20032, 
-                    'Uczeń gra na instrumencie ' || v_instrument_ucznia || 
-                    ', a lekcja dotyczy przedmiotu ' || v_nazwa_przedmiotu || '!');
+                -- Wyjątek: Pianino = Fortepian (synonimiczny)
+                IF NOT ((UPPER(v_instrument_ucznia) = 'PIANINO' AND UPPER(v_nazwa_przedmiotu) = 'FORTEPIAN')
+                     OR (UPPER(v_instrument_ucznia) = 'FORTEPIAN' AND UPPER(v_nazwa_przedmiotu) = 'PIANINO')) THEN
+                    RAISE_APPLICATION_ERROR(-20032,
+                        'Uczeń gra na instrumencie ' || v_instrument_ucznia || 
+                        ', a lekcja dotyczy przedmiotu ' || v_nazwa_przedmiotu || '!');
+                END IF;
             END IF;
         END IF;
 
@@ -768,7 +779,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_raporty AS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== STATYSTYKI SZKOŁY ===');
         FOR r IN (
-            SELECT 
+            SELECT
                 (SELECT COUNT(*) FROM uczniowie) AS uczniowie,
                 (SELECT COUNT(*) FROM nauczyciele) AS nauczyciele,
                 (SELECT COUNT(*) FROM grupy) AS grupy,

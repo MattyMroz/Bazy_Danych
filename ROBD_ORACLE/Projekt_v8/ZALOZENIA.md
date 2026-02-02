@@ -46,7 +46,7 @@ Obiektowa baza danych Oracle dla małej prywatnej **szkoły muzycznej I stopnia*
 ### 2.4 Nauczyciele
 - Każdy nauczyciel uczy **jednego przedmiotu** (uproszczenie - w rzeczywistości może uczyć kilku)
 - REF do przedmiotu przechowywany w typie `T_NAUCZYCIEL`
-- System **nie waliduje** czy nauczyciel ma dwie lekcje równocześnie (dane testowe poprawne)
+- Dostępność nauczyciela walidowana przy planowaniu lekcji ✅
 
 ### 2.5 Sale
 **Dwa typy:**
@@ -196,7 +196,7 @@ OCENY ──REF──→ UCZNIOWIE
 4. **Siatka godzinowa:** Lekcje tylko o pełnych godzinach (14:00, 15:00, 16:00...)
 5. **Brak chóru/orkiestry:** Tylko lekcje indywidualne + kształcenie słuchu + rytmika
 6. **Wyposażenie sali:** Maksymalnie 10 elementów (VARRAY(10))
-7. **Godziny pracy:** 14:00-20:00 (poniedziałek-piątek)
+7. **Godziny pracy:** 14:00-20:00 (poniedziałek-piątek), ostatnia lekcja (19:00-19:45)
 8. **Skala ocen:** 1-6 (polska skala szkolna)
 9. **Klasy:** 6 poziomów (I-VI), po jednej grupie na poziom
 
