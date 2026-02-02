@@ -26,6 +26,7 @@ END pkg_slowniki;
 
 CREATE OR REPLACE PACKAGE BODY pkg_slowniki AS
 
+    -- Dodaj przedmiot
     PROCEDURE dodaj_przedmiot(p_nazwa VARCHAR2, p_typ VARCHAR2) IS
     BEGIN
         INSERT INTO przedmioty VALUES (
@@ -34,6 +35,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_slowniki AS
         DBMS_OUTPUT.PUT_LINE('Dodano przedmiot: ' || p_nazwa || ' (' || p_typ || ')');
     END;
 
+    -- Dodaj grupę
     PROCEDURE dodaj_grupe(p_symbol VARCHAR2, p_poziom NUMBER) IS
     BEGIN
         INSERT INTO grupy VALUES (
@@ -42,6 +44,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_slowniki AS
         DBMS_OUTPUT.PUT_LINE('Dodano grupę: ' || p_symbol || ' (klasa ' || p_poziom || ')');
     END;
 
+    -- Dodaj salę
     PROCEDURE dodaj_sale(p_numer VARCHAR2, p_typ VARCHAR2, p_pojemnosc NUMBER, p_wyposazenie t_wyposazenie) IS
     BEGIN
         INSERT INTO sale VALUES (
@@ -83,6 +86,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_slowniki AS
             RAISE_APPLICATION_ERROR(-20012, 'Sala ID=' || p_id || ' nie istnieje');
     END;
 
+    -- Lista przedmiotów
     PROCEDURE lista_przedmiotow IS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== PRZEDMIOTY ===');
@@ -91,6 +95,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_slowniki AS
         END LOOP;
     END;
 
+    -- Lista sal
     PROCEDURE lista_sal IS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== SALE ===');
@@ -100,6 +105,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_slowniki AS
         END LOOP;
     END;
 
+    -- Lista grup
     PROCEDURE lista_grup IS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== GRUPY ===');
@@ -132,6 +138,7 @@ END pkg_osoby;
 
 CREATE OR REPLACE PACKAGE BODY pkg_osoby AS
 
+    -- Dodaj nauczyciela
     PROCEDURE dodaj_nauczyciela(p_imie VARCHAR2, p_nazwisko VARCHAR2, p_id_przedmiotu NUMBER) IS
         v_ref_przedmiot REF t_przedmiot;
     BEGIN
@@ -142,6 +149,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_osoby AS
         DBMS_OUTPUT.PUT_LINE('Dodano nauczyciela: ' || p_imie || ' ' || p_nazwisko);
     END;
 
+    -- Dodaj ucznia
     PROCEDURE dodaj_ucznia(p_imie VARCHAR2, p_nazwisko VARCHAR2, p_data_ur DATE, p_instrument VARCHAR2, p_id_grupy NUMBER) IS
         v_ref_grupa REF t_grupa;
     BEGIN
@@ -152,6 +160,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_osoby AS
         DBMS_OUTPUT.PUT_LINE('Dodano ucznia: ' || p_imie || ' ' || p_nazwisko || ' (' || p_instrument || ')');
     END;
 
+    -- Pobierz referencję do nauczyciela
     FUNCTION get_ref_nauczyciel(p_id NUMBER) RETURN REF t_nauczyciel IS
         v_ref REF t_nauczyciel;
     BEGIN
@@ -162,6 +171,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_osoby AS
             RAISE_APPLICATION_ERROR(-20013, 'Nauczyciel ID=' || p_id || ' nie istnieje');
     END;
 
+    -- Pobierz referencję do ucznia
     FUNCTION get_ref_uczen(p_id NUMBER) RETURN REF t_uczen IS
         v_ref REF t_uczen;
     BEGIN
@@ -172,6 +182,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_osoby AS
             RAISE_APPLICATION_ERROR(-20014, 'Uczeń ID=' || p_id || ' nie istnieje');
     END;
 
+    -- Lista nauczycieli
     PROCEDURE lista_nauczycieli IS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== NAUCZYCIELE ===');
@@ -184,15 +195,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_osoby AS
         END LOOP;
     END;
 
+    -- Lista uczniów
     PROCEDURE lista_uczniow IS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== UCZNIOWIE ===');
         FOR r IN (
-            SELECT u.id, u.pelne_nazwisko() AS nazwa, u.wiek() AS wiek, 
+            SELECT u.id, u.pelne_nazwisko() AS nazwa, u.wiek() AS wiek,
                    u.instrument, DEREF(u.ref_grupa).symbol AS grupa
             FROM uczniowie u ORDER BY grupa, u.nazwisko
         ) LOOP
-            DBMS_OUTPUT.PUT_LINE(r.id || '. ' || r.nazwa || ' (lat ' || r.wiek || ') - ' || 
+            DBMS_OUTPUT.PUT_LINE(r.id || '. ' || r.nazwa || ' (lat ' || r.wiek || ') - ' ||
                                  r.instrument || ', grupa ' || r.grupa);
         END LOOP;
     END;
@@ -250,8 +262,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
     -- Zwraca tekst błędu lub NULL jeśli termin jest wolny
     -- ========================================================================
     FUNCTION sprawdz_kolizje(
-        p_data DATE, 
-        p_godz NUMBER, 
+        p_data DATE,
+        p_godz NUMBER,
         p_ref_nauczyciel REF t_nauczyciel,
         p_ref_sala REF t_sala,
         p_ref_uczen REF t_uczen,    -- może być NULL
@@ -312,7 +324,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
     ) RETURN BOOLEAN IS
         v_wyposazenie t_wyposazenie;
     BEGIN
-        SELECT s.wyposazenie INTO v_wyposazenie 
+        SELECT s.wyposazenie INTO v_wyposazenie
         FROM sale s WHERE s.id = p_id_sali;
 
         IF v_wyposazenie IS NULL THEN
@@ -340,7 +352,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
     -- Dla lekcji grupowych: szuka tylko sal typu 'grupowa' z odpowiednią pojemnością
     -- ========================================================================
     FUNCTION znajdz_alternatywe(
-        p_start_data DATE, 
+        p_start_data DATE,
         p_start_godz NUMBER,
         p_ref_nauczyciel REF t_nauczyciel,
         p_ref_uczen REF t_uczen,        -- NULL dla lekcji grupowej
@@ -406,10 +418,10 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
 
         -- Brak wolnych terminów - zwróć precyzyjny komunikat
         IF v_jest_grupowa THEN
-            RETURN 'Brak sal grupowych (pojemnosc >= ' || p_liczba_uczniow || 
+            RETURN 'Brak sal grupowych (pojemnosc >= ' || p_liczba_uczniow ||
                    ') w najblizszym tygodniu.';
         ELSE
-            RETURN 'Brak sal z instrumentem "' || p_instrument || 
+            RETURN 'Brak sal z instrumentem "' || p_instrument ||
                    '" w najblizszym tygodniu.';
         END IF;
     END;
@@ -418,6 +430,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
     -- Procedury publiczne
     -- ========================================================================
 
+    -- Dodaj lekcję indywidualną
     PROCEDURE dodaj_lekcje_indywidualna(
         p_id_przedmiotu NUMBER, p_id_nauczyciela NUMBER, p_id_sali NUMBER,
         p_id_ucznia NUMBER, p_data DATE, p_godz NUMBER
@@ -459,7 +472,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
                 IF NOT ((UPPER(v_instrument_ucznia) = 'PIANINO' AND UPPER(v_nazwa_przedmiotu) = 'FORTEPIAN')
                      OR (UPPER(v_instrument_ucznia) = 'FORTEPIAN' AND UPPER(v_nazwa_przedmiotu) = 'PIANINO')) THEN
                     RAISE_APPLICATION_ERROR(-20032,
-                        'Uczeń gra na instrumencie ' || v_instrument_ucznia || 
+                        'Uczeń gra na instrumencie ' || v_instrument_ucznia ||
                         ', a lekcja dotyczy przedmiotu ' || v_nazwa_przedmiotu || '!');
                 END IF;
             END IF;
@@ -479,8 +492,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
                     0                    -- brak grupy
                 );
 
-                RAISE_APPLICATION_ERROR(-20020, 
-                    'Blad planowania: ' || v_blad || 
+                RAISE_APPLICATION_ERROR(-20020,
+                    'Blad planowania: ' || v_blad ||
                     CHR(10) || 'SUGEROWANY TERMIN: ' || v_sugestia);
             END;
         END IF;
@@ -496,6 +509,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         DBMS_OUTPUT.PUT_LINE('Dodano lekcję indywidualną: ' || TO_CHAR(p_data, 'YYYY-MM-DD') || ' ' || p_godz || ':00');
     END;
 
+    -- Dodaj lekcję grupową
     PROCEDURE dodaj_lekcje_grupowa(
         p_id_przedmiotu NUMBER, p_id_nauczyciela NUMBER, p_id_sali NUMBER,
         p_id_grupy NUMBER, p_data DATE, p_godz NUMBER
@@ -525,11 +539,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         END IF;
 
         -- WALIDACJA: Typ sali (lekcja grupowa wymaga sali grupowej)
-        SELECT s.typ, s.pojemnosc INTO v_typ_sali, v_pojemnosc_sali 
+        SELECT s.typ, s.pojemnosc INTO v_typ_sali, v_pojemnosc_sali
         FROM sale s WHERE s.id = p_id_sali;
 
         IF v_typ_sali = 'indywidualna' THEN
-            RAISE_APPLICATION_ERROR(-20031, 
+            RAISE_APPLICATION_ERROR(-20031,
                 'Nie można prowadzić lekcji grupowej w sali indywidualnej!');
         END IF;
 
@@ -576,6 +590,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         DBMS_OUTPUT.PUT_LINE('Dodano lekcję grupową: ' || TO_CHAR(p_data, 'YYYY-MM-DD') || ' ' || p_godz || ':00');
     END;
 
+    -- Plan ucznia
     PROCEDURE plan_ucznia(p_id_ucznia NUMBER) IS
         v_uczen VARCHAR2(100);
         v_id_grupy NUMBER;
@@ -604,6 +619,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         END LOOP;
     END;
 
+    -- Plan nauczyciela
     PROCEDURE plan_nauczyciela(p_id_nauczyciela NUMBER) IS
         v_nauczyciel VARCHAR2(100);
     BEGIN
@@ -614,7 +630,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
             SELECT l.data_lekcji, l.godz_rozp,
                    DEREF(l.ref_przedmiot).nazwa AS przedmiot,
                    DEREF(l.ref_sala).numer AS sala,
-                   CASE WHEN l.ref_uczen IS NOT NULL 
+                   CASE WHEN l.ref_uczen IS NOT NULL
                         THEN DEREF(l.ref_uczen).pelne_nazwisko()
                         ELSE 'grupa ' || DEREF(l.ref_grupa).symbol
                    END AS kto
@@ -622,11 +638,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
             WHERE DEREF(l.ref_nauczyciel).id = p_id_nauczyciela
             ORDER BY l.data_lekcji, l.godz_rozp
         ) LOOP
-            DBMS_OUTPUT.PUT_LINE(TO_CHAR(r.data_lekcji, 'DY DD.MM') || ' ' || r.godz_rozp || ':00 - ' || 
+            DBMS_OUTPUT.PUT_LINE(TO_CHAR(r.data_lekcji, 'DY DD.MM') || ' ' || r.godz_rozp || ':00 - ' ||
                                  r.przedmiot || ' (sala ' || r.sala || ') - ' || r.kto);
         END LOOP;
     END;
 
+    -- Plan dnia
     PROCEDURE plan_dnia(p_data DATE) IS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== PLAN DNIA: ' || TO_CHAR(p_data, 'YYYY-MM-DD (DY)') || ' ===');
@@ -635,7 +652,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
                    DEREF(l.ref_przedmiot).nazwa AS przedmiot,
                    DEREF(l.ref_nauczyciel).pelne_nazwisko() AS nauczyciel,
                    DEREF(l.ref_sala).numer AS sala,
-                   CASE WHEN l.ref_uczen IS NOT NULL 
+                   CASE WHEN l.ref_uczen IS NOT NULL
                         THEN DEREF(l.ref_uczen).pelne_nazwisko()
                         ELSE 'grupa ' || DEREF(l.ref_grupa).symbol
                    END AS kto
@@ -643,7 +660,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
             WHERE l.data_lekcji = p_data
             ORDER BY l.godz_rozp
         ) LOOP
-            DBMS_OUTPUT.PUT_LINE(r.godz_rozp || ':00 | sala ' || r.sala || ' | ' || 
+            DBMS_OUTPUT.PUT_LINE(r.godz_rozp || ':00 | sala ' || r.sala || ' | ' ||
                                  r.przedmiot || ' | ' || r.nauczyciel || ' | ' || r.kto);
         END LOOP;
     END;
@@ -655,7 +672,7 @@ END pkg_lekcje;
 -- PKG_OCENY - zarządzanie ocenami
 -- ============================================================================
 CREATE OR REPLACE PACKAGE pkg_oceny AS
-    PROCEDURE wystaw_ocene(p_id_ucznia NUMBER, p_id_nauczyciela NUMBER, 
+    PROCEDURE wystaw_ocene(p_id_ucznia NUMBER, p_id_nauczyciela NUMBER,
                            p_id_przedmiotu NUMBER, p_wartosc NUMBER);
     PROCEDURE wystaw_ocene_semestralna(p_id_ucznia NUMBER, p_id_nauczyciela NUMBER,
                                        p_id_przedmiotu NUMBER, p_wartosc NUMBER);
@@ -670,7 +687,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_oceny AS
     -- FUNKCJA PRYWATNA - sprawdza uprawnienia nauczyciela do oceniania
     -- ========================================================================
     PROCEDURE sprawdz_uprawnienia_oceniania(
-        p_id_nauczyciela NUMBER, 
+        p_id_nauczyciela NUMBER,
         p_id_przedmiotu NUMBER
     ) IS
         v_id_przedmiotu_nauczyciela NUMBER;
@@ -679,11 +696,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_oceny AS
         FROM nauczyciele n WHERE n.id = p_id_nauczyciela;
 
         IF v_id_przedmiotu_nauczyciela != p_id_przedmiotu THEN
-            RAISE_APPLICATION_ERROR(-20033, 
+            RAISE_APPLICATION_ERROR(-20033,
                 'Ten nauczyciel nie może wystawiać ocen z tego przedmiotu!');
         END IF;
     END;
 
+    -- Wystaw ocenę
     PROCEDURE wystaw_ocene(p_id_ucznia NUMBER, p_id_nauczyciela NUMBER,
                            p_id_przedmiotu NUMBER, p_wartosc NUMBER) IS
     BEGIN
@@ -702,6 +720,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_oceny AS
         DBMS_OUTPUT.PUT_LINE('Wystawiono ocenę: ' || p_wartosc);
     END;
 
+    -- Wystaw ocenę semestralną
     PROCEDURE wystaw_ocene_semestralna(p_id_ucznia NUMBER, p_id_nauczyciela NUMBER,
                                        p_id_przedmiotu NUMBER, p_wartosc NUMBER) IS
     BEGIN
@@ -720,6 +739,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_oceny AS
         DBMS_OUTPUT.PUT_LINE('Wystawiono ocenę SEMESTRALNĄ: ' || p_wartosc);
     END;
 
+    -- Wyświetl oceny ucznia
     PROCEDURE oceny_ucznia(p_id_ucznia NUMBER) IS
         v_uczen VARCHAR2(100);
     BEGIN
@@ -740,6 +760,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_oceny AS
         END LOOP;
     END;
 
+    -- Oblicz średnią ucznia z danego przedmiotu (bez ocen semestralnych)
     FUNCTION srednia_ucznia(p_id_ucznia NUMBER, p_id_przedmiotu NUMBER) RETURN NUMBER IS
         v_srednia NUMBER;
     BEGIN
@@ -766,6 +787,7 @@ END pkg_raporty;
 
 CREATE OR REPLACE PACKAGE BODY pkg_raporty AS
 
+    -- Raport grup
     PROCEDURE raport_grup IS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== RAPORT GRUP ===');
@@ -778,6 +800,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_raporty AS
         END LOOP;
     END;
 
+    -- Statystyki szkoły
     PROCEDURE statystyki IS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== STATYSTYKI SZKOŁY ===');
@@ -806,7 +829,7 @@ END pkg_raporty;
 -- ============================================================================
 -- Weryfikacja
 -- ============================================================================
-SELECT object_name, object_type, status 
-FROM user_objects 
+SELECT object_name, object_type, status
+FROM user_objects
 WHERE object_type IN ('PACKAGE', 'PACKAGE BODY')
 ORDER BY object_name, object_type;

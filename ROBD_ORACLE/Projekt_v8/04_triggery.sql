@@ -5,7 +5,6 @@
 
 -- ============================================================================
 -- TRIGGER 1: Walidacja XOR dla lekcji (albo uczeń ALBO grupa)
--- Najważniejszy trigger - zapewnia poprawność danych!
 -- ============================================================================
 CREATE OR REPLACE TRIGGER trg_lekcja_xor
 BEFORE INSERT OR UPDATE ON lekcje
@@ -21,8 +20,7 @@ END;
 /
 
 -- ============================================================================
--- TRIGGER 2: Walidacja zakresu ocen (1-6)
--- Przyjazny komunikat zamiast technicznego błędu CHECK constraint
+-- TRIGGER 2: Walidacja zakresu ocen (1-6) - błędu CHECK constraint
 -- ============================================================================
 CREATE OR REPLACE TRIGGER trg_ocena_zakres
 BEFORE INSERT OR UPDATE ON oceny
