@@ -50,6 +50,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_slowniki AS
         DBMS_OUTPUT.PUT_LINE('Dodano salę: ' || p_numer || ' (' || p_typ || ')');
     END;
 
+    -- Zwraca REF do przedmiotu o podanym ID
     FUNCTION get_ref_przedmiot(p_id NUMBER) RETURN REF t_przedmiot IS
         v_ref REF t_przedmiot;
     BEGIN
@@ -60,6 +61,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_slowniki AS
             RAISE_APPLICATION_ERROR(-20010, 'Przedmiot ID=' || p_id || ' nie istnieje');
     END;
 
+    -- Zwraca REF do grupy o podanym ID
     FUNCTION get_ref_grupa(p_id NUMBER) RETURN REF t_grupa IS
         v_ref REF t_grupa;
     BEGIN
@@ -70,6 +72,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_slowniki AS
             RAISE_APPLICATION_ERROR(-20011, 'Grupa ID=' || p_id || ' nie istnieje');
     END;
 
+    -- Zwraca REF do sali o podanym ID
     FUNCTION get_ref_sala(p_id NUMBER) RETURN REF t_sala IS
         v_ref REF t_sala;
     BEGIN
@@ -531,13 +534,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         END IF;
 
         -- WALIDACJA: Przepełnienie sali (czy grupa zmieści się w sali)
-        SELECT COUNT(*) INTO v_liczba_uczniow 
-        FROM uczniowie u 
+        SELECT COUNT(*) INTO v_liczba_uczniow
+        FROM uczniowie u
         WHERE DEREF(u.ref_grupa).id = p_id_grupy;
 
         IF v_liczba_uczniow > v_pojemnosc_sali THEN
-            RAISE_APPLICATION_ERROR(-20035, 
-                'Sala jest za mała! Grupa liczy ' || v_liczba_uczniow || 
+            RAISE_APPLICATION_ERROR(-20035,
+                'Sala jest za mała! Grupa liczy ' || v_liczba_uczniow ||
                 ' osób, a sala mieści tylko ' || v_pojemnosc_sali || '.');
         END IF;
 
@@ -555,8 +558,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
                     v_liczba_uczniow    -- liczba uczniów w grupie
                 );
 
-                RAISE_APPLICATION_ERROR(-20021, 
-                    'Blad planowania: ' || v_blad || 
+                RAISE_APPLICATION_ERROR(-20021,
+                    'Blad planowania: ' || v_blad ||
                     CHR(10) || 'SUGEROWANY TERMIN: ' || v_sugestia);
             END;
         END IF;
@@ -577,8 +580,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         v_uczen VARCHAR2(100);
         v_id_grupy NUMBER;
     BEGIN
-        SELECT u.pelne_nazwisko(), DEREF(u.ref_grupa).id 
-        INTO v_uczen, v_id_grupy 
+        SELECT u.pelne_nazwisko(), DEREF(u.ref_grupa).id
+        INTO v_uczen, v_id_grupy
         FROM uczniowie u WHERE u.id = p_id_ucznia;
 
         DBMS_OUTPUT.PUT_LINE('=== PLAN UCZNIA: ' || v_uczen || ' ===');
@@ -595,7 +598,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
                OR DEREF(l.ref_grupa).id = v_id_grupy
             ORDER BY l.data_lekcji, l.godz_rozp
         ) LOOP
-            DBMS_OUTPUT.PUT_LINE(TO_CHAR(r.data_lekcji, 'DY DD.MM') || ' ' || r.godz_rozp || ':00 - ' || 
+            DBMS_OUTPUT.PUT_LINE(TO_CHAR(r.data_lekcji, 'DY DD.MM') || ' ' || r.godz_rozp || ':00 - ' ||
                                  r.przedmiot || ' (sala ' || r.sala || ')' ||
                                  CASE WHEN r.typ = 'N' THEN ' [GRUPOWA]' ELSE '' END);
         END LOOP;

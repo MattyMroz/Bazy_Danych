@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.1.31)  2 FEB 2026 16:17
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.1.31)  2 FEB 2026 16:41
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -505,8 +505,10 @@ File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) (C:\Users\MattyMroz\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
 File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count332
+) (Raport_MusicSchoolDB.aux
+Package babel Info: 'polish' activates 'polish' shorthands.
+(babel)             Reported on input line 8.
 )
-No file Raport_MusicSchoolDB.aux.
 \openout1 = `Raport_MusicSchoolDB.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 19.
@@ -527,8 +529,7 @@ LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 19.
 LaTeX Font Info:    ... okay on input line 19.
 LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 19.
 LaTeX Font Info:    ... okay on input line 19.
-Package babel Info: 'polish' activates 'polish' shorthands.
-(babel)             Reported on input line 19.
+
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
@@ -583,6 +584,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 48
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
 Package hyperref Info: Link coloring OFF on input line 19.
+ (Raport_MusicSchoolDB.out) (Raport_MusicSchoolDB.out)
 \@outlinefile=\write4
 \openout4 = `Raport_MusicSchoolDB.out'.
 
@@ -617,88 +619,196 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 36.
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
-{C:/Users/MattyMroz/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}]
-No file Raport_MusicSchoolDB.toc.
-\tf@toc=\write5
-\openout5 = `Raport_MusicSchoolDB.toc'.
-
+{C:/Users/MattyMroz/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc}] (Raport_MusicSchoolDB.toc
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <8> on input line 3.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <6> on input line 3.
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.51 \newpage
-              [1]
-Overfull \hbox (1.76172pt too wide) in paragraph at lines 60--61
-\T1/lmr/m/n/12 Projekt przed-sta-wia obiek-tow¡ baz¦ da-nych dla szkoªy mu-zycz-nej, ze szcze-gól-nym uwzgl¦d-
- []
+l.44 ...anie lekcji grupowych}{18}{subsection.8.3}
+                                                  % [1])
+\tf@toc=\write5
+\openout5 = `Raport_MusicSchoolDB.toc'.
 
+ [2]
 LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 65.
-(C:\Users\MattyMroz\AppData\Local\Programs\MiKTeX\tex/latex/lm\ts1lmr.fd
+ (C:\Users\MattyMroz\AppData\Local\Programs\MiKTeX\tex/latex/lm\ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-) [2{C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ts1.enc}] [3]
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 138.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 138.
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 177.
- (C:\Users\MattyMroz\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmtt.fd
+) [3{C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ts1.enc}] [4]
+Underfull \hbox (badness 10000) in paragraph at lines 141--142
+[]|\T1/lmr/m/n/12 Przedmiot na-ucza-nia (in-dy-wi-du-
+ []
+
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 159.
+(C:\Users\MattyMroz\AppData\Local\Programs\MiKTeX\tex/latex/lm\t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-Overfull \hbox (13.15593pt too wide) in paragraph at lines 177--178
-[]\T1/lmtt/m/n/12 CREATE OR REPLACE TYPE t_lista_instrumentow AS VARRAY(5) OF VARCHAR2(50); 
+) [5] [6] [7] [8] [9] [10]
+Overfull \hbox (18.2369pt too wide) in paragraph at lines 488--489
+[]\T1/lmr/m/n/12 lista_sal() -- wy-±wie-tla li-st¦ sal z wy-po-sa-»e-niem (wy-wo-ªuje me-tod¦ li-sta_wyposazenia()) 
  []
 
-[4] [5] [6] [7]
-Overfull \hbox (0.80592pt too wide) in paragraph at lines 428--429
-[]\T1/lmtt/m/n/12 SELECT DEREF(l.ref_uczen).imie || ' ' || DEREF(l.ref_uczen).nazwisko AS
+
+Overfull \hbox (5.04817pt too wide) in paragraph at lines 511--512
+[]\T1/lmr/m/n/12 lista_uczniow_grupy(p_id_grupy) -- wy-±wie-tla uczniów da-nej grupy (\T1/lmr/bx/n/12 kursor jawny
  []
 
-[8] [9] [10]
+[11] [12] [13]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 529.
- [11] [12] [13] [14] [15] [16]
+(Font)              <10.95> on input line 592.
 
-LaTeX Warning: File `Relational_1.png' not found on input line 800.
+Overfull \hbox (38.75613pt too wide) in paragraph at lines 619--619
+[]            \T1/lmtt/m/n/12 'Lekcja musi miec ALBO ucznia (indywidualna) ALBO grupe (grupowa)');[] 
+ []
+
+[14]
+Underfull \hbox (badness 10000) in paragraph at lines 672--673
+[]|\T1/lmr/m/n/10.95 Nauczyciel nie uczy po-da-nego
+ []
 
 
-c:/Users/MattyMroz/Desktop/PROJECTS/Bazy_Danych/ROBD_ORACLE/Projekt_v8/Raport_MusicSchoolDB.tex:800: Package pdftex.def Error: File `Relational_1.png' not found: using draft setting.
+Underfull \hbox (badness 8113) in paragraph at lines 676--677
+[]|\T1/lmr/m/n/10.95 Instrument ucznia nie-zgodny z
+ []
 
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.800 ...twidth,keepaspectratio]{Relational_1.png}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
+[15]
+Underfull \hbox (badness 10000) in paragraph at lines 721--722
+[]|\T1/lmr/m/n/12 Funkcja \T1/lmtt/m/n/12 sala_ma_instrument() \T1/lmr/m/n/12 prze-szu-kuje
+ []
 
-[17] [18] (Raport_MusicSchoolDB.aux)
+
+Underfull \hbox (badness 2359) in paragraph at lines 721--722
+\T1/lmr/m/n/12 pa-su-j¡-cego do in-stru-mentu ucznia. Ob-sªu-guje
+ []
+
+
+Overfull \hbox (32.58113pt too wide) in paragraph at lines 753--753
+[]    \T1/lmtt/m/n/12 SELECT s.wyposazenie INTO v_wyposazenie FROM sale s WHERE s.id = p_id_sali;[] 
+ []
+
+
+Overfull \hbox (26.40613pt too wide) in paragraph at lines 753--753
+[]        \T1/lmtt/m/n/12 IF UPPER(v_wyposazenie(i)) LIKE '%' || UPPER(p_instrument) || '%' THEN[] 
+ []
+
+[16] [17]
+Overfull \hbox (0.2058pt too wide) in paragraph at lines 769--770
+[]\T1/lmtt/m/n/12 pkg_slowniki.dodaj_sale('105', 'indywidualna', 4, t_wyposazenie('Flet
+ []
+
+
+Overfull \hbox (6.35176pt too wide) in paragraph at lines 770--771
+[]\T1/lmtt/m/n/12 pkg_osoby.dodaj_nauczyciela('Tomasz', 'Flecista', 6) \T1/lmr/m/n/12 -- REF do przed-miotu
+ []
+
+
+Overfull \hbox (12.5558pt too wide) in paragraph at lines 779--780
+[]\T1/lmtt/m/n/12 pkg_osoby.dodaj_ucznia('Jakub', 'Melodyjny', DATE '2014-07-20', 'Flet',
+ []
+
+
+Overfull \hbox (39.59882pt too wide) in paragraph at lines 797--798
+[]\T1/lmr/bx/n/12 Sukces: \T1/lmtt/m/n/12 pkg_lekcje.dodaj_lekcje_indywidualna(6, 6, 5, 10, DATE '2025-06-09',
+ []
+
+
+Overfull \hbox (6.19878pt too wide) in paragraph at lines 817--818
+[]\T1/lmtt/m/n/12 pkg_oceny.oceny_ucznia(10) \T1/lmr/m/n/12 -- li-sta ocen z opi-sem sªow-nym (me-toda opis_oceny()) 
+ []
+
+[18] [19]
+<Relational_1.png, id=393, 858.95906pt x 343.2825pt>
+File: Relational_1.png Graphic file (type png)
+<use Relational_1.png>
+Package pdftex.def Info: Relational_1.png  used on input line 884.
+(pdftex.def)             Requested size: 455.24411pt x 181.93884pt.
+ [20 <./Relational_1.png>] [21]
+Underfull \hbox (badness 10000) in paragraph at lines 935--936
+[]|\T1/lmr/m/n/12 8 ty-pów, 10 me-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 935--936
+\T1/lmr/m/n/12 tod (wiek, staz_lat,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 935--936
+\T1/lmr/m/n/12 pelne_nazwisko, czy_grupowy,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 935--936
+\T1/lmr/m/n/12 li-sta_wyposazenia,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 935--936
+\T1/lmr/m/n/12 go-dzina_koniec,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 941--942
+[]|\T1/lmr/m/n/12 t_wyposazenie w ta-beli
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 941--942
+\T1/lmr/m/n/12 sale + prze-szu-ki-wa-nie w
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 945--946
+[]|\T1/lmr/m/n/12 Jawny
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 945--946
+\T1/lmr/m/n/12 (OPEN/FETCH/CLOSE) w
+ []
+
+
+Overfull \hbox (9.22836pt too wide) in paragraph at lines 947--948
+[]|\T1/lmr/m/n/12 RAISE_APPLICATION_ERROR
+ []
+
+
+Underfull \hbox (badness 1226) in paragraph at lines 949--950
+[]|\T1/lmr/m/n/12 2 trig-gery: XOR lek-cji, za-kres
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 951--952
+[]|\T1/lmr/m/n/12 Funkcja pry-watna
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 953--954
+[]|\T1/lmr/m/n/12 Funkcja znajdz_alternatywe()
+ []
+
+[22] (Raport_MusicSchoolDB.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
-
-
-Package rerunfilecheck Warning: File `Raport_MusicSchoolDB.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `Raport_MusicSchoolDB.out':
-(rerunfilecheck)             Before: <no file>
-(rerunfilecheck)             After:  4698BBA12B193EDED4B380AB4E29521C;8665.
+Package rerunfilecheck Info: File `Raport_MusicSchoolDB.out' has not changed.
+(rerunfilecheck)             Checksum: 7521E15F9783A51F474863184EDEEB20;8857.
  ) 
 Here is how much of TeX's memory you used:
- 23019 strings out of 467866
- 436712 string characters out of 5416383
- 841912 words of memory out of 5000000
- 51411 multiletter control sequences out of 15000+600000
+ 23073 strings out of 467866
+ 437549 string characters out of 5416383
+ 844032 words of memory out of 5000000
+ 51449 multiletter control sequences out of 15000+600000
  683799 words of font info for 85 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,10n,104p,531b,592s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr17.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb>
-Output written on Raport_MusicSchoolDB.pdf (19 pages, 238117 bytes).
+ 84i,10n,104p,531b,638s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr17.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msam10.pfb>
+Output written on Raport_MusicSchoolDB.pdf (23 pages, 325487 bytes).
 PDF statistics:
- 232 PDF objects out of 1000 (max. 8388607)
- 106 named destinations out of 1000 (max. 500000)
- 13 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 479 PDF objects out of 1000 (max. 8388607)
+ 114 named destinations out of 1000 (max. 500000)
+ 450 words of extra memory for PDF output out of 10000 (max. 10000000)
 

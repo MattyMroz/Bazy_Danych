@@ -57,7 +57,7 @@ CREATE TABLE grupy OF t_grupa (
 /
 
 -- ============================================================================
--- 3. NAUCZYCIELE - z REF do przedmiotu (każdy uczy jednego przedmiotu)
+-- 3. NAUCZYCIELE
 -- ============================================================================
 CREATE TABLE nauczyciele OF t_nauczyciel (
     id PRIMARY KEY,
@@ -79,7 +79,7 @@ CREATE TABLE sale OF t_sala (
 /
 
 -- ============================================================================
--- 5. UCZNIOWIE - z REF do grupy
+-- 5. UCZNIOWIE
 -- ============================================================================
 CREATE TABLE uczniowie OF t_uczen (
     id PRIMARY KEY,
@@ -91,7 +91,7 @@ CREATE TABLE uczniowie OF t_uczen (
 /
 
 -- ============================================================================
--- 6. LEKCJE - z wieloma REF (XOR: uczeń lub grupa)
+-- 6. LEKCJE
 -- ============================================================================
 CREATE TABLE lekcje OF t_lekcja (
     id PRIMARY KEY,
@@ -102,7 +102,7 @@ CREATE TABLE lekcje OF t_lekcja (
 /
 
 -- ============================================================================
--- 7. OCENY - z REF
+-- 7. OCENY
 -- ============================================================================
 CREATE TABLE oceny OF t_ocena (
     id PRIMARY KEY,

@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1770045469.14534 "c:/Users/MattyMroz/Desktop/PROJECTS/Bazy_Danych/ROBD_ORACLE/Projekt_v8/Raport_MusicSchoolDB.tex" "Raport_MusicSchoolDB.pdf" "Raport_MusicSchoolDB" 1770045469.89113 2
+["pdflatex"] 1770046911.20236 "c:/Users/MattyMroz/Desktop/PROJECTS/Bazy_Danych/ROBD_ORACLE/Projekt_v8/Raport_MusicSchoolDB.tex" "Raport_MusicSchoolDB.pdf" "Raport_MusicSchoolDB" 1770046912.03388 0
   "C:/Users/MattyMroz/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1769869588 80909 eab91d9745dd2edfd62a31d53cd5fe15 ""
   "C:/Users/MattyMroz/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1769869643 13335804 2073443599d00195b1f1bf34493196fd ""
   "C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/lm/lm-ec.enc" 1256929440 2375 baa924870cfb487815765f9094cf3728 ""
@@ -30,6 +30,7 @@
   "C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/tfm/public/lm/rm-lmr6.tfm" 1256929440 11836 e3b6ce3e601aec94f64a536e7f4224d5 ""
   "C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/tfm/public/lm/rm-lmr8.tfm" 1256929440 11864 309fd7f43e4a0ba39f6f7644d76e8edf ""
   "C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/tfm/public/lm/ts1-lmr12.tfm" 1256929440 1596 1d4548788e389ded56d0b01b28377882 ""
+  "C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msam10.pfb" 1247596673 31764 459c573c03a4949a528c2cc7f557e217 ""
   "C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb" 1256929440 121021 836464b5fe0c782d94085eb083550ccc ""
   "C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb" 1256929440 116908 9a7a12d1e4df280ea0ab4aad83cdef88 ""
   "C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb" 1256929440 119235 05e5c8d6d60439433e50047898c2c0e0 ""
@@ -168,12 +169,12 @@
   "C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/tex/latex/tools/longtable.sty" 1761901070 16014 dfa4b4d4e04a78a3f05a90c19711737a ""
   "C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1729265222 55384 b454dec21c2d9f45ec0b793f0995b992 ""
-  "Raport_MusicSchoolDB.aux" 1770045469 8390 7126c179131bb41b3e290ccd70fec51d "pdflatex"
-  "Raport_MusicSchoolDB.out" 1770045469 8665 4698bba12b193eded4b380ab4e29521c "pdflatex"
-  "Raport_MusicSchoolDB.tex" 1769869345 31269 97691624af15b5cda1857d701749d809 ""
-  "Raport_MusicSchoolDB.toc" 1770045469 4704 75ce4543bf3f18d5b5d63ab23c1526ee "pdflatex"
-  "Relational_1.png" 0 -1 0 ""
-  "c:/Users/MattyMroz/Desktop/PROJECTS/Bazy_Danych/ROBD_ORACLE/Projekt_v8/Raport_MusicSchoolDB.tex" 1769869345 31269 97691624af15b5cda1857d701749d809 ""
+  "Raport_MusicSchoolDB.aux" 1770046911 8371 8fb29f9949a73b17cf7a8098ad1283d8 "pdflatex"
+  "Raport_MusicSchoolDB.out" 1770046911 8857 7521e15f9783a51f474863184edeeb20 "pdflatex"
+  "Raport_MusicSchoolDB.tex" 1770046903 37165 35817c4e61cb08279c6e2767d51bdf8b ""
+  "Raport_MusicSchoolDB.toc" 1770046911 4661 397cbb2f12ab13e579bba18a1650c425 "pdflatex"
+  "Relational_1.png" 1769676061 55672 493580e11a5e5907654ba5186f928c33 ""
+  "c:/Users/MattyMroz/Desktop/PROJECTS/Bazy_Danych/ROBD_ORACLE/Projekt_v8/Raport_MusicSchoolDB.tex" 1770046903 37165 35817c4e61cb08279c6e2767d51bdf8b ""
   (generated)
   "Raport_MusicSchoolDB.aux"
   "Raport_MusicSchoolDB.log"
