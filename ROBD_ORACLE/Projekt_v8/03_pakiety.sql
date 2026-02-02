@@ -55,6 +55,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_slowniki AS
     BEGIN
         SELECT REF(p) INTO v_ref FROM przedmioty p WHERE p.id = p_id;
         RETURN v_ref;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RAISE_APPLICATION_ERROR(-20010, 'Przedmiot ID=' || p_id || ' nie istnieje');
     END;
 
     FUNCTION get_ref_grupa(p_id NUMBER) RETURN REF t_grupa IS
@@ -62,6 +65,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_slowniki AS
     BEGIN
         SELECT REF(g) INTO v_ref FROM grupy g WHERE g.id = p_id;
         RETURN v_ref;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RAISE_APPLICATION_ERROR(-20011, 'Grupa ID=' || p_id || ' nie istnieje');
     END;
 
     FUNCTION get_ref_sala(p_id NUMBER) RETURN REF t_sala IS
@@ -69,6 +75,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_slowniki AS
     BEGIN
         SELECT REF(s) INTO v_ref FROM sale s WHERE s.id = p_id;
         RETURN v_ref;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RAISE_APPLICATION_ERROR(-20012, 'Sala ID=' || p_id || ' nie istnieje');
     END;
 
     PROCEDURE lista_przedmiotow IS
@@ -145,6 +154,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_osoby AS
     BEGIN
         SELECT REF(n) INTO v_ref FROM nauczyciele n WHERE n.id = p_id;
         RETURN v_ref;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RAISE_APPLICATION_ERROR(-20013, 'Nauczyciel ID=' || p_id || ' nie istnieje');
     END;
 
     FUNCTION get_ref_uczen(p_id NUMBER) RETURN REF t_uczen IS
@@ -152,6 +164,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_osoby AS
     BEGIN
         SELECT REF(u) INTO v_ref FROM uczniowie u WHERE u.id = p_id;
         RETURN v_ref;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            RAISE_APPLICATION_ERROR(-20014, 'Uczeń ID=' || p_id || ' nie istnieje');
     END;
 
     PROCEDURE lista_nauczycieli IS
@@ -205,7 +220,7 @@ END pkg_osoby;
 /
 
 -- ============================================================================
--- PKG_LEKCJE - zarządzanie lekcjami
+-- PKG_LEKCJE - zarządzanie lekcjami (z walidacją konfliktów)
 -- ============================================================================
 CREATE OR REPLACE PACKAGE pkg_lekcje AS
     -- Dodawanie lekcji
@@ -227,18 +242,94 @@ END pkg_lekcje;
 
 CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
 
+    -- ========================================================================
+    -- FUNKCJA PRYWATNA - sprawdza dostępność terminów
+    -- Zwraca tekst błędu lub NULL jeśli termin jest wolny
+    -- ========================================================================
+    FUNCTION sprawdz_kolizje(
+        p_data DATE, 
+        p_godz NUMBER, 
+        p_ref_nauczyciel REF t_nauczyciel,
+        p_ref_sala REF t_sala,
+        p_ref_uczen REF t_uczen,    -- może być NULL
+        p_ref_grupa REF t_grupa     -- może być NULL
+    ) RETURN VARCHAR2 IS
+        v_licznik NUMBER;
+    BEGIN
+        -- 1. Sprawdzenie SALI
+        SELECT COUNT(*) INTO v_licznik FROM lekcje l
+        WHERE l.data_lekcji = p_data AND l.godz_rozp = p_godz
+          AND l.ref_sala = p_ref_sala;
+        
+        IF v_licznik > 0 THEN
+            RETURN 'Sala jest już zajęta w tym terminie!';
+        END IF;
+
+        -- 2. Sprawdzenie NAUCZYCIELA
+        SELECT COUNT(*) INTO v_licznik FROM lekcje l
+        WHERE l.data_lekcji = p_data AND l.godz_rozp = p_godz
+          AND l.ref_nauczyciel = p_ref_nauczyciel;
+          
+        IF v_licznik > 0 THEN
+            RETURN 'Nauczyciel ma już lekcję w tym terminie!';
+        END IF;
+
+        -- 3. Sprawdzenie UCZNIA (jeśli dotyczy)
+        IF p_ref_uczen IS NOT NULL THEN
+            SELECT COUNT(*) INTO v_licznik FROM lekcje l
+            WHERE l.data_lekcji = p_data AND l.godz_rozp = p_godz
+              AND l.ref_uczen = p_ref_uczen;
+            
+            IF v_licznik > 0 THEN
+                RETURN 'Uczeń ma już lekcję w tym terminie!';
+            END IF;
+        END IF;
+
+        -- 4. Sprawdzenie GRUPY (jeśli dotyczy)
+        IF p_ref_grupa IS NOT NULL THEN
+            SELECT COUNT(*) INTO v_licznik FROM lekcje l
+            WHERE l.data_lekcji = p_data AND l.godz_rozp = p_godz
+              AND l.ref_grupa = p_ref_grupa;
+            
+            IF v_licznik > 0 THEN
+                RETURN 'Grupa ma już zajęcia w tym terminie!';
+            END IF;
+        END IF;
+
+        RETURN NULL; -- Brak konfliktów
+    END;
+
+    -- ========================================================================
+    -- Procedury publiczne
+    -- ========================================================================
+
     PROCEDURE dodaj_lekcje_indywidualna(
         p_id_przedmiotu NUMBER, p_id_nauczyciela NUMBER, p_id_sali NUMBER,
         p_id_ucznia NUMBER, p_data DATE, p_godz NUMBER
     ) IS
+        v_ref_przedmiot REF t_przedmiot;
+        v_ref_nauczyciel REF t_nauczyciel;
+        v_ref_sala REF t_sala;
+        v_ref_uczen REF t_uczen;
+        v_blad VARCHAR2(200);
     BEGIN
+        -- Pobranie referencji
+        v_ref_przedmiot := pkg_slowniki.get_ref_przedmiot(p_id_przedmiotu);
+        v_ref_nauczyciel := pkg_osoby.get_ref_nauczyciel(p_id_nauczyciela);
+        v_ref_sala := pkg_slowniki.get_ref_sala(p_id_sali);
+        v_ref_uczen := pkg_osoby.get_ref_uczen(p_id_ucznia);
+
+        -- WALIDACJA KONFLIKTÓW
+        v_blad := sprawdz_kolizje(p_data, p_godz, v_ref_nauczyciel, v_ref_sala, v_ref_uczen, NULL);
+        
+        IF v_blad IS NOT NULL THEN
+            RAISE_APPLICATION_ERROR(-20020, 'Błąd planowania: ' || v_blad);
+        END IF;
+
         INSERT INTO lekcje VALUES (
             t_lekcja(
                 seq_lekcje.NEXTVAL,
-                pkg_slowniki.get_ref_przedmiot(p_id_przedmiotu),
-                pkg_osoby.get_ref_nauczyciel(p_id_nauczyciela),
-                pkg_slowniki.get_ref_sala(p_id_sali),
-                pkg_osoby.get_ref_uczen(p_id_ucznia),
+                v_ref_przedmiot, v_ref_nauczyciel, v_ref_sala, v_ref_uczen,
                 NULL,  -- brak grupy (lekcja indywidualna)
                 p_data, p_godz, 45
             )
@@ -250,15 +341,31 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         p_id_przedmiotu NUMBER, p_id_nauczyciela NUMBER, p_id_sali NUMBER,
         p_id_grupy NUMBER, p_data DATE, p_godz NUMBER
     ) IS
+        v_ref_przedmiot REF t_przedmiot;
+        v_ref_nauczyciel REF t_nauczyciel;
+        v_ref_sala REF t_sala;
+        v_ref_grupa REF t_grupa;
+        v_blad VARCHAR2(200);
     BEGIN
+        -- Pobranie referencji
+        v_ref_przedmiot := pkg_slowniki.get_ref_przedmiot(p_id_przedmiotu);
+        v_ref_nauczyciel := pkg_osoby.get_ref_nauczyciel(p_id_nauczyciela);
+        v_ref_sala := pkg_slowniki.get_ref_sala(p_id_sali);
+        v_ref_grupa := pkg_slowniki.get_ref_grupa(p_id_grupy);
+
+        -- WALIDACJA KONFLIKTÓW
+        v_blad := sprawdz_kolizje(p_data, p_godz, v_ref_nauczyciel, v_ref_sala, NULL, v_ref_grupa);
+        
+        IF v_blad IS NOT NULL THEN
+            RAISE_APPLICATION_ERROR(-20021, 'Błąd planowania: ' || v_blad);
+        END IF;
+
         INSERT INTO lekcje VALUES (
             t_lekcja(
                 seq_lekcje.NEXTVAL,
-                pkg_slowniki.get_ref_przedmiot(p_id_przedmiotu),
-                pkg_osoby.get_ref_nauczyciel(p_id_nauczyciela),
-                pkg_slowniki.get_ref_sala(p_id_sali),
+                v_ref_przedmiot, v_ref_nauczyciel, v_ref_sala,
                 NULL,  -- brak ucznia (lekcja grupowa)
-                pkg_slowniki.get_ref_grupa(p_id_grupy),
+                v_ref_grupa,
                 p_data, p_godz, 45
             )
         );
@@ -413,7 +520,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_oceny AS
         WHERE DEREF(o.ref_uczen).id = p_id_ucznia
           AND DEREF(o.ref_przedmiot).id = p_id_przedmiotu
           AND o.semestralna = 'N';
-        RETURN ROUND(v_srednia, 2);
+        -- Zwróć 0 gdy brak ocen (AVG zwraca NULL)
+        RETURN NVL(ROUND(v_srednia, 2), 0);
     END;
 
 END pkg_oceny;

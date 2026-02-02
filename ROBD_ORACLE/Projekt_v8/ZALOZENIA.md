@@ -72,8 +72,10 @@ Obiektowa baza danych Oracle dla małej prywatnej **szkoły muzycznej I stopnia*
 1. Lekcja jest **ALBO** indywidualna (1 uczeń) **ALBO** grupowa (klasa) - **XOR** ✅ walidowane przez trigger
 2. Lekcje mają stały czas: **45 minut**
 3. Lekcje rozpoczynają się o pełnych godzinach (14:00-19:00)
-
-> ⚠️ **Uproszczenie:** Konflikty terminów (sala zajęta, nauczyciel zajęty, uczeń zajęty) **NIE SĄ** walidowane przez system. Dane testowe nie zawierają konfliktów.
+4. **Walidacja konfliktów terminów** ✅ - system blokuje dodanie lekcji gdy:
+   - Sala jest już zajęta
+   - Nauczyciel ma inną lekcję
+   - Uczeń/Grupa ma zajęcia w tym terminie
 
 ### 3.2 Oceny
 1. Skala: **1-6** (liczby całkowite) ✅ walidowane przez trigger
@@ -133,8 +135,6 @@ OCENY ──REF──→ UCZNIOWIE
 
 ## 5. LOGIKA BIZNESOWA (PAKIETY PL/SQL)
 
-> ⚠️ **Uproszczenie:** Pakiety realizują **podstawowe operacje CRUD** oraz **wyświetlanie danych**. Zaawansowana walidacja (konflikty terminów) jest poza zakresem projektu.
-
 ### PKG_SLOWNIKI
 - `dodaj_przedmiot(nazwa, typ)` - dodaje przedmiot do słownika
 - `dodaj_grupe(symbol, poziom)` - dodaje klasę
@@ -150,8 +150,9 @@ OCENY ──REF──→ UCZNIOWIE
 - `lista_uczniow_grupy(id_grupy)` - **kursor jawny** (OPEN/FETCH/CLOSE)
 
 ### PKG_LEKCJE
-- `dodaj_lekcje_indywidualna(...)` - dodaje lekcję z **REF** do ucznia
-- `dodaj_lekcje_grupowa(...)` - dodaje lekcję z **REF** do grupy
+- `dodaj_lekcje_indywidualna(...)` - dodaje lekcję z **REF** do ucznia + **walidacja konfliktów**
+- `dodaj_lekcje_grupowa(...)` - dodaje lekcję z **REF** do grupy + **walidacja konfliktów**
+- `sprawdz_kolizje(...)` - **funkcja prywatna** sprawdzająca dostępność terminu
 - `plan_ucznia(id)` - plan lekcji ucznia (indywidualne + grupowe przez UNION)
 - `plan_nauczyciela(id)` - plan lekcji nauczyciela
 - `plan_dnia(data)` - wszystkie lekcje w danym dniu
@@ -177,7 +178,7 @@ OCENY ──REF──→ UCZNIOWIE
 | `trg_lekcja_xor` | LEKCJE | Wymuszenie XOR: lekcja ma ALBO ucznia ALBO grupę | -20001 |
 | `trg_ocena_zakres` | OCENY | Przyjazny komunikat przy ocenie poza 1-6 | -20002 |
 
-> 💡 **Uwaga:** Triggery walidujące konflikty terminów (sala zajęta, nauczyciel zajęty) **celowo pominięte** - patrz sekcja 7.2.
+> 💡 **Uwaga:** Walidacja konfliktów terminów realizowana jest w pakiecie `pkg_lekcje` (funkcja prywatna `sprawdz_kolizje`) - bezpieczniejsze rozwiązanie niż trigger (brak problemu "mutating table").
 
 ---
 
@@ -197,19 +198,27 @@ OCENY ──REF──→ UCZNIOWIE
 8. **Skala ocen:** 1-6 (polska skala szkolna)
 9. **Klasy:** 6 poziomów (I-VI), po jednej grupie na poziom
 
-### 7.2 Uproszczenia walidacji (świadome decyzje projektowe)
+### 7.2 Walidacja konfliktów terminów ✅
 
-| Co NIE jest walidowane | Uzasadnienie | W systemie produkcyjnym |
-|------------------------|--------------|-------------------------|
-| **Konflikt sali** - czy sala wolna w danym terminie | Uproszczenie projektu; dane testowe poprawne | Trigger lub procedura sprawdzająca |
-| **Konflikt nauczyciela** - czy nauczyciel wolny | j.w. | j.w. |
-| **Konflikt ucznia** - czy uczeń ma inną lekcję | j.w. | j.w. |
-| **Kompletność planu** - 5 lekcji/tydzień | Brak automatycznego sprawdzania | Procedura walidacyjna |
-| **Zgodność sali z przedmiotem** | System nie sprawdza wyposażenia | CHECK lub trigger |
+System **waliduje dostępność zasobów** przy planowaniu lekcji. Próba dodania lekcji zostanie zablokowana jeśli w danym terminie (data + godzina):
 
-> 💡 **Uzasadnienie:** Pełna walidacja konfliktów wymagałaby ~200 linii kodu SQL, co nie jest celem projektu demonstrującego mechanizmy obiektowe. Dane testowe są przygotowane tak, aby nie zawierały konfliktów.
+| Konflikt | Walidacja | Komunikat błędu |
+|----------|-----------|----------------|
+| **Sala zajęta** | ✅ `pkg_lekcje.sprawdz_kolizje()` | "Sala jest już zajęta w tym terminie!" |
+| **Nauczyciel zajęty** | ✅ `pkg_lekcje.sprawdz_kolizje()` | "Nauczyciel ma już lekcję w tym terminie!" |
+| **Uczeń zajęty** | ✅ `pkg_lekcje.sprawdz_kolizje()` | "Uczeń ma już lekcję w tym terminie!" |
+| **Grupa zajęta** | ✅ `pkg_lekcje.sprawdz_kolizje()` | "Grupa ma już zajęcia w tym terminie!" |
 
-### 7.3 Ograniczenia poza zakresem projektu
+> 💡 **Implementacja:** Walidacja realizowana wewnątrz pakietu `pkg_lekcje` (funkcja prywatna), co pozwala uniknąć problemu "mutating table" występującego przy triggerach.
+
+### 7.3 Funkcjonalności poza zakresem walidacji
+
+| Co NIE jest walidowane | Uzasadnienie |
+|------------------------|-------------|
+| **Kompletność planu** - 5 lekcji/tydzień | Uproszczenie projektu |
+| **Zgodność sali z przedmiotem** | System nie sprawdza wyposażenia |
+
+### 7.4 Ograniczenia poza zakresem projektu
 
 | Funkcjonalność | Status |
 |----------------|--------|
@@ -247,8 +256,8 @@ System wykorzystuje **podstawową** obsługę błędów Oracle:
 | `-20012` | Nie znaleziono sali o podanym ID |
 | `-20013` | Nie znaleziono nauczyciela o podanym ID |
 | `-20014` | Nie znaleziono ucznia o podanym ID |
-
-> 💡 **Uwaga:** W projekcie studenckim walidujemy tylko **krytyczne błędy** uniemożliwiające działanie systemu. Konflikty terminów (sala zajęta, nauczyciel zajęty) są opisane w założeniach jako **poza zakresem walidacji** - dane testowe nie zawierają takich konfliktów.
+| `-20020` | Konflikt terminów przy lekcji indywidualnej (sala/nauczyciel/uczeń zajęty) |
+| `-20021` | Konflikt terminów przy lekcji grupowej (sala/nauczyciel/grupa zajęta) |
 
 ---
 
@@ -314,6 +323,7 @@ System wykorzystuje trzy typy kursorów:
 | Kursory | Jawny w `lista_uczniow_grupy()`, niejawny (FOR) w pozostałych |
 | Obsługa błędów | `RAISE_APPLICATION_ERROR`, `EXCEPTION WHEN NO_DATA_FOUND` |
 | Wyzwalacze | 2 triggery: XOR lekcji, zakres ocen |
+| Walidacja konfliktów | Funkcja prywatna `sprawdz_kolizje()` w pakiecie `pkg_lekcje` |
 
 ---
 

@@ -176,7 +176,8 @@ CREATE OR REPLACE TYPE t_lekcja AS OBJECT (
 CREATE OR REPLACE TYPE BODY t_lekcja AS
     MEMBER FUNCTION godzina_koniec RETURN NUMBER IS
     BEGIN
-        RETURN SELF.godz_rozp + 1;
+        -- Lekcja 45 min = 0.75h, więc 14:00 + 0.75 = 14.75 (14:45)
+        RETURN SELF.godz_rozp + (SELF.czas_min / 60.0);
     END;
 
     MEMBER FUNCTION czy_indywidualna RETURN VARCHAR2 IS
@@ -217,14 +218,6 @@ CREATE OR REPLACE TYPE BODY t_ocena AS
     END;
 END;
 /
-
--- ============================================================================
--- Weryfikacja
--- ============================================================================
-SELECT object_name, object_type, status
-FROM user_objects
-WHERE object_type IN ('TYPE', 'TYPE BODY')
-ORDER BY object_type, object_name;
 
 -- ============================================================================
 -- Weryfikacja
