@@ -52,4 +52,3 @@
 \contentsline {subsection}{\numberline {8.11}Scenariusz 11: Demonstracja metod obiektowych}{19}{subsection.8.11}%
 \contentsline {section}{\numberline {9}Diagram relacji obiektów}{20}{section.9}%
 \contentsline {section}{\numberline {10}Struktura plików projektu}{21}{section.10}%
-\contentsline {section}{\numberline {11}Podsumowanie wymagań}{22}{section.11}%

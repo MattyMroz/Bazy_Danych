@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.1.31)  2 FEB 2026 17:15
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.1.31)  2 FEB 2026 22:53
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -729,91 +729,31 @@ Overfull \hbox (6.19878pt too wide) in paragraph at lines 817--818
  []
 
 [18] [19]
-<Relational_1.png, id=393, 858.95906pt x 343.2825pt>
+<Relational_1.png, id=388, 1117.17375pt x 749.80125pt>
 File: Relational_1.png Graphic file (type png)
 <use Relational_1.png>
 Package pdftex.def Info: Relational_1.png  used on input line 884.
-(pdftex.def)             Requested size: 455.24411pt x 181.93884pt.
- [20 <./Relational_1.png>] [21]
-Underfull \hbox (badness 10000) in paragraph at lines 935--936
-[]|\T1/lmr/m/n/12 8 ty-pów, 10 me-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 935--936
-\T1/lmr/m/n/12 tod (wiek, staz_lat,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 935--936
-\T1/lmr/m/n/12 pelne_nazwisko, czy_grupowy,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 935--936
-\T1/lmr/m/n/12 li-sta_wyposazenia,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 935--936
-\T1/lmr/m/n/12 go-dzina_koniec,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 941--942
-[]|\T1/lmr/m/n/12 t_wyposazenie w ta-beli
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 941--942
-\T1/lmr/m/n/12 sale + prze-szu-ki-wa-nie w
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 945--946
-[]|\T1/lmr/m/n/12 Jawny
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 945--946
-\T1/lmr/m/n/12 (OPEN/FETCH/CLOSE) w
- []
-
-
-Overfull \hbox (9.22836pt too wide) in paragraph at lines 947--948
-[]|\T1/lmr/m/n/12 RAISE_APPLICATION_ERROR
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 951--952
-[]|\T1/lmr/m/n/12 Funkcja pry-watna
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 953--954
-[]|\T1/lmr/m/n/12 Funkcja znajdz_alternatywe()
- []
-
-[22] (Raport_MusicSchoolDB.aux)
+(pdftex.def)             Requested size: 455.24411pt x 305.54417pt.
+ [20 <./Relational_1.png>] [21] (Raport_MusicSchoolDB.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
 Package rerunfilecheck Info: File `Raport_MusicSchoolDB.out' has not changed.
-(rerunfilecheck)             Checksum: 7521E15F9783A51F474863184EDEEB20;8857.
+(rerunfilecheck)             Checksum: AD6F08D540AD9F8474D439C210E4CE0A;8706.
  ) 
 Here is how much of TeX's memory you used:
- 23073 strings out of 467866
- 437549 string characters out of 5416383
+ 23069 strings out of 467866
+ 437513 string characters out of 5416383
  844032 words of memory out of 5000000
- 51449 multiletter control sequences out of 15000+600000
+ 51448 multiletter control sequences out of 15000+600000
  683799 words of font info for 85 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,10n,104p,531b,638s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr17.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msam10.pfb>
-Output written on Raport_MusicSchoolDB.pdf (23 pages, 325281 bytes).
+<C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr17.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb>
+Output written on Raport_MusicSchoolDB.pdf (22 pages, 305819 bytes).
 PDF statistics:
- 479 PDF objects out of 1000 (max. 8388607)
- 114 named destinations out of 1000 (max. 500000)
- 450 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 463 PDF objects out of 1000 (max. 8388607)
+ 111 named destinations out of 1000 (max. 500000)
+ 442 words of extra memory for PDF output out of 10000 (max. 10000000)
 

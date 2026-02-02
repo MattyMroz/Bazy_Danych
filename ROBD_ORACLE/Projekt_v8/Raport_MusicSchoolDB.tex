@@ -920,40 +920,4 @@ Pokazanie działania metod zdefiniowanych w typach:
     \item 07\_testy\_rozszerzone.sql -- rozszerzone testy (opcjonalne)
 \end{enumerate}
 
-% =============================================================================
-% 11. PODSUMOWANIE WYMAGAN
-% =============================================================================
-\newpage
-\section{Podsumowanie wymagań}
-
-\begin{table}[h]
-\centering
-\begin{tabular}{|l|l|p{6cm}|}
-\hline
-\textbf{Wymaganie} & \textbf{Status} & \textbf{Realizacja} \\
-\hline
-Typy obiektowe z metodami & \checkmark & 8 typów, 10 metod (wiek, staz\_lat, pelne\_nazwisko, czy\_grupowy, lista\_wyposazenia, godzina\_koniec, czy\_indywidualna, opis\_oceny) \\
-\hline
-Tabele obiektowe & \checkmark & 7 tabel obiektowych \\
-\hline
-REF i DEREF & \checkmark & 9 referencji między obiektami \\
-\hline
-VARRAY & \checkmark & t\_wyposazenie w tabeli sale + przeszukiwanie w sala\_ma\_instrument() \\
-\hline
-Pakiety PL/SQL & \checkmark & 5 pakietów, 25 podprogramów publicznych \\
-\hline
-Kursory & \checkmark & Jawny (OPEN/FETCH/CLOSE) w lista\_uczniow\_grupy(), niejawny (FOR) w pozostałych \\
-\hline
-Obsługa błędów & \checkmark & RAISE\_APPLICATION\_ERROR z 14 kodami błędów \\
-\hline
-Wyzwalacze & \checkmark & 2 triggery: relacja uczestników, zakres ocen \\
-\hline
-Walidacja konfliktów & \checkmark & Funkcja prywatna sprawdz\_kolizje() \\
-\hline
-Heurystyka & \checkmark & Funkcja znajdz\_alternatywe() (First Fit) \\
-\hline
-\end{tabular}
-\caption{Spełnienie wymagań projektu}
-\end{table}
-
 \end{document}

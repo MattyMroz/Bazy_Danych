@@ -1,0 +1,83 @@
+@startuml
+!define Table(name) class name << (T,#FFAAAA) >>
+!define PK(x) <u>x</u>
+!define FK(x) <i>x</i>
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam nodesep 50
+skinparam ranksep 250
+left to right direction
+
+Table(przedmioty) {
+  PK(id) : NUMBER
+  nazwa : VARCHAR2(50)
+  typ : VARCHAR2(20)
+  czas_min : NUMBER
+}
+
+Table(grupy) {
+  PK(id) : NUMBER
+  symbol : VARCHAR2(10)
+  poziom : NUMBER
+}
+
+Table(nauczyciele) {
+  PK(id) : NUMBER
+  imie : VARCHAR2(50)
+  nazwisko : VARCHAR2(50)
+  data_zatr : DATE
+  FK(ref_przedmiot) : REF
+}
+
+Table(sale) {
+  PK(id) : NUMBER
+  numer : VARCHAR2(10)
+  typ : VARCHAR2(20)
+  pojemnosc : NUMBER
+  wyposazenie : VARRAY
+}
+
+Table(uczniowie) {
+  PK(id) : NUMBER
+  imie : VARCHAR2(50)
+  nazwisko : VARCHAR2(50)
+  data_ur : DATE
+  instrument : VARCHAR2(50)
+  FK(ref_grupa) : REF
+}
+
+Table(lekcje) {
+  PK(id) : NUMBER
+  FK(ref_przedmiot) : REF
+  FK(ref_nauczyciel) : REF
+  FK(ref_sala) : REF
+  FK(ref_uczen) : REF
+  FK(ref_grupa) : REF
+  data_lekcji : DATE
+  godz_rozp : NUMBER
+  czas_min : NUMBER
+}
+
+Table(oceny) {
+  PK(id) : NUMBER
+  FK(ref_uczen) : REF
+  FK(ref_nauczyciel) : REF
+  FK(ref_przedmiot) : REF
+  wartosc : NUMBER
+  data_oceny : DATE
+  semestralna : VARCHAR2(1)
+}
+
+' Relacje
+nauczyciele }o--|| przedmioty : "uczy"
+uczniowie }o--|| grupy : "należy do"
+lekcje }o--|| przedmioty : "dotyczy"
+lekcje }o--|| nauczyciele : "prowadzi"
+lekcje }o--|| sale : "odbywa się w"
+lekcje }o..o| uczniowie : "indywidualna (XOR)"
+lekcje }o..o| grupy : "grupowa (XOR)"
+oceny }o--|| uczniowie : "otrzymuje"
+oceny }o--|| nauczyciele : "wystawia"
+oceny }o--|| przedmioty : "z przedmiotu"
+@enduml

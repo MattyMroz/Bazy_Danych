@@ -124,7 +124,34 @@ CREATE SEQUENCE seq_lekcje START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE seq_oceny START WITH 1 INCREMENT BY 1;
 
 -- ============================================================================
+-- SCOPE IS - ograniczenia referencji (dla integralności i narzędzi)
+-- ============================================================================
+
+-- Nauczyciele -> Przedmioty
+ALTER TABLE nauczyciele ADD (SCOPE FOR (ref_przedmiot) IS przedmioty);
+
+-- Uczniowie -> Grupy
+ALTER TABLE uczniowie ADD (SCOPE FOR (ref_grupa) IS grupy);
+
+-- Lekcje -> Przedmioty, Nauczyciele, Sale, Uczniowie, Grupy
+ALTER TABLE lekcje ADD (SCOPE FOR (ref_przedmiot) IS przedmioty);
+ALTER TABLE lekcje ADD (SCOPE FOR (ref_nauczyciel) IS nauczyciele);
+ALTER TABLE lekcje ADD (SCOPE FOR (ref_sala) IS sale);
+ALTER TABLE lekcje ADD (SCOPE FOR (ref_uczen) IS uczniowie);
+ALTER TABLE lekcje ADD (SCOPE FOR (ref_grupa) IS grupy);
+
+-- Oceny -> Uczniowie, Nauczyciele, Przedmioty
+ALTER TABLE oceny ADD (SCOPE FOR (ref_uczen) IS uczniowie);
+ALTER TABLE oceny ADD (SCOPE FOR (ref_nauczyciel) IS nauczyciele);
+ALTER TABLE oceny ADD (SCOPE FOR (ref_przedmiot) IS przedmioty);
+
+-- ============================================================================
 -- Weryfikacja
 -- ============================================================================
 SELECT table_name FROM user_tables ORDER BY table_name;
 SELECT sequence_name FROM user_sequences ORDER BY sequence_name;
+
+-- Weryfikacja SCOPE IS constraints
+SELECT table_name, column_name, scope_table_name
+FROM user_refs
+ORDER BY table_name, column_name;
