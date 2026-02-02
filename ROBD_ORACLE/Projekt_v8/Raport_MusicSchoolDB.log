@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.1.31)  2 FEB 2026 16:41
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.1.31)  2 FEB 2026 17:15
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -659,6 +659,16 @@ Overfull \hbox (5.04817pt too wide) in paragraph at lines 511--512
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <10.95> on input line 592.
 
+Underfull \hbox (badness 10000) in paragraph at lines 596--597
+[]|\T1/lmr/m/n/10.95 Weryfikacja uczest-ni-ków: lek-cja
+ []
+
+
+Underfull \hbox (badness 1728) in paragraph at lines 596--597
+\T1/lmr/m/n/10.95 musi mie¢ ALBO ucznia ALBO
+ []
+
+
 Overfull \hbox (38.75613pt too wide) in paragraph at lines 619--619
 []            \T1/lmtt/m/n/12 'Lekcja musi miec ALBO ucznia (indywidualna) ALBO grupe (grupowa)');[] 
  []
@@ -775,11 +785,6 @@ Overfull \hbox (9.22836pt too wide) in paragraph at lines 947--948
  []
 
 
-Underfull \hbox (badness 1226) in paragraph at lines 949--950
-[]|\T1/lmr/m/n/12 2 trig-gery: XOR lek-cji, za-kres
- []
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 951--952
 []|\T1/lmr/m/n/12 Funkcja pry-watna
  []
@@ -806,7 +811,7 @@ Here is how much of TeX's memory you used:
  1141 hyphenation exceptions out of 8191
  84i,10n,104p,531b,638s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx12.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr10.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr12.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmr17.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmtt12.pfb><C:/Users/MattyMroz/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msam10.pfb>
-Output written on Raport_MusicSchoolDB.pdf (23 pages, 325487 bytes).
+Output written on Raport_MusicSchoolDB.pdf (23 pages, 325281 bytes).
 PDF statistics:
  479 PDF objects out of 1000 (max. 8388607)
  114 named destinations out of 1000 (max. 500000)

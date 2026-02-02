@@ -36,7 +36,7 @@ BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE seq_oceny'; EXCEPTION WHEN OTHERS THEN NU
 /
 
 -- ============================================================================
--- 1. PRZEDMIOTY - słownik przedmiotów
+-- 1. PRZEDMIOTY
 -- ============================================================================
 CREATE TABLE przedmioty OF t_przedmiot (
     id PRIMARY KEY,
@@ -47,7 +47,7 @@ CREATE TABLE przedmioty OF t_przedmiot (
 /
 
 -- ============================================================================
--- 2. GRUPY - klasy
+-- 2. GRUPY
 -- ============================================================================
 CREATE TABLE grupy OF t_grupa (
     id PRIMARY KEY,

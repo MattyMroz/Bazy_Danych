@@ -14,7 +14,7 @@ BEGIN
     -- XOR: dokładnie jedno musi być wypełnione
     IF (:NEW.ref_uczen IS NULL AND :NEW.ref_grupa IS NULL) OR
        (:NEW.ref_uczen IS NOT NULL AND :NEW.ref_grupa IS NOT NULL) THEN
-        RAISE_APPLICATION_ERROR(-20001, 
+        RAISE_APPLICATION_ERROR(-20001,
             'Lekcja musi mieć ALBO ucznia (indywidualna) ALBO grupę (grupowa)');
     END IF;
 END;
@@ -29,7 +29,7 @@ BEFORE INSERT OR UPDATE ON oceny
 FOR EACH ROW
 BEGIN
     IF :NEW.wartosc < 1 OR :NEW.wartosc > 6 THEN
-        RAISE_APPLICATION_ERROR(-20002, 
+        RAISE_APPLICATION_ERROR(-20002,
             'Ocena musi być w zakresie 1-6. Podano: ' || :NEW.wartosc);
     END IF;
 END;

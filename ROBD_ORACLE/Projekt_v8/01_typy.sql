@@ -61,14 +61,14 @@ CREATE OR REPLACE TYPE t_grupa AS OBJECT (
 /
 
 -- ============================================================================
--- 4. T_NAUCZYCIEL - nauczyciel (uczy JEDNEGO przedmiotu - REF!)
+-- 4. T_NAUCZYCIEL - nauczyciel (uczy JEDNEGO przedmiotu - REF)
 -- ============================================================================
 CREATE OR REPLACE TYPE t_nauczyciel AS OBJECT (
     id              NUMBER,
     imie            VARCHAR2(50),
     nazwisko        VARCHAR2(50),
     data_zatr       DATE,
-    ref_przedmiot   REF t_przedmiot,    -- REF do przedmiotu który uczy!
+    ref_przedmiot   REF t_przedmiot,    -- REF do przedmiotu który uczy
 
     MEMBER FUNCTION pelne_nazwisko RETURN VARCHAR2,
     MEMBER FUNCTION staz_lat RETURN NUMBER
@@ -109,6 +109,7 @@ CREATE OR REPLACE TYPE BODY t_sala AS
         RETURN CASE WHEN SELF.typ = 'grupowa' THEN 'T' ELSE 'N' END;
     END;
 
+    -- Zwraca listę wyposażenia jako ciąg znaków rozdzielony przecinkami
     MEMBER FUNCTION lista_wyposazenia RETURN VARCHAR2 IS
         v_lista VARCHAR2(500) := '';
     BEGIN
@@ -134,7 +135,7 @@ CREATE OR REPLACE TYPE t_uczen AS OBJECT (
     nazwisko        VARCHAR2(50),
     data_ur         DATE,
     instrument      VARCHAR2(50),
-    ref_grupa       REF t_grupa,        -- REF do grupy!
+    ref_grupa       REF t_grupa,        -- REF do grupy
 
     MEMBER FUNCTION pelne_nazwisko RETURN VARCHAR2,
     MEMBER FUNCTION wiek RETURN NUMBER

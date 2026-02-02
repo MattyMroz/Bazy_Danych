@@ -64,7 +64,7 @@ Głównym celem projektu jest stworzenie kompleksowego systemu informatycznego u
 \begin{itemize}
     \item \textbf{Zarządzanie danymi uczniów} -- rejestracja nowych uczniów, przechowywanie danych osobowych, automatyczne obliczanie wieku, przypisanie do grupy (klasy) przez referencję REF
     
-    \item \textbf{Zarządzanie danymi nauczycieli} -- ewidencja kadry pedagogicznej, każdy nauczyciel uczy jednego przedmiotu (referencja REF do przedmiotu)
+    \item \textbf{Zarządzanie danymi nauczycieli} -- ewidencja kadry pedagogicznej, każdy nauczyciel uczy jednego przedmiotu
     
     \item \textbf{Planowanie lekcji} -- tworzenie harmonogramu zajęć indywidualnych (1 uczeń) i grupowych (cała klasa) z walidacją konfliktów terminów oraz heurystyką sugestii wolnego terminu
     
@@ -72,7 +72,7 @@ Głównym celem projektu jest stworzenie kompleksowego systemu informatycznego u
     
     \item \textbf{Ocenianie postępu uczniów} -- wystawianie ocen cząstkowych i semestralnych z walidacją uprawnień nauczyciela
     
-    \item \textbf{Kontrola reguł biznesowych} -- automatyczna walidacja XOR lekcji (albo uczeń albo grupa), zakresu ocen, konfliktów czasowych, kompetencji nauczycieli
+    \item \textbf{Kontrola reguł biznesowych} -- automatyczna walidacja uczestników lekcji (albo uczeń albo grupa), zakresu ocen, konfliktów czasowych, kompetencji nauczycieli
     
     \item \textbf{Generowanie raportów} -- plan dnia, plan ucznia, plan nauczyciela, raport grup, statystyki szkoły
 \end{itemize}
@@ -96,7 +96,7 @@ W projekcie przyjęto następujące ograniczenia biznesowe:
     
     \item \textbf{Jeden instrument na ucznia:} każdy uczeń uczy się jednego instrumentu głównego
     
-    \item \textbf{Jeden przedmiot na nauczyciela:} każdy nauczyciel uczy jednego przedmiotu (REF)
+    \item \textbf{Jeden przedmiot na nauczyciela:} każdy nauczyciel uczy jednego przedmiotu
     
     \item \textbf{XOR lekcji:} lekcja jest ALBO indywidualna (1 uczeń) ALBO grupowa (klasa) -- nigdy obie opcje jednocześnie
     
@@ -104,7 +104,7 @@ W projekcie przyjęto następujące ograniczenia biznesowe:
     
     \item \textbf{Skala ocen:} 1--6 (polska skala szkolna)
     
-    \item \textbf{Typy sal:} indywidualna (do 5 osób) lub grupowa (do 25 osób)
+    \item \textbf{Typy sal:} indywidualna lub grupowa
     
     \item \textbf{Typy przedmiotów:} indywidualny (instrument) lub grupowy (kształcenie słuchu, rytmika)
     
@@ -143,7 +143,7 @@ t\_grupa & -- & Klasa uczniów (symbol, poziom I-VI) \\
 t\_nauczyciel & 2 & Nauczyciel z REF do przedmiotu \\
 t\_sala & 2 & Sala lekcyjna z VARRAY wyposażenia \\
 t\_uczen & 2 & Uczeń z REF do grupy \\
-t\_lekcja & 2 & Lekcja z XOR: REF do ucznia lub grupy \\
+t\_lekcja & 2 & Lekcja z wyborem: REF do ucznia lub grupy \\
 t\_ocena & 1 & Ocena postępu ucznia \\
 \hline
 \multicolumn{2}{|r|}{\textbf{Razem:}} & \textbf{8 typów, 10 metod} \\
@@ -250,7 +250,7 @@ Reprezentuje ucznia szkoły muzycznej z referencją do grupy.
 
 \subsection{t\_lekcja}
 
-Reprezentuje pojedynczą lekcję muzyki z mechanizmem XOR (albo uczeń albo grupa).
+Reprezentuje pojedynczą lekcję muzyki z wyborem uczestnika (albo uczeń albo grupa).
 
 \textbf{Atrybuty:}
 \begin{itemize}[nosep]
@@ -258,8 +258,8 @@ Reprezentuje pojedynczą lekcję muzyki z mechanizmem XOR (albo uczeń albo grup
     \item ref\_przedmiot (REF t\_przedmiot) -- referencja do przedmiotu
     \item ref\_nauczyciel (REF t\_nauczyciel) -- referencja do nauczyciela
     \item ref\_sala (REF t\_sala) -- referencja do sali
-    \item ref\_uczen (REF t\_uczen) -- referencja do ucznia (XOR: dla lekcji indywidualnej)
-    \item ref\_grupa (REF t\_grupa) -- referencja do grupy (XOR: dla lekcji grupowej)
+    \item ref\_uczen (REF t\_uczen) -- referencja do ucznia (lekcja indywidualna)
+    \item ref\_grupa (REF t\_grupa) -- referencja do grupy (lekcja grupowa)
     \item data\_lekcji (DATE) -- data lekcji
     \item godz\_rozp (NUMBER) -- godzina rozpoczęcia (14, 15, 16... -- pełne godziny)
     \item czas\_min (NUMBER) -- czas trwania w minutach (stałe 45)
@@ -271,7 +271,7 @@ Reprezentuje pojedynczą lekcję muzyki z mechanizmem XOR (albo uczeń albo grup
     \item czy\_indywidualna() RETURN VARCHAR2 -- zwraca 'T' jeśli ref\_uczen IS NOT NULL, inaczej 'N'
 \end{itemize}
 
-\textbf{Reguła XOR:} Lekcja musi mieć wypełnione ALBO ref\_uczen (lekcja indywidualna) ALBO ref\_grupa (lekcja grupowa), nigdy oba jednocześnie i nigdy żadne. Walidowane przez trigger \texttt{trg\_lekcja\_xor}.
+\textbf{Reguła przypisania:} Lekcja musi mieć wypełnione ALBO ref\_uczen (lekcja indywidualna) ALBO ref\_grupa (lekcja grupowa), nigdy oba jednocześnie i nigdy żadne. Walidowane przez trigger \texttt{trg\_lekcja\_xor}.
 
 \subsection{t\_ocena}
 
@@ -305,7 +305,7 @@ Utworzono 7 tabel obiektowych przechowujących dane.
 \centering
 \begin{tabular}{|l|l|l|}
 \hline
-\textbf{Tabela} & \textbf{Typ bazowy} & \textbf{Referencje (REF) / Kolekcje} \\
+\textbf{Tabela} & \textbf{Typ bazowy} & \textbf{Referencje / Kolekcje} \\
 \hline
 przedmioty & t\_przedmiot & -- \\
 grupy & t\_grupa & -- \\
@@ -313,7 +313,7 @@ nauczyciele & t\_nauczyciel & ref\_przedmiot \\
 sale & t\_sala & zawiera VARRAY (wyposazenie) \\
 uczniowie & t\_uczen & ref\_grupa \\
 lekcje & t\_lekcja & ref\_przedmiot, ref\_nauczyciel, ref\_sala, \\
-       &           & ref\_uczen (XOR), ref\_grupa (XOR) \\
+       &           & ref\_uczen (indyw.), ref\_grupa (grup.) \\
 oceny & t\_ocena & ref\_uczen, ref\_nauczyciel, ref\_przedmiot \\
 \hline
 \end{tabular}
@@ -378,7 +378,7 @@ Dane uczniów szkoły muzycznej z referencją do grupy.
 
 \subsection{lekcje}
 
-Zaplanowane lekcje muzyki z mechanizmem XOR.
+Zaplanowane lekcje muzyki z wyborem typu uczestnictwa.
 
 \begin{itemize}[nosep]
     \item Klucz główny: id
@@ -386,8 +386,8 @@ Zaplanowane lekcje muzyki z mechanizmem XOR.
     \item CHECK: godz\_rozp BETWEEN 14 AND 19
     \item CHECK: czas\_min = 45
     \item Referencje: ref\_przedmiot, ref\_nauczyciel, ref\_sala
-    \item Referencje XOR: ref\_uczen (dla indywidualnych), ref\_grupa (dla grupowych)
-    \item Trigger: trg\_lekcja\_xor wymusza regułę XOR
+    \item Relacja uczestników: ref\_uczen (dla indywidualnych), ref\_grupa (dla grupowych)
+    \item Trigger: trg\_lekcja\_xor wymusza poprawność danych
 \end{itemize}
 
 \subsection{oceny}
@@ -593,7 +593,7 @@ Zdefiniowano 2 wyzwalacze realizujące krytyczne reguły biznesowe. Walidacja ko
 \hline
 \textbf{Trigger} & \textbf{Typ} & \textbf{Działanie} \\
 \hline
-trg\_lekcja\_xor & BEFORE INSERT/UPDATE & Wymuszenie XOR: lekcja musi mieć ALBO ucznia ALBO grupę (nigdy oba, nigdy żadne) \\
+trg\_lekcja\_xor & BEFORE INSERT/UPDATE & Weryfikacja uczestników: lekcja musi mieć ALBO ucznia ALBO grupę (nigdy oba, nigdy żadne) \\
 \hline
 trg\_ocena\_zakres & BEFORE INSERT/UPDATE & Walidacja zakresu ocen 1-6 z przyjaznym komunikatem błędu \\
 \hline
@@ -603,7 +603,7 @@ trg\_ocena\_zakres & BEFORE INSERT/UPDATE & Walidacja zakresu ocen 1-6 z przyjaz
 
 \subsection{trg\_lekcja\_xor}
 
-Trigger wymuszający regułę XOR dla lekcji:
+Trigger wymuszający poprawność przypisania uczestników dla lekcji:
 
 \begin{verbatim}
 CREATE OR REPLACE TRIGGER trg_lekcja_xor
@@ -651,7 +651,7 @@ W projekcie zastosowano mechanizmy obsługi wyjątków z własnymi kodami błęd
 \hline
 \textbf{Kod} & \textbf{Źródło} & \textbf{Znaczenie} \\
 \hline
--20001 & trg\_lekcja\_xor & Naruszenie XOR (lekcja musi mieć ucznia LUB grupę) \\
+-20001 & trg\_lekcja\_xor & Nieprawidłowe przypisanie uczestników (lekcja musi mieć ucznia LUB grupę) \\
 \hline
 -20002 & trg\_ocena\_zakres & Ocena poza zakresem 1-6 \\
 \hline
@@ -834,7 +834,7 @@ Dyrekcja generuje raporty podsumowujące:
 Demonstracja walidacji i obsługi błędów:
 
 \begin{itemize}[nosep]
-    \item \textbf{Trigger XOR:} Lekcja bez ucznia i bez grupy → błąd -20001
+    \item \textbf{Logika przypisania:} Lekcja bez ucznia i bez grupy → błąd -20001
     \item \textbf{Trigger ocen:} Ocena = 7 → błąd -20002
     \item \textbf{Typ sali:} Lekcja grupowa w sali indywidualnej → błąd -20031
     \item \textbf{Instrument:} Uczeń z Fletem na lekcji Fortepianu → błąd -20032
@@ -900,7 +900,7 @@ Pokazanie działania metod zdefiniowanych w typach:
 01\_typy.sql & Definicje 8 typów obiektowych z 10 metodami, VARRAY \\
 02\_tabele.sql & 7 tabel obiektowych, 7 sekwencji \\
 03\_pakiety.sql & 5 pakietów PL/SQL z 25 podprogramami publicznymi \\
-04\_triggery.sql & 2 wyzwalacze walidacyjne (XOR, zakres ocen) \\
+04\_triggery.sql & 2 wyzwalacze walidacyjne (typ lekcji, zakres ocen) \\
 05\_dane.sql & Dane testowe (5 przedm., 3 grupy, 5 naucz., 4 sale, 9 uczn.) \\
 06\_testy.sql & Scenariusze testowe 1-11 (dokumentacja API + testy) \\
 07\_testy\_rozszerzone.sql & Scenariusze testowe 12-23 (przypadki brzegowe) \\
@@ -946,7 +946,7 @@ Kursory & \checkmark & Jawny (OPEN/FETCH/CLOSE) w lista\_uczniow\_grupy(), nieja
 \hline
 Obsługa błędów & \checkmark & RAISE\_APPLICATION\_ERROR z 14 kodami błędów \\
 \hline
-Wyzwalacze & \checkmark & 2 triggery: XOR lekcji, zakres ocen \\
+Wyzwalacze & \checkmark & 2 triggery: relacja uczestników, zakres ocen \\
 \hline
 Walidacja konfliktów & \checkmark & Funkcja prywatna sprawdz\_kolizje() \\
 \hline
