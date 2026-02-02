@@ -1,292 +1,967 @@
 -- ============================================================================
--- SZKOŁA MUZYCZNA I STOPNIA - SCENARIUSZE DEMONSTRACYJNE
+-- SZKOŁA MUZYCZNA I STOPNIA - SCENARIUSZE TESTOWE
 -- Autorzy: Igor Typiński (251237), Mateusz Mróz (251190)
 -- ============================================================================
--- Jednolinijkowe wywołania (jak live coding na prezentacji)
--- UWAGA: Scenariusze 3-5 dodają dane - przed ponownym uruchomieniem
---        należy wykonać skrypty 01-05 od nowa lub usunąć dane ręcznie!
+-- UWAGA: Ten plik należy uruchomić PO wykonaniu plików 01-05 (typy, tabele, 
+--        pakiety, triggery, dane testowe). Scenariusze zakładają, że baza
+--        zawiera już dane testowe (przedmioty 1-5, grupy 1-3, nauczyciele 1-5,
+--        sale 1-4, uczniowie 1-9, lekcje i oceny).
 -- ============================================================================
 
 SET SERVEROUTPUT ON;
 
--- ============================================================================
--- CZYSZCZENIE DANYCH SCENARIUSZY (opcjonalne - odkomentuj przy ponownym uruchomieniu)
--- ============================================================================
--- DELETE FROM lekcje WHERE data_lekcji = DATE '2025-06-09';
--- DELETE FROM oceny WHERE DEREF(ref_uczen).id IN (SELECT id FROM uczniowie WHERE imie = 'Nowy');
--- DELETE FROM uczniowie WHERE imie = 'Nowy' AND nazwisko = 'Uczeń';
--- DELETE FROM nauczyciele WHERE imie = 'Zofia' AND nazwisko = 'Flecista';
--- DELETE FROM przedmioty WHERE nazwa = 'Flet';
--- COMMIT;
+-- ############################################################################
+-- CZĘŚĆ A: DOKUMENTACJA API - OPIS WSZYSTKICH METOD W PAKIETACH
+-- ############################################################################
 
 -- ============================================================================
--- SCENARIUSZ 1: Listy (słowniki)
+-- PKG_SLOWNIKI - Zarządzanie słownikami (przedmioty, grupy, sale)
 -- ============================================================================
+/*
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PROCEDURA: pkg_slowniki.dodaj_przedmiot(p_nazwa, p_typ)                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ OPIS:     Dodaje nowy przedmiot do słownika przedmiotów                     │
+│ PARAMETRY:                                                                  │
+│   p_nazwa VARCHAR2  - nazwa przedmiotu (np. 'Flet', 'Perkusja')            │
+│   p_typ   VARCHAR2  - typ zajęć: 'indywidualny' lub 'grupowy'              │
+│ PRZYKŁAD: EXEC pkg_slowniki.dodaj_przedmiot('Flet', 'indywidualny');       │
+│ UWAGA:    Czas trwania lekcji (45 min) ustawiany automatycznie             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PROCEDURA: pkg_slowniki.dodaj_grupe(p_symbol, p_poziom)                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ OPIS:     Dodaje nową grupę (klasę) uczniów                                 │
+│ PARAMETRY:                                                                  │
+│   p_symbol VARCHAR2 - symbol grupy (np. '4A', '5B')                         │
+│   p_poziom NUMBER   - poziom klasy 1-6 (klasa I-VI szkoły muzycznej)       │
+│ PRZYKŁAD: EXEC pkg_slowniki.dodaj_grupe('4A', 4);                          │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PROCEDURA: pkg_slowniki.dodaj_sale(p_numer, p_typ, p_pojemnosc, p_wyposaż) │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ OPIS:     Dodaje nową salę lekcyjną z wyposażeniem (VARRAY)                │
+│ PARAMETRY:                                                                  │
+│   p_numer      VARCHAR2      - numer sali (np. '105', 'A12')               │
+│   p_typ        VARCHAR2      - 'indywidualna' lub 'grupowa'                │
+│   p_pojemnosc  NUMBER        - max liczba osób w sali                       │
+│   p_wyposazenie t_wyposazenie - VARRAY wyposażenia (max 10 elementów)      │
+│ PRZYKŁAD:                                                                   │
+│   EXEC pkg_slowniki.dodaj_sale('105', 'indywidualna', 4,                   │
+│        t_wyposazenie('Flet poprzeczny', 'Pulpit', 'Metronom'));            │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ FUNKCJA: pkg_slowniki.get_ref_przedmiot(p_id) RETURN REF t_przedmiot       │
+│ FUNKCJA: pkg_slowniki.get_ref_grupa(p_id)     RETURN REF t_grupa           │
+│ FUNKCJA: pkg_slowniki.get_ref_sala(p_id)      RETURN REF t_sala            │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ OPIS:     Zwraca referencję REF do obiektu o podanym ID                     │
+│ PARAMETRY: p_id NUMBER - identyfikator obiektu                              │
+│ WYJĄTEK:  -20010/-20011/-20012 gdy obiekt nie istnieje                     │
+│ UŻYCIE:   Wewnętrzne - używane przez inne pakiety do tworzenia powiązań   │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PROCEDURA: pkg_slowniki.lista_przedmiotow                                   │
+│ PROCEDURA: pkg_slowniki.lista_grup                                          │
+│ PROCEDURA: pkg_slowniki.lista_sal                                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ OPIS:     Wyświetla listę wszystkich obiektów danego typu                   │
+│ PRZYKŁAD: EXEC pkg_slowniki.lista_sal;                                     │
+│ WYJŚCIE:  Tekst na DBMS_OUTPUT (SET SERVEROUTPUT ON)                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+*/
+
+-- ============================================================================
+-- PKG_OSOBY - Zarządzanie nauczycielami i uczniami
+-- ============================================================================
+/*
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PROCEDURA: pkg_osoby.dodaj_nauczyciela(p_imie, p_nazwisko, p_id_przedmiotu)│
+├─────────────────────────────────────────────────────────────────────────────┤
+│ OPIS:     Dodaje nowego nauczyciela przypisanego do JEDNEGO przedmiotu     │
+│ PARAMETRY:                                                                  │
+│   p_imie          VARCHAR2 - imię nauczyciela                               │
+│   p_nazwisko      VARCHAR2 - nazwisko nauczyciela                           │
+│   p_id_przedmiotu NUMBER   - ID przedmiotu który nauczyciel będzie uczył   │
+│ PRZYKŁAD: EXEC pkg_osoby.dodaj_nauczyciela('Tomasz', 'Flecista', 6);       │
+│ UWAGA:    Data zatrudnienia ustawiana automatycznie na SYSDATE             │
+│           Nauczyciel może uczyć tylko JEDNEGO przedmiotu (REF)             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PROCEDURA: pkg_osoby.dodaj_ucznia(p_imie, p_nazwisko, p_data_ur,           │
+│                                   p_instrument, p_id_grupy)                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ OPIS:     Dodaje nowego ucznia przypisanego do grupy                        │
+│ PARAMETRY:                                                                  │
+│   p_imie       VARCHAR2 - imię ucznia                                       │
+│   p_nazwisko   VARCHAR2 - nazwisko ucznia                                   │
+│   p_data_ur    DATE     - data urodzenia (format: DATE 'RRRR-MM-DD')       │
+│   p_instrument VARCHAR2 - instrument główny (np. 'Fortepian', 'Flet')      │
+│   p_id_grupy   NUMBER   - ID grupy do której przypisany jest uczeń         │
+│ PRZYKŁAD:                                                                   │
+│   EXEC pkg_osoby.dodaj_ucznia('Jan', 'Kowalski', DATE '2014-05-10',        │
+│                               'Flet', 4);                                   │
+│ UWAGA:    Instrument musi odpowiadać nazwie przedmiotu indywidualnego      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ FUNKCJA: pkg_osoby.get_ref_nauczyciel(p_id) RETURN REF t_nauczyciel        │
+│ FUNKCJA: pkg_osoby.get_ref_uczen(p_id)      RETURN REF t_uczen             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ OPIS:     Zwraca referencję REF do osoby o podanym ID                       │
+│ WYJĄTEK:  -20013/-20014 gdy osoba nie istnieje                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PROCEDURA: pkg_osoby.lista_nauczycieli                                      │
+│ PROCEDURA: pkg_osoby.lista_uczniow                                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ OPIS:     Wyświetla listę wszystkich nauczycieli/uczniów                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PROCEDURA: pkg_osoby.lista_uczniow_grupy(p_id_grupy)                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ OPIS:     Wyświetla uczniów z konkretnej grupy (używa KURSORA JAWNEGO)     │
+│ PARAMETRY: p_id_grupy NUMBER - ID grupy                                     │
+│ PRZYKŁAD: EXEC pkg_osoby.lista_uczniow_grupy(4);                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+*/
+
+-- ============================================================================
+-- PKG_LEKCJE - Zarządzanie lekcjami (z walidacją konfliktów)
+-- ============================================================================
+/*
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PROCEDURA: pkg_lekcje.dodaj_lekcje_indywidualna(                            │
+│              p_id_przedmiotu, p_id_nauczyciela, p_id_sali,                  │
+│              p_id_ucznia, p_data, p_godz)                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ OPIS:     Dodaje lekcję indywidualną (1 nauczyciel + 1 uczeń)              │
+│ PARAMETRY:                                                                  │
+│   p_id_przedmiotu  NUMBER - ID przedmiotu (musi pasować do nauczyciela!)   │
+│   p_id_nauczyciela NUMBER - ID nauczyciela (musi uczyć tego przedmiotu!)   │
+│   p_id_sali        NUMBER - ID sali                                         │
+│   p_id_ucznia      NUMBER - ID ucznia (musi grać na tym instrumencie!)     │
+│   p_data           DATE   - data lekcji (format: DATE 'RRRR-MM-DD')        │
+│   p_godz           NUMBER - godzina rozpoczęcia (14-19, pełna godzina)     │
+│ WALIDACJE:                                                                  │
+│   • Nauczyciel musi uczyć podanego przedmiotu                              │
+│   • Instrument ucznia musi odpowiadać przedmiotowi                          │
+│   • Sala/nauczyciel/uczeń nie mogą być zajęci w tym terminie               │
+│ PRZYKŁAD:                                                                   │
+│   EXEC pkg_lekcje.dodaj_lekcje_indywidualna(6, 6, 5, 10,                   │
+│        DATE '2025-06-09', 14);                                              │
+│ BŁĘDY:                                                                      │
+│   -20020: Konflikt terminu (+ sugestia alternatywnego terminu!)            │
+│   -20030: Nauczyciel nie uczy tego przedmiotu                               │
+│   -20032: Instrument ucznia nie pasuje do przedmiotu                        │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PROCEDURA: pkg_lekcje.dodaj_lekcje_grupowa(                                 │
+│              p_id_przedmiotu, p_id_nauczyciela, p_id_sali,                  │
+│              p_id_grupy, p_data, p_godz)                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ OPIS:     Dodaje lekcję grupową (1 nauczyciel + cała grupa)                │
+│ PARAMETRY:                                                                  │
+│   p_id_przedmiotu  NUMBER - ID przedmiotu grupowego (KS, Rytmika)          │
+│   p_id_nauczyciela NUMBER - ID nauczyciela                                  │
+│   p_id_sali        NUMBER - ID sali (musi być typu 'grupowa'!)             │
+│   p_id_grupy       NUMBER - ID grupy uczniów                                │
+│   p_data           DATE   - data lekcji                                     │
+│   p_godz           NUMBER - godzina rozpoczęcia (14-19)                     │
+│ WALIDACJE:                                                                  │
+│   • Sala musi być typu 'grupowa'                                            │
+│   • Pojemność sali >= liczba uczniów w grupie                               │
+│   • Sala/nauczyciel/grupa nie mogą być zajęci w tym terminie               │
+│ PRZYKŁAD:                                                                   │
+│   EXEC pkg_lekcje.dodaj_lekcje_grupowa(4, 4, 3, 4,                         │
+│        DATE '2025-06-10', 14);                                              │
+│ BŁĘDY:                                                                      │
+│   -20021: Konflikt terminu (+ sugestia!)                                    │
+│   -20031: Lekcja grupowa w sali indywidualnej                               │
+│   -20035: Przepełnienie sali                                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PROCEDURA: pkg_lekcje.plan_ucznia(p_id_ucznia)                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ OPIS:     Wyświetla plan lekcji ucznia (indywidualne + grupowe)            │
+│ PARAMETRY: p_id_ucznia NUMBER - ID ucznia                                   │
+│ PRZYKŁAD: EXEC pkg_lekcje.plan_ucznia(10);                                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PROCEDURA: pkg_lekcje.plan_nauczyciela(p_id_nauczyciela)                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ OPIS:     Wyświetla plan lekcji nauczyciela                                 │
+│ PARAMETRY: p_id_nauczyciela NUMBER - ID nauczyciela                         │
+│ PRZYKŁAD: EXEC pkg_lekcje.plan_nauczyciela(6);                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PROCEDURA: pkg_lekcje.plan_dnia(p_data)                                     │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ OPIS:     Wyświetla wszystkie lekcje w danym dniu                           │
+│ PARAMETRY: p_data DATE - data do wyświetlenia                               │
+│ PRZYKŁAD: EXEC pkg_lekcje.plan_dnia(DATE '2025-06-09');                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+*/
+
+-- ============================================================================
+-- PKG_OCENY - Zarządzanie ocenami
+-- ============================================================================
+/*
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PROCEDURA: pkg_oceny.wystaw_ocene(p_id_ucznia, p_id_nauczyciela,           │
+│                                   p_id_przedmiotu, p_wartosc)               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ OPIS:     Wystawia ocenę cząstkową uczniowi                                 │
+│ PARAMETRY:                                                                  │
+│   p_id_ucznia      NUMBER - ID ucznia                                       │
+│   p_id_nauczyciela NUMBER - ID nauczyciela (musi uczyć tego przedmiotu!)   │
+│   p_id_przedmiotu  NUMBER - ID przedmiotu                                   │
+│   p_wartosc        NUMBER - ocena 1-6                                       │
+│ PRZYKŁAD: EXEC pkg_oceny.wystaw_ocene(10, 6, 6, 5);                        │
+│ BŁĄD: -20033 gdy nauczyciel nie uczy tego przedmiotu                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PROCEDURA: pkg_oceny.wystaw_ocene_semestralna(p_id_ucznia, p_id_naucz,     │
+│                                               p_id_przedmiotu, p_wartosc)   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ OPIS:     Wystawia ocenę semestralną (końcową) uczniowi                     │
+│ PARAMETRY: Identyczne jak wystaw_ocene                                      │
+│ RÓŻNICA:  Ocena oznaczona jako semestralna (semestralna='T')               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PROCEDURA: pkg_oceny.oceny_ucznia(p_id_ucznia)                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ OPIS:     Wyświetla wszystkie oceny ucznia                                  │
+│ PARAMETRY: p_id_ucznia NUMBER - ID ucznia                                   │
+│ PRZYKŁAD: EXEC pkg_oceny.oceny_ucznia(10);                                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ FUNKCJA: pkg_oceny.srednia_ucznia(p_id_ucznia, p_id_przedmiotu)            │
+│          RETURN NUMBER                                                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ OPIS:     Oblicza średnią ocen cząstkowych ucznia z przedmiotu             │
+│ ZWRACA:   Średnia zaokrąglona do 2 miejsc, 0 gdy brak ocen                 │
+│ PRZYKŁAD:                                                                   │
+│   SELECT pkg_oceny.srednia_ucznia(10, 6) AS srednia FROM DUAL;             │
+└─────────────────────────────────────────────────────────────────────────────┘
+*/
+
+-- ============================================================================
+-- PKG_RAPORTY - Raporty i statystyki
+-- ============================================================================
+/*
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PROCEDURA: pkg_raporty.raport_grup                                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ OPIS:     Wyświetla liczbę uczniów w każdej grupie                          │
+│ PRZYKŁAD: EXEC pkg_raporty.raport_grup;                                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PROCEDURA: pkg_raporty.statystyki                                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ OPIS:     Wyświetla ogólne statystyki szkoły (liczba uczniów, nauczycieli, │
+│           grup, sal, lekcji, ocen)                                          │
+│ PRZYKŁAD: EXEC pkg_raporty.statystyki;                                     │
+└─────────────────────────────────────────────────────────────────────────────┘
+*/
+
+-- ############################################################################
+-- CZĘŚĆ B: SCENARIUSZE TESTOWE
+-- ############################################################################
+
+-- ============================================================================
+-- SCENARIUSZ 1: ADMINISTRATOR ROZSZERZA OFERTĘ SZKOŁY
+-- ============================================================================
+-- Kontekst: Szkoła muzyczna postanowiła rozszerzyć ofertę o nowy instrument
+--           (Flet). Administrator musi dodać przedmiot, salę i nauczyciela.
+-- ============================================================================
+
+PROMPT ============================================================
+PROMPT SCENARIUSZ 1: ADMINISTRATOR ROZSZERZA OFERTE SZKOLY
+PROMPT ============================================================
+
+-- 1.1 Sprawdzenie stanu początkowego
+PROMPT
+PROMPT [1.1] Stan poczatkowy - lista przedmiotow:
 EXEC pkg_slowniki.lista_przedmiotow;
+
+PROMPT
+PROMPT [1.2] Stan poczatkowy - lista sal:
 EXEC pkg_slowniki.lista_sal;
+
+PROMPT
+PROMPT [1.3] Stan poczatkowy - lista nauczycieli:
+EXEC pkg_osoby.lista_nauczycieli;
+
+-- 1.2 Administrator dodaje nowy przedmiot: Flet (indywidualny)
+PROMPT
+PROMPT [1.4] Administrator dodaje nowy przedmiot: Flet
+EXEC pkg_slowniki.dodaj_przedmiot('Flet', 'indywidualny');
+
+-- 1.3 Administrator dodaje nową salę z wyposażeniem (VARRAY)
+PROMPT
+PROMPT [1.5] Administrator dodaje nowa sale 105 z wyposazeniem (VARRAY):
+EXEC pkg_slowniki.dodaj_sale('105', 'indywidualna', 4, t_wyposazenie('Flet poprzeczny', 'Flet prosty', 'Pulpit x2', 'Metronom', 'Lustro'));
+
+-- 1.4 Administrator dodaje nauczyciela Fletu (REF do przedmiotu ID=6)
+PROMPT
+PROMPT [1.6] Administrator dodaje nauczyciela Fletu (Tomasz Flecista):
+-- Przedmiot Flet ma ID=6 (bo poprzednie 1-5 były w danych testowych)
+EXEC pkg_osoby.dodaj_nauczyciela('Tomasz', 'Flecista', 6);
+
+-- 1.5 Weryfikacja zmian
+PROMPT
+PROMPT [1.7] Weryfikacja - zaktualizowana lista przedmiotow:
+EXEC pkg_slowniki.lista_przedmiotow;
+
+PROMPT
+PROMPT [1.8] Weryfikacja - zaktualizowana lista sal:
+EXEC pkg_slowniki.lista_sal;
+
+PROMPT
+PROMPT [1.9] Weryfikacja - zaktualizowana lista nauczycieli:
+EXEC pkg_osoby.lista_nauczycieli;
+
+
+-- ============================================================================
+-- SCENARIUSZ 2: SEKRETARIAT TWORZY NOWĄ GRUPĘ I ZAPISUJE UCZNIÓW
+-- ============================================================================
+-- Kontekst: Nowy rok szkolny - sekretariat tworzy klasę 4A i zapisuje do niej
+--           uczniów. Jeden uczeń gra na Flecie (nowy przedmiot), drugi na 
+--           Fortepianie (istniejący przedmiot).
+-- ============================================================================
+
+PROMPT
+PROMPT ============================================================
+PROMPT SCENARIUSZ 2: SEKRETARIAT TWORZY NOWA GRUPE I ZAPISUJE UCZNIOW
+PROMPT ============================================================
+
+-- 2.1 Sprawdzenie istniejących grup
+PROMPT
+PROMPT [2.1] Istniejace grupy przed dodaniem:
 EXEC pkg_slowniki.lista_grup;
 
--- ============================================================================
--- SCENARIUSZ 2: Listy osób
--- ============================================================================
-EXEC pkg_osoby.lista_nauczycieli;
+-- 2.2 Sekretariat dodaje nową grupę 4A (poziom 4 = klasa IV)
+PROMPT
+PROMPT [2.2] Sekretariat dodaje nowa grupe 4A (klasa IV):
+EXEC pkg_slowniki.dodaj_grupe('4A', 4);
+
+-- 2.3 Weryfikacja - grupa dodana
+PROMPT
+PROMPT [2.3] Grupy po dodaniu:
+EXEC pkg_slowniki.lista_grup;
+
+-- 2.4 Sekretariat zapisuje ucznia grającego na FLECIE do grupy 4A (ID=4)
+PROMPT
+PROMPT [2.4] Zapis ucznia Jakub Melodyjny (Flet) do grupy 4A:
+EXEC pkg_osoby.dodaj_ucznia('Jakub', 'Melodyjny', DATE '2014-07-20', 'Flet', 4);
+
+-- 2.5 Sekretariat zapisuje ucznia grającego na FORTEPIANIE do grupy 4A
+PROMPT
+PROMPT [2.5] Zapis ucznia Karolina Klawiszowa (Fortepian) do grupy 4A:
+EXEC pkg_osoby.dodaj_ucznia('Karolina', 'Klawiszowa', DATE '2014-03-15', 'Fortepian', 4);
+
+-- 2.6 Weryfikacja - lista uczniów w nowej grupie (KURSOR JAWNY)
+PROMPT
+PROMPT [2.6] Uczniowie w grupie 4A (uzycie KURSORA JAWNEGO):
+EXEC pkg_osoby.lista_uczniow_grupy(4);
+
+-- 2.7 Pełna lista wszystkich uczniów
+PROMPT
+PROMPT [2.7] Pelna lista wszystkich uczniow:
 EXEC pkg_osoby.lista_uczniow;
-EXEC pkg_osoby.lista_uczniow_w_grupie(1);  -- grupa o ID=1 (1A)
+
+-- 2.8 Raport grup po zmianach
+PROMPT
+PROMPT [2.8] Raport grup - liczba uczniow:
+EXEC pkg_raporty.raport_grup;
+
 
 -- ============================================================================
--- SCENARIUSZ 3: Dodawanie nauczyciela (NOWY!)
--- Uruchom tylko RAZ lub odkomentuj czyszczenie powyżej
+-- SCENARIUSZ 3: PLANOWANIE LEKCJI GRUPOWYCH
 -- ============================================================================
--- Dodajemy nowego nauczyciela od fletu
-EXEC pkg_slowniki.dodaj_przedmiot('Flet', 'indywidualny');
-EXEC pkg_osoby.dodaj_nauczyciela('Zofia', 'Flecista', 'Flet');
-EXEC pkg_osoby.lista_nauczycieli;
+-- Kontekst: Sekretariat planuje zajęcia grupowe z Kształcenia słuchu dla 
+--           nowej grupy 4A. Zajęcia prowadzi nauczyciel ID=4 (Piotr Lewandowski)
+--           w sali grupowej ID=3 (sala 103).
+-- ============================================================================
+
+PROMPT
+PROMPT ============================================================
+PROMPT SCENARIUSZ 3: PLANOWANIE LEKCJI GRUPOWYCH
+PROMPT ============================================================
+
+-- 3.1 Sprawdzenie planu dnia przed dodaniem lekcji
+PROMPT
+PROMPT [3.1] Plan dnia 2025-06-09 (poniedzialek) PRZED dodaniem lekcji:
+EXEC pkg_lekcje.plan_dnia(DATE '2025-06-09');
+
+-- 3.2 Dodanie lekcji grupowej - Kształcenie słuchu dla grupy 4A
+-- Przedmiot: 4 (Kształcenie słuchu), Nauczyciel: 4, Sala: 3 (grupowa), Grupa: 4
+PROMPT
+PROMPT [3.2] Dodanie lekcji grupowej - Ksztalcenie sluchu dla 4A:
+PROMPT       (Przedmiot=4, Nauczyciel=4, Sala=3, Grupa=4, Data=2025-06-09, Godz=17)
+EXEC pkg_lekcje.dodaj_lekcje_grupowa(4, 4, 3, 4, DATE '2025-06-09', 17);
+
+-- 3.3 Dodanie kolejnej lekcji grupowej - Rytmika dla grupy 4A
+-- Przedmiot: 5 (Rytmika), Nauczyciel: 5 (Wójcik), Sala: 4 (rytmika), Grupa: 4
+PROMPT
+PROMPT [3.3] Dodanie lekcji grupowej - Rytmika dla 4A:
+PROMPT       (Przedmiot=5, Nauczyciel=5, Sala=4, Grupa=4, Data=2025-06-13, Godz=14)
+EXEC pkg_lekcje.dodaj_lekcje_grupowa(5, 5, 4, 4, DATE '2025-06-13', 14);
+
+-- 3.4 Weryfikacja planu dnia
+PROMPT
+PROMPT [3.4] Plan dnia 2025-06-09 PO dodaniu lekcji:
+EXEC pkg_lekcje.plan_dnia(DATE '2025-06-09');
+
 
 -- ============================================================================
--- SCENARIUSZ 4: Dodawanie ucznia
--- Uruchom tylko RAZ lub odkomentuj czyszczenie powyżej
+-- SCENARIUSZ 4: PLANOWANIE LEKCJI INDYWIDUALNYCH
 -- ============================================================================
-EXEC pkg_osoby.dodaj_ucznia('Nowy', 'Uczeń', DATE '2016-05-15', 'Flet', '2A');
-EXEC pkg_osoby.lista_uczniow_w_grupie(2);  -- grupa o ID=2 (2A)
+-- Kontekst: Sekretariat planuje lekcje instrumentu dla nowych uczniów.
+--           Przypadek A: Wolny termin - lekcja dodana pomyślnie
+--           Przypadek B: Konflikt terminu - system sugeruje alternatywę
+-- ============================================================================
 
--- ============================================================================
--- SCENARIUSZ 5: Dodawanie lekcji (po ID!)
--- Uruchom tylko RAZ lub odkomentuj czyszczenie powyżej
--- ============================================================================
--- Lekcja indywidualna: przedmiot=1, nauczyciel=1, sala=1, uczeń=1, data, godz
-EXEC pkg_lekcje.dodaj_lekcje_indywidualna(1, 1, 1, 1, DATE '2025-06-09', 14);
-
--- Lekcja grupowa: przedmiot=4, nauczyciel=4, sala=4, grupa=1, data, godz
-EXEC pkg_lekcje.dodaj_lekcje_grupowa(4, 4, 4, 1, DATE '2025-06-09', 16);
+PROMPT
+PROMPT ============================================================
+PROMPT SCENARIUSZ 4: PLANOWANIE LEKCJI INDYWIDUALNYCH
+PROMPT ============================================================
 
 -- ============================================================================
--- SCENARIUSZ 6: Plany (po ID!)
+-- PRZYPADEK A: WOLNY TERMIN - SUKCES
 -- ============================================================================
--- Plan ucznia o ID=1 (Adam Adamski)
-EXEC pkg_lekcje.plan_ucznia(1);
 
--- Plan nauczyciela o ID=1 (Anna Kowalska)
-EXEC pkg_lekcje.plan_nauczyciela(1);
+-- 4.1 Lekcja Fletu dla Jakuba Melodyjnego (uczeń ID=10)
+-- Nauczyciel: 6 (Tomasz Flecista), Przedmiot: 6 (Flet), Sala: 5 (sala 105)
+PROMPT
+PROMPT [4.1] PRZYPADEK A: Wolny termin
+PROMPT       Dodanie lekcji Fletu dla Jakuba Melodyjnego:
+PROMPT       (Przedmiot=6, Nauczyciel=6, Sala=5, Uczen=10, Data=2025-06-09, Godz=14)
+EXEC pkg_lekcje.dodaj_lekcje_indywidualna(6, 6, 5, 10, DATE '2025-06-09', 14);
 
--- Plan sali o ID=1 (sala 101)
-EXEC pkg_lekcje.plan_sali(1);
+-- 4.2 Lekcja Fortepianu dla Karoliny Klawiszowej (uczeń ID=11)
+-- Nauczyciel: 1 (Anna Kowalska), Przedmiot: 1 (Fortepian), Sala: 1 (sala 101)
+PROMPT
+PROMPT [4.2] Dodanie lekcji Fortepianu dla Karoliny Klawiszowej:
+PROMPT       (Przedmiot=1, Nauczyciel=1, Sala=1, Uczen=11, Data=2025-06-09, Godz=16)
+EXEC pkg_lekcje.dodaj_lekcje_indywidualna(1, 1, 1, 11, DATE '2025-06-09', 16);
 
--- Plan dnia
+-- 4.3 Weryfikacja planu ucznia
+PROMPT
+PROMPT [4.3] Plan ucznia Jakub Melodyjny (ID=10):
+EXEC pkg_lekcje.plan_ucznia(10);
+
+PROMPT
+PROMPT [4.4] Plan ucznia Karolina Klawiszowa (ID=11):
+EXEC pkg_lekcje.plan_ucznia(11);
+
+-- ============================================================================
+-- PRZYPADEK B: KONFLIKT TERMINU - SYSTEM SUGERUJE ALTERNATYWĘ
+-- ============================================================================
+
+-- 4.5 Próba dodania lekcji w zajętym terminie
+-- Sala 101 jest już zajęta 2025-06-02 o 14:00 (lekcja Adama z danych testowych)
+PROMPT
+PROMPT [4.5] PRZYPADEK B: Konflikt terminu
+PROMPT       Proba dodania lekcji w ZAJETYM terminie:
+PROMPT       (Sala 101 jest juz zajeta 2025-06-02 o 14:00)
+PROMPT
+PROMPT       Oczekiwany BLAD -20020 z SUGESTIA alternatywnego terminu:
+
+-- Ta linia CELOWO spowoduje błąd - system zasugeruje wolny termin
+BEGIN
+    pkg_lekcje.dodaj_lekcje_indywidualna(1, 1, 1, 11, DATE '2025-06-02', 14);
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('BLAD (oczekiwany): ' || SQLERRM);
+END;
+/
+
+-- 4.6 Użycie sugerowanego terminu (ręczne wpisanie)
+PROMPT
+PROMPT [4.6] Wpisanie alternatywnego terminu (po przeczytaniu sugestii):
+PROMPT       Dodajemy lekcje o 17:00 (zakladamy ze to byl sugerowany termin):
+EXEC pkg_lekcje.dodaj_lekcje_indywidualna(1, 1, 1, 11, DATE '2025-06-02', 17);
+
+-- 4.7 Weryfikacja - plan dnia pokazuje nową lekcję
+PROMPT
+PROMPT [4.7] Plan dnia 2025-06-02 - weryfikacja dodanej lekcji:
 EXEC pkg_lekcje.plan_dnia(DATE '2025-06-02');
 
--- ============================================================================
--- SCENARIUSZ 7: Oceny (po ID!)
--- ============================================================================
--- Wystawianie oceny: uczeń=1, nauczyciel=1, przedmiot=1, wartość
-EXEC pkg_oceny.wystaw_ocene(1, 1, 1, 5);
-EXEC pkg_oceny.wystaw_ocene(1, 1, 1, 4);
-EXEC pkg_oceny.wystaw_ocene_semestralna(1, 1, 1, 5);
-
--- Podgląd ocen ucznia o ID=1
-EXEC pkg_oceny.oceny_ucznia(1);
-
--- Średnia ucznia o ID=1 z przedmiotu o ID=1
-SELECT pkg_oceny.srednia_ucznia(1, 1) AS srednia FROM DUAL;
-
--- Raport ocen grupy o ID=1
-EXEC pkg_oceny.raport_ocen_grupy(1);
 
 -- ============================================================================
--- SCENARIUSZ 7B: VERBOSE - wyświetl co kryje się pod ID przed zapisem!
+-- SCENARIUSZ 5: NAUCZYCIEL WYSTAWIA OCENY
 -- ============================================================================
--- wystaw_ocene_verbose pokazuje: "Uczeń[5] = Ewa Ewa"... przed zapisem
-EXEC pkg_oceny.wystaw_ocene_verbose(5, 3, 3, 4);
--- Wyświetli:
--- >>> Uczeń[5] = Ewa Ewa (lat 9, Gitara, grupa 2A)
--- >>> Nauczyciel[3] = Maria Wiśniewska (Gitara)
--- >>> Przedmiot[3] = Gitara (instrumentalny)
--- >>> Ocena: 4 (dobry)
--- ZAPISANO!
+-- Kontekst: Po lekcjach nauczyciele wystawiają oceny. Tomasz Flecista (ID=6)
+--           ocenia Jakuba z Fletu. Piotr Lewandowski (ID=4) ocenia uczniów
+--           z Kształcenia słuchu. Na koniec semestru wystawiane są oceny
+--           semestralne.
+-- ============================================================================
+
+PROMPT
+PROMPT ============================================================
+PROMPT SCENARIUSZ 5: NAUCZYCIEL WYSTAWIA OCENY
+PROMPT ============================================================
+
+-- 5.1 Nauczyciel Fletu wystawia oceny cząstkowe
+PROMPT
+PROMPT [5.1] Tomasz Flecista (ID=6) wystawia oceny Jakubowi (ID=10) z Fletu (ID=6):
+EXEC pkg_oceny.wystaw_ocene(10, 6, 6, 5);
+EXEC pkg_oceny.wystaw_ocene(10, 6, 6, 4);
+EXEC pkg_oceny.wystaw_ocene(10, 6, 6, 5);
+
+-- 5.2 Nauczyciel Fortepianu wystawia oceny
+PROMPT
+PROMPT [5.2] Anna Kowalska (ID=1) wystawia oceny Karolinie (ID=11) z Fortepianu (ID=1):
+EXEC pkg_oceny.wystaw_ocene(11, 1, 1, 6);
+EXEC pkg_oceny.wystaw_ocene(11, 1, 1, 5);
+
+-- 5.3 Nauczyciel Kształcenia słuchu wystawia oceny uczniom z grupy 4A
+PROMPT
+PROMPT [5.3] Piotr Lewandowski (ID=4) wystawia oceny z Ksztalcenia sluchu (ID=4):
+EXEC pkg_oceny.wystaw_ocene(10, 4, 4, 4);
+EXEC pkg_oceny.wystaw_ocene(11, 4, 4, 5);
+
+-- 5.4 Wystawienie ocen semestralnych
+PROMPT
+PROMPT [5.4] Wystawienie ocen SEMESTRALNYCH:
+-- Ocena semestralna z Fletu dla Jakuba
+EXEC pkg_oceny.wystaw_ocene_semestralna(10, 6, 6, 5);
+-- Ocena semestralna z Fortepianu dla Karoliny
+EXEC pkg_oceny.wystaw_ocene_semestralna(11, 1, 1, 6);
+-- Ocena semestralna z Kształcenia słuchu
+EXEC pkg_oceny.wystaw_ocene_semestralna(10, 4, 4, 4);
+EXEC pkg_oceny.wystaw_ocene_semestralna(11, 4, 4, 5);
+
+-- 5.5 WALIDACJA: Próba wystawienia oceny przez nieuprawnionego nauczyciela
+PROMPT
+PROMPT [5.5] WALIDACJA: Proba wystawienia oceny przez NIEUPRAWNIONEGO nauczyciela:
+PROMPT       (Nauczyciel Fletu probuje wystawic ocene z Fortepianu)
+PROMPT       Oczekiwany BLAD -20033:
+
+BEGIN
+    pkg_oceny.wystaw_ocene(10, 6, 1, 5);  -- Flecista (6) próbuje ocenić z Fortepianu (1)
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('BLAD (oczekiwany): ' || SQLERRM);
+END;
+/
+
 
 -- ============================================================================
--- SCENARIUSZ 8: Raporty
+-- SCENARIUSZ 6: UCZEŃ I RODZIC SPRAWDZAJĄ OCENY
 -- ============================================================================
-EXEC pkg_raporty.statystyki_ogolne;
-EXEC pkg_raporty.statystyki_lekcji;
+-- Kontekst: Uczeń (lub rodzic) loguje się do systemu i sprawdza swoje oceny,
+--           średnie z przedmiotów oraz plan lekcji.
+-- ============================================================================
+
+PROMPT
+PROMPT ============================================================
+PROMPT SCENARIUSZ 6: UCZEN I RODZIC SPRAWDZAJA OCENY
+PROMPT ============================================================
+
+-- 6.1 Jakub sprawdza swoje oceny
+PROMPT
+PROMPT [6.1] Jakub Melodyjny (ID=10) sprawdza swoje oceny:
+EXEC pkg_oceny.oceny_ucznia(10);
+
+-- 6.2 Karolina sprawdza swoje oceny
+PROMPT
+PROMPT [6.2] Karolina Klawiszowa (ID=11) sprawdza swoje oceny:
+EXEC pkg_oceny.oceny_ucznia(11);
+
+-- 6.3 Sprawdzenie średniej z przedmiotu
+PROMPT
+PROMPT [6.3] Srednia Jakuba z Fletu (bez oceny semestralnej):
+SELECT pkg_oceny.srednia_ucznia(10, 6) AS srednia_z_fletu FROM DUAL;
+
+PROMPT
+PROMPT [6.4] Srednia Karoliny z Fortepianu:
+SELECT pkg_oceny.srednia_ucznia(11, 1) AS srednia_z_fortepianu FROM DUAL;
+
+-- 6.5 Uczeń sprawdza swój plan lekcji
+PROMPT
+PROMPT [6.5] Plan lekcji Jakuba Melodyjnego:
+EXEC pkg_lekcje.plan_ucznia(10);
+
+PROMPT
+PROMPT [6.6] Plan lekcji Karoliny Klawiszowej:
+EXEC pkg_lekcje.plan_ucznia(11);
+
+
+-- ============================================================================
+-- SCENARIUSZ 7: RAPORTY DLA DYREKCJI
+-- ============================================================================
+-- Kontekst: Dyrekcja szkoły generuje raporty podsumowujące stan szkoły.
+-- ============================================================================
+
+PROMPT
+PROMPT ============================================================
+PROMPT SCENARIUSZ 7: RAPORTY DLA DYREKCJI
+PROMPT ============================================================
+
+-- 7.1 Raport grup - ile uczniów w każdej klasie
+PROMPT
+PROMPT [7.1] Raport grup - liczba uczniow w kazdej klasie:
 EXEC pkg_raporty.raport_grup;
-EXEC pkg_raporty.raport_nauczycieli;
+
+-- 7.2 Statystyki ogólne szkoły
+PROMPT
+PROMPT [7.2] Statystyki ogolne szkoly:
+EXEC pkg_raporty.statystyki;
+
+-- 7.3 Plan nauczyciela (np. dla kontroli obciążenia)
+PROMPT
+PROMPT [7.3] Plan nauczyciela Tomasz Flecista (ID=6):
+EXEC pkg_lekcje.plan_nauczyciela(6);
+
+PROMPT
+PROMPT [7.4] Plan nauczyciela Piotr Lewandowski (ID=4) - Ksztalcenie sluchu:
+EXEC pkg_lekcje.plan_nauczyciela(4);
+
 
 -- ============================================================================
--- SCENARIUSZ 8B: INFO_* - co kryje się pod danym ID?
+-- SCENARIUSZ 8: WALIDACJE SYSTEMU - PRZYPADKI BRZEGOWE
 -- ============================================================================
--- Pokazują czytelne informacje o encji po samym ID
-EXEC pkg_slowniki.info_przedmiot(1);     -- Fortepian (instrumentalny)
-EXEC pkg_slowniki.info_przedmiot(4);     -- Kształcenie słuchu (teoretyczny)
-
-EXEC pkg_slowniki.info_sala(1);          -- 101, fortepianowa, 3 os, [Fortepian Yamaha, Metronom, Lustro]
-EXEC pkg_slowniki.info_sala(5);          -- 105, rytmiczna, 25 os
-
-EXEC pkg_slowniki.info_grupa(1);         -- 1A, klasa 1
-
-EXEC pkg_osoby.info_uczen(1);            -- Adam Adamski (lat 7, Fortepian, grupa 1A)
-EXEC pkg_osoby.info_uczen(5);            -- Ewa Ewa (lat 9, Gitara, grupa 2A)
-
-EXEC pkg_osoby.info_nauczyciel(1);       -- Anna Kowalska (Fortepian)
-EXEC pkg_osoby.info_nauczyciel(4);       -- Piotr Lewandowski (Kształcenie słuchu)
-
+-- Kontekst: Demonstracja walidacji i obsługi błędów w systemie.
 -- ============================================================================
--- SCENARIUSZ 8C: KOMPLETNOŚĆ LEKCJI (5 tygodniowo!)
--- ============================================================================
--- Sprawdza ile lekcji ma dany uczeń w tygodniu
-SELECT pkg_lekcje.ile_lekcji_ucznia(1, DATE '2025-06-02') AS lekcje_adama FROM DUAL;
 
--- Raport kompletności - kto ma <5 lekcji? (walidacja!)
-EXEC pkg_lekcje.raport_kompletnosci(DATE '2025-06-02');
+PROMPT
+PROMPT ============================================================
+PROMPT SCENARIUSZ 8: WALIDACJE SYSTEMU - PRZYPADKI BRZEGOWE
+PROMPT ============================================================
 
--- ============================================================================
--- SCENARIUSZ 9: Błędy (walidacja)
--- ============================================================================
--- Ocena poza zakresem (powinien być błąd -20005)
--- EXEC pkg_oceny.wystaw_ocene(1, 1, 1, 7);
+-- 8.1 TRIGGER: Próba dodania lekcji bez ucznia i bez grupy (naruszenie XOR)
+PROMPT
+PROMPT [8.1] TRIGGER trg_lekcja_xor - naruszenie reguly XOR:
+PROMPT       (Lekcja musi miec ALBO ucznia ALBO grupe)
+PROMPT       Oczekiwany BLAD -20001:
 
--- Lekcja w weekend (powinien być błąd -20008)
--- EXEC pkg_lekcje.dodaj_lekcje_indywidualna(1, 1, 1, 1, DATE '2025-06-07', 14);  -- sobota!
+BEGIN
+    INSERT INTO lekcje VALUES (
+        t_lekcja(
+            seq_lekcje.NEXTVAL,
+            pkg_slowniki.get_ref_przedmiot(1),
+            pkg_osoby.get_ref_nauczyciel(1),
+            pkg_slowniki.get_ref_sala(1),
+            NULL,  -- brak ucznia
+            NULL,  -- brak grupy - NARUSZENIE XOR!
+            DATE '2025-06-20', 14, 45
+        )
+    );
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('BLAD (oczekiwany): ' || SQLERRM);
+END;
+/
 
--- Lekcja poza godzinami (powinien być błąd -20007)
--- EXEC pkg_lekcje.dodaj_lekcje_indywidualna(1, 1, 1, 1, DATE '2025-06-09', 21);
+-- 8.2 TRIGGER: Próba wystawienia oceny poza zakresem 1-6
+PROMPT
+PROMPT [8.2] TRIGGER trg_ocena_zakres - ocena poza zakresem:
+PROMPT       Oczekiwany BLAD -20002:
 
--- ============================================================================
--- SCENARIUSZ 9B: Test kolizji lekcji grupowej z indywidualną (NOWA FUNKCJONALNOŚĆ!)
--- ============================================================================
--- Ten scenariusz demonstruje naprawiony błąd - system teraz wykrywa kolizję
--- gdy uczeń ma lekcję indywidualną, a próbujemy dodać lekcję grupową w tym czasie.
--- 
--- KROKI DEMONSTRACJI:
--- 1. Najpierw dodajemy lekcję indywidualną dla ucznia (np. ID=1) o 15:00
--- 2. Potem próbujemy dodać lekcję grupową dla jego grupy (1A) o 15:00
--- 3. System POWINIEN zgłosić błąd -20009 (kolizja z lekcją indywidualną)
---
--- PRZED NAPRAWĄ: System pozwalał - uczeń miał 2 lekcje naraz (błąd!)
--- PO NAPRAWIE:   System blokuje i pokazuje który uczeń ma kolizję
+BEGIN
+    INSERT INTO oceny VALUES (
+        t_ocena(
+            seq_oceny.NEXTVAL,
+            pkg_osoby.get_ref_uczen(10),
+            pkg_osoby.get_ref_nauczyciel(6),
+            pkg_slowniki.get_ref_przedmiot(6),
+            7,  -- BŁĄD: ocena poza zakresem 1-6!
+            SYSDATE, 'N'
+        )
+    );
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('BLAD (oczekiwany): ' || SQLERRM);
+END;
+/
 
--- Odkomentuj aby przetestować:
--- DELETE FROM lekcje WHERE data_lekcji = DATE '2025-06-10';
--- COMMIT;
+-- 8.3 WALIDACJA: Lekcja grupowa w sali indywidualnej
+PROMPT
+PROMPT [8.3] WALIDACJA pkg_lekcje - lekcja grupowa w sali indywidualnej:
+PROMPT       Oczekiwany BLAD -20031:
 
--- Krok 1: Lekcja indywidualna dla ucznia ID=1 (Adam Adamski z grupy 1A)
--- EXEC pkg_lekcje.dodaj_lekcje_indywidualna(1, 1, 1, 1, DATE '2025-06-10', 15);
+BEGIN
+    -- Sala 1 (101) jest indywidualna, a próbujemy dodać lekcję grupową
+    pkg_lekcje.dodaj_lekcje_grupowa(4, 4, 1, 4, DATE '2025-06-20', 14);
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('BLAD (oczekiwany): ' || SQLERRM);
+END;
+/
 
--- Krok 2: Próba dodania lekcji grupowej dla grupy 1A w tym samym czasie
--- Spodziewany błąd: ORA-20009: Uczniowie z grupy 1A mają kolizję... Adam Adamski
--- EXEC pkg_lekcje.dodaj_lekcje_grupowa(4, 4, 4, 1, DATE '2025-06-10', 15);
+-- 8.4 WALIDACJA: Niezgodność instrumentu ucznia z przedmiotem
+PROMPT
+PROMPT [8.4] WALIDACJA pkg_lekcje - niezgodnosc instrumentu:
+PROMPT       (Jakub gra na Flecie, a probujemy dodac lekcje Fortepianu)
+PROMPT       Oczekiwany BLAD -20032:
 
--- ============================================================================
--- SCENARIUSZ 9C: Test nakładających się przedziałów czasowych (NOWA FUNKCJONALNOŚĆ!)
--- ============================================================================
--- System teraz wykrywa nakładanie się lekcji nawet gdy nie zaczynają się o tej samej godzinie.
--- Lekcja trwa 45 min, więc 14:00-14:45 koliduje z próbą o 14:30 (gdyby godziny ułamkowe były możliwe)
--- 
--- W obecnej implementacji (tylko pełne godziny) demonstracja:
--- Lekcja 14:00-14:45 NIE koliduje z 15:00-15:45 (OK - przerwa 15 min)
--- Ale logika jest przygotowana na przyszłe rozszerzenie na połówki godzin.
+BEGIN
+    -- Jakub (ID=10) gra na Flecie, a próbujemy go zapisać na Fortepian
+    pkg_lekcje.dodaj_lekcje_indywidualna(1, 1, 1, 10, DATE '2025-06-20', 18);
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('BLAD (oczekiwany): ' || SQLERRM);
+END;
+/
 
--- ============================================================================
--- SCENARIUSZ 9D: Test błędu przy nieznanym przedmiocie (NOWA FUNKCJONALNOŚĆ!)
--- ============================================================================
--- Przy dodawaniu nauczyciela z nieznanym przedmiotem system teraz:
--- 1. Wyświetla czytelny komunikat błędu (nie techniczny ORA-01403)
--- 2. Wycofuje nauczyciela (atomowość transakcji)
---
--- Odkomentuj aby przetestować:
--- EXEC pkg_osoby.dodaj_nauczyciela('Test', 'Testowy', 'NieistniejącyPrzedmiot');
--- Spodziewany błąd: ORA-20015: Nieznany przedmiot: "NieistniejącyPrzedmiot"...
+-- 8.5 WALIDACJA: Nauczyciel nie uczy danego przedmiotu
+PROMPT
+PROMPT [8.5] WALIDACJA pkg_lekcje - nauczyciel nie uczy przedmiotu:
+PROMPT       (Tomasz Flecista probuje prowadzic lekcje Fortepianu)
+PROMPT       Oczekiwany BLAD -20030:
 
--- ============================================================================
--- SCENARIUSZ 10: Test dni tygodnia (sprawdzenie poprawki)
--- ============================================================================
--- Wyświetla dzień tygodnia dla różnych dat
-SELECT 
-    TO_CHAR(DATE '2025-06-02', 'YYYY-MM-DD DY') AS data,
-    pkg_lekcje.dzien_tygodnia(DATE '2025-06-02') AS dzien_nr,
-    CASE pkg_lekcje.dzien_tygodnia(DATE '2025-06-02')
-        WHEN 1 THEN 'Poniedziałek'
-        WHEN 2 THEN 'Wtorek'
-        WHEN 3 THEN 'Środa'
-        WHEN 4 THEN 'Czwartek'
-        WHEN 5 THEN 'Piątek'
-        WHEN 6 THEN 'Sobota'
-        WHEN 7 THEN 'Niedziela'
-    END AS dzien_nazwa
-FROM DUAL;
+BEGIN
+    -- Tomasz Flecista (ID=6) uczy Fletu, a próbujemy przypisać mu Fortepian
+    pkg_lekcje.dodaj_lekcje_indywidualna(1, 6, 1, 11, DATE '2025-06-20', 18);
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('BLAD (oczekiwany): ' || SQLERRM);
+END;
+/
 
--- Test całego tygodnia
-SELECT 
-    TO_CHAR(d.data, 'YYYY-MM-DD DY') AS data,
-    pkg_lekcje.dzien_tygodnia(d.data) AS dzien_nr,
-    CASE WHEN pkg_lekcje.dzien_tygodnia(d.data) BETWEEN 1 AND 5 
-         THEN 'ROBOCZY' ELSE 'WEEKEND' END AS typ_dnia
-FROM (
-    SELECT DATE '2025-06-02' + LEVEL - 1 AS data 
-    FROM DUAL 
-    CONNECT BY LEVEL <= 7
-) d;
 
 -- ============================================================================
--- SCENARIUSZ 11: VARRAY - wyposażenie sal
+-- SCENARIUSZ 9: DEMONSTRACJA VARRAY - WYPOSAŻENIE SAL
 -- ============================================================================
-SELECT s.numer, s.typ, s.pojemnosc, s.lista_wyposazenia() AS wyposazenie
+-- Kontekst: Pokazanie jak działa VARRAY wyposażenia sal.
+-- ============================================================================
+
+PROMPT
+PROMPT ============================================================
+PROMPT SCENARIUSZ 9: DEMONSTRACJA VARRAY - WYPOSAZENIE SAL
+PROMPT ============================================================
+
+-- 9.1 Lista sal z wyposażeniem (metoda lista_wyposazenia() operuje na VARRAY)
+PROMPT
+PROMPT [9.1] Lista sal z wyposazeniem (VARRAY):
+EXEC pkg_slowniki.lista_sal;
+
+-- 9.2 Bezpośrednie zapytanie pokazujące VARRAY
+PROMPT
+PROMPT [9.2] Bezposrednie zapytanie - wyposazenie sal:
+SELECT s.id, s.numer, s.typ, s.lista_wyposazenia() AS wyposazenie
+FROM sale s
+ORDER BY s.id;
+
+
+-- ============================================================================
+-- SCENARIUSZ 10: DEMONSTRACJA REF/DEREF
+-- ============================================================================
+-- Kontekst: Pokazanie jak działają referencje REF i dereferencja DEREF.
+-- ============================================================================
+
+PROMPT
+PROMPT ============================================================
+PROMPT SCENARIUSZ 10: DEMONSTRACJA REF/DEREF
+PROMPT ============================================================
+
+-- 10.1 Nauczyciele z przedmiotami (DEREF na REF do przedmiotu)
+PROMPT
+PROMPT [10.1] Nauczyciele z przedmiotami (DEREF):
+SELECT n.id, 
+       n.pelne_nazwisko() AS nauczyciel,
+       DEREF(n.ref_przedmiot).nazwa AS przedmiot,
+       DEREF(n.ref_przedmiot).typ AS typ_przedmiotu
+FROM nauczyciele n
+ORDER BY n.id;
+
+-- 10.2 Uczniowie z grupami (DEREF na REF do grupy)
+PROMPT
+PROMPT [10.2] Uczniowie z grupami (DEREF):
+SELECT u.id,
+       u.pelne_nazwisko() AS uczen,
+       u.instrument,
+       DEREF(u.ref_grupa).symbol AS grupa,
+       DEREF(u.ref_grupa).poziom AS klasa
+FROM uczniowie u
+ORDER BY DEREF(u.ref_grupa).poziom, u.nazwisko;
+
+-- 10.3 Lekcje z pełnymi danymi (wielokrotny DEREF)
+PROMPT
+PROMPT [10.3] Lekcje z pelnymi danymi (wielokrotny DEREF):
+SELECT l.id,
+       TO_CHAR(l.data_lekcji, 'YYYY-MM-DD') AS data,
+       l.godz_rozp || ':00' AS godzina,
+       DEREF(l.ref_przedmiot).nazwa AS przedmiot,
+       DEREF(l.ref_nauczyciel).pelne_nazwisko() AS nauczyciel,
+       DEREF(l.ref_sala).numer AS sala,
+       CASE 
+           WHEN l.ref_uczen IS NOT NULL THEN DEREF(l.ref_uczen).pelne_nazwisko()
+           ELSE 'grupa ' || DEREF(l.ref_grupa).symbol
+       END AS kto
+FROM lekcje l
+WHERE l.data_lekcji >= DATE '2025-06-09'
+ORDER BY l.data_lekcji, l.godz_rozp
+FETCH FIRST 10 ROWS ONLY;
+
+
+-- ============================================================================
+-- SCENARIUSZ 11: DEMONSTRACJA METOD OBIEKTOWYCH
+-- ============================================================================
+-- Kontekst: Pokazanie jak działają metody zdefiniowane w typach obiektowych.
+-- ============================================================================
+
+PROMPT
+PROMPT ============================================================
+PROMPT SCENARIUSZ 11: DEMONSTRACJA METOD OBIEKTOWYCH
+PROMPT ============================================================
+
+-- 11.1 Metody typu T_UCZEN
+PROMPT
+PROMPT [11.1] Metody typu T_UCZEN (pelne_nazwisko, wiek):
+SELECT u.pelne_nazwisko() AS pelne_nazwisko, 
+       u.wiek() AS wiek_lat, 
+       u.instrument
+FROM uczniowie u 
+WHERE ROWNUM <= 5;
+
+-- 11.2 Metody typu T_NAUCZYCIEL
+PROMPT
+PROMPT [11.2] Metody typu T_NAUCZYCIEL (pelne_nazwisko, staz_lat):
+SELECT n.pelne_nazwisko() AS nauczyciel, 
+       n.staz_lat() AS staz_pracy
+FROM nauczyciele n;
+
+-- 11.3 Metody typu T_PRZEDMIOT
+PROMPT
+PROMPT [11.3] Metody typu T_PRZEDMIOT (czy_grupowy):
+SELECT p.nazwa, 
+       p.typ,
+       p.czy_grupowy() AS jest_grupowy
+FROM przedmioty p;
+
+-- 11.4 Metody typu T_SALA
+PROMPT
+PROMPT [11.4] Metody typu T_SALA (czy_grupowa, lista_wyposazenia):
+SELECT s.numer,
+       s.czy_grupowa() AS jest_grupowa,
+       s.lista_wyposazenia() AS wyposazenie
 FROM sale s;
 
--- Nowa sala 105 (rytmiczna) - ma specjalne wyposażenie
-SELECT s.numer, s.typ, s.lista_wyposazenia() AS wyposazenie
-FROM sale s WHERE s.numer = '105';
-
--- ============================================================================
--- SCENARIUSZ 11B: Struktura lekcji (5 tygodniowo)
--- ============================================================================
--- Sprawdzenie struktury: 2 instr + 2 KS + 1 rytm = 5 lekcji
-SELECT 
-    DEREF(l.ref_uczen).id AS uczen_id,
-    DEREF(l.ref_uczen).pelne_nazwisko() AS uczen,
-    TO_CHAR(l.data_lekcji, 'DY') AS dzien,
-    DEREF(l.ref_przedmiot).nazwa AS przedmiot,
-    l.czy_indywidualna() AS typ
-FROM lekcje l
-WHERE l.ref_uczen IS NOT NULL
-  AND DEREF(l.ref_uczen).id = 1  -- Adam Adamski
-ORDER BY l.data_lekcji;
-
--- ============================================================================
--- SCENARIUSZ 12: REF/DEREF - referencje
--- ============================================================================
--- Pokazanie działania DEREF
-SELECT 
-    l.id,
-    DEREF(l.ref_przedmiot).nazwa AS przedmiot,
-    DEREF(l.ref_nauczyciel).pelne_nazwisko() AS nauczyciel,
-    DEREF(l.ref_sala).numer AS sala,
-    CASE WHEN l.ref_uczen IS NOT NULL 
-         THEN DEREF(l.ref_uczen).pelne_nazwisko()
-         ELSE 'grupa ' || DEREF(l.ref_grupa).symbol
-    END AS dla_kogo,
-    l.czy_indywidualna() AS typ
+-- 11.5 Metody typu T_LEKCJA
+PROMPT
+PROMPT [11.5] Metody typu T_LEKCJA (czy_indywidualna, godzina_koniec):
+SELECT l.id,
+       l.godz_rozp || ':00' AS start,
+       l.godzina_koniec() AS koniec_dec,
+       l.czy_indywidualna() AS indywidualna
 FROM lekcje l
 WHERE ROWNUM <= 5;
 
+-- 11.6 Metody typu T_OCENA
+PROMPT
+PROMPT [11.6] Metody typu T_OCENA (opis_oceny):
+SELECT o.wartosc,
+       o.opis_oceny() AS slownie,
+       o.semestralna
+FROM oceny o
+WHERE ROWNUM <= 8;
+
+
 -- ============================================================================
--- SCENARIUSZ 13: Metody obiektów
+-- PODSUMOWANIE - STATYSTYKI KOŃCOWE
 -- ============================================================================
--- Metody ucznia
-SELECT u.pelne_nazwisko() AS nazwisko, u.wiek() AS wiek, u.instrument
-FROM uczniowie u WHERE ROWNUM <= 3;
 
--- Metody nauczyciela
-SELECT n.pelne_nazwisko() AS nazwisko, n.staz_lat() AS staz
-FROM nauczyciele n;
+PROMPT
+PROMPT ============================================================
+PROMPT PODSUMOWANIE - STATYSTYKI KONCOWE PO SCENARIUSZACH
+PROMPT ============================================================
 
--- Metody przedmiotu
-SELECT p.nazwa, p.czy_grupowy() AS grupowy
-FROM przedmioty p;
+EXEC pkg_raporty.statystyki;
 
--- Metody lekcji
-SELECT l.id, l.czy_indywidualna() AS indyw, l.godzina_koniec() AS koniec
-FROM lekcje l WHERE ROWNUM <= 5;
+PROMPT
+PROMPT ============================================================
+PROMPT KONIEC SCENARIUSZY TESTOWYCH
+PROMPT ============================================================
 
--- Metody oceny
-SELECT o.wartosc, o.opis_oceny() AS opis
-FROM oceny o WHERE ROWNUM <= 5;
+/*
+================================================================================
+PODSUMOWANIE WYKONANYCH SCENARIUSZY:
+
+1. ROZSZERZENIE OFERTY SZKOŁY
+   - Dodano przedmiot: Flet (indywidualny)
+   - Dodano salę: 105 z VARRAY wyposażenia
+   - Dodano nauczyciela: Tomasz Flecista
+
+2. TWORZENIE GRUPY I ZAPIS UCZNIÓW
+   - Utworzono grupę 4A (klasa IV)
+   - Zapisano 2 uczniów: Jakub (Flet), Karolina (Fortepian)
+   - Demonstracja KURSORA JAWNEGO w lista_uczniow_grupy()
+
+3. PLANOWANIE LEKCJI GRUPOWYCH
+   - Dodano lekcje Kształcenia słuchu i Rytmiki dla grupy 4A
+   - Walidacja typu sali (musi być 'grupowa')
+
+4. PLANOWANIE LEKCJI INDYWIDUALNYCH
+   - Przypadek A: Wolny termin - sukces
+   - Przypadek B: Konflikt terminu - błąd z SUGESTIĄ alternatywy
+   - Demonstracja heurystyki First Fit
+
+5. WYSTAWIANIE OCEN
+   - Oceny cząstkowe z różnych przedmiotów
+   - Oceny semestralne
+   - Walidacja uprawnień nauczyciela
+
+6. SPRAWDZANIE OCEN PRZEZ UCZNIA
+   - Wyświetlanie ocen
+   - Obliczanie średniej
+   - Wyświetlanie planu lekcji
+
+7. RAPORTY DLA DYREKCJI
+   - Raport grup
+   - Statystyki szkoły
+   - Plany nauczycieli
+
+8. WALIDACJE I PRZYPADKI BRZEGOWE
+   - Trigger XOR (lekcja musi mieć ucznia LUB grupę)
+   - Trigger zakresu ocen (1-6)
+   - Walidacja typu sali dla lekcji grupowej
+   - Walidacja instrumentu ucznia
+   - Walidacja kompetencji nauczyciela
+
+9. DEMONSTRACJA VARRAY
+   - Wyświetlanie wyposażenia sal
+   - Metoda lista_wyposazenia()
+
+10. DEMONSTRACJA REF/DEREF
+    - Nawigacja przez referencje obiektowe
+    - Wielokrotne DEREF w zapytaniach
+
+11. DEMONSTRACJA METOD OBIEKTOWYCH
+    - Metody wszystkich typów obiektowych
+    - pelne_nazwisko(), wiek(), staz_lat(), czy_grupowy(), opis_oceny() itd.
+
+================================================================================
+WYMAGANIA PROJEKTU SPEŁNIONE W SCENARIUSZACH:
+
+✓ Typy obiektowe z metodami     - Scenariusz 11
+✓ Tabele obiektowe              - Wszystkie scenariusze
+✓ REF i DEREF                   - Scenariusz 10
+✓ VARRAY                        - Scenariusz 9
+✓ Pakiety PL/SQL                - Scenariusze 1-7
+✓ Kursory (jawny)               - Scenariusz 2 (lista_uczniow_grupy)
+✓ Obsługa błędów                - Scenariusz 8
+✓ Wyzwalacze (triggery)         - Scenariusz 8 (8.1, 8.2)
+✓ Walidacja konfliktów          - Scenariusz 4 (4.5)
+✓ Heurystyka First Fit          - Scenariusz 4 (sugestia terminu)
+
+================================================================================
+*/

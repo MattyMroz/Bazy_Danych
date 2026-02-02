@@ -11,12 +11,12 @@ CREATE OR REPLACE PACKAGE pkg_slowniki AS
     PROCEDURE dodaj_przedmiot(p_nazwa VARCHAR2, p_typ VARCHAR2);
     PROCEDURE dodaj_grupe(p_symbol VARCHAR2, p_poziom NUMBER);
     PROCEDURE dodaj_sale(p_numer VARCHAR2, p_typ VARCHAR2, p_pojemnosc NUMBER, p_wyposazenie t_wyposazenie);
-    
+
     -- Pobieranie referencji
     FUNCTION get_ref_przedmiot(p_id NUMBER) RETURN REF t_przedmiot;
     FUNCTION get_ref_grupa(p_id NUMBER) RETURN REF t_grupa;
     FUNCTION get_ref_sala(p_id NUMBER) RETURN REF t_sala;
-    
+
     -- Listy
     PROCEDURE lista_przedmiotow;
     PROCEDURE lista_sal;
@@ -115,11 +115,11 @@ CREATE OR REPLACE PACKAGE pkg_osoby AS
     -- Dodawanie
     PROCEDURE dodaj_nauczyciela(p_imie VARCHAR2, p_nazwisko VARCHAR2, p_id_przedmiotu NUMBER);
     PROCEDURE dodaj_ucznia(p_imie VARCHAR2, p_nazwisko VARCHAR2, p_data_ur DATE, p_instrument VARCHAR2, p_id_grupy NUMBER);
-    
+
     -- Pobieranie referencji
     FUNCTION get_ref_nauczyciel(p_id NUMBER) RETURN REF t_nauczyciel;
     FUNCTION get_ref_uczen(p_id NUMBER) RETURN REF t_uczen;
-    
+
     -- Listy
     PROCEDURE lista_nauczycieli;
     PROCEDURE lista_uczniow;
@@ -206,7 +206,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_osoby AS
     BEGIN
         SELECT g.symbol INTO v_symbol FROM grupy g WHERE g.id = p_id_grupy;
         DBMS_OUTPUT.PUT_LINE('=== UCZNIOWIE GRUPY ' || v_symbol || ' ===');
-        
+
         OPEN c_uczniowie;
         LOOP
             FETCH c_uczniowie INTO v_rec;
@@ -232,7 +232,7 @@ CREATE OR REPLACE PACKAGE pkg_lekcje AS
         p_id_przedmiotu NUMBER, p_id_nauczyciela NUMBER, p_id_sali NUMBER,
         p_id_grupy NUMBER, p_data DATE, p_godz NUMBER
     );
-    
+
     -- Plany
     PROCEDURE plan_ucznia(p_id_ucznia NUMBER);
     PROCEDURE plan_nauczyciela(p_id_nauczyciela NUMBER);
@@ -260,7 +260,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         SELECT COUNT(*) INTO v_licznik FROM lekcje l
         WHERE l.data_lekcji = p_data AND l.godz_rozp = p_godz
           AND l.ref_sala = p_ref_sala;
-        
+
         IF v_licznik > 0 THEN
             RETURN 'Sala jest już zajęta w tym terminie!';
         END IF;
@@ -269,7 +269,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         SELECT COUNT(*) INTO v_licznik FROM lekcje l
         WHERE l.data_lekcji = p_data AND l.godz_rozp = p_godz
           AND l.ref_nauczyciel = p_ref_nauczyciel;
-          
+
         IF v_licznik > 0 THEN
             RETURN 'Nauczyciel ma już lekcję w tym terminie!';
         END IF;
@@ -279,7 +279,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
             SELECT COUNT(*) INTO v_licznik FROM lekcje l
             WHERE l.data_lekcji = p_data AND l.godz_rozp = p_godz
               AND l.ref_uczen = p_ref_uczen;
-            
+
             IF v_licznik > 0 THEN
                 RETURN 'Uczeń ma już lekcję w tym terminie!';
             END IF;
@@ -290,13 +290,118 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
             SELECT COUNT(*) INTO v_licznik FROM lekcje l
             WHERE l.data_lekcji = p_data AND l.godz_rozp = p_godz
               AND l.ref_grupa = p_ref_grupa;
-            
+
             IF v_licznik > 0 THEN
                 RETURN 'Grupa ma już zajęcia w tym terminie!';
             END IF;
         END IF;
 
         RETURN NULL; -- Brak konfliktów
+    END;
+
+    -- ========================================================================
+    -- FUNKCJA PRYWATNA - sprawdza czy sala ma wyposażenie dla instrumentu
+    -- Przeszukuje VARRAY wyposażenia sali
+    -- ========================================================================
+    FUNCTION sala_ma_instrument(
+        p_id_sali NUMBER,
+        p_instrument VARCHAR2
+    ) RETURN BOOLEAN IS
+        v_wyposazenie t_wyposazenie;
+    BEGIN
+        SELECT s.wyposazenie INTO v_wyposazenie 
+        FROM sale s WHERE s.id = p_id_sali;
+
+        IF v_wyposazenie IS NULL THEN
+            RETURN FALSE;
+        END IF;
+
+        -- Przeszukanie VARRAY
+        FOR i IN 1..v_wyposazenie.COUNT LOOP
+            -- Sprawdź czy element wyposażenia zawiera nazwę instrumentu
+            IF UPPER(v_wyposazenie(i)) LIKE '%' || UPPER(p_instrument) || '%' THEN
+                RETURN TRUE;
+            END IF;
+            -- Specjalne przypadki: Pianino = Fortepian
+            IF UPPER(p_instrument) = 'FORTEPIAN' AND UPPER(v_wyposazenie(i)) LIKE '%PIANINO%' THEN
+                RETURN TRUE;
+            END IF;
+        END LOOP;
+
+        RETURN FALSE;
+    END;
+
+    -- ========================================================================
+    -- FUNKCJA PRYWATNA - HEURYSTYKA: Szukaj następnego wolnego terminu
+    -- Dla lekcji indywidualnych: szuka sal z odpowiednim instrumentem (VARRAY)
+    -- Dla lekcji grupowych: szuka tylko sal typu 'grupowa' z odpowiednią pojemnością
+    -- ========================================================================
+    FUNCTION znajdz_alternatywe(
+        p_start_data DATE, 
+        p_start_godz NUMBER,
+        p_ref_nauczyciel REF t_nauczyciel,
+        p_ref_uczen REF t_uczen,        -- NULL dla lekcji grupowej
+        p_ref_grupa REF t_grupa,        -- NULL dla lekcji indywidualnej
+        p_instrument VARCHAR2,          -- nazwa instrumentu (dla lekcji indywidualnej)
+        p_liczba_uczniow NUMBER         -- liczba uczniów w grupie (dla lekcji grupowej, 0 dla indywidualnej)
+    ) RETURN VARCHAR2 IS
+        v_data DATE := p_start_data;
+        v_godz NUMBER := p_start_godz + 1;  -- Start od następnej godziny
+        v_test VARCHAR2(200);
+        v_ref_sala REF t_sala;
+        c_max_dni CONSTANT NUMBER := 7;     -- Szukamy max tydzień w przód
+        v_jest_grupowa BOOLEAN := (p_ref_grupa IS NOT NULL);
+    BEGIN
+        -- Pętla po dniach (max 7 dni)
+        FOR dzien IN 0..c_max_dni LOOP
+
+            -- Pętla po godzinach (zakładamy godziny pracy szkoły 14-20)
+            WHILE v_godz < 20 LOOP
+
+                -- Pętla po salach - szukamy odpowiedniej sali
+                FOR sala IN (
+                    SELECT s.id, s.numer, s.typ, s.pojemnosc
+                    FROM sale s
+                    ORDER BY s.id
+                ) LOOP
+                    -- Dla lekcji grupowej: tylko sale grupowe z odpowiednią pojemnością
+                    IF v_jest_grupowa THEN
+                        IF sala.typ = 'grupowa' AND sala.pojemnosc >= p_liczba_uczniow THEN
+                            -- Pobierz REF do sali
+                            SELECT REF(s) INTO v_ref_sala FROM sale s WHERE s.id = sala.id;
+
+                            -- Sprawdź kolizje
+                            v_test := sprawdz_kolizje(v_data, v_godz, p_ref_nauczyciel, v_ref_sala, NULL, p_ref_grupa);
+
+                            IF v_test IS NULL THEN
+                                RETURN TO_CHAR(v_data, 'YYYY-MM-DD') || ' o godzinie ' || v_godz || ':00 w sali ' || sala.numer;
+                            END IF;
+                        END IF;
+                    -- Dla lekcji indywidualnej: szukamy sali z odpowiednim instrumentem
+                    ELSE
+                        IF sala_ma_instrument(sala.id, p_instrument) THEN
+                            -- Pobierz REF do sali
+                            SELECT REF(s) INTO v_ref_sala FROM sale s WHERE s.id = sala.id;
+
+                            -- Sprawdź kolizje
+                            v_test := sprawdz_kolizje(v_data, v_godz, p_ref_nauczyciel, v_ref_sala, p_ref_uczen, NULL);
+
+                            IF v_test IS NULL THEN
+                                RETURN TO_CHAR(v_data, 'YYYY-MM-DD') || ' o godzinie ' || v_godz || ':00 w sali ' || sala.numer;
+                            END IF;
+                        END IF;
+                    END IF;
+                END LOOP;
+
+                v_godz := v_godz + 1; -- Następna godzina
+            END LOOP;
+
+            -- Reset na następny dzień
+            v_data := v_data + 1;
+            v_godz := 14; -- Start pracy szkoły
+        END LOOP;
+
+        RETURN 'Brak wolnych terminow w najblizszym tygodniu.';
     END;
 
     -- ========================================================================
@@ -346,11 +451,24 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
             END IF;
         END IF;
 
-        -- WALIDACJA KONFLIKTÓW
+        -- WALIDACJA KONFLIKTÓW Z SUGESTIĄ ALTERNATYWNEGO TERMINU
         v_blad := sprawdz_kolizje(p_data, p_godz, v_ref_nauczyciel, v_ref_sala, v_ref_uczen, NULL);
 
         IF v_blad IS NOT NULL THEN
-            RAISE_APPLICATION_ERROR(-20020, 'Błąd planowania: ' || v_blad);
+            -- Jeśli zajęte, uruchom heurystykę i znajdź alternatywę
+            DECLARE
+                v_sugestia VARCHAR2(200);
+            BEGIN
+                v_sugestia := znajdz_alternatywe(
+                    p_data, p_godz, v_ref_nauczyciel, v_ref_uczen, NULL,
+                    v_nazwa_przedmiotu,  -- instrument = nazwa przedmiotu
+                    0                    -- brak grupy
+                );
+
+                RAISE_APPLICATION_ERROR(-20020, 
+                    'Blad planowania: ' || v_blad || 
+                    CHR(10) || 'SUGEROWANY TERMIN: ' || v_sugestia);
+            END;
         END IF;
 
         INSERT INTO lekcje VALUES (
@@ -412,11 +530,24 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
                 ' osób, a sala mieści tylko ' || v_pojemnosc_sali || '.');
         END IF;
 
-        -- WALIDACJA KONFLIKTÓW
+        -- WALIDACJA KONFLIKTÓW Z SUGESTIĄ ALTERNATYWNEGO TERMINU
         v_blad := sprawdz_kolizje(p_data, p_godz, v_ref_nauczyciel, v_ref_sala, NULL, v_ref_grupa);
 
         IF v_blad IS NOT NULL THEN
-            RAISE_APPLICATION_ERROR(-20021, 'Błąd planowania: ' || v_blad);
+            -- Jeśli zajęte, uruchom heurystykę i znajdź alternatywę
+            DECLARE
+                v_sugestia VARCHAR2(200);
+            BEGIN
+                v_sugestia := znajdz_alternatywe(
+                    p_data, p_godz, v_ref_nauczyciel, NULL, v_ref_grupa,
+                    NULL,               -- brak instrumentu (lekcja grupowa)
+                    v_liczba_uczniow    -- liczba uczniów w grupie
+                );
+
+                RAISE_APPLICATION_ERROR(-20021, 
+                    'Blad planowania: ' || v_blad || 
+                    CHR(10) || 'SUGEROWANY TERMIN: ' || v_sugestia);
+            END;
         END IF;
 
         INSERT INTO lekcje VALUES (

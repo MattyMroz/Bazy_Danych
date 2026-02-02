@@ -109,16 +109,23 @@ FROM lekcje l WHERE ROWNUM <= 5;
 -- EXEC pkg_oceny.wystaw_ocene(1, 1, 1, 7);
 
 -- ----------------------------------------------------------------------------
--- 8.2 TESTY WALIDACJI KONFLIKTÓW TERMINÓW
+-- 8.2 TESTY WALIDACJI KONFLIKTÓW TERMINÓW Z SUGESTIĄ (HEURYSTYKA)
 -- ----------------------------------------------------------------------------
 
 -- Test kolizji sali (sala 1 zajęta 2025-06-02 o 14:00)
+-- System powinien zasugerować alternatywny termin z salą posiadającą fortepian
 -- EXEC pkg_lekcje.dodaj_lekcje_indywidualna(1, 1, 1, 4, DATE '2025-06-02', 14);
--- Oczekiwany błąd: ORA-20020: Błąd planowania: Sala jest już zajęta w tym terminie!
+-- Oczekiwany błąd z sugestią:
+-- ORA-20020: Blad planowania: Sala jest juz zajeta w tym terminie!
+-- SUGEROWANY TERMIN: 2025-06-02 o godzinie 15:00 w sali 101
 
 -- Test kolizji nauczyciela (nauczyciel 1 ma lekcję 2025-06-02 o 14:00)
 -- EXEC pkg_lekcje.dodaj_lekcje_indywidualna(1, 1, 2, 4, DATE '2025-06-02', 14);
--- Oczekiwany błąd: ORA-20020: Błąd planowania: Nauczyciel ma już lekcję w tym terminie!
+-- Oczekiwany błąd z sugestią terminu
+
+-- Test kolizji dla lekcji grupowej - sugestia znajdzie salę grupową
+-- EXEC pkg_lekcje.dodaj_lekcje_grupowa(4, 4, 3, 1, DATE '2025-06-03', 14);
+-- Oczekiwany błąd z sugestią sali grupowej o odpowiedniej pojemności
 
 -- ----------------------------------------------------------------------------
 -- 8.3 TESTY WALIDACJI KOMPETENCJI NAUCZYCIELA (-20030)
@@ -221,6 +228,12 @@ WALIDACJE W PAKIETACH:
 - Przepełnienie sali (czy grupa zmieści się w sali)
 - Instrument ucznia (zgodność z przedmiotem lekcji)
 - Uprawnienia do oceniania (nauczyciel ocenia tylko swój przedmiot)
+
+HEURYSTYKA FIRST FIT:
+- znajdz_alternatywe() - sugestia wolnego terminu
+- sala_ma_instrument() - przeszukiwanie VARRAY wyposażenia
+- Dopasowanie sali do instrumentu (lekcje indywidualne)
+- Dopasowanie sali grupowej z pojemnością (lekcje grupowe)
 
 KURSORY:
 - Jawny w lista_uczniow_grupy

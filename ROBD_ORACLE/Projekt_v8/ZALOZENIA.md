@@ -150,9 +150,11 @@ OCENY ──REF──→ UCZNIOWIE
 - `lista_uczniow_grupy(id_grupy)` - **kursor jawny** (OPEN/FETCH/CLOSE)
 
 ### PKG_LEKCJE
-- `dodaj_lekcje_indywidualna(...)` - dodaje lekcję z **REF** do ucznia + **walidacja konfliktów**
-- `dodaj_lekcje_grupowa(...)` - dodaje lekcję z **REF** do grupy + **walidacja konfliktów**
+- `dodaj_lekcje_indywidualna(...)` - dodaje lekcję z **REF** do ucznia + **walidacja konfliktów** + **sugestia terminu**
+- `dodaj_lekcje_grupowa(...)` - dodaje lekcję z **REF** do grupy + **walidacja konfliktów** + **sugestia terminu**
 - `sprawdz_kolizje(...)` - **funkcja prywatna** sprawdzająca dostępność terminu
+- `sala_ma_instrument(...)` - **funkcja prywatna** przeszukująca **VARRAY** wyposażenia sali
+- `znajdz_alternatywe(...)` - **funkcja prywatna** implementująca **heurystykę First Fit** do szukania wolnego terminu
 - `plan_ucznia(id)` - plan lekcji ucznia (indywidualne + grupowe przez UNION)
 - `plan_nauczyciela(id)` - plan lekcji nauczyciela
 - `plan_dnia(data)` - wszystkie lekcje w danym dniu
@@ -211,7 +213,33 @@ System **waliduje dostępność zasobów** przy planowaniu lekcji. Próba dodani
 
 > 💡 **Implementacja:** Walidacja realizowana wewnątrz pakietu `pkg_lekcje` (funkcja prywatna), co pozwala uniknąć problemu "mutating table" występującego przy triggerach.
 
-### 7.3 Walidacja spójności danych ✅
+### 7.3 Heurystyka sugestii terminu (First Fit) ✅
+
+Gdy system wykryje konflikt terminów, **automatycznie sugeruje najbliższy wolny termin**. Funkcja `znajdz_alternatywe()` implementuje algorytm **First Fit Heuristic**:
+
+**Algorytm:**
+1. Zacznij od następnej godziny po nieudanym terminie
+2. Sprawdzaj godziny robocze (14:00 - 20:00)
+3. Jeśli dzień się skończy, przeskocz do następnego dnia na 14:00
+4. Szukaj maksymalnie przez 7 dni (limit bezpieczeństwa)
+5. Dla każdego terminu iteruj po dostępnych salach
+
+**Dopasowanie sali (wykorzystanie VARRAY):**
+
+| Typ lekcji | Kryteria doboru sali |
+|------------|---------------------|
+| **Indywidualna** | Funkcja `sala_ma_instrument()` przeszukuje **VARRAY wyposażenia** sali, szukając elementu pasującego do instrumentu ucznia (np. "Fortepian", "Pianino") |
+| **Grupowa** | Szuka tylko sal typu `'grupowa'` z pojemnością >= liczba uczniów w grupie |
+
+**Przykład komunikatu błędu z sugestią:**
+```
+ORA-20020: Blad planowania: Sala jest juz zajeta w tym terminie!
+SUGEROWANY TERMIN: 2025-06-02 o godzinie 15:00 w sali 101
+```
+
+> 💡 **Funkcja `sala_ma_instrument()`** przeszukuje VARRAY i obsługuje synonimy (np. "Pianino" = "Fortepian").
+
+### 7.4 Walidacja spójności danych ✅
 
 System **waliduje logiczną spójność** przy dodawaniu lekcji i ocen:
 
@@ -228,13 +256,13 @@ System **waliduje logiczną spójność** przy dodawaniu lekcji i ocen:
 > - **Instrument ucznia:** Przy lekcjach indywidualnych z przedmiotów instrumentalnych (`typ='indywidualny'`) sprawdzane jest, czy instrument ucznia odpowiada nazwie przedmiotu (np. uczeń grający na fortepianie może mieć tylko lekcje z przedmiotu "Fortepian"). Przedmioty grupowe (Kształcenie słuchu, Rytmika) nie podlegają tej walidacji.
 > - **Uprawnienia do oceniania:** Nauczyciel może wystawiać oceny tylko z przedmiotu, którego uczy.
 
-### 7.4 Funkcjonalności poza zakresem walidacji
+### 7.5 Funkcjonalności poza zakresem walidacji
 
 | Co NIE jest walidowane | Uzasadnienie |
 |------------------------|-------------|
 | **Kompletność planu** - 5 lekcji/tydzień | Uproszczenie projektu |
 
-### 7.5 Ograniczenia poza zakresem projektu
+### 7.6 Ograniczenia poza zakresem projektu
 
 | Funkcjonalność | Status |
 |----------------|--------|
@@ -339,12 +367,13 @@ System wykorzystuje trzy typy kursorów:
 | Typy obiektowe z metodami | 8 typów, metody: `wiek()`, `staz_lat()`, `godzina_koniec()`, `czy_grupowy()`, `lista_wyposazenia()`, `opis_oceny()` |
 | Tabele obiektowe | 7 tabel obiektowych |
 | REF i DEREF | `NAUCZYCIEL→PRZEDMIOT`, `LEKCJE→SALA`, `UCZEN→GRUPA`, `OCENA→{UCZEN,NAUCZYCIEL,PRZEDMIOT}` |
-| VARRAY | `T_WYPOSAZENIE` w tabeli `SALE` (max 10 elementów) |
-| Pakiety PL/SQL | 5 pakietów (~20 procedur/funkcji) |
-| Kursory | Jawny w `lista_uczniow_grupy()`, niejawny (FOR) w pozostałych |
+| VARRAY | `T_WYPOSAZENIE` w tabeli `SALE` (max 10 elementów) + przeszukiwanie w `sala_ma_instrument()` |
+| Pakiety PL/SQL | 5 pakietów (~25 procedur/funkcji) |
+| Kursory | Jawny w `lista_uczniow_grupy()`, niejawny (FOR) w pozostałych, FOR po salach w heurystyce |
 | Obsługa błędów | `RAISE_APPLICATION_ERROR`, `EXCEPTION WHEN NO_DATA_FOUND` |
 | Wyzwalacze | 2 triggery: XOR lekcji, zakres ocen |
 | Walidacja konfliktów | Funkcja prywatna `sprawdz_kolizje()` w pakiecie `pkg_lekcje` |
+| Heurystyka First Fit | Funkcja `znajdz_alternatywe()` sugerująca wolny termin z odpowiednią salą |
 
 ---
 
