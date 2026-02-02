@@ -299,8 +299,6 @@ EXEC pkg_lekcje.dodaj_lekcje_grupowa(5, 5, 4, 4, DATE '2025-06-13', 14);
 EXEC pkg_lekcje.plan_dnia(DATE '2025-06-09');
 
 -- 3.5 TEST WALIDACJI: Próba prowadzenia przedmiotu indywidualnego jako lekcji grupowej
--- Przedmiot ID=1 (Fortepian) jest indywidualny - nie można prowadzić go grupowo
--- OCZEKIWANY BŁĄD: -20037
 BEGIN
     pkg_lekcje.dodaj_lekcje_grupowa(1, 1, 3, 4, DATE '2025-06-10', 15);
 EXCEPTION
@@ -358,8 +356,6 @@ EXEC pkg_lekcje.dodaj_lekcje_indywidualna(1, 1, 1, 11, DATE '2025-06-02', 17);
 EXEC pkg_lekcje.plan_dnia(DATE '2025-06-02');
 
 -- 4.8 TEST WALIDACJI: Próba prowadzenia przedmiotu grupowego jako lekcji indywidualnej
--- Przedmiot ID=4 (Kształcenie słuchu) jest grupowy - nie można prowadzić go indywidualnie
--- OCZEKIWANY BŁĄD: -20036
 BEGIN
     pkg_lekcje.dodaj_lekcje_indywidualna(4, 4, 3, 10, DATE '2025-06-09', 18);
 EXCEPTION
@@ -406,7 +402,16 @@ BEGIN
     pkg_oceny.wystaw_ocene(10, 6, 1, 5);  -- Flecista (6) próbuje ocenić z Fortepianu (1)
 EXCEPTION
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('BLAD (oczekiwany): ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('BLAD (oczekiwany -20033): ' || SQLERRM);
+END;
+/
+
+-- 5.6 TEST WALIDACJI: Próba wystawienia oceny uczniowi z niewłaściwym instrumentem
+BEGIN
+    pkg_oceny.wystaw_ocene(11, 6, 6, 5);  -- Flecista (6) próbuje ocenić Karolinę (Fortepian) z Fletu
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('BLAD (oczekiwany -20038): ' || SQLERRM);
 END;
 /
 

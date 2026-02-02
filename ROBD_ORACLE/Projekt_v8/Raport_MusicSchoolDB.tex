@@ -122,6 +122,8 @@ W projekcie przyjęto następujące ograniczenia biznesowe:
     
     \item \textbf{Wyłączność oceniania:} nauczyciel może wystawiać oceny wyłącznie z przedmiotu, do którego jest przypisany w systemie
     
+    \item \textbf{Zgodność instrumentu przy ocenianiu:} dla przedmiotów indywidualnych nauczyciel może wystawić ocenę tylko uczniowi, którego instrument główny odpowiada ocenianemu przedmiotowi (np. ocena z Fortepianu tylko dla uczniów grających na Fortepianie)
+    
     \item \textbf{Logika średniej ocen:} średnia ocen z przedmiotu obliczana jest automatycznie z wyłączeniem ocen semestralnych
     
     \item \textbf{Horyzont planowania:} heurystyka doboru wolnych terminów przeszukuje grafik w przód na maksymalnie 7 dni od podanej daty
@@ -694,6 +696,8 @@ W projekcie zastosowano mechanizmy obsługi wyjątków z własnymi kodami błęd
 -20036 & pkg\_lekcje & Przedmiot grupowy nie może być prowadzony jako lekcja indywidualna \\
 \hline
 -20037 & pkg\_lekcje & Przedmiot indywidualny nie może być prowadzony jako lekcja grupowa \\
+\hline
+-20038 & pkg\_oceny & Próba wystawienia oceny z przedmiotu uczniowi grającemu na innym instrumencie \\
 \hline
 \end{tabular}
 \caption{Kody błędów aplikacji}

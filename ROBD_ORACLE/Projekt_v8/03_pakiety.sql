@@ -708,9 +708,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_oceny AS
     -- ========================================================================
     PROCEDURE sprawdz_uprawnienia_oceniania(
         p_id_nauczyciela NUMBER,
-        p_id_przedmiotu NUMBER
+        p_id_przedmiotu NUMBER,
+        p_id_ucznia NUMBER
     ) IS
         v_id_przedmiotu_nauczyciela NUMBER;
+        v_typ_przedmiotu VARCHAR2(20);
+        v_nazwa_przedmiotu VARCHAR2(50);
+        v_instrument_ucznia VARCHAR2(50);
     BEGIN
         SELECT DEREF(n.ref_przedmiot).id INTO v_id_przedmiotu_nauczyciela
         FROM nauczyciele n WHERE n.id = p_id_nauczyciela;
@@ -719,14 +723,33 @@ CREATE OR REPLACE PACKAGE BODY pkg_oceny AS
             RAISE_APPLICATION_ERROR(-20033,
                 'Ten nauczyciel nie może wystawiać ocen z tego przedmiotu!');
         END IF;
+
+        -- WALIDACJA: Instrument ucznia (dla przedmiotów indywidualnych)
+        SELECT p.typ, p.nazwa INTO v_typ_przedmiotu, v_nazwa_przedmiotu
+        FROM przedmioty p WHERE p.id = p_id_przedmiotu;
+
+        IF v_typ_przedmiotu = 'indywidualny' THEN
+            SELECT u.instrument INTO v_instrument_ucznia
+            FROM uczniowie u WHERE u.id = p_id_ucznia;
+
+            IF UPPER(v_instrument_ucznia) != UPPER(v_nazwa_przedmiotu) THEN
+                -- Wyjątek: Pianino = Fortepian
+                IF NOT ((UPPER(v_instrument_ucznia) = 'PIANINO' AND UPPER(v_nazwa_przedmiotu) = 'FORTEPIAN')
+                     OR (UPPER(v_instrument_ucznia) = 'FORTEPIAN' AND UPPER(v_nazwa_przedmiotu) = 'PIANINO')) THEN
+                    RAISE_APPLICATION_ERROR(-20038,
+                        'Uczeń gra na instrumencie ' || v_instrument_ucznia ||
+                        ', nie można wystawić oceny z przedmiotu ' || v_nazwa_przedmiotu || '!');
+                END IF;
+            END IF;
+        END IF;
     END;
 
     -- Wystaw ocenę
     PROCEDURE wystaw_ocene(p_id_ucznia NUMBER, p_id_nauczyciela NUMBER,
                            p_id_przedmiotu NUMBER, p_wartosc NUMBER) IS
     BEGIN
-        -- WALIDACJA: Uprawnienia do oceniania
-        sprawdz_uprawnienia_oceniania(p_id_nauczyciela, p_id_przedmiotu);
+        -- WALIDACJA: Uprawnienia do oceniania i instrument ucznia
+        sprawdz_uprawnienia_oceniania(p_id_nauczyciela, p_id_przedmiotu, p_id_ucznia);
 
         INSERT INTO oceny VALUES (
             t_ocena(
@@ -744,8 +767,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_oceny AS
     PROCEDURE wystaw_ocene_semestralna(p_id_ucznia NUMBER, p_id_nauczyciela NUMBER,
                                        p_id_przedmiotu NUMBER, p_wartosc NUMBER) IS
     BEGIN
-        -- WALIDACJA: Uprawnienia do oceniania
-        sprawdz_uprawnienia_oceniania(p_id_nauczyciela, p_id_przedmiotu);
+        -- WALIDACJA: Uprawnienia do oceniania i instrument ucznia
+        sprawdz_uprawnienia_oceniania(p_id_nauczyciela, p_id_przedmiotu, p_id_ucznia);
 
         INSERT INTO oceny VALUES (
             t_ocena(
