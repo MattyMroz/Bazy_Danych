@@ -2,7 +2,7 @@
 -- SZKOŁA MUZYCZNA I STOPNIA - SCENARIUSZE TESTOWE
 -- Autorzy: Igor Typiński (251237), Mateusz Mróz (251190)
 -- ============================================================================
--- UWAGA: Ten plik należy uruchomić PO wykonaniu plików 01-05 (typy, tabele, 
+-- UWAGA: Ten plik należy uruchomić PO wykonaniu plików 01-05 (typy, tabele,
 --        pakiety, triggery, dane testowe). Scenariusze zakładają, że baza
 --        zawiera już dane testowe (przedmioty 1-5, grupy 1-3, nauczyciele 1-5,
 --        sale 1-4, uczniowie 1-9, lekcje i oceny).
