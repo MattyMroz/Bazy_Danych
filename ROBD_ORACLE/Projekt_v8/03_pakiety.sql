@@ -61,7 +61,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_slowniki AS
         RETURN v_ref;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
-            RAISE_APPLICATION_ERROR(-20010, 'Przedmiot ID=' || p_id || ' nie istnieje');
+            RAISE_APPLICATION_ERROR(-20003, 'Przedmiot ID=' || p_id || ' nie istnieje');
     END;
 
     -- Zwraca REF do grupy o podanym ID
@@ -72,7 +72,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_slowniki AS
         RETURN v_ref;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
-            RAISE_APPLICATION_ERROR(-20011, 'Grupa ID=' || p_id || ' nie istnieje');
+            RAISE_APPLICATION_ERROR(-20004, 'Grupa ID=' || p_id || ' nie istnieje');
     END;
 
     -- Zwraca REF do sali o podanym ID
@@ -83,7 +83,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_slowniki AS
         RETURN v_ref;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
-            RAISE_APPLICATION_ERROR(-20012, 'Sala ID=' || p_id || ' nie istnieje');
+            RAISE_APPLICATION_ERROR(-20005, 'Sala ID=' || p_id || ' nie istnieje');
     END;
 
     -- Lista przedmiotów
@@ -168,7 +168,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_osoby AS
         RETURN v_ref;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
-            RAISE_APPLICATION_ERROR(-20013, 'Nauczyciel ID=' || p_id || ' nie istnieje');
+            RAISE_APPLICATION_ERROR(-20006, 'Nauczyciel ID=' || p_id || ' nie istnieje');
     END;
 
     -- Pobierz referencję do ucznia
@@ -179,7 +179,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_osoby AS
         RETURN v_ref;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
-            RAISE_APPLICATION_ERROR(-20014, 'Uczeń ID=' || p_id || ' nie istnieje');
+            RAISE_APPLICATION_ERROR(-20007, 'Uczeń ID=' || p_id || ' nie istnieje');
     END;
 
     -- Lista nauczycieli
@@ -467,7 +467,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
     BEGIN
         -- WALIDACJA: Lekcja nie może być w weekend
         IF czy_weekend(p_data) THEN
-            RAISE_APPLICATION_ERROR(-20040,
+            RAISE_APPLICATION_ERROR(-20018,
                 'Lekcja nie może być zaplanowana na weekend! Podana data: ' ||
                 TO_CHAR(p_data, 'YYYY-MM-DD (DY)', 'NLS_DATE_LANGUAGE=POLISH'));
         END IF;
@@ -483,7 +483,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         FROM nauczyciele n WHERE n.id = p_id_nauczyciela;
 
         IF v_id_przedmiotu_nauczyciela != p_id_przedmiotu THEN
-            RAISE_APPLICATION_ERROR(-20030, 'Ten nauczyciel nie uczy tego przedmiotu!');
+            RAISE_APPLICATION_ERROR(-20010, 'Ten nauczyciel nie uczy tego przedmiotu!');
         END IF;
 
         -- WALIDACJA: Typ przedmiotu (lekcja indywidualna wymaga przedmiotu indywidualnego)
@@ -491,7 +491,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         FROM przedmioty p WHERE p.id = p_id_przedmiotu;
 
         IF v_typ_przedmiotu = 'grupowy' THEN
-            RAISE_APPLICATION_ERROR(-20036,
+            RAISE_APPLICATION_ERROR(-20015,
                 'Przedmiot ' || v_nazwa_przedmiotu || ' jest grupowy - nie mozna prowadzic go jako lekcje indywidualna!');
         END IF;
 
@@ -504,7 +504,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
                 -- Wyjątek: Pianino = Fortepian (synonimiczny)
                 IF NOT ((UPPER(v_instrument_ucznia) = 'PIANINO' AND UPPER(v_nazwa_przedmiotu) = 'FORTEPIAN')
                      OR (UPPER(v_instrument_ucznia) = 'FORTEPIAN' AND UPPER(v_nazwa_przedmiotu) = 'PIANINO')) THEN
-                    RAISE_APPLICATION_ERROR(-20032,
+                    RAISE_APPLICATION_ERROR(-20012,
                         'Uczeń gra na instrumencie ' || v_instrument_ucznia ||
                         ', a lekcja dotyczy przedmiotu ' || v_nazwa_przedmiotu || '!');
                 END IF;
@@ -525,7 +525,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
                     0                    -- brak grupy
                 );
 
-                RAISE_APPLICATION_ERROR(-20020,
+                RAISE_APPLICATION_ERROR(-20008,
                     'Blad planowania: ' || v_blad ||
                     CHR(10) || 'SUGEROWANY TERMIN: ' || v_sugestia);
             END;
@@ -559,7 +559,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
     BEGIN
         -- WALIDACJA: Lekcja nie może być w weekend
         IF czy_weekend(p_data) THEN
-            RAISE_APPLICATION_ERROR(-20040,
+            RAISE_APPLICATION_ERROR(-20018,
                 'Lekcja nie może być zaplanowana na weekend! Podana data: ' ||
                 TO_CHAR(p_data, 'YYYY-MM-DD (DY)', 'NLS_DATE_LANGUAGE=POLISH'));
         END IF;
@@ -575,7 +575,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         FROM nauczyciele n WHERE n.id = p_id_nauczyciela;
 
         IF v_id_przedmiotu_nauczyciela != p_id_przedmiotu THEN
-            RAISE_APPLICATION_ERROR(-20030, 'Ten nauczyciel nie uczy tego przedmiotu!');
+            RAISE_APPLICATION_ERROR(-20010, 'Ten nauczyciel nie uczy tego przedmiotu!');
         END IF;
 
         -- WALIDACJA: Typ przedmiotu (lekcja grupowa wymaga przedmiotu grupowego)
@@ -587,7 +587,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
             FROM przedmioty p WHERE p.id = p_id_przedmiotu;
 
             IF v_typ_przedmiotu = 'indywidualny' THEN
-                RAISE_APPLICATION_ERROR(-20037,
+                RAISE_APPLICATION_ERROR(-20016,
                     'Przedmiot ' || v_nazwa_przedmiotu || ' jest indywidualny - nie mozna prowadzic go jako lekcje grupowa!');
             END IF;
         END;
@@ -597,7 +597,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         FROM sale s WHERE s.id = p_id_sali;
 
         IF v_typ_sali = 'indywidualna' THEN
-            RAISE_APPLICATION_ERROR(-20031,
+            RAISE_APPLICATION_ERROR(-20011,
                 'Nie można prowadzić lekcji grupowej w sali indywidualnej!');
         END IF;
 
@@ -607,7 +607,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         WHERE DEREF(u.ref_grupa).id = p_id_grupy;
 
         IF v_liczba_uczniow > v_pojemnosc_sali THEN
-            RAISE_APPLICATION_ERROR(-20035,
+            RAISE_APPLICATION_ERROR(-20014,
                 'Sala jest za mała! Grupa liczy ' || v_liczba_uczniow ||
                 ' osób, a sala mieści tylko ' || v_pojemnosc_sali || '.');
         END IF;
@@ -626,7 +626,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
                     v_liczba_uczniow    -- liczba uczniów w grupie
                 );
 
-                RAISE_APPLICATION_ERROR(-20021,
+                RAISE_APPLICATION_ERROR(-20009,
                     'Blad planowania: ' || v_blad ||
                     CHR(10) || 'SUGEROWANY TERMIN: ' || v_sugestia);
             END;
@@ -754,7 +754,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_oceny AS
         FROM nauczyciele n WHERE n.id = p_id_nauczyciela;
 
         IF v_id_przedmiotu_nauczyciela != p_id_przedmiotu THEN
-            RAISE_APPLICATION_ERROR(-20033,
+            RAISE_APPLICATION_ERROR(-20013,
                 'Ten nauczyciel nie może wystawiać ocen z tego przedmiotu!');
         END IF;
 
@@ -770,7 +770,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_oceny AS
                 -- Wyjątek: Pianino = Fortepian
                 IF NOT ((UPPER(v_instrument_ucznia) = 'PIANINO' AND UPPER(v_nazwa_przedmiotu) = 'FORTEPIAN')
                      OR (UPPER(v_instrument_ucznia) = 'FORTEPIAN' AND UPPER(v_nazwa_przedmiotu) = 'PIANINO')) THEN
-                    RAISE_APPLICATION_ERROR(-20038,
+                    RAISE_APPLICATION_ERROR(-20017,
                         'Uczeń gra na instrumencie ' || v_instrument_ucznia ||
                         ', nie można wystawić oceny z przedmiotu ' || v_nazwa_przedmiotu || '!');
                 END IF;

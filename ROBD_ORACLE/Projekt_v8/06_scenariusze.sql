@@ -49,7 +49,7 @@ FUNKCJA: pkg_slowniki.get_ref_grupa(p_id)     RETURN REF t_grupa
 FUNKCJA: pkg_slowniki.get_ref_sala(p_id)      RETURN REF t_sala
 OPIS: Zwraca referencję REF do obiektu o podanym ID
 PARAMETRY: p_id NUMBER - identyfikator obiektu
-WYJĄTEK: -20010/-20011/-20012 gdy obiekt nie istnieje
+WYJĄTEK: -20003/-20004/-20005 gdy obiekt nie istnieje
 UŻYCIE: Wewnętrzne - używane przez inne pakiety do tworzenia powiązań
 
 PROCEDURA: pkg_slowniki.lista_przedmiotow
@@ -89,7 +89,7 @@ UWAGA: Instrument musi odpowiadać nazwie przedmiotu indywidualnego
 FUNKCJA: pkg_osoby.get_ref_nauczyciel(p_id) RETURN REF t_nauczyciel
 FUNKCJA: pkg_osoby.get_ref_uczen(p_id)      RETURN REF t_uczen
 OPIS: Zwraca referencję REF do osoby o podanym ID
-WYJĄTEK: -20013/-20014 gdy osoba nie istnieje
+WYJĄTEK: -20006/-20007 gdy osoba nie istnieje
 
 PROCEDURA: pkg_osoby.lista_nauczycieli
 PROCEDURA: pkg_osoby.lista_uczniow
@@ -123,10 +123,10 @@ WALIDACJE:
 PRZYKŁAD:
   EXEC pkg_lekcje.dodaj_lekcje_indywidualna(6, 6, 5, 10, DATE '2025-06-09', 14);
 BŁĘDY:
-  -20020: Konflikt terminu (+ sugestia alternatywnego terminu!)
-  -20030: Nauczyciel nie uczy tego przedmiotu
-  -20032: Instrument ucznia nie pasuje do przedmiotu
-  -20040: Lekcja zaplanowana na weekend
+  -20008: Konflikt terminu (+ sugestia alternatywnego terminu!)
+  -20010: Nauczyciel nie uczy tego przedmiotu
+  -20012: Instrument ucznia nie pasuje do przedmiotu
+  -20018: Lekcja zaplanowana na weekend
 
 PROCEDURA: pkg_lekcje.dodaj_lekcje_grupowa(p_id_przedmiotu, p_id_nauczyciela, 
                                            p_id_sali, p_id_grupy, p_data, p_godz)
@@ -146,10 +146,10 @@ WALIDACJE:
 PRZYKŁAD:
   EXEC pkg_lekcje.dodaj_lekcje_grupowa(4, 4, 3, 4, DATE '2025-06-10', 14);
 BŁĘDY:
-  -20021: Konflikt terminu (+ sugestia!)
-  -20031: Lekcja grupowa w sali indywidualnej
-  -20035: Przepełnienie sali
-  -20040: Lekcja zaplanowana na weekend
+  -20009: Konflikt terminu (+ sugestia!)
+  -20011: Lekcja grupowa w sali indywidualnej
+  -20014: Przepełnienie sali
+  -20018: Lekcja zaplanowana na weekend
 
 PROCEDURA: pkg_lekcje.plan_ucznia(p_id_ucznia)
 OPIS: Wyświetla plan lekcji ucznia (indywidualne + grupowe)
@@ -179,7 +179,7 @@ PARAMETRY:
   p_id_przedmiotu  NUMBER - ID przedmiotu
   p_wartosc        NUMBER - ocena 1-6
 PRZYKŁAD: EXEC pkg_oceny.wystaw_ocene(10, 6, 6, 5);
-BŁĄD: -20033 gdy nauczyciel nie uczy tego przedmiotu
+BŁĄD: -20013 gdy nauczyciel nie uczy tego przedmiotu
 
 PROCEDURA: pkg_oceny.wystaw_ocene_semestralna(p_id_ucznia, p_id_nauczyciela, p_id_przedmiotu, p_wartosc)
 OPIS: Wystawia ocenę semestralną (końcową) uczniowi
@@ -406,7 +406,7 @@ BEGIN
     pkg_oceny.wystaw_ocene(10, 6, 1, 5);  -- Flecista (6) próbuje ocenić z Fortepianu (1)
 EXCEPTION
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('BLAD (oczekiwany -20033): ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('BLAD (oczekiwany -20013): ' || SQLERRM);
 END;
 /
 
@@ -415,9 +415,10 @@ BEGIN
     pkg_oceny.wystaw_ocene(11, 6, 6, 5);  -- Flecista (6) próbuje ocenić Karolinę (Fortepian) z Fletu
 EXCEPTION
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('BLAD (oczekiwany -20038): ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('BLAD (oczekiwany -20017): ' || SQLERRM);
 END;
 /
+
 
 
 -- ============================================================================
@@ -547,7 +548,7 @@ BEGIN
     pkg_lekcje.dodaj_lekcje_indywidualna(1, 1, 1, 11, DATE '2025-06-07', 14);
 EXCEPTION
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('BLAD (oczekiwany -20040): ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('BLAD (oczekiwany -20018): ' || SQLERRM);
 END;
 /
 
@@ -558,7 +559,7 @@ BEGIN
     pkg_lekcje.dodaj_lekcje_grupowa(4, 4, 3, 1, DATE '2025-06-08', 15);
 EXCEPTION
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('BLAD (oczekiwany -20040): ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('BLAD (oczekiwany -20018): ' || SQLERRM);
 END;
 /
 

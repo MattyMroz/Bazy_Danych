@@ -57,76 +57,76 @@
 
 \subsection{Cel i zakres}
 
-Projekt przedstawia obiektową bazę danych dla szkoły muzycznej I stopnia, ze szczególnym uwzględnieniem śledzenia rozwoju uczniów. Szkoła prowadzi nauczanie gry na instrumentach w trybie indywidualnym oraz zajęcia grupowe (kształcenie słuchu, rytmika). System został zaprojektowany z myślą o codziennej pracy sekretariatu, nauczycieli, dyrekcji szkoły oraz samych uczniów i ich rodziców.
+Projekt przedstawia obiektową bazę danych dla~szkoły muzycznej I~stopnia, ze~szczególnym uwzględnieniem śledzenia rozwoju uczniów. Szkoła prowadzi nauczanie gry na~instrumentach w~trybie indywidualnym oraz zajęcia grupowe (kształcenie słuchu, rytmika). System został zaprojektowany z~myślą o~codziennej pracy sekretariatu, nauczycieli, dyrekcji szkoły oraz samych uczniów i~ich rodziców.
 
 Głównym celem projektu jest stworzenie kompleksowego systemu informatycznego umożliwiającego:
 
 \begin{itemize}
-    \item \textbf{Zarządzanie danymi uczniów} -- rejestracja nowych uczniów, przechowywanie danych osobowych, automatyczne obliczanie wieku, przypisanie do grupy (klasy)
+    \item \textbf{Zarządzanie danymi uczniów} -- rejestracja nowych uczniów, przechowywanie danych osobowych, automatyczne obliczanie wieku, przypisanie do~grupy (klasy)
     
     \item \textbf{Zarządzanie danymi nauczycieli} -- ewidencja kadry pedagogicznej, każdy nauczyciel uczy jednego przedmiotu
     
-    \item \textbf{Planowanie lekcji} -- tworzenie harmonogramu zajęć indywidualnych (1 uczeń) i grupowych (cała klasa) z walidacją konfliktów terminów oraz heurystyką sugestii wolnego terminu
+    \item \textbf{Planowanie lekcji} -- tworzenie harmonogramu zajęć indywidualnych (1~uczeń) i~grupowych (cała klasa) z~walidacją konfliktów terminów oraz heurystyką sugestii wolnego terminu
     
-    \item \textbf{Rezerwacja sal lekcyjnych} -- przydzielanie sal z odpowiednim wyposażeniem (przechowywane jako VARRAY) do poszczególnych lekcji
+    \item \textbf{Rezerwacja sal lekcyjnych} -- przydzielanie sal z~odpowiednim wyposażeniem (przechowywane jako VARRAY) do~poszczególnych lekcji
     
-    \item \textbf{Ocenianie postępu uczniów} -- wystawianie ocen cząstkowych i semestralnych z walidacją uprawnień nauczyciela
+    \item \textbf{Ocenianie postępu uczniów} -- wystawianie ocen cząstkowych i~semestralnych z~walidacją uprawnień nauczyciela
     
-    \item \textbf{Kontrola reguł biznesowych} -- automatyczna walidacja uczestników lekcji (albo uczeń albo grupa), zakresu ocen, konfliktów czasowych, kompetencji nauczycieli
+    \item \textbf{Kontrola reguł biznesowych} -- automatyczna walidacja uczestników lekcji (albo~uczeń albo~grupa), zakresu ocen, konfliktów czasowych, kompetencji nauczycieli
     
     \item \textbf{Generowanie raportów} -- plan dnia, plan ucznia, plan nauczyciela, raport grup, statystyki szkoły
 \end{itemize}
 
-System uwzględnia specyfikę szkoły muzycznej I stopnia z 6-letnim cyklem nauczania. Lekcje odbywają się w godzinach popołudniowych (14:00--20:00), co odpowiada potrzebom uczniów uczęszczających równolegle do szkoły ogólnokształcącej.
+System uwzględnia specyfikę szkoły muzycznej I~stopnia z~6-letnim cyklem nauczania. Lekcje odbywają się w~godzinach popołudniowych (14:00--20:00), co~odpowiada potrzebom uczniów uczęszczających równolegle do~szkoły ogólnokształcącej.
 
 \subsection{Przyjęte ograniczenia}
 
 W projekcie przyjęto następujące ograniczenia biznesowe:
 
 \begin{enumerate}
-    \item \textbf{Cykl nauczania:} 6 lat -- klasy I-VI szkoły muzycznej I stopnia
+    \item \textbf{Cykl nauczania:} 6~lat -- klasy I-VI szkoły muzycznej I~stopnia
     
-    \item \textbf{Godziny pracy szkoły:} 14:00--20:00 -- lekcje mogą być planowane tylko w tych godzinach
+    \item \textbf{Godziny pracy szkoły:} 14:00--20:00 -- lekcje mogą być planowane tylko w~tych godzinach
     
-    \item \textbf{Dni pracy szkoły:} poniedziałek--piątek -- szkoła nie prowadzi zajęć w weekendy
+    \item \textbf{Dni pracy szkoły:} poniedziałek--piątek -- szkoła nie~prowadzi zajęć w~weekendy
     
-    \item \textbf{Czas trwania lekcji:} stały 45 minut dla wszystkich zajęć
+    \item \textbf{Czas trwania lekcji:} stały 45~minut dla~wszystkich zajęć
     
-    \item \textbf{Siatka godzinowa:} lekcje rozpoczynają się o pełnych godzinach (14:00, 15:00, 16:00...)
+    \item \textbf{Siatka godzinowa:} lekcje rozpoczynają się o~pełnych godzinach (14:00, 15:00, 16:00...)
     
-    \item \textbf{Jeden instrument na ucznia:} każdy uczeń uczy się jednego instrumentu głównego
+    \item \textbf{Jeden instrument na~ucznia:} każdy uczeń uczy się jednego instrumentu głównego
     
-    \item \textbf{Jeden przedmiot na nauczyciela:} każdy nauczyciel uczy jednego przedmiotu
+    \item \textbf{Jeden przedmiot na~nauczyciela:} każdy nauczyciel uczy jednego przedmiotu
     
-    \item \textbf{XOR lekcji:} lekcja jest ALBO indywidualna (1 uczeń) ALBO grupowa (klasa) -- nigdy obie opcje jednocześnie
+    \item \textbf{XOR lekcji:} lekcja jest ALBO~indywidualna (1~uczeń) ALBO~grupowa (klasa) -- nigdy obie opcje jednocześnie
     
-    \item \textbf{Maksymalne wyposażenie sali:} 10 elementów (ograniczenie VARRAY)
+    \item \textbf{Maksymalne wyposażenie sali:} 10~elementów (ograniczenie VARRAY)
     
     \item \textbf{Skala ocen:} 1--6 (polska skala szkolna)
     
-    \item \textbf{Typy sal:} indywidualna lub grupowa
+    \item \textbf{Typy sal:} indywidualna lub~grupowa
     
-    \item \textbf{Typy przedmiotów:} indywidualny (instrument) lub grupowy (kształcenie słuchu, rytmika)
+    \item \textbf{Typy przedmiotów:} indywidualny (instrument) lub~grupowy (kształcenie słuchu, rytmika)
     
-    \item \textbf{Brak konfliktów czasowych:} ta sama sala, nauczyciel, uczeń lub grupa nie mogą mieć dwóch lekcji w tym samym czasie
+    \item \textbf{Brak konfliktów czasowych:} ta sama sala, nauczyciel, uczeń lub~grupa nie~mogą mieć dwóch lekcji w~tym samym czasie
     
-    \item \textbf{Walidacja kompetencji:} nauczyciel może prowadzić tylko lekcje z przedmiotu, który jest do niego przypisany
+    \item \textbf{Walidacja kompetencji:} nauczyciel może prowadzić tylko lekcje z~przedmiotu, który jest do~niego przypisany
     
-    \item \textbf{Walidacja typu sali:} lekcje grupowe wymagają sali typu 'grupowa'
+    \item \textbf{Walidacja typu sali:} lekcje grupowe wymagają sali typu~'grupowa'
     
-    \item \textbf{Zgodność typu przedmiotu z typem lekcji:} przedmiot indywidualny (np. Fortepian) może być prowadzony tylko jako lekcja indywidualna, przedmiot grupowy (np. Kształcenie słuchu) może być prowadzony tylko jako lekcja grupowa
+    \item \textbf{Zgodność typu przedmiotu z~typem lekcji:} przedmiot indywidualny (np.~Fortepian) może być prowadzony tylko jako~lekcja indywidualna, przedmiot grupowy (np.~Kształcenie słuchu) może być prowadzony tylko jako~lekcja grupowa
     
-    \item \textbf{Brak limitów godzin:} system nie narzuca limitów tygodniowych liczby lekcji dla nauczyciela lub ucznia (jedynym ograniczeniem jest dostępność czasowa i brak konfliktów w planie)
+    \item \textbf{Brak limitów godzin:} system nie~narzuca limitów tygodniowych liczby lekcji dla~nauczyciela lub~ucznia (jedynym ograniczeniem jest dostępność czasowa i~brak konfliktów w~planie)
     
-    \item \textbf{Synonimiczność instrumentów:} system automatycznie uznaje "Pianino" i "Fortepian" za ten sam instrument przy sprawdzaniu wyposażenia sal i uprawnień ucznia
+    \item \textbf{Synonimiczność instrumentów:} system automatycznie uznaje "Pianino" i~"Fortepian" za~ten sam instrument przy~sprawdzaniu wyposażenia sal i~uprawnień ucznia
     
-    \item \textbf{Wyłączność oceniania:} nauczyciel może wystawiać oceny wyłącznie z przedmiotu, do którego jest przypisany w systemie
+    \item \textbf{Wyłączność oceniania:} nauczyciel może wystawiać oceny wyłącznie z~przedmiotu, do~którego jest przypisany w~systemie
     
-    \item \textbf{Zgodność instrumentu przy ocenianiu:} dla przedmiotów indywidualnych nauczyciel może wystawić ocenę tylko uczniowi, którego instrument główny odpowiada ocenianemu przedmiotowi (np. ocena z Fortepianu tylko dla uczniów grających na Fortepianie)
+    \item \textbf{Zgodność instrumentu przy~ocenianiu:} dla~przedmiotów indywidualnych nauczyciel może wystawić ocenę tylko uczniowi, którego instrument główny odpowiada ocenianemu przedmiotowi (np.~ocena z~Fortepianu tylko dla~uczniów grających na~Fortepianie)
     
-    \item \textbf{Logika średniej ocen:} średnia ocen z przedmiotu obliczana jest automatycznie z wyłączeniem ocen semestralnych
+    \item \textbf{Logika średniej ocen:} średnia ocen z~przedmiotu obliczana jest automatycznie z~wyłączeniem ocen semestralnych
     
-    \item \textbf{Horyzont planowania:} heurystyka doboru wolnych terminów przeszukuje grafik w przód na maksymalnie 7 dni od podanej daty
+    \item \textbf{Horyzont planowania:} heurystyka doboru wolnych terminów przeszukuje grafik w~przód na~maksymalnie 7~dni od~podanej daty
 \end{enumerate}
 
 \subsection{Technologia}
@@ -143,7 +143,7 @@ W projekcie przyjęto następujące ograniczenia biznesowe:
 \newpage
 \section{Typy obiektowe}
 
-W projekcie zdefiniowano 8 typów obiektowych z łącznie 10 metodami.
+W~projekcie zdefiniowano 8~typów obiektowych z~łącznie 10~metodami.
 
 \begin{table}[h]
 \centering
@@ -154,10 +154,10 @@ W projekcie zdefiniowano 8 typów obiektowych z łącznie 10 metodami.
 t\_wyposazenie & -- & VARRAY(10) nazw elementów wyposażenia \\
 t\_przedmiot & 1 & Przedmiot nauczania (indywidualny/grupowy) \\
 t\_grupa & -- & Klasa uczniów (symbol, poziom I-VI) \\
-t\_nauczyciel & 2 & Nauczyciel z REF do przedmiotu \\
-t\_sala & 2 & Sala lekcyjna z VARRAY wyposażenia \\
-t\_uczen & 2 & Uczeń z REF do grupy \\
-t\_lekcja & 2 & Lekcja z wyborem: REF do ucznia lub grupy \\
+t\_nauczyciel & 2 & Nauczyciel z~REF do~przedmiotu \\
+t\_sala & 2 & Sala lekcyjna z~VARRAY wyposażenia \\
+t\_uczen & 2 & Uczeń z~REF do~grupy \\
+t\_lekcja & 2 & Lekcja z~wyborem: REF do~ucznia lub~grupy \\
 t\_ocena & 1 & Ocena postępu ucznia \\
 \hline
 \multicolumn{2}{|r|}{\textbf{Razem:}} & \textbf{8 typów, 10 metod} \\
@@ -172,7 +172,7 @@ Kolekcja VARRAY przechowująca nazwy elementów wyposażenia sali lekcyjnej.
 
 \texttt{CREATE OR REPLACE TYPE t\_wyposazenie AS VARRAY(10) OF VARCHAR2(50);}
 
-Ograniczenie do 10 elementów wynika z założenia, że sala ma skończoną liczbę istotnych elementów wyposażenia (fortepian, metronom, lustro, pulpity itp.). Kolekcja przeszukiwana jest przez funkcję prywatną \texttt{sala\_ma\_instrument()} przy planowaniu lekcji.
+Ograniczenie do~10~elementów wynika z~założenia, że~sala ma~skończoną liczbę istotnych elementów wyposażenia (fortepian, metronom, lustro, pulpity itp.). Kolekcja przeszukiwana jest przez~funkcję prywatną \texttt{sala\_ma\_instrument()} przy~planowaniu lekcji.
 
 \subsection{t\_przedmiot}
 
@@ -181,8 +181,8 @@ Reprezentuje przedmiot nauczania w słowniku przedmiotów.
 \textbf{Atrybuty:}
 \begin{itemize}[nosep]
     \item id (NUMBER) -- unikalny identyfikator
-    \item nazwa (VARCHAR2(50)) -- nazwa przedmiotu (np. Fortepian, Kształcenie słuchu)
-    \item typ (VARCHAR2(20)) -- typ: 'indywidualny' lub 'grupowy'
+    \item nazwa (VARCHAR2(50)) -- nazwa przedmiotu (np.~Fortepian, Kształcenie słuchu)
+    \item typ (VARCHAR2(20)) -- typ: 'indywidualny' lub~'grupowy'
     \item czas\_min (NUMBER) -- czas trwania lekcji (stałe 45 minut)
 \end{itemize}
 
@@ -193,12 +193,12 @@ Reprezentuje przedmiot nauczania w słowniku przedmiotów.
 
 \subsection{t\_grupa}
 
-Reprezentuje klasę (grupę) uczniów w szkole muzycznej.
+Reprezentuje klasę (grupę) uczniów w~szkole muzycznej.
 
 \textbf{Atrybuty:}
 \begin{itemize}[nosep]
     \item id (NUMBER) -- unikalny identyfikator
-    \item symbol (VARCHAR2(10)) -- symbol grupy (np. '1A', '2A', '3A')
+    \item symbol (VARCHAR2(10)) -- symbol grupy (np.~'1A', '2A', '3A')
     \item poziom (NUMBER) -- poziom klasy 1-6 (klasa I-VI szkoły muzycznej)
 \end{itemize}
 
@@ -206,7 +206,7 @@ Typ nie posiada metod -- jest prostym kontenerem danych słownikowych.
 
 \subsection{t\_nauczyciel}
 
-Reprezentuje nauczyciela szkoły muzycznej wraz z referencją do przedmiotu.
+Reprezentuje nauczyciela szkoły muzycznej wraz z~referencją do~przedmiotu.
 
 \textbf{Atrybuty:}
 \begin{itemize}[nosep]
@@ -214,7 +214,7 @@ Reprezentuje nauczyciela szkoły muzycznej wraz z referencją do przedmiotu.
     \item imie (VARCHAR2(50)) -- imię nauczyciela
     \item nazwisko (VARCHAR2(50)) -- nazwisko nauczyciela
     \item data\_zatr (DATE) -- data zatrudnienia
-    \item ref\_przedmiot (REF t\_przedmiot) -- referencja do przedmiotu który uczy
+    \item ref\_przedmiot (REF t\_przedmiot) -- referencja do~przedmiotu który~uczy
 \end{itemize}
 
 \textbf{Metody:}
@@ -230,8 +230,8 @@ Reprezentuje salę lekcyjną z kolekcją VARRAY wyposażenia.
 \textbf{Atrybuty:}
 \begin{itemize}[nosep]
     \item id (NUMBER) -- unikalny identyfikator
-    \item numer (VARCHAR2(10)) -- numer sali (np. '101', '102')
-    \item typ (VARCHAR2(20)) -- typ: 'indywidualna' lub 'grupowa'
+    \item numer (VARCHAR2(10)) -- numer sali (np.~'101', '102')
+    \item typ (VARCHAR2(20)) -- typ: 'indywidualna' lub~'grupowa'
     \item pojemnosc (NUMBER) -- maksymalna liczba osób
     \item wyposazenie (t\_wyposazenie) -- VARRAY elementów wyposażenia
 \end{itemize}
@@ -252,8 +252,8 @@ Reprezentuje ucznia szkoły muzycznej z referencją do grupy.
     \item imie (VARCHAR2(50)) -- imię ucznia
     \item nazwisko (VARCHAR2(50)) -- nazwisko ucznia
     \item data\_ur (DATE) -- data urodzenia
-    \item instrument (VARCHAR2(50)) -- instrument główny (np. Fortepian, Skrzypce)
-    \item ref\_grupa (REF t\_grupa) -- referencja do grupy (klasy)
+    \item instrument (VARCHAR2(50)) -- instrument główny (np.~Fortepian, Skrzypce)
+    \item ref\_grupa (REF t\_grupa) -- referencja do~grupy (klasy)
 \end{itemize}
 
 \textbf{Metody:}
@@ -264,16 +264,16 @@ Reprezentuje ucznia szkoły muzycznej z referencją do grupy.
 
 \subsection{t\_lekcja}
 
-Reprezentuje pojedynczą lekcję muzyki z wyborem uczestnika (albo uczeń albo grupa).
+Reprezentuje pojedynczą lekcję muzyki z~wyborem uczestnika (albo~uczeń albo~grupa).
 
 \textbf{Atrybuty:}
 \begin{itemize}[nosep]
     \item id (NUMBER) -- unikalny identyfikator
-    \item ref\_przedmiot (REF t\_przedmiot) -- referencja do przedmiotu
-    \item ref\_nauczyciel (REF t\_nauczyciel) -- referencja do nauczyciela
-    \item ref\_sala (REF t\_sala) -- referencja do sali
-    \item ref\_uczen (REF t\_uczen) -- referencja do ucznia (lekcja indywidualna)
-    \item ref\_grupa (REF t\_grupa) -- referencja do grupy (lekcja grupowa)
+    \item ref\_przedmiot (REF t\_przedmiot) -- referencja do~przedmiotu
+    \item ref\_nauczyciel (REF t\_nauczyciel) -- referencja do~nauczyciela
+    \item ref\_sala (REF t\_sala) -- referencja do~sali
+    \item ref\_uczen (REF t\_uczen) -- referencja do~ucznia (lekcja indywidualna)
+    \item ref\_grupa (REF t\_grupa) -- referencja do~grupy (lekcja grupowa)
     \item data\_lekcji (DATE) -- data lekcji
     \item godz\_rozp (NUMBER) -- godzina rozpoczęcia (14, 15, 16... -- pełne godziny)
     \item czas\_min (NUMBER) -- czas trwania w minutach (stałe 45)
@@ -285,7 +285,7 @@ Reprezentuje pojedynczą lekcję muzyki z wyborem uczestnika (albo uczeń albo g
     \item czy\_indywidualna() RETURN VARCHAR2 -- zwraca 'T' jeśli ref\_uczen IS NOT NULL, inaczej 'N'
 \end{itemize}
 
-\textbf{Reguła przypisania:} Lekcja musi mieć wypełnione ALBO ref\_uczen (lekcja indywidualna) ALBO ref\_grupa (lekcja grupowa), nigdy oba jednocześnie i nigdy żadne. Walidowane przez trigger \texttt{trg\_lekcja\_xor}.
+\textbf{Reguła przypisania:} Lekcja musi mieć wypełnione ALBO~ref\_uczen (lekcja indywidualna) ALBO~ref\_grupa (lekcja grupowa), nigdy oba jednocześnie i~nigdy żadne. Walidowane przez~trigger \texttt{trg\_lekcja\_xor}.
 
 \subsection{t\_ocena}
 
@@ -294,12 +294,12 @@ Reprezentuje ocenę postępu ucznia.
 \textbf{Atrybuty:}
 \begin{itemize}[nosep]
     \item id (NUMBER) -- unikalny identyfikator
-    \item ref\_uczen (REF t\_uczen) -- referencja do ucznia
-    \item ref\_nauczyciel (REF t\_nauczyciel) -- referencja do nauczyciela wystawiającego
-    \item ref\_przedmiot (REF t\_przedmiot) -- referencja do przedmiotu
+    \item ref\_uczen (REF t\_uczen) -- referencja do~ucznia
+    \item ref\_nauczyciel (REF t\_nauczyciel) -- referencja do~nauczyciela wystawiającego
+    \item ref\_przedmiot (REF t\_przedmiot) -- referencja do~przedmiotu
     \item wartosc (NUMBER) -- wartość oceny 1--6
     \item data\_oceny (DATE) -- data wystawienia oceny
-    \item semestralna (VARCHAR2(1)) -- 'T' dla oceny semestralnej, 'N' dla cząstkowej
+    \item semestralna (VARCHAR2(1)) -- 'T' dla~oceny semestralnej, 'N' dla~cząstkowej
 \end{itemize}
 
 \textbf{Metody:}
@@ -359,7 +359,7 @@ Słownik grup (klas) uczniów.
 
 \subsection{nauczyciele}
 
-Dane nauczycieli z referencją do przedmiotu.
+Dane nauczycieli z referencją do~przedmiotu.
 
 \begin{itemize}[nosep]
     \item Klucz główny: id
@@ -382,7 +382,7 @@ Informacje o salach lekcyjnych z kolekcją VARRAY wyposażenia.
 
 \subsection{uczniowie}
 
-Dane uczniów szkoły muzycznej z referencją do grupy.
+Dane uczniów szkoły muzycznej z referencją do~grupy.
 
 \begin{itemize}[nosep]
     \item Klucz główny: id
@@ -392,7 +392,7 @@ Dane uczniów szkoły muzycznej z referencją do grupy.
 
 \subsection{lekcje}
 
-Zaplanowane lekcje muzyki z wyborem typu uczestnictwa.
+Zaplanowane lekcje muzyki z~wyborem typu uczestnictwa.
 
 \begin{itemize}[nosep]
     \item Klucz główny: id
@@ -400,7 +400,7 @@ Zaplanowane lekcje muzyki z wyborem typu uczestnictwa.
     \item CHECK: godz\_rozp BETWEEN 14 AND 19
     \item CHECK: czas\_min = 45
     \item Referencje: ref\_przedmiot, ref\_nauczyciel, ref\_sala
-    \item Relacja uczestników: ref\_uczen (dla indywidualnych), ref\_grupa (dla grupowych)
+    \item Relacja uczestników: ref\_uczen (dla~indywidualnych), ref\_grupa (dla~grupowych)
     \item Trigger: trg\_lekcja\_xor wymusza poprawność danych
 \end{itemize}
 
@@ -418,13 +418,13 @@ Oceny postępu uczniów.
 
 \subsection{Referencje (REF/DEREF)}
 
-W projekcie zastosowano 9 referencji do modelowania relacji między obiektami:
+W~projekcie zastosowano 9~referencji do~modelowania relacji między~obiektami:
 
 \begin{itemize}[nosep]
-    \item Nauczyciel wskazuje na przedmiot, którego uczy (1 REF)
-    \item Uczeń wskazuje na grupę, do której należy (1 REF)
-    \item Lekcja wskazuje na przedmiot, nauczyciela, salę oraz ucznia lub grupę (4-5 REF)
-    \item Ocena wskazuje na ucznia, nauczyciela i przedmiot (3 REF)
+    \item Nauczyciel wskazuje na~przedmiot, którego uczy (1~REF)
+    \item Uczeń wskazuje na~grupę, do~której należy (1~REF)
+    \item Lekcja wskazuje na~przedmiot, nauczyciela, salę oraz ucznia lub~grupę (4-5~REF)
+    \item Ocena wskazuje na~ucznia, nauczyciela i~przedmiot (3~REF)
 \end{itemize}
 
 Dzięki DEREF możliwe jest odwołanie się do atrybutów i metod obiektu wskazywanego:
@@ -457,7 +457,7 @@ Utworzono 7 sekwencji do generowania identyfikatorów:
 \newpage
 \section{Pakiety PL/SQL}
 
-Logika biznesowa zaimplementowana w 5 pakietach z łącznie 25 podprogramami.
+Logika biznesowa zaimplementowana w~5~pakietach z~łącznie 25~podprogramami.
 
 \begin{table}[h]
 \centering
@@ -483,9 +483,9 @@ Pakiet do zarządzania słownikami (przedmioty, grupy, sale).
 
 \textbf{Procedury dodawania:}
 \begin{itemize}[nosep]
-    \item dodaj\_przedmiot(p\_nazwa, p\_typ) -- dodaje przedmiot do słownika
+    \item dodaj\_przedmiot(p\_nazwa, p\_typ) -- dodaje przedmiot do~słownika
     \item dodaj\_grupe(p\_symbol, p\_poziom) -- dodaje grupę (klasę)
-    \item dodaj\_sale(p\_numer, p\_typ, p\_pojemnosc, p\_wyposazenie) -- dodaje salę z VARRAY wyposażenia
+    \item dodaj\_sale(p\_numer, p\_typ, p\_pojemnosc, p\_wyposazenie) -- dodaje salę z~VARRAY wyposażenia
 \end{itemize}
 
 \textbf{Funkcje pobierania referencji:}
@@ -508,8 +508,8 @@ Pakiet do zarządzania nauczycielami i uczniami.
 
 \textbf{Procedury dodawania:}
 \begin{itemize}[nosep]
-    \item dodaj\_nauczyciela(p\_imie, p\_nazwisko, p\_id\_przedmiotu) -- dodaje nauczyciela z REF do przedmiotu
-    \item dodaj\_ucznia(p\_imie, p\_nazwisko, p\_data\_ur, p\_instrument, p\_id\_grupy) -- dodaje ucznia z REF do grupy
+    \item dodaj\_nauczyciela(p\_imie, p\_nazwisko, p\_id\_przedmiotu) -- dodaje nauczyciela z~REF do~przedmiotu
+    \item dodaj\_ucznia(p\_imie, p\_nazwisko, p\_data\_ur, p\_instrument, p\_id\_grupy) -- dodaje ucznia z~REF do~grupy
 \end{itemize}
 
 \textbf{Funkcje pobierania referencji:}
@@ -520,8 +520,8 @@ Pakiet do zarządzania nauczycielami i uczniami.
 
 \textbf{Procedury listowania:}
 \begin{itemize}[nosep]
-    \item lista\_nauczycieli() -- wyświetla nauczycieli z przedmiotami (DEREF)
-    \item lista\_uczniow() -- wyświetla uczniów z grupami (DEREF)
+    \item lista\_nauczycieli() -- wyświetla nauczycieli z~przedmiotami (DEREF)
+    \item lista\_uczniow() -- wyświetla uczniów z~grupami (DEREF)
     \item lista\_uczniow\_grupy(p\_id\_grupy) -- wyświetla uczniów danej grupy (\textbf{kursor jawny} OPEN/FETCH/CLOSE)
 \end{itemize}
 
@@ -533,9 +533,9 @@ Pakiet do zarządzania lekcjami z pełną walidacją konfliktów i heurystyką s
 \begin{itemize}[nosep]
     \item dodaj\_lekcje\_indywidualna(...) -- planuje lekcję indywidualną z walidacją
     \item dodaj\_lekcje\_grupowa(...) -- planuje lekcję grupową z walidacją
-    \item plan\_ucznia(p\_id\_ucznia) -- wyświetla plan ucznia (UNION lekcji indywidualnych i grupowych)
+    \item plan\_ucznia(p\_id\_ucznia) -- wyświetla plan ucznia (UNION lekcji indywidualnych i~grupowych)
     \item plan\_nauczyciela(p\_id\_nauczyciela) -- wyświetla plan nauczyciela
-    \item plan\_dnia(p\_data) -- wyświetla wszystkie lekcje w danym dniu
+    \item plan\_dnia(p\_data) -- wyświetla wszystkie lekcje w~danym dniu
 \end{itemize}
 
 \textbf{Funkcje prywatne:}
@@ -548,9 +548,9 @@ Pakiet do zarządzania lekcjami z pełną walidacją konfliktów i heurystyką s
 
 \textbf{Walidacje w procedurze dodaj\_lekcje\_indywidualna:}
 \begin{itemize}[nosep]
-    \item Data nie może wypadać w weekend (sobota/niedziela)
+    \item Data nie może wypadać w~weekend (sobota/niedziela)
     \item Kompetencje nauczyciela (czy uczy tego przedmiotu -- sprawdzenie REF)
-    \item Zgodność instrumentu ucznia z przedmiotem
+    \item Zgodność instrumentu ucznia z~przedmiotem
     \item Konflikt sali -- brak nakładających się terminów
     \item Konflikt nauczyciela -- brak nakładających się terminów
     \item Konflikt ucznia -- brak nakładających się terminów
@@ -558,9 +558,9 @@ Pakiet do zarządzania lekcjami z pełną walidacją konfliktów i heurystyką s
 
 \textbf{Dodatkowe walidacje w procedurze dodaj\_lekcje\_grupowa:}
 \begin{itemize}[nosep]
-    \item Data nie może wypadać w weekend (sobota/niedziela)
+    \item Data nie może wypadać w~weekend (sobota/niedziela)
     \item Typ sali -- lekcja grupowa wymaga sali typu 'grupowa'
-    \item Przepełnienie sali -- pojemność >= liczba uczniów w grupie
+    \item Przepełnienie sali -- pojemność >= liczba uczniów w~grupie
     \item Konflikt grupy -- brak nakładających się terminów
 \end{itemize}
 
@@ -572,12 +572,12 @@ Pakiet do zarządzania ocenami postępu uczniów.
 \begin{itemize}[nosep]
     \item wystaw\_ocene(p\_id\_ucznia, p\_id\_nauczyciela, p\_id\_przedmiotu, p\_wartosc) -- ocena cząstkowa
     \item wystaw\_ocene\_semestralna(...) -- ocena semestralna (semestralna='T')
-    \item oceny\_ucznia(p\_id\_ucznia) -- wyświetla wszystkie oceny ucznia z opisem słownym
+    \item oceny\_ucznia(p\_id\_ucznia) -- wyświetla wszystkie oceny ucznia z~opisem słownym
 \end{itemize}
 
 \textbf{Funkcja publiczna:}
 \begin{itemize}[nosep]
-    \item srednia\_ucznia(p\_id\_ucznia, p\_id\_przedmiotu) RETURN NUMBER -- średnia ocen cząstkowych (0 gdy brak)
+    \item srednia\_ucznia(p\_id\_ucznia, p\_id\_przedmiotu) RETURN NUMBER -- średnia ocen cząstkowych (0~gdy brak)
 \end{itemize}
 
 \textbf{Procedura prywatna:}
@@ -591,7 +591,7 @@ Pakiet do generowania raportów i statystyk.
 
 \textbf{Procedury:}
 \begin{itemize}[nosep]
-    \item raport\_grup() -- wyświetla liczbę uczniów w każdej grupie (podzapytanie skorelowane)
+    \item raport\_grup() -- wyświetla liczbę uczniów w~każdej grupie (podzapytanie skorelowane)
     \item statystyki() -- wyświetla ogólne statystyki szkoły (liczba uczniów, nauczycieli, grup, sal, lekcji, ocen)
 \end{itemize}
 
@@ -601,7 +601,7 @@ Pakiet do generowania raportów i statystyk.
 \newpage
 \section{Wyzwalacze (Triggery)}
 
-Zdefiniowano 2 wyzwalacze realizujące krytyczne reguły biznesowe. Walidacja konfliktów terminów jest zaimplementowana w pakiecie \texttt{pkg\_lekcje}, aby uniknąć błędu ORA-04091 (Mutating Table).
+Zdefiniowano 2~wyzwalacze realizujące krytyczne reguły biznesowe. Walidacja konfliktów terminów jest zaimplementowana w~pakiecie \texttt{pkg\_lekcje}, aby~uniknąć błędu ORA-04091 (Mutating Table).
 
 \begin{table}[h]
 \centering
@@ -610,7 +610,7 @@ Zdefiniowano 2 wyzwalacze realizujące krytyczne reguły biznesowe. Walidacja ko
 \hline
 \textbf{Trigger} & \textbf{Typ} & \textbf{Działanie} \\
 \hline
-trg\_lekcja\_xor & BEFORE INSERT/UPDATE & Weryfikacja uczestników: lekcja musi mieć ALBO ucznia ALBO grupę (nigdy oba, nigdy żadne) \\
+trg\_lekcja\_xor & BEFORE INSERT/UPDATE & Weryfikacja uczestników: lekcja musi mieć ALBO~ucznia ALBO~grupę (nigdy oba, nigdy żadne) \\
 \hline
 trg\_ocena\_zakres & BEFORE INSERT/UPDATE & Walidacja zakresu ocen 1-6 z przyjaznym komunikatem błędu \\
 \hline
@@ -668,41 +668,41 @@ W projekcie zastosowano mechanizmy obsługi wyjątków z własnymi kodami błęd
 \hline
 \textbf{Kod} & \textbf{Źródło} & \textbf{Znaczenie} \\
 \hline
--20001 & trg\_lekcja\_xor & Nieprawidłowe przypisanie uczestników (lekcja musi mieć ucznia LUB grupę) \\
+-20001 & trg\_lekcja\_xor & Nieprawidłowe przypisanie uczestników (lekcja musi mieć ucznia LUB~grupę) \\
 \hline
 -20002 & trg\_ocena\_zakres & Ocena poza zakresem 1-6 \\
 \hline
--20010 & pkg\_slowniki.get\_ref\_przedmiot & Nie znaleziono przedmiotu o podanym ID \\
+-20003 & pkg\_slowniki.get\_ref\_przedmiot & Nie znaleziono przedmiotu o podanym ID \\
 \hline
--20011 & pkg\_slowniki.get\_ref\_grupa & Nie znaleziono grupy o podanym ID \\
+-20004 & pkg\_slowniki.get\_ref\_grupa & Nie znaleziono grupy o podanym ID \\
 \hline
--20012 & pkg\_slowniki.get\_ref\_sala & Nie znaleziono sali o podanym ID \\
+-20005 & pkg\_slowniki.get\_ref\_sala & Nie znaleziono sali o podanym ID \\
 \hline
--20013 & pkg\_osoby.get\_ref\_nauczyciel & Nie znaleziono nauczyciela o podanym ID \\
+-20006 & pkg\_osoby.get\_ref\_nauczyciel & Nie znaleziono nauczyciela o podanym ID \\
 \hline
--20014 & pkg\_osoby.get\_ref\_uczen & Nie znaleziono ucznia o podanym ID \\
+-20007 & pkg\_osoby.get\_ref\_uczen & Nie znaleziono ucznia o podanym ID \\
 \hline
--20020 & pkg\_lekcje.dodaj\_lekcje\_indywidualna & Konflikt terminów (+ sugestia alternatywy) \\
+-20008 & pkg\_lekcje.dodaj\_lekcje\_indywidualna & Konflikt terminów (+ sugestia alternatywy) \\
 \hline
--20021 & pkg\_lekcje.dodaj\_lekcje\_grupowa & Konflikt terminów (+ sugestia alternatywy) \\
+-20009 & pkg\_lekcje.dodaj\_lekcje\_grupowa & Konflikt terminów (+ sugestia alternatywy) \\
 \hline
--20030 & pkg\_lekcje & Nauczyciel nie uczy podanego przedmiotu \\
+-20010 & pkg\_lekcje & Nauczyciel nie uczy podanego przedmiotu \\
 \hline
--20031 & pkg\_lekcje & Lekcja grupowa w sali indywidualnej \\
+-20011 & pkg\_lekcje & Lekcja grupowa w sali indywidualnej \\
 \hline
--20032 & pkg\_lekcje & Instrument ucznia niezgodny z przedmiotem \\
+-20012 & pkg\_lekcje & Instrument ucznia niezgodny z przedmiotem \\
 \hline
--20033 & pkg\_oceny & Nauczyciel nie ma uprawnień do oceniania \\
+-20013 & pkg\_oceny & Nauczyciel nie ma uprawnień do oceniania \\
 \hline
--20035 & pkg\_lekcje & Przepełnienie sali (grupa > pojemność) \\
+-20014 & pkg\_lekcje & Przepełnienie sali (grupa > pojemność) \\
 \hline
--20036 & pkg\_lekcje & Przedmiot grupowy nie może być prowadzony jako lekcja indywidualna \\
+-20015 & pkg\_lekcje & Przedmiot grupowy nie może być prowadzony jako lekcja indywidualna \\
 \hline
--20037 & pkg\_lekcje & Przedmiot indywidualny nie może być prowadzony jako lekcja grupowa \\
+-20016 & pkg\_lekcje & Przedmiot indywidualny nie może być prowadzony jako lekcja grupowa \\
 \hline
--20038 & pkg\_oceny & Próba wystawienia oceny z przedmiotu uczniowi grającemu na innym instrumencie \\
+-20017 & pkg\_oceny & Próba wystawienia oceny z przedmiotu uczniowi grającemu na innym instrumencie \\
 \hline
--20040 & pkg\_lekcje & Lekcja zaplanowana na weekend (sobota/niedziela) \\
+-20018 & pkg\_lekcje & Lekcja zaplanowana na weekend (sobota/niedziela) \\
 \hline
 \end{tabular}
 \caption{Kody błędów aplikacji}
@@ -713,7 +713,7 @@ W projekcie zastosowano mechanizmy obsługi wyjątków z własnymi kodami błęd
 Gdy system wykryje konflikt terminów, automatycznie sugeruje alternatywny termin:
 
 \begin{verbatim}
-ORA-20020: Blad planowania: Sala jest juz zajeta w tym terminie!
+ORA-20008: Blad planowania: Sala jest juz zajeta w tym terminie!
 SUGEROWANY TERMIN: 2025-06-02 o godzinie 15:00 w sali 101
 \end{verbatim}
 
@@ -728,11 +728,11 @@ System implementuje algorytm \textbf{First Fit} do automatycznego sugerowania wo
 \subsection{Algorytm znajdz\_alternatywe()}
 
 \begin{enumerate}
-    \item Zacznij od następnej godziny po nieudanym terminie
+    \item Zacznij od~następnej godziny po~nieudanym terminie
     \item Sprawdzaj godziny robocze (14:00 -- 19:00)
-    \item Jeśli dzień się skończy, przeskocz do następnego dnia na 14:00
-    \item Szukaj maksymalnie przez 7 dni (limit bezpieczeństwa)
-    \item Dla każdego terminu iteruj po dostępnych salach
+    \item Jeśli dzień się skończy, przeskocz do~następnego dnia na~14:00
+    \item Szukaj maksymalnie przez~7~dni (limit bezpieczeństwa)
+    \item Dla~każdego terminu iteruj po~dostępnych salach
 \end{enumerate}
 
 \subsection{Dopasowanie sali}
@@ -743,9 +743,9 @@ System implementuje algorytm \textbf{First Fit} do automatycznego sugerowania wo
 \hline
 \textbf{Typ lekcji} & \textbf{Kryteria doboru sali} \\
 \hline
-Indywidualna & Funkcja \texttt{sala\_ma\_instrument()} przeszukuje \textbf{VARRAY wyposażenia} sali, szukając elementu pasującego do instrumentu ucznia. Obsługuje synonimy (np. Pianino = Fortepian). \\
+Indywidualna & Funkcja \texttt{sala\_ma\_instrument()} przeszukuje \textbf{VARRAY wyposażenia} sali, szukając elementu pasującego do~instrumentu ucznia. Obsługuje synonimy (np.~Pianino = Fortepian). \\
 \hline
-Grupowa & Szuka tylko sal typu 'grupowa' z pojemnością >= liczba uczniów w grupie \\
+Grupowa & Szuka tylko sal typu 'grupowa' z~pojemnością >= liczba uczniów w~grupie \\
 \hline
 \end{tabular}
 \caption{Kryteria doboru sali w heurystyce}
@@ -792,7 +792,7 @@ Administrator dodaje nowy przedmiot (Flet), salę z wyposażeniem (VARRAY) oraz 
 \begin{itemize}[nosep]
     \item \texttt{pkg\_slowniki.dodaj\_przedmiot('Flet', 'indywidualny')}
     \item \texttt{pkg\_slowniki.dodaj\_sale('105', 'indywidualna', 4, t\_wyposazenie('Flet poprzeczny', 'Pulpit', 'Metronom'))}
-    \item \texttt{pkg\_osoby.dodaj\_nauczyciela('Tomasz', 'Flecista', 6)} -- REF do przedmiotu ID=6
+    \item \texttt{pkg\_osoby.dodaj\_nauczyciela('Tomasz', 'Flecista', 6)} -- REF do~przedmiotu ID=6
 \end{itemize}
 
 \subsection{Scenariusz 2: Sekretariat tworzy grupę i zapisuje uczniów}
@@ -801,7 +801,7 @@ Sekretariat tworzy nową klasę 4A i zapisuje uczniów z referencją do grupy:
 
 \begin{itemize}[nosep]
     \item \texttt{pkg\_slowniki.dodaj\_grupe('4A', 4)}
-    \item \texttt{pkg\_osoby.dodaj\_ucznia('Jakub', 'Melodyjny', DATE '2014-07-20', 'Flet', 4)} -- REF do grupy ID=4
+    \item \texttt{pkg\_osoby.dodaj\_ucznia('Jakub', 'Melodyjny', DATE '2014-07-20', 'Flet', 4)} -- REF do~grupy ID=4
     \item \texttt{pkg\_osoby.lista\_uczniow\_grupy(4)} -- używa \textbf{kursora jawnego}
 \end{itemize}
 
@@ -820,7 +820,7 @@ Demonstracja walidacji konfliktów i heurystyki sugestii:
 
 \begin{itemize}[nosep]
     \item \textbf{Sukces:} \texttt{pkg\_lekcje.dodaj\_lekcje\_indywidualna(6, 6, 5, 10, DATE '2025-06-09', 14)}
-    \item \textbf{Konflikt:} Próba dodania lekcji w zajętym terminie → błąd -20020 z sugestią alternatywnego terminu
+    \item \textbf{Konflikt:} Próba dodania lekcji w~zajętym terminie → błąd -20008 z~sugestią alternatywnego terminu
     \item System przeszukuje VARRAY wyposażenia sal szukając pasującego instrumentu
 \end{itemize}
 
@@ -831,7 +831,7 @@ Nauczyciel wystawia oceny z walidacją uprawnień:
 \begin{itemize}[nosep]
     \item \texttt{pkg\_oceny.wystaw\_ocene(10, 6, 6, 5)} -- ocena cząstkowa
     \item \texttt{pkg\_oceny.wystaw\_ocene\_semestralna(10, 6, 6, 5)} -- ocena semestralna
-    \item \textbf{Błąd -20033:} Nauczyciel próbuje wystawić ocenę z przedmiotu którego nie uczy
+    \item \textbf{Błąd -20013:} Nauczyciel próbuje wystawić ocenę z przedmiotu którego nie uczy
 \end{itemize}
 
 \subsection{Scenariusz 6: Uczeń sprawdza oceny i plan}
@@ -839,9 +839,9 @@ Nauczyciel wystawia oceny z walidacją uprawnień:
 Uczeń (lub rodzic) przegląda swoje dane:
 
 \begin{itemize}[nosep]
-    \item \texttt{pkg\_oceny.oceny\_ucznia(10)} -- lista ocen z opisem słownym (metoda opis\_oceny())
-    \item \texttt{SELECT pkg\_oceny.srednia\_ucznia(10, 6) FROM DUAL} -- średnia z przedmiotu
-    \item \texttt{pkg\_lekcje.plan\_ucznia(10)} -- plan lekcji (UNION indywidualnych i grupowych)
+    \item \texttt{pkg\_oceny.oceny\_ucznia(10)} -- lista ocen z~opisem słownym (metoda opis\_oceny())
+    \item \texttt{SELECT pkg\_oceny.srednia\_ucznia(10, 6) FROM DUAL} -- średnia z~przedmiotu
+    \item \texttt{pkg\_lekcje.plan\_ucznia(10)} -- plan lekcji (UNION indywidualnych i~grupowych)
 \end{itemize}
 
 \subsection{Scenariusz 7: Raporty dla dyrekcji}
@@ -849,7 +849,7 @@ Uczeń (lub rodzic) przegląda swoje dane:
 Dyrekcja generuje raporty podsumowujące:
 
 \begin{itemize}[nosep]
-    \item \texttt{pkg\_raporty.raport\_grup()} -- liczba uczniów w każdej klasie
+    \item \texttt{pkg\_raporty.raport\_grup()} -- liczba uczniów w~każdej klasie
     \item \texttt{pkg\_raporty.statystyki()} -- ogólne statystyki szkoły
     \item \texttt{pkg\_lekcje.plan\_nauczyciela(6)} -- plan nauczyciela (kontrola obciążenia)
 \end{itemize}
@@ -859,13 +859,13 @@ Dyrekcja generuje raporty podsumowujące:
 Demonstracja walidacji i obsługi błędów:
 
 \begin{itemize}[nosep]
-    \item \textbf{Logika przypisania:} Lekcja bez ucznia i bez grupy → błąd -20001
+    \item \textbf{Logika przypisania:} Lekcja bez~ucznia i~bez~grupy → błąd -20001
     \item \textbf{Trigger ocen:} Ocena = 7 → błąd -20002
-    \item \textbf{Typ sali:} Lekcja grupowa w sali indywidualnej → błąd -20031
-    \item \textbf{Instrument:} Uczeń z Fletem na lekcji Fortepianu → błąd -20032
-    \item \textbf{Kompetencje:} Nauczyciel Fletu prowadzi lekcję Fortepianu → błąd -20030
-    \item \textbf{Weekend (sobota):} Lekcja indywidualna na sobotę → błąd -20040
-    \item \textbf{Weekend (niedziela):} Lekcja grupowa na niedzielę → błąd -20040
+    \item \textbf{Typ sali:} Lekcja grupowa w~sali indywidualnej → błąd -20011
+    \item \textbf{Instrument:} Uczeń z~Fletem na~lekcji Fortepianu → błąd -20012
+    \item \textbf{Kompetencje:} Nauczyciel Fletu prowadzi lekcję Fortepianu → błąd -20010
+    \item \textbf{Weekend (sobota):} Lekcja indywidualna na~sobotę → błąd -20018
+    \item \textbf{Weekend (niedziela):} Lekcja grupowa na~niedzielę → błąd -20018
 \end{itemize}
 
 \subsection{Scenariusz 9: Demonstracja VARRAY}
@@ -873,9 +873,9 @@ Demonstracja walidacji i obsługi błędów:
 Pokazanie działania kolekcji VARRAY wyposażenia sal:
 
 \begin{itemize}[nosep]
-    \item \texttt{pkg\_slowniki.lista\_sal()} -- lista sal z wyposażeniem
-    \item Metoda \texttt{lista\_wyposazenia()} iteruje po VARRAY i zwraca tekst
-    \item Funkcja \texttt{sala\_ma\_instrument()} przeszukuje VARRAY przy planowaniu
+    \item \texttt{pkg\_slowniki.lista\_sal()} -- lista sal z~wyposażeniem
+    \item Metoda \texttt{lista\_wyposazenia()} iteruje po~VARRAY i~zwraca tekst
+    \item Funkcja \texttt{sala\_ma\_instrument()} przeszukuje VARRAY przy~planowaniu
 \end{itemize}
 
 \subsection{Scenariusz 10: Demonstracja REF/DEREF}
@@ -883,9 +883,9 @@ Pokazanie działania kolekcji VARRAY wyposażenia sal:
 Pokazanie działania referencji obiektowych:
 
 \begin{itemize}[nosep]
-    \item Nauczyciele z przedmiotami (DEREF na REF do przedmiotu)
-    \item Uczniowie z grupami (DEREF na REF do grupy)
-    \item Lekcje z pełnymi danymi (wielokrotny DEREF)
+    \item Nauczyciele z~przedmiotami (DEREF na~REF do~przedmiotu)
+    \item Uczniowie z~grupami (DEREF na~REF do~grupy)
+    \item Lekcje z~pełnymi danymi (wielokrotny DEREF)
 \end{itemize}
 
 \subsection{Scenariusz 11: Demonstracja metod obiektowych}
@@ -924,13 +924,12 @@ Pokazanie działania metod zdefiniowanych w typach:
 \hline
 \textbf{Plik} & \textbf{Zawartość} \\
 \hline
-01\_typy.sql & Definicje 8 typów obiektowych z 10 metodami, VARRAY \\
-02\_tabele.sql & 7 tabel obiektowych, 7 sekwencji \\
-03\_pakiety.sql & 5 pakietów PL/SQL z 25 podprogramami publicznymi \\
+01\_typy.sql & Definicje 8~typów obiektowych z~10~metodami, VARRAY \\
+02\_tabele.sql & 7~tabel obiektowych, 7~sekwencji \\
+03\_pakiety.sql & 5~pakietów PL/SQL z~25~podprogramami publicznymi \\
 04\_triggery.sql & 2 wyzwalacze walidacyjne (typ lekcji, zakres ocen) \\
-05\_dane.sql & Dane testowe (5 przedm., 3 grupy, 5 naucz., 4 sale, 9 uczn.) \\
+05\_dane.sql & Dane testowe (5~przedm., 3~grupy, 5~naucz., 4~sale, 9~uczn.) \\
 06\_scenariusze.sql & Scenariusze testowe 1-11 (dokumentacja API + testy) \\
-07\_testy\_rozszerzone.sql & Scenariusze testowe 12-23 (przypadki brzegowe) \\
 \hline
 \end{tabular}
 \caption{Pliki projektu}
@@ -944,7 +943,6 @@ Pokazanie działania metod zdefiniowanych w typach:
     \item 04\_triggery.sql -- wyzwalacze
     \item 05\_dane.sql -- dane testowe
     \item 06\_scenariusze.sql -- scenariusze testowe (opcjonalne)
-    \item 07\_testy\_rozszerzone.sql -- rozszerzone testy (opcjonalne)
 \end{enumerate}
 
 \end{document}
