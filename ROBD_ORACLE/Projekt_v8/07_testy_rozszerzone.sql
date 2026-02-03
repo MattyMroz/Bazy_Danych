@@ -1205,3 +1205,383 @@ POKRYCIE TESTOWE PO ROZSZERZENIU:
 
 ================================================================================
 */
+
+
+-- ############################################################################
+-- CZĘŚĆ C: PROSTE OPERACJE SQL NA TABELACH OBIEKTOWYCH
+-- ############################################################################
+-- Szybki przewodnik jak poruszać się po bazie - SELECT, INSERT, UPDATE, DELETE
+-- ============================================================================
+
+-- ============================================================================
+-- PRZEDMIOTY - podstawowe operacje
+-- ============================================================================
+
+-- Wszystkie przedmioty
+SELECT * FROM przedmioty;
+
+-- Tylko przedmioty indywidualne
+SELECT p.id, p.nazwa, p.typ FROM przedmioty p WHERE p.typ = 'indywidualny';
+
+-- Przedmioty grupowe z metodą
+SELECT p.id, p.nazwa, p.czy_grupowy() AS grupowy FROM przedmioty p;
+
+-- Wstawienie nowego przedmiotu (przez konstruktor typu)
+INSERT INTO przedmioty VALUES (t_przedmiot(seq_przedmioty.NEXTVAL, 'Klarnet', 'indywidualny', 45));
+
+-- Zmiana nazwy przedmiotu
+UPDATE przedmioty p SET p.nazwa = 'Klarnet B' WHERE p.nazwa = 'Klarnet';
+
+-- Usunięcie przedmiotu (uwaga na powiązania REF!)
+DELETE FROM przedmioty p WHERE p.nazwa = 'Klarnet B';
+
+
+-- ============================================================================
+-- GRUPY - podstawowe operacje
+-- ============================================================================
+
+-- Wszystkie grupy posortowane po poziomie
+SELECT g.id, g.symbol, g.poziom FROM grupy g ORDER BY g.poziom;
+
+-- Grupy klas 1-3 (młodsze)
+SELECT * FROM grupy g WHERE g.poziom <= 3;
+
+-- Wstawienie nowej grupy
+INSERT INTO grupy VALUES (t_grupa(seq_grupy.NEXTVAL, '5A', 5));
+
+-- Zmiana symbolu grupy
+UPDATE grupy g SET g.symbol = '5B' WHERE g.symbol = '5A';
+
+-- Usunięcie grupy
+DELETE FROM grupy g WHERE g.symbol = '5B';
+
+
+-- ============================================================================
+-- SALE - operacje z VARRAY
+-- ============================================================================
+
+-- Wszystkie sale z wyposażeniem (metoda lista_wyposazenia działa na VARRAY)
+SELECT s.id, s.numer, s.typ, s.pojemnosc, s.lista_wyposazenia() AS wyposazenie FROM sale s;
+
+-- Tylko sale grupowe o pojemności > 15 osób
+SELECT s.numer, s.pojemnosc FROM sale s WHERE s.typ = 'grupowa' AND s.pojemnosc > 15;
+
+-- Sale z metodą czy_grupowa()
+SELECT s.numer, s.czy_grupowa() AS jest_grupowa FROM sale s;
+
+-- Wstawienie sali z wyposażeniem (VARRAY)
+INSERT INTO sale VALUES (
+    t_sala(seq_sale.NEXTVAL, '201', 'indywidualna', 3, 
+           t_wyposazenie('Skrzypce', 'Altówka', 'Pulpit'))
+);
+
+-- Aktualizacja pojemności sali
+UPDATE sale s SET s.pojemnosc = 5 WHERE s.numer = '201';
+
+-- Usunięcie sali
+DELETE FROM sale s WHERE s.numer = '201';
+
+
+-- ============================================================================
+-- NAUCZYCIELE - operacje z REF
+-- ============================================================================
+
+-- Nauczyciele z przedmiotami (DEREF rozwija referencję)
+SELECT n.id, n.imie, n.nazwisko, DEREF(n.ref_przedmiot).nazwa AS przedmiot
+FROM nauczyciele n;
+
+-- Nauczyciele z metodami (pelne_nazwisko, staz_lat)
+SELECT n.pelne_nazwisko() AS nauczyciel, n.staz_lat() AS staz FROM nauczyciele n;
+
+-- Nauczyciele uczący przedmiotów indywidualnych
+SELECT n.pelne_nazwisko() AS nauczyciel, DEREF(n.ref_przedmiot).nazwa AS przedmiot
+FROM nauczyciele n
+WHERE DEREF(n.ref_przedmiot).typ = 'indywidualny';
+
+-- Wstawienie nauczyciela z REF do przedmiotu
+INSERT INTO nauczyciele VALUES (
+    t_nauczyciel(seq_nauczyciele.NEXTVAL, 'Zofia', 'Testowa', DATE '2024-01-15',
+                 (SELECT REF(p) FROM przedmioty p WHERE p.id = 1))  -- REF do przedmiotu ID=1
+);
+
+-- Aktualizacja nazwiska
+UPDATE nauczyciele n SET n.nazwisko = 'Testowa-Nowak' WHERE n.nazwisko = 'Testowa';
+
+-- Usunięcie nauczyciela
+DELETE FROM nauczyciele n WHERE n.nazwisko = 'Testowa-Nowak';
+
+
+-- ============================================================================
+-- UCZNIOWIE - operacje z REF do grupy
+-- ============================================================================
+
+-- Uczniowie z grupami
+SELECT u.id, u.pelne_nazwisko() AS uczen, u.instrument, 
+       DEREF(u.ref_grupa).symbol AS grupa
+FROM uczniowie u;
+
+-- Uczniowie z klasy 1A (filtrowanie przez DEREF)
+SELECT u.pelne_nazwisko() AS uczen, u.instrument
+FROM uczniowie u
+WHERE DEREF(u.ref_grupa).symbol = '1A';
+
+-- Uczniowie z wiekiem (metoda)
+SELECT u.pelne_nazwisko() AS uczen, u.wiek() AS lat, u.instrument
+FROM uczniowie u
+ORDER BY u.wiek() DESC;
+
+-- Uczniowie grający na fortepianie lub pianinie
+SELECT u.pelne_nazwisko() AS uczen, u.instrument
+FROM uczniowie u
+WHERE UPPER(u.instrument) IN ('FORTEPIAN', 'PIANINO');
+
+-- Wstawienie ucznia z REF do grupy
+INSERT INTO uczniowie VALUES (
+    t_uczen(seq_uczniowie.NEXTVAL, 'Test', 'Uczeń', DATE '2015-06-01', 'Gitara',
+            (SELECT REF(g) FROM grupy g WHERE g.id = 1))
+);
+
+-- Zmiana instrumentu ucznia
+UPDATE uczniowie u SET u.instrument = 'Skrzypce' WHERE u.nazwisko = 'Uczeń';
+
+-- Usunięcie ucznia
+DELETE FROM uczniowie u WHERE u.nazwisko = 'Uczeń';
+
+
+-- ============================================================================
+-- LEKCJE - operacje z wieloma REF
+-- ============================================================================
+
+-- Lekcje z pełnymi danymi (wielokrotny DEREF)
+SELECT l.id, l.data_lekcji, l.godz_rozp,
+       DEREF(l.ref_przedmiot).nazwa AS przedmiot,
+       DEREF(l.ref_nauczyciel).pelne_nazwisko() AS nauczyciel,
+       DEREF(l.ref_sala).numer AS sala
+FROM lekcje l
+ORDER BY l.data_lekcji, l.godz_rozp;
+
+-- Tylko lekcje indywidualne (metoda czy_indywidualna)
+SELECT l.data_lekcji, l.godz_rozp, 
+       DEREF(l.ref_uczen).pelne_nazwisko() AS uczen,
+       DEREF(l.ref_przedmiot).nazwa AS przedmiot
+FROM lekcje l
+WHERE l.czy_indywidualna() = 'T';
+
+-- Tylko lekcje grupowe
+SELECT l.data_lekcji, l.godz_rozp,
+       DEREF(l.ref_grupa).symbol AS grupa,
+       DEREF(l.ref_przedmiot).nazwa AS przedmiot
+FROM lekcje l
+WHERE l.ref_grupa IS NOT NULL;
+
+-- Lekcje w konkretnym dniu
+SELECT l.godz_rozp || ':00' AS godzina,
+       DEREF(l.ref_przedmiot).nazwa AS przedmiot,
+       DEREF(l.ref_sala).numer AS sala
+FROM lekcje l
+WHERE l.data_lekcji = DATE '2025-06-02';
+
+-- Lekcje nauczyciela (przez DEREF)
+SELECT l.data_lekcji, l.godz_rozp
+FROM lekcje l
+WHERE DEREF(l.ref_nauczyciel).id = 1;
+
+-- Godzina końca lekcji (metoda godzina_koniec)
+SELECT l.godz_rozp || ':00' AS start, 
+       ROUND(l.godzina_koniec(), 2) AS koniec_dec,
+       l.czas_min || ' min' AS czas
+FROM lekcje l
+WHERE ROWNUM <= 5;
+
+
+-- ============================================================================
+-- OCENY - operacje z wieloma REF
+-- ============================================================================
+
+-- Wszystkie oceny z danymi
+SELECT o.id, o.wartosc, o.opis_oceny() AS slownie, o.semestralna,
+       DEREF(o.ref_uczen).pelne_nazwisko() AS uczen,
+       DEREF(o.ref_przedmiot).nazwa AS przedmiot
+FROM oceny o;
+
+-- Oceny konkretnego ucznia
+SELECT o.wartosc, o.opis_oceny() AS slownie, 
+       DEREF(o.ref_przedmiot).nazwa AS przedmiot,
+       o.data_oceny
+FROM oceny o
+WHERE DEREF(o.ref_uczen).id = 1;
+
+-- Tylko oceny semestralne
+SELECT DEREF(o.ref_uczen).pelne_nazwisko() AS uczen,
+       DEREF(o.ref_przedmiot).nazwa AS przedmiot,
+       o.wartosc
+FROM oceny o
+WHERE o.semestralna = 'T';
+
+-- Średnia ocen ucznia z przedmiotu (bez semestralnych)
+SELECT AVG(o.wartosc) AS srednia
+FROM oceny o
+WHERE DEREF(o.ref_uczen).id = 1 
+  AND DEREF(o.ref_przedmiot).id = 1
+  AND o.semestralna = 'N';
+
+-- Oceny 5 i 6 (dobre)
+SELECT DEREF(o.ref_uczen).pelne_nazwisko() AS uczen, o.wartosc
+FROM oceny o
+WHERE o.wartosc >= 5;
+
+-- Wstawienie oceny z REF-ami
+INSERT INTO oceny VALUES (
+    t_ocena(seq_oceny.NEXTVAL,
+            (SELECT REF(u) FROM uczniowie u WHERE u.id = 1),
+            (SELECT REF(n) FROM nauczyciele n WHERE n.id = 1),
+            (SELECT REF(p) FROM przedmioty p WHERE p.id = 1),
+            4, SYSDATE, 'N')
+);
+
+-- Zmiana wartości oceny
+UPDATE oceny o SET o.wartosc = 5 WHERE o.id = (SELECT MAX(id) FROM oceny);
+
+-- Usunięcie ostatniej oceny
+DELETE FROM oceny o WHERE o.id = (SELECT MAX(id) FROM oceny);
+
+
+-- ============================================================================
+-- ZŁOŻONE ZAPYTANIA - JOIN przez DEREF
+-- ============================================================================
+
+-- Uczniowie i ich nauczyciele instrumentu (przez przedmiot)
+SELECT u.pelne_nazwisko() AS uczen, u.instrument,
+       n.pelne_nazwisko() AS nauczyciel
+FROM uczniowie u, nauczyciele n
+WHERE UPPER(u.instrument) = UPPER(DEREF(n.ref_przedmiot).nazwa)
+   OR (UPPER(u.instrument) = 'PIANINO' AND UPPER(DEREF(n.ref_przedmiot).nazwa) = 'FORTEPIAN');
+
+-- Liczba uczniów w każdej grupie
+SELECT DEREF(u.ref_grupa).symbol AS grupa, 
+       DEREF(u.ref_grupa).poziom AS klasa,
+       COUNT(*) AS liczba_uczniow
+FROM uczniowie u
+GROUP BY DEREF(u.ref_grupa).symbol, DEREF(u.ref_grupa).poziom
+ORDER BY DEREF(u.ref_grupa).poziom;
+
+-- Lekcje z liczbą uczniów (dla grupowych)
+SELECT l.data_lekcji, DEREF(l.ref_przedmiot).nazwa AS przedmiot,
+       (SELECT COUNT(*) FROM uczniowie u 
+        WHERE DEREF(u.ref_grupa).id = DEREF(l.ref_grupa).id) AS liczba_uczniow
+FROM lekcje l
+WHERE l.ref_grupa IS NOT NULL;
+
+-- Sale i ile lekcji w nich odbyło się
+SELECT s.numer, s.typ, COUNT(l.id) AS liczba_lekcji
+FROM sale s
+LEFT JOIN lekcje l ON DEREF(l.ref_sala).id = s.id
+GROUP BY s.numer, s.typ
+ORDER BY liczba_lekcji DESC;
+
+
+-- ============================================================================
+-- FILTROWANIE - różne warunki WHERE
+-- ============================================================================
+
+-- Uczniowie urodzeni po 2016 roku
+SELECT u.pelne_nazwisko() AS uczen, u.data_ur FROM uczniowie u 
+WHERE u.data_ur > DATE '2016-12-31';
+
+-- Nauczyciele zatrudnieni w tym roku
+SELECT n.pelne_nazwisko() AS nauczyciel, n.data_zatr FROM nauczyciele n
+WHERE EXTRACT(YEAR FROM n.data_zatr) = EXTRACT(YEAR FROM SYSDATE);
+
+-- Lekcje po godzinie 16
+SELECT l.data_lekcji, l.godz_rozp, DEREF(l.ref_przedmiot).nazwa AS przedmiot
+FROM lekcje l
+WHERE l.godz_rozp > 16;
+
+-- Oceny z ostatniego tygodnia
+SELECT o.wartosc, o.data_oceny, DEREF(o.ref_uczen).pelne_nazwisko() AS uczen
+FROM oceny o
+WHERE o.data_oceny >= SYSDATE - 7;
+
+-- Sale z pojemnością BETWEEN
+SELECT s.numer, s.pojemnosc FROM sale s
+WHERE s.pojemnosc BETWEEN 3 AND 10;
+
+-- Uczniowie z instrumentem zawierającym 'a' (LIKE)
+SELECT u.pelne_nazwisko() AS uczen, u.instrument FROM uczniowie u
+WHERE LOWER(u.instrument) LIKE '%a%';
+
+-- Przedmioty NIE grupowe
+SELECT p.nazwa, p.typ FROM przedmioty p
+WHERE p.typ != 'grupowy';
+-- lub: WHERE NOT p.typ = 'grupowy'
+-- lub: WHERE p.czy_grupowy() = 'N'
+
+
+-- ============================================================================
+-- SORTOWANIE I LIMITOWANIE
+-- ============================================================================
+
+-- Top 5 najstarszych uczniów
+SELECT u.pelne_nazwisko() AS uczen, u.wiek() AS wiek
+FROM uczniowie u
+ORDER BY u.data_ur ASC
+FETCH FIRST 5 ROWS ONLY;
+
+-- Ostatnie 3 oceny
+SELECT o.wartosc, o.data_oceny, DEREF(o.ref_uczen).pelne_nazwisko() AS uczen
+FROM oceny o
+ORDER BY o.data_oceny DESC
+FETCH FIRST 3 ROWS ONLY;
+
+-- Lekcje posortowane po sali, potem godzinie
+SELECT DEREF(l.ref_sala).numer AS sala, l.godz_rozp, l.data_lekcji
+FROM lekcje l
+ORDER BY DEREF(l.ref_sala).numer, l.godz_rozp;
+
+
+-- ============================================================================
+-- AGREGACJE
+-- ============================================================================
+
+-- Liczba obiektów w każdej tabeli
+SELECT 'przedmioty' AS tabela, COUNT(*) AS liczba FROM przedmioty
+UNION ALL SELECT 'grupy', COUNT(*) FROM grupy
+UNION ALL SELECT 'sale', COUNT(*) FROM sale
+UNION ALL SELECT 'nauczyciele', COUNT(*) FROM nauczyciele
+UNION ALL SELECT 'uczniowie', COUNT(*) FROM uczniowie
+UNION ALL SELECT 'lekcje', COUNT(*) FROM lekcje
+UNION ALL SELECT 'oceny', COUNT(*) FROM oceny;
+
+-- Średnia ocena w szkole
+SELECT ROUND(AVG(o.wartosc), 2) AS srednia_szkoly FROM oceny o WHERE o.semestralna = 'N';
+
+-- Min/Max ocena
+SELECT MIN(o.wartosc) AS najnizsza, MAX(o.wartosc) AS najwyzsza FROM oceny o;
+
+-- Liczba lekcji na dzień
+SELECT l.data_lekcji, COUNT(*) AS lekcji
+FROM lekcje l
+GROUP BY l.data_lekcji
+ORDER BY l.data_lekcji;
+
+
+-- ============================================================================
+-- PODZAPYTANIA (SUBQUERY)
+-- ============================================================================
+
+-- Uczniowie bez ocen
+SELECT u.pelne_nazwisko() AS uczen FROM uczniowie u
+WHERE u.id NOT IN (SELECT DEREF(o.ref_uczen).id FROM oceny o);
+
+-- Nauczyciele którzy prowadzili lekcje
+SELECT n.pelne_nazwisko() AS nauczyciel FROM nauczyciele n
+WHERE n.id IN (SELECT DEREF(l.ref_nauczyciel).id FROM lekcje l);
+
+-- Uczeń z najwyższą średnią (z dowolnego przedmiotu)
+SELECT * FROM (
+    SELECT DEREF(o.ref_uczen).pelne_nazwisko() AS uczen, 
+           ROUND(AVG(o.wartosc), 2) AS srednia
+    FROM oceny o WHERE o.semestralna = 'N'
+    GROUP BY DEREF(o.ref_uczen).pelne_nazwisko()
+    ORDER BY srednia DESC
+) WHERE ROWNUM = 1;
