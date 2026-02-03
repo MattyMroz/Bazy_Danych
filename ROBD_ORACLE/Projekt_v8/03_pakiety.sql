@@ -258,6 +258,19 @@ END pkg_lekcje;
 CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
 
     -- ========================================================================
+    -- FUNKCJA PRYWATNA - sprawdza czy data wypada w weekend
+    -- Zwraca TRUE jeśli sobota (7) lub niedziela (1)
+    -- ========================================================================
+    FUNCTION czy_weekend(p_data DATE) RETURN BOOLEAN IS
+        v_dzien NUMBER;
+    BEGIN
+        v_dzien := TO_CHAR(p_data, 'D');
+        -- W Oracle: 1=niedziela, 7=sobota (zależne od NLS_TERRITORY)
+        -- Używamy nazwy dnia dla pewności
+        RETURN TO_CHAR(p_data, 'DY', 'NLS_DATE_LANGUAGE=ENGLISH') IN ('SAT', 'SUN');
+    END;
+
+    -- ========================================================================
     -- FUNKCJA PRYWATNA - sprawdza dostępność terminów
     -- Zwraca tekst błędu lub NULL jeśli termin jest wolny
     -- ========================================================================
@@ -370,6 +383,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         -- Pętla po dniach (max 7 dni)
         FOR dzien IN 0..c_max_dni LOOP
 
+            -- Pomijamy weekendy przy szukaniu alternatywnego terminu
+            IF czy_weekend(v_data) THEN
+                v_data := v_data + 1;
+                v_godz := 14;
+                CONTINUE;
+            END IF;
+
             -- Pętla po godzinach (zakładamy godziny pracy szkoły 14-19, ostatnia lekcja 19:00-19:45)
             WHILE v_godz <= 19 LOOP
 
@@ -445,6 +465,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         v_typ_przedmiotu VARCHAR2(20);
         v_instrument_ucznia VARCHAR2(50);
     BEGIN
+        -- WALIDACJA: Lekcja nie może być w weekend
+        IF czy_weekend(p_data) THEN
+            RAISE_APPLICATION_ERROR(-20040,
+                'Lekcja nie może być zaplanowana na weekend! Podana data: ' ||
+                TO_CHAR(p_data, 'YYYY-MM-DD (DY)', 'NLS_DATE_LANGUAGE=POLISH'));
+        END IF;
+
         -- Pobranie referencji
         v_ref_przedmiot := pkg_slowniki.get_ref_przedmiot(p_id_przedmiotu);
         v_ref_nauczyciel := pkg_osoby.get_ref_nauczyciel(p_id_nauczyciela);
@@ -530,6 +557,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcje AS
         v_liczba_uczniow NUMBER;
         v_pojemnosc_sali NUMBER;
     BEGIN
+        -- WALIDACJA: Lekcja nie może być w weekend
+        IF czy_weekend(p_data) THEN
+            RAISE_APPLICATION_ERROR(-20040,
+                'Lekcja nie może być zaplanowana na weekend! Podana data: ' ||
+                TO_CHAR(p_data, 'YYYY-MM-DD (DY)', 'NLS_DATE_LANGUAGE=POLISH'));
+        END IF;
+
         -- Pobranie referencji
         v_ref_przedmiot := pkg_slowniki.get_ref_przedmiot(p_id_przedmiotu);
         v_ref_nauczyciel := pkg_osoby.get_ref_nauczyciel(p_id_nauczyciela);

@@ -127,8 +127,6 @@ W projekcie przyjęto następujące ograniczenia biznesowe:
     \item \textbf{Logika średniej ocen:} średnia ocen z przedmiotu obliczana jest automatycznie z wyłączeniem ocen semestralnych
     
     \item \textbf{Horyzont planowania:} heurystyka doboru wolnych terminów przeszukuje grafik w przód na maksymalnie 7 dni od podanej daty
-    
-    \item \textbf{Brak limitu wielkości grupy:} system nie narzuca górnego limitu liczby uczniów w grupie (klasie)
 \end{enumerate}
 
 \subsection{Technologia}
@@ -469,7 +467,7 @@ Logika biznesowa zaimplementowana w 5 pakietach z łącznie 25 podprogramami.
 \hline
 pkg\_slowniki & 9 & Zarządzanie słownikami (przedmioty, grupy, sale) \\
 pkg\_osoby & 7 & Zarządzanie nauczycielami i uczniami \\
-pkg\_lekcje & 5 (+3 prywatne) & Planowanie lekcji z walidacją i heurystyką \\
+pkg\_lekcje & 5 (+4 prywatne) & Planowanie lekcji z walidacją i heurystyką \\
 pkg\_oceny & 4 (+1 prywatna) & Zarządzanie ocenami \\
 pkg\_raporty & 2 & Raporty i statystyki \\
 \hline
@@ -542,13 +540,15 @@ Pakiet do zarządzania lekcjami z pełną walidacją konfliktów i heurystyką s
 
 \textbf{Funkcje prywatne:}
 \begin{itemize}[nosep]
+    \item czy\_weekend(p\_data) -- sprawdza czy data wypada w sobotę lub niedzielę
     \item sprawdz\_kolizje(...) -- sprawdza dostępność sali, nauczyciela, ucznia/grupy
     \item sala\_ma\_instrument(p\_id\_sali, p\_instrument) -- przeszukuje \textbf{VARRAY} wyposażenia sali
-    \item znajdz\_alternatywe(...) -- \textbf{heurystyka First Fit} szukająca wolnego terminu
+    \item znajdz\_alternatywe(...) -- \textbf{heurystyka First Fit} szukająca wolnego terminu (pomija weekendy)
 \end{itemize}
 
 \textbf{Walidacje w procedurze dodaj\_lekcje\_indywidualna:}
 \begin{itemize}[nosep]
+    \item Data nie może wypadać w weekend (sobota/niedziela)
     \item Kompetencje nauczyciela (czy uczy tego przedmiotu -- sprawdzenie REF)
     \item Zgodność instrumentu ucznia z przedmiotem
     \item Konflikt sali -- brak nakładających się terminów
@@ -558,6 +558,7 @@ Pakiet do zarządzania lekcjami z pełną walidacją konfliktów i heurystyką s
 
 \textbf{Dodatkowe walidacje w procedurze dodaj\_lekcje\_grupowa:}
 \begin{itemize}[nosep]
+    \item Data nie może wypadać w weekend (sobota/niedziela)
     \item Typ sali -- lekcja grupowa wymaga sali typu 'grupowa'
     \item Przepełnienie sali -- pojemność >= liczba uczniów w grupie
     \item Konflikt grupy -- brak nakładających się terminów
@@ -700,6 +701,8 @@ W projekcie zastosowano mechanizmy obsługi wyjątków z własnymi kodami błęd
 -20037 & pkg\_lekcje & Przedmiot indywidualny nie może być prowadzony jako lekcja grupowa \\
 \hline
 -20038 & pkg\_oceny & Próba wystawienia oceny z przedmiotu uczniowi grającemu na innym instrumencie \\
+\hline
+-20040 & pkg\_lekcje & Lekcja zaplanowana na weekend (sobota/niedziela) \\
 \hline
 \end{tabular}
 \caption{Kody błędów aplikacji}
@@ -861,6 +864,8 @@ Demonstracja walidacji i obsługi błędów:
     \item \textbf{Typ sali:} Lekcja grupowa w sali indywidualnej → błąd -20031
     \item \textbf{Instrument:} Uczeń z Fletem na lekcji Fortepianu → błąd -20032
     \item \textbf{Kompetencje:} Nauczyciel Fletu prowadzi lekcję Fortepianu → błąd -20030
+    \item \textbf{Weekend (sobota):} Lekcja indywidualna na sobotę → błąd -20040
+    \item \textbf{Weekend (niedziela):} Lekcja grupowa na niedzielę → błąd -20040
 \end{itemize}
 
 \subsection{Scenariusz 9: Demonstracja VARRAY}

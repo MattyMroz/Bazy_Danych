@@ -113,9 +113,10 @@ PARAMETRY:
   p_id_nauczyciela NUMBER - ID nauczyciela (musi uczyć tego przedmiotu!)
   p_id_sali        NUMBER - ID sali
   p_id_ucznia      NUMBER - ID ucznia (musi grać na tym instrumencie!)
-  p_data           DATE   - data lekcji (format: DATE 'RRRR-MM-DD')
+  p_data           DATE   - data lekcji (format: DATE 'RRRR-MM-DD', NIE MOŻE BYĆ WEEKEND!)
   p_godz           NUMBER - godzina rozpoczęcia (14-19, pełna godzina)
 WALIDACJE:
+  • Data nie może wypadać w weekend (sobota/niedziela)
   • Nauczyciel musi uczyć podanego przedmiotu
   • Instrument ucznia musi odpowiadać przedmiotowi
   • Sala/nauczyciel/uczeń nie mogą być zajęci w tym terminie
@@ -125,6 +126,7 @@ BŁĘDY:
   -20020: Konflikt terminu (+ sugestia alternatywnego terminu!)
   -20030: Nauczyciel nie uczy tego przedmiotu
   -20032: Instrument ucznia nie pasuje do przedmiotu
+  -20040: Lekcja zaplanowana na weekend
 
 PROCEDURA: pkg_lekcje.dodaj_lekcje_grupowa(p_id_przedmiotu, p_id_nauczyciela, 
                                            p_id_sali, p_id_grupy, p_data, p_godz)
@@ -134,9 +136,10 @@ PARAMETRY:
   p_id_nauczyciela NUMBER - ID nauczyciela
   p_id_sali        NUMBER - ID sali (musi być typu 'grupowa'!)
   p_id_grupy       NUMBER - ID grupy uczniów
-  p_data           DATE   - data lekcji
+  p_data           DATE   - data lekcji (NIE MOŻE BYĆ WEEKEND!)
   p_godz           NUMBER - godzina rozpoczęcia (14-19)
 WALIDACJE:
+  • Data nie może wypadać w weekend (sobota/niedziela)
   • Sala musi być typu 'grupowa'
   • Pojemność sali >= liczba uczniów w grupie
   • Sala/nauczyciel/grupa nie mogą być zajęci w tym terminie
@@ -146,6 +149,7 @@ BŁĘDY:
   -20021: Konflikt terminu (+ sugestia!)
   -20031: Lekcja grupowa w sali indywidualnej
   -20035: Przepełnienie sali
+  -20040: Lekcja zaplanowana na weekend
 
 PROCEDURA: pkg_lekcje.plan_ucznia(p_id_ucznia)
 OPIS: Wyświetla plan lekcji ucznia (indywidualne + grupowe)
@@ -533,6 +537,28 @@ BEGIN
 EXCEPTION
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('BLAD (oczekiwany): ' || SQLERRM);
+END;
+/
+
+-- 8.6 WALIDACJA: Lekcja nie może być zaplanowana na weekend (SOBOTA)
+
+BEGIN
+    -- 2025-06-07 to SOBOTA - lekcja nie powinna zostać dodana
+    pkg_lekcje.dodaj_lekcje_indywidualna(1, 1, 1, 11, DATE '2025-06-07', 14);
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('BLAD (oczekiwany -20040): ' || SQLERRM);
+END;
+/
+
+-- 8.7 WALIDACJA: Lekcja nie może być zaplanowana na weekend (NIEDZIELA)
+
+BEGIN
+    -- 2025-06-08 to NIEDZIELA - lekcja nie powinna zostać dodana
+    pkg_lekcje.dodaj_lekcje_grupowa(4, 4, 3, 1, DATE '2025-06-08', 15);
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('BLAD (oczekiwany -20040): ' || SQLERRM);
 END;
 /
 
