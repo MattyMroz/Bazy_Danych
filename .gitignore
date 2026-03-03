@@ -1,0 +1,16 @@
+# Database files
+*.mdf
+*.ldf
+*.MDF
+*.LDF
+
+# Python
+__pycache__/
+*.pyc
+
+# VS Code
+.vscode/
+
+# OS
+Thumbs.db
+Desktop.ini
