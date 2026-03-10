@@ -70,5 +70,9 @@ FROM OPENROWSET(
 ) AS a;
 
 -- C:\Windows\SysWOW64\SQLServerManager16.msc
--- Wy³¹czyæ zaporê windows
--- odkryæ po³aæznia na porcie
+-- Wyï¿½ï¿½czyï¿½ zaporï¿½ windows
+-- odkryï¿½ poï¿½aï¿½znia na porcie
+
+
+
+1433
