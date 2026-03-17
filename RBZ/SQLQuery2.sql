@@ -57,38 +57,129 @@ INNER JOIN OPENROWSET(
 WHERE produkty_lokalne.ProductName LIKE '[c-p]%'; -- tak dodatkowo
 
 
+-- JAK ROBIĆ TAKIE ZADANIA:
 -- Podać jaka jest wartość sprzedarzy w poszczególnych miesiącach (serwer WB-20)
 -- dwóch lat o największej realizacji sprzedaży (serwer WB-18)
 
+-- SPOSÓB BUDOWANIA TEGO TYPU ZADAŃ:
 
-    YEAR(o.OrderDate) AS Rok,
-    MONTH(o.OrderDate) AS Miesiac,
-    ROUND(SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)), 2) AS WartoscSprzedazy
-FROM Northwind.dbo.Orders AS o
-JOIN Northwind.dbo.[Order Details] AS od ON o.OrderID = od.OrderID
-WHERE YEAR(o.OrderDate) IN (
-    -- Podzapytanie wybierające 2 lata o największej łącznej sprzedaży
-    SELECT TOP 2 YEAR(o2.OrderDate)
-    FROM Northwind.dbo.Orders o2
-    JOIN Northwind.dbo.[Order Details] od2 ON o2.OrderID = od2.OrderID
-    GROUP BY YEAR(o2.OrderDate)
-    ORDER BY SUM(od2.UnitPrice * od2.Quantity * (1 - od2.Discount)) DESC
+USE Northwind;
+
+
+SELECT TOP 2
+    YEAR(OrderDate) AS ROK, SUM(od.UnitPrice * od.Quantity) AS WARTOSC
+FROM [Order Details] AS od
+INNER JOIN Orders AS o ON od.OrderID = o.OrderID
+GROUP BY YEAR(OrderDate)
+ORDER BY WARTOSC DESC
+;
+
+
+SELECT
+    YEAR(OrderDate) AS ROK, MONTH(OrderDate) AS MIESIAC, SUM(od.UnitPrice * od.Quantity) AS WARTOSC
+FROM [Order Details] AS od
+INNER JOIN Orders AS o ON od.OrderID = o.OrderID
+GROUP BY YEAR(OrderDate), MONTH(OrderDate)
+;
+
+WITH mama AS (
+    SELECT TOP 2
+        YEAR(OrderDate) AS ROK, SUM(od.UnitPrice * od.Quantity) AS WARTOSC
+    FROM [Order Details] AS od
+    INNER JOIN Orders AS o ON od.OrderID = o.OrderID
+    GROUP BY YEAR(OrderDate)
+    ORDER BY WARTOSC DESC
+), tata AS(
+
+    SELECT
+        YEAR(OrderDate) AS ROK, MONTH(OrderDate) AS MIESIAC, SUM(od.UnitPrice * od.Quantity) AS WARTOSC
+    FROM [Order Details] AS od
+    INNER JOIN Orders AS o ON od.OrderID = o.OrderID
+    GROUP BY YEAR(OrderDate), MONTH(OrderDate)
+
 )
-GROUP BY YEAR(o.OrderDate), MONTH(o.OrderDate)
-ORDER BY Rok, Miesiac;
 
+SELECT 
+t.ROK, t.MIESIAC, t.WARTOSC
+FROM mama AS m
+INNER JOIN tata AS t ON m.ROK = t.ROK;
 
+-- PRZYKŁAD OPENROWSET
 
-
-
-
-
-
+SELECT a.*
+FROM OPENROWSET(
+    'MSOLEDBSQL',
+    'Server=WB-20;UID=sa;PWD=praktyka;TrustServerCertificate=yes;',
+    '
+    
+SELECT TOP 2
+YEAR(OrderDate) AS ROK, SUM(od.UnitPrice * od.Quantity) AS WARTOSC
+FROM  Northwind.dbo.[Order Details] AS od
+INNER JOIN  Northwind.dbo.Orders AS o ON od.OrderID = o.OrderID
+GROUP BY YEAR(OrderDate)
+ORDER BY WARTOSC DESC
+    
+    '
+) AS a;
 
 
 SELECT a.*
 FROM OPENROWSET(
     'MSOLEDBSQL',
-    'Server=WB-07;UID=sa;PWD=praktyka;TrustServerCertificate=yes;',
-    'SELECT * FROM Northwind.dbo.'
+    'Server=WB-18;UID=sa;PWD=praktyka;TrustServerCertificate=yes;',
+    '
+    
+    SELECT
+        YEAR(OrderDate) AS ROK, MONTH(OrderDate) AS MIESIAC, SUM(od.UnitPrice * od.Quantity) AS WARTOSC
+    FROM Northwind.dbo.[Order Details] AS od
+    INNER JOIN Northwind.dbo.Orders AS o ON od.OrderID = o.OrderID
+    GROUP BY YEAR(OrderDate), MONTH(OrderDate)
+    
+    '
 ) AS a;
+
+GO
+
+
+-- ZADANIE:
+WITH mama AS (
+
+SELECT a.*
+FROM OPENROWSET(
+    'MSOLEDBSQL',
+    'Server=WB-20;UID=sa;PWD=praktyka;TrustServerCertificate=yes;',
+    '
+
+    SELECT TOP 2
+    YEAR(OrderDate) AS ROK, SUM(od.UnitPrice * od.Quantity) AS WARTOSC
+    FROM  Northwind.dbo.[Order Details] AS od
+    INNER JOIN  Northwind.dbo.Orders AS o ON od.OrderID = o.OrderID
+    GROUP BY YEAR(OrderDate)
+    ORDER BY WARTOSC DESC
+
+    '
+) AS a
+
+), tata AS(
+
+    SELECT a.*
+    FROM OPENROWSET(
+        'MSOLEDBSQL',
+        'Server=WB-18;UID=sa;PWD=praktyka;TrustServerCertificate=yes;',
+        '
+    
+        SELECT
+        YEAR(OrderDate) AS ROK, MONTH(OrderDate) AS MIESIAC, SUM(od.UnitPrice * od.Quantity) AS WARTOSC
+        FROM Northwind.dbo.[Order Details] AS od
+        INNER JOIN Northwind.dbo.Orders AS o ON od.OrderID = o.OrderID
+        GROUP BY YEAR(OrderDate), MONTH(OrderDate)
+    
+        '
+    ) AS a
+
+)
+
+SELECT 
+t.ROK, t.MIESIAC, t.WARTOSC
+FROM mama AS m
+INNER JOIN tata AS t ON m.ROK = t.ROK;
