@@ -183,3 +183,68 @@ SELECT
 t.ROK, t.MIESIAC, t.WARTOSC
 FROM mama AS m
 INNER JOIN tata AS t ON m.ROK = t.ROK;
+
+ORACLE:
+\\wenus\zadania\PD\2.ORACLE\0.1.INSTALACJA
+
+
+PD251190
+12345
+
+
+
+
+-- ORACLE
+-- SELECT to_char(SYSDATE, 'YYYY-MM-DD:HH24:Mi') FROM dual;
+
+EXEC master.dbo.sp_MSset_oledb_prop N'OraOLEDB.Oracle', N'AllowInProcess', 1;
+
+
+
+SELECT a.*
+FROM OPENROWSET(
+    'OraOLEDB.Oracle',
+    'Server=PD25;UID=PD251190;PWD=12345;TrustServerCertificate=yes;',
+    '
+        SELECT to_char(SYSDATE, ''YYYY-MM-DD:HH24:Mi'') FROM dual
+    '
+) AS a;
+
+
+SELECT a.*
+FROM OPENROWSET(
+    'OraOLEDB.Oracle',
+    '(DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 212.51.216.169)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SID = PD25)
+    )
+  )';'PD251190';'12345',
+    '
+        SELECT to_char(SYSDATE, ''YYYY-MM-DD:HH24:Mi'') FROM dual
+    '
+
+) AS a;
+
+CREATE OR ALTER VIEW V1
+WITH ENCRYPTION AS
+SELECT a.*
+FROM OPENROWSET(
+    'OraOLEDB.Oracle',
+    '(DESCRIPTION =
+      (ADDRESS_LIST =
+        (ADDRESS = (PROTOCOL = TCP)(HOST = 212.51.216.169)(PORT = 1521))
+      )
+      (CONNECT_DATA =
+        (SID = PD25)
+      )
+    )';'PD251190';'12345',
+    'SELECT * FROM northwind.products'
+) AS a;
+GO
+
+sp_helptext v1
+
+SELECT * FROM V1;
