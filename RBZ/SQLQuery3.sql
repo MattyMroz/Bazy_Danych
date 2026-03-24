@@ -186,32 +186,6 @@ GO
 sp_linkedservers; -- sprawdzenie zdefiniowanych serwerów połączonych
 GO
 
-sp_addlinkedserver
-    @server = 'OraclePD25',
-    @provider = 'OraOLEDB.Oracle',
-    @datasrc = '(DESCRIPTION =
-      (ADDRESS_LIST =
-        (ADDRESS = (PROTOCOL = TCP)(HOST = 212.51.216.169)(PORT = 1521))
-      )
-      (CONNECT_DATA =
-        (SID = PD25)
-      )
-    )';
-GO
-
-sp_addlinkedserver
-    @server = 'AccessNorthwind',
-    @provider = 'Microsoft.ACE.OLEDB.16.0',
-    @datasrc = 'C:\Northwind\Northwind.mdb';
-GO
-
-sp_addlinkedserver
-    @server = 'WB09',
-    @provider = 'MSOLEDBSQL',
-    @datasrc = 'Server=WB-09;UID=sa;PWD=praktyka;TrustServerCertificate=yes;';
-GO
-
-
 -- Usuń istniejący serwer jeśli był już dodany (unika błędu duplikatu)
 IF EXISTS (SELECT 1 FROM sys.servers WHERE name = N'WB12')
     EXEC sp_dropserver N'WB12', 'droplogins';
@@ -240,5 +214,22 @@ GO
 -- Napisać zapytanie rozproszone:
 -- pobrac wszystkich pracowników z tablie EMP schematu SCOTT
 
+-- Wszyscy pracownicy z tabeli SCOTT.EMP (Oracle PD25)
+SELECT *
+FROM OraclePD25..SCOTT.EMP;
+GO
+
 -- Zrealizać zapytanie
--- Jakie produkty (ORACLE) mają cenę ? od średniej ceny liczonej ze wszystkich produktów (serwer WB12)?
+-- Jakie produkty (ORACLE) mają cenę > od średniej ceny liczonej ze wszystkich produktów (serwer WB12)?
+
+-- Produkty z Oracle, których cena jest wyższa niż średnia cena produktów z WB12
+SELECT
+    op.ProductID,
+    op.ProductName,
+    op.UnitPrice AS CenaOracle
+FROM OraclePD25..NORTHWIND.PRODUCTS AS op
+WHERE op.UnitPrice > (
+    SELECT AVG(UnitPrice)
+    FROM WB12.Northwind.dbo.Products
+);
+GO
