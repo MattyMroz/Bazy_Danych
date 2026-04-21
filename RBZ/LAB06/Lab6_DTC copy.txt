@@ -1,0 +1,313 @@
+-----------------------------------------------
+Transakcja rozproszona - rozwiązanie LAB06
+Wersja tylko SQL Server
+-----------------------------------------------
+
+Uwagi organizacyjne:
+1. Ta wersja jest przerobiona wyłącznie pod SQL Server.
+2. W miejscach SQL_LINK trzeba wpisać własną nazwę linked servera do drugiej instancji SQL Server.
+3. Jeżeli zdalna baza ma inną nazwę niż Northwind, zamień ją w skryptach.
+
+
+---------------------
+Zadanie 1
+---------------------
+MS DTC (Microsoft Distributed Transaction Coordinator) to usługa systemu Windows odpowiadająca za koordynowanie transakcji rozproszonych, czyli takich, które obejmują więcej niż jeden menedżer zasobów, na przykład dwa serwery SQL Server.
+
+Najważniejsze wnioski:
+1. MS DTC zwykle instaluje się razem z systemem Windows.
+2. Usługa musi być uruchomiona na komputerze uczestniczącym w transakcji rozproszonej.
+3. Dla połączeń SQL Server - SQL Server potrzebna jest poprawna konfiguracja sieciowa i zabezpieczenia DTC.
+
+Jak sprawdzić, czy usługa działa:
+1. Uruchom services.msc.
+2. Odszukaj usługę Distributed Transaction Coordinator.
+3. Status powinien być Running / Uruchomiono.
+4. Typ uruchomienia najlepiej ustawić na Automatic.
+
+
+---------------------
+Zadanie 2
+---------------------
+Konfiguracja MSDTC dla SQL Server:
+
+1. Uruchom dcomcnfg.
+2. Przejdź do:
+   Usługi składowe -> Komputery -> Mój komputer -> Koordynator transakcji rozproszonych -> Lokalna usługa DTC.
+3. Kliknij prawym przyciskiem myszy Właściwości.
+4. Otwórz kartę Zabezpieczenia.
+5. Zaznacz co najmniej:
+   - Network DTC Access / Dostęp sieciowy DTC
+   - Allow Remote Clients / Zezwalaj klientom zdalnym
+   - Allow Inbound / Zezwalaj na ruch przychodzący
+   - Allow Outbound / Zezwalaj na ruch wychodzący
+   - Authentication: najlepiej Mutual Authentication Required, a jeśli środowisko laboratoryjne tego nie wspiera, Incoming Caller Authentication Required albo No Authentication Required
+6. Zatwierdź OK.
+7. Po zmianach zrestartuj usługę MSDTC.
+
+Uwaga:
+Opcja Enable XA Transactions jest istotna głównie przy połączeniach z Oracle lub innymi systemami XA. Przy samym SQL Server nie jest najważniejsza.
+
+
+---------------------
+Zadanie 3
+---------------------
+Oprócz konfiguracji MSDTC trzeba dopuścić ruch DTC przez zaporę systemową.
+
+Jak zrobić zadanie 3 krok po kroku:
+
+1. Otwórz Zapora systemu Windows z zabezpieczeniami zaawansowanymi.
+2. Wejdź w Reguły przychodzące.
+3. Włącz reguły związane z:
+   - Distributed Transaction Coordinator
+   - COM+ Network Access, jeśli występuje
+4. To samo sprawdź w Regułach wychodzących.
+5. Otwórz port TCP 135, bo jest używany przez RPC Endpoint Mapper.
+6. Najlepiej ustaw stały port dla MSDTC, na przykład 40001, i również otwórz ten port w zaporze.
+7. Zrób to na obu serwerach SQL Server, jeśli transakcja ma działać między nimi.
+
+Co napisać jako odpowiedź opisową do zadania 3:
+Skonfigurowano zaporę Windows Defender Firewall dla usługi MS DTC. Włączono reguły dla Distributed Transaction Coordinator oraz dopuszczono komunikację RPC na porcie TCP 135. Dodatkowo skonfigurowano stały port dla MSDTC i otwarto go w zaporze, aby umożliwić poprawne wykonywanie transakcji rozproszonych między dwoma serwerami SQL Server.
+
+
+---------------------
+Zadanie 4
+---------------------
+Na zdalnym serwerze SQL Server utwórz tabelę:
+
+use Northwind;
+go
+
+if object_id('dbo.koledzy', 'U') is not null
+    drop table dbo.koledzy;
+go
+
+create table dbo.koledzy (
+    indeks int not null primary key,
+    nazwisko varchar(50) not null,
+    imie varchar(25) not null
+);
+go
+
+
+---------------------
+Zadanie 5
+---------------------
+Na zdalnym serwerze SQL Server nadaj uprawnienia do tabeli:
+
+grant select, insert, update, delete on dbo.koledzy to public;
+go
+
+Sprawdzenie z serwera lokalnego, że tabela istnieje i można z niej korzystać:
+
+select *
+from [SQL_LINK].Northwind.dbo.koledzy;
+go
+
+
+---------------------
+Zadanie 6
+---------------------
+Na lokalnym SQL Server utwórz taką samą tabelę:
+
+use Northwind;
+go
+
+if object_id('dbo.koledzy', 'U') is not null
+    drop table dbo.koledzy;
+go
+
+create table dbo.koledzy (
+    indeks int not null primary key,
+    nazwisko varchar(50) not null,
+    imie varchar(25) not null
+);
+go
+
+Nadanie uprawnień obiektowych grupie public:
+
+grant select, insert, update, delete on dbo.koledzy to public;
+go
+
+Sprawdzenie dostępu lokalnego:
+
+select *
+from dbo.koledzy;
+go
+
+
+---------------------
+Zadanie 7
+---------------------
+Co to jest XACT_ABORT:
+
+SET XACT_ABORT ON powoduje, że jeśli w trakcie wykonywania transakcji wystąpi błąd wykonania, SQL Server automatycznie przerywa i wycofuje całą transakcję. Przy transakcjach rozproszonych jest to bardzo ważne, bo pomaga utrzymać spójność danych po stronie lokalnej i zdalnej.
+
+W praktyce:
+1. XACT_ABORT ON zwiększa spójność operacji.
+2. Jest zalecane przy operacjach na linked serverach i transakcjach rozproszonych.
+3. Jeśli operacja na serwerze zdalnym się nie powiedzie, łatwiej wymusić rollback całości.
+
+Przykładowa transakcja rozproszona SQL Server -> SQL Server:
+
+use Northwind;
+go
+
+set xact_abort on;
+go
+
+begin distributed transaction;
+
+insert into dbo.koledzy (indeks, nazwisko, imie)
+values (1001, 'Mróz', 'Mateusz');
+
+insert into [SQL_LINK].Northwind.dbo.koledzy (indeks, nazwisko, imie)
+values (1001, 'Mróz', 'Mateusz');
+
+commit transaction;
+go
+
+Wersja odporniejsza na błąd:
+
+use Northwind;
+go
+
+set xact_abort on;
+go
+
+begin try
+    begin distributed transaction;
+
+    insert into dbo.koledzy (indeks, nazwisko, imie)
+    values (1002, 'Kowalski', 'Jan');
+
+    insert into [SQL_LINK].Northwind.dbo.koledzy (indeks, nazwisko, imie)
+    values (1002, 'Kowalski', 'Jan');
+
+    commit transaction;
+end try
+begin catch
+    if @@trancount > 0
+        rollback transaction;
+
+    throw;
+end catch;
+go
+
+Sprawdzenie, czy wstawianie na serwer lokalny i zdalny się powiodło:
+
+select *
+from dbo.koledzy
+where indeks in (1001, 1002);
+go
+
+select *
+from [SQL_LINK].Northwind.dbo.koledzy
+where indeks in (1001, 1002);
+go
+
+
+---------------------
+Zadanie 8
+---------------------
+Trzeba przygotować po jednej procedurze składowanej po obu stronach, a następnie wywołać je w ramach jednej transakcji rozproszonej.
+
+Procedura na lokalnym SQL Server:
+
+use Northwind;
+go
+
+if object_id('dbo.dodaj_kolege_local', 'P') is not null
+    drop procedure dbo.dodaj_kolege_local;
+go
+
+create procedure dbo.dodaj_kolege_local
+    @indeks int,
+    @nazwisko varchar(50),
+    @imie varchar(25)
+as
+begin
+    set nocount on;
+
+    insert into dbo.koledzy (indeks, nazwisko, imie)
+    values (@indeks, @nazwisko, @imie);
+end;
+go
+
+Procedura na zdalnym SQL Server:
+
+use Northwind;
+go
+
+if object_id('dbo.dodaj_kolege_remote', 'P') is not null
+    drop procedure dbo.dodaj_kolege_remote;
+go
+
+create procedure dbo.dodaj_kolege_remote
+    @indeks int,
+    @nazwisko varchar(50),
+    @imie varchar(25)
+as
+begin
+    set nocount on;
+
+    insert into dbo.koledzy (indeks, nazwisko, imie)
+    values (@indeks, @nazwisko, @imie);
+end;
+go
+
+Przykład transakcji rozproszonej z wykorzystaniem obu procedur:
+
+use Northwind;
+go
+
+set xact_abort on;
+go
+
+begin try
+    begin distributed transaction;
+
+    exec dbo.dodaj_kolege_local
+        @indeks = 2001,
+        @nazwisko = 'Nowak',
+        @imie = 'Anna';
+
+    exec [SQL_LINK].Northwind.dbo.dodaj_kolege_remote
+        @indeks = 2001,
+        @nazwisko = 'Nowak',
+        @imie = 'Anna';
+
+    commit transaction;
+end try
+begin catch
+    if @@trancount > 0
+        rollback transaction;
+
+    throw;
+end catch;
+go
+
+Weryfikacja po wykonaniu procedur:
+
+select *
+from dbo.koledzy
+where indeks = 2001;
+go
+
+select *
+from [SQL_LINK].Northwind.dbo.koledzy
+where indeks = 2001;
+go
+
+
+---------------------
+Dodatkowe uwagi do oddania
+---------------------
+1. W zadaniu 3 najlepiej opisać nie tylko otwarcie firewalla, ale też port 135 i stały port MSDTC.
+2. W zadaniu 7 i 8 prowadzący zwykle dobrze ocenia użycie SET XACT_ABORT ON oraz TRY/CATCH.
+3. Jeżeli procedura zdalna z zadania 8 nie wykona się przez linked server, trzeba włączyć RPC OUT:
+
+exec master.dbo.sp_serveroption @server = 'SQL_LINK', @optname = 'rpc out', @optvalue = 'true';
+go
+
+4. Jeżeli linked server ma inną nazwę bazy lub schematu, trzeba poprawić czteroczłonową nazwę obiektu.

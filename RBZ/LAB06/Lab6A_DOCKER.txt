@@ -1,0 +1,65 @@
+
+-----------------------------------------------
+
+-------------
+Praca w środowisku rozproszonym w oparciu o konteneryzację i środowisko Docker:
+---------------------
+
+----------
+Zadanie 1.
+---------------------
+Zapoznaj się z dokumentacją środowiska Docker w temacie dotyczącym korzystania z konteneryzacji oraz przeprowadź instalację środowiska wykonawczego kontenera - Docker (jeżeli nie jest on zainstalowany).
+
+Cel:
+-- przeprowadzenia konfiguracji w oparciu o konteneryzację i praca w środowisku rozproszonej bazy danych między różnymi systemami (np. systemem SQL Server a systemem ORACLE) 
+
+
+----------
+-- Zadanie 2:
+---------------
+-- a. Przeprowadź konfigurację kontenera Oracle w oparciu o plik *.yml. 
+-- b. W kontenerze Docker Oracle --> załóż bazę danych NorthWind. W tym celu wyszukaj w zasobach sieciowych tej bazy (lub przygotuj własny skrypt np. z wykorzystaniem modelu językowego)
+-- c. Dokonaj instalacji sterownik Oracle w lokalnym środowisku SQLServer i nawiąż połączenie z kontenerem Docker
+-- d. Nawiąż połączenie z kontenerem na Docker wykorzystując instrukcję OPENROWSET.
+-- e. Opracować procedurę składowaną, która wprowadzi rekordy na serwer ORACLE oraz taką samą procedurę, która wprowadzi rekordy do tabeli Northwind (SQL Server). 
+-- UWAGA - Nadaj odpowiednie uprawnienia do tej tabeli np. grupie PUBLIC nadaj wszystkie prawa obiektowe (SELECT, INSERT,UPDATE, DELETE). W tym celu wykonaj instrukcję GRANT.
+-----------------------------
+
+----------
+-- Zadanie 3:
+---------------
+-- a. Przeprowadź konfigurację kontenera SQLServer w oparciu o plik *.yml. 
+-- b. W kontenerze Docker SQLServer --> załóż bazę danych NorthWind. W tym celu wyszukaj w zasobach sieciowych tej bazy (eksportując skrypt tej bazy z lokalnego środowiska)
+-- c. Nawiąż połączenie z kontenerem na Docker wykorzystując ustanowienie serwera połączonego. Wstaw dane na kontener na podstawie istniejących danych w środowisku lokalnym
+-- d. Wykonać transakcję rozproszoną:
+USE northwind
+GO
+---opcja sesji XACT_ABORT - w przyp. niepowodzenia cała transakcja zostanie ---anulowana.
+SET XACT_ABORT ON
+---
+GO
+
+BEGIN DISTRIBUTED TRANSACTION
+
+---instrukcje transakcji rozproszonej --> wstawianie do serwera lokalnego i serwera połączonego
+
+
+COMMIT TRANSACTION
+
+-----------------------------
+
+
+-----------
+-- Zadanie 4:
+----------------
+-- a. Przeprowadź konfigurację kontenera PostgreSQL w oparciu o plik *.yml. 
+-- b. W kontenerze Docker PostgreSQL  --> załóż bazę danych NorthWind. W tym celu wyszukaj w zasobach sieciowych tej bazy (lub przygotuj własny skrypt np. z wykorzystaniem modelu językowego)
+-- c. Dokonaj instalacji sterownik w lokalnym środowisku SQLServer i nawiąż połączenie z kontenerem Docker
+-- d. Wstaw dane na kontener na podstawie istniejących danych w środowisku lokalnym. W tym celu wykorzystaj instrukcję OPENROWSET
+-----------------------------
+
+-----------
+-- Zadanie 5:
+----------------
+-- Zapoznaj się z dokumentacja środowiska Docker w zakresie możliwości tworzenia własnych kontenerów Docker. Następnie utwórz własny taki kontener środowiska mySQL (bez pobierania gotowego obrazu).
+-- W tym celu dokonaj niezbędnej konfiguracji. Przetestuj rozwiązanie próbując dostać się do tego kontenera z poziomu lokalnej bazy danych SQLServer
