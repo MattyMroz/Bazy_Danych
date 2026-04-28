@@ -1,0 +1,231 @@
+---Cel ćwiczenia:
+-----------------------------
+--- Celem laboratorium jest uzyskanie zdalnego dostępu do danych z poziomu serwera ORACLE do danych składowanych w strukturze homogenicznej rozproszonej -- bazy danych w oparciu o serwery ORACLE.
+-- Celem ćwiczenia jest zapoznanie się z łącznikami baz danych oraz wykorzystania łącznika bazy danych i jego definiowanie w celu dostępu z bazy -- lokalnej do zdalnej. Definiowanie łącznika prywatnego, publicznego i współdzielonego. Pobieranie informacji o łącznika użytkownika baz danych. -- Zarządzanie łącznikami baz danych. Definicja perspektyw oraz wyzwalacza instead-of. :
+
+
+--W laboratorium wymagany będzie dostęp do dwóch różnych źródeł danych opartych na serwerze Oracle. W tym celu można na danej jednostce zainstalować nową instancję bazy danych lub można korzystać z jednej instancji symulując dostęp do różnych serwerów. 
+
+-------------------------------------------------------------
+
+-- Wymagane zadania do odesłania:
+-- Zad 9; Zad 10; Zad 11; Zad 12; Zad 13, Zad 14; Zad 15.
+
+
+
+
+
+-- Zadanie 1.
+-----------------
+-- Zapoznać się z dokumentacją techniczną firmy ORACLE dotyczącą podstaw pracy w rozproszonej bazie danych w tym przetwarzani rozproszonego w 
+oparciu o serwery ORACLE:
+-- https://docs.oracle.com/en/database/oracle/oracle-database/18/admin/distributed-database-concepts.html#GUID-40725723-DA7E-49CD-99FD-5A3DDCE44E4A
+
+-- zapoznać się z dokumentacją techniczną ORACLE opisującą współbieżny dostęp do danych:
+-- https://docs.oracle.com/en/database/oracle/oracle-database/18/cncpt/data-concurrency-and-consistency.html#GUID-E8CBA9C5-58E3-460F-A82A-850E0152E95C
+
+
+
+
+
+-- Zadanie 2:
+--------------------
+-- W systemie ORACLE zalogować się na użytkownika roli SYS oraz sprawdzić identyfikator nazwy globalnej.
+-- Aktualną globalną nazwę bazy danych sprawdzić można za pomocą perspektywy słownika danych o nazwie GLOBAL_NAME: 
+
+
+select value from v$parameter where name='service_names';
+show parameter service_names;
+
+-- identyfikatorem tym możemy posługiwać się również na zwykłym użytkowniku:
+
+select * from SCOTT.EMP@pd19.IMSI.PL.PL;
+
+-- Z punktu widzenia danej bazy danych zapytania wykonujemy podając nazwę schematu oraz nazwę obiektu bazy danych. Jeżeli jesteśmy zalogowani jako 
+-- użytkownik, który jest właścicielem danego schematu to wystarczy podać nazwę obiektu.
+
+
+
+
+
+-- Zadanie 3:
+------------------------
+-- Utworzyć rolę po stronie serwera ORACLE o identyfikatorze RBD
+
+-- ROLE SQL
+CREATE ROLE RBD;
+
+
+
+
+
+-- Zadanie 4:
+------------------------
+-- Rola powinna mieć przypisane prawa systemowe:
+	-- CREATE PUBLIC DATABASE LINK
+	-- CREATE DATABASE LINK
+	-- CREATE VIEW
+	-- CREATE SYNONYM
+	-- CREATE PUBLIC SYNONYM
+
+-- ROLES
+
+GRANT CREATE PUBLIC DATABASE LINK TO RBD;
+GRANT CREATE DATABASE LINK TO RBD;
+GRANT CREATE VIEW TO RBD;
+GRANT CREATE SYNONYM TO RBD;
+GRANT CREATE PUBLIC SYNONYM TO RBD;
+
+-- UWAGA !!!- przywiązywanie praw roli  DBA do roli RBD: (jeżeli chcesz administrować)
+-- ( kolejnych krokach z poziomu użytkownika lokalnego będzie można tworzyć i zarządzać 
+-- innymi użytkownikami celem symulacji pracy zdalnej RBD)
+
+GRANT DBA TO RBD;
+
+-- Jeżeli potrzeba odbieranie praw roli DBA z roli RBD
+REVOKE DBA FROM RBD;
+
+
+
+
+-- Zadanie 5:
+----------------------
+-- Tworzymy na instancji ORACLE użytkownika z określonym hasłem. 
+ 
+-- Dodatkowo nadajemy uprawnienia:
+
+-- USER SQL
+CREATE USER TEST IDENTIFIED BY 12345
+DEFAULT TABLESPACE "USERS"
+TEMPORARY TABLESPACE "TEMP";
+
+-- QUOTAS
+
+-- ROLES
+GRANT "CONNECT" TO TEST;
+GRANT "RESOURCE" TO TEST;
+ALTER USER TEST DEFAULT ROLE "CONNECT","RESOURCE";
+
+-- SYSTEM PRIVILEGES
+GRANT UNLIMITED TABLESPACE TO TEST ;
+
+
+
+
+
+-- Zadanie 6:
+----------------------
+-- Nadać prawa roli RBD użytkownikowi wykorzystywanemu do dalszej pracy.
+
+GRANT RBD TO TEST ;
+ALTER USER TEST DEFAULT ROLE "RESOURCE","CONNECT","RBD";
+
+
+
+
+
+-- Zadanie 7:
+---------------------
+-- Symulujemy pracę rozproszoną w systemie ORACLE:
+-- Logując się na nowo założonego użytkownika: TEST z hasłem 12345 zakładamy dwie tabele EMP i DEPT następnie
+-- Założyć łącznik prywatny z poziomu danego użytkownika ORACLE do tego samego użytkownika oraz przetestować możliwość napisania
+-- zapytania rozproszonego
+
+-- kopiowane tabeli:
+
+create table emp as select * from SCOTT.EMP;
+create table dept as select * from SCOTT.DEPT;
+
+
+-- zakładanie łącznika prywatnego:
+
+Create database link pd
+Connect to "TEST" identified by "12345"
+using 'pd19'; -- pd19 jest identyfikatorem TNS
+
+
+-- testujemy działanie łącznika:
+
+select * from test.emp@PD;
+
+-- W zapytaniu tym dane pobrane zostały przez identyfikację w oparciu o schemat i nazwę tabeli na lokalizacji wyznaczonej przez
+-- uchwyt TNS zdefiniowany w aplikacji: Oracle Net Manager
+
+
+
+
+
+-- Zadanie 8:
+---------------------------------
+-- Symulujemy pracę rozproszoną w systemie ORACLE zdefiniować łącznik publiczny, który będzie widoczny
+-- dla wszystkich użytkowników systemu oracle z wykorzystaniem specyfikacji zapisanej w pliku konfiguracyjnym dla aplikacji Oracle Net Manager:
+
+
+Create PUBLIC database link pd
+Connect to "TEST" identified by "12345"
+using '(DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 212.51.216.169)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SID = pd19)
+    )
+  )';
+
+
+-- Podobnie jak w zadaniu 7 przetestować działanie łącznika (własna realizacja)
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------
+--------------------------------------- Część 2. (własna realizacja)
+-------------------------------------------------------------------------------
+
+
+
+
+
+-- Zadanie (symulacja na jednej instancji):
+--------------------------
+-- 9.	Założyć nowego użytkownika schemat: U2: TEST2 (wybrane hasło). 
+-- 10.	Skopiować  tabele emp i dept do schematu schematu test2 oraz założyć w obu schematach użytkowników U1: TEST oraz U2: TEST2 sekwencję seq2. 
+-- 11.	Nadać prawa do tworzenia database linków dla użytkownika test (o ile nie wykonano wcześniejszych zadań laboratoryjnych).
+-- 12.	Założyć database link w schemacie użytkownika TEST z wykorzystaniem użytkownika TEST2 
+-- 13.	Zdefiniować widok niemodyfikowalny o nazwie: DEPARTMENT(nazwa, server)   który z wykorzystaniem operatora UNION ALL pobierze dane z tabeli: 
+-- DEPT schematu lokalnego i schematu użytkownika U2: TEST2
+
+-- UWAGA !!
+--------------------
+-- widok ma zwracać krotki w następującej postaci:
+-- <numer działu> <PD>
+-- <numer działu> <HW>
+
+-- gdzie:
+-- PD - to identyfikator serwera zdalnego (dane pobierane są z tabeli dept z wykorzystaniem uchwytu bazodanowego)
+-- HW - to identyfikator serwera lokalnego (dane pobierane są z tabeli dept ze schematu lokalnego)
+
+
+
+-- 14.	Zdefiniować trigger typu: instead of w schemacie użytkownika TEST na obiekcie widoku reagujący na polecenie wstawiania danych.
+-- Wyzwalacz ma za zadanie wstawić dane do tabeli lokalnej (jeżeli podawany jest identyfikator serwera HW) lub zdalnej (jeżeli podawany jest identyfikator serwera PD)
+-- 15.	Przetestować wstawianie danych do lokalnej tabeli i tabeli zdalnej
+
+
+
+
+----------------------------
+
+
+
+
+
