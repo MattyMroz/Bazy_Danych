@@ -1,0 +1,29 @@
+--------------------------- Zadania:---------
+-- Pracujemy w grupach 2 osobowych na dwóch instancjach znajdujących się na osobnych komputerach lub
+--  w przypadku pracy samodzielnej symulujemy pracę środowiska rozproszonego na jednej instancji 
+-- serwera SQLServer z wykorzystaniem dwóch baz danych
+---------------------------------------
+
+-- 1. Zdefiniować nową bazę danych RBD_g10 (przy pracy samodzielnej dodatkową bazę RBD_g10d)
+-- 2. W założonej nowej bazie --> utworzyć na podstawie bazy NorthWind 3 tabele:  Customers, Orders, [order details], Products
+-- 3. Utworzyć loginy (oraz użytkowników w nowej bazie):
+	-- login (oraz użytkownik)  lokalny: RBDg10L  z hasłem 123456RBD 
+	-- login (oraz użytkownik) do pracy zdalnej: zRBDg10R z hasłem 123456RBD 
+-- 4. Zdefiniować serwer połączony: z-0X. Następnie dla tak utworzonego serwera zdalnego wykorzystując loginy 
+-- z pkt. 3 delegować uprawnienia loginu/użytkownika  lokalnego RBDg10L  na uprawnienia loginu/użytkownika RBDg10R 
+-- 5. Nadać niezbędne prawa obiektowe do czytania oraz zapisu danych na serwerze lokalnym i serwerze zdalnym 
+-- określonym użytkownikom zdefiniowanym po stronie bazy danych.
+-- 6. Zdefiniowany widok który zwróci informację: Jakie produkty (serwer zdalny) znalazły się na danych zamówieniach (serwer zdalny) 
+-- zrealizowanych przez danych użytkowników (serwer lokalny)?. Następnie napisać zapytanie do tak powołanego widoku, które pobierze dane
+-- 7. Opracować procedurę przechowywaną, która dla parametru wejściowego zwróci informację jaka jest sumaryczna 
+-- wartość sprzedaży (serwer zdalny) w danym roku podawanym jako parametr wejściowy.
+-- 8. Nadać odpowiednie uprawnienia do procedury, które pozwolą na zdalne jej wywoływanie.
+-- 9. Przetestować możliwość wstawiania krotek na serwer zdalny do tabeli Products (ale bez użycia koordynatora MS DTC).
+-- 10. Wstawione w punkcie 9 krotki usunąć z serwera zdalnego przez wykorzystanie bezwzględnego czteroczłonowego identyfikatora obiektu
+-- wykorzystanego na serwerze lokalnym
+-- 11. Punkt 9 i 10 zrealizować również przez wykorzystanie funkcji OPENQUERY z którą to funkcją należy zapoznać się w dokumentacji Microsoft.
+-- 12. Pracując w grupach dwuosobowych należy następnie zdefiniować w systemie ORACLE tabelę EMPLOYEES (kopiując ją instrukcją ze schematu NORTHWIND)
+-- oraz nadać określone uprawnienia obiektowe do tej tabeli do loginu ORACLE współpracującej osobie w grupie. 
+-- 13. Dla zdefiniowanego użytkownika lokalnego (SQL Server) zdefiniować serwer ORACLE oraz dokonać delegacji uprawnień tego loginu do własnego 
+-- loginu serwera ORACLE. Następnie przetestować możliwość wstawiania danych do tabeli znajdującej się w schemacie użytkownika współpracującej 
+-- osoby w grupie. W razie potrzeby zredefiniować określone uprawnienia obiektowe.
