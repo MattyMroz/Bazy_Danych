@@ -232,3 +232,245 @@ https://docs.oracle.com/cd/B28359_01/network.111/b28317/tnsnames.htm#NETRF262
 ------------------
 --jakie mamy produkty serwera lokalnego które są na serwerze zdalnym ORACLE
 -- w tej samej cenie jednostkowej?
+
+
+-- ROZWIAZANIE POD MOJ SERWER
+
+USE Northwind;
+GO
+
+EXEC sp_configure 'show advanced options', 1;
+RECONFIGURE;
+GO
+
+EXEC sp_configure 'Ad Hoc Distributed Queries', 1;
+RECONFIGURE;
+GO
+
+EXEC master.dbo.sp_MSset_oledb_prop N'OraOLEDB.Oracle', N'AllowInProcess', 1;
+EXEC master.dbo.sp_MSset_oledb_prop N'MSOLEDBSQL', N'AllowInProcess', 1;
+GO
+
+-- Praca domowa - zwykle zapytania lokalne
+SELECT TOP 2
+  YEAR(o.OrderDate) AS ROK,
+  SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS WARTOSC
+FROM Northwind.dbo.[Order Details] AS od
+INNER JOIN Northwind.dbo.Orders AS o
+  ON o.OrderID = od.OrderID
+GROUP BY YEAR(o.OrderDate)
+ORDER BY WARTOSC DESC;
+GO
+
+SELECT
+  YEAR(o.OrderDate) AS ROK,
+  MONTH(o.OrderDate) AS MIESIAC,
+  SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS WARTOSC
+FROM Northwind.dbo.[Order Details] AS od
+INNER JOIN Northwind.dbo.Orders AS o
+  ON o.OrderID = od.OrderID
+GROUP BY YEAR(o.OrderDate), MONTH(o.OrderDate)
+ORDER BY ROK, MIESIAC;
+GO
+
+-- Praca domowa - CTE lokalne
+;WITH najlepsze_lata AS (
+  SELECT TOP 2
+    YEAR(o.OrderDate) AS ROK,
+    SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS WARTOSC
+  FROM Northwind.dbo.[Order Details] AS od
+  INNER JOIN Northwind.dbo.Orders AS o
+    ON o.OrderID = od.OrderID
+  GROUP BY YEAR(o.OrderDate)
+  ORDER BY WARTOSC DESC
+),
+sprzedaz_miesieczna AS (
+  SELECT
+    YEAR(o.OrderDate) AS ROK,
+    MONTH(o.OrderDate) AS MIESIAC,
+    SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS WARTOSC
+  FROM Northwind.dbo.[Order Details] AS od
+  INNER JOIN Northwind.dbo.Orders AS o
+    ON o.OrderID = od.OrderID
+  GROUP BY YEAR(o.OrderDate), MONTH(o.OrderDate)
+)
+SELECT sm.ROK, sm.MIESIAC, sm.WARTOSC
+FROM sprzedaz_miesieczna AS sm
+INNER JOIN najlepsze_lata AS nl
+  ON sm.ROK = nl.ROK
+ORDER BY sm.ROK, sm.MIESIAC;
+GO
+
+-- Praca domowa - OPENROWSET do mojego SQL Server zamiast WA-06 / WA-08
+SELECT lata.*
+FROM OPENROWSET(
+  'MSOLEDBSQL',
+  'Server=Mateusz;Database=Northwind;Trusted_Connection=yes;',
+  'SELECT TOP 2
+    YEAR(o.OrderDate) AS ROK,
+    SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS WARTOSC
+   FROM dbo.[Order Details] AS od
+   INNER JOIN dbo.Orders AS o ON o.OrderID = od.OrderID
+   GROUP BY YEAR(o.OrderDate)
+   ORDER BY WARTOSC DESC'
+) AS lata;
+GO
+
+SELECT miesiace.*
+FROM OPENROWSET(
+  'MSOLEDBSQL',
+  'Server=Mateusz;Database=Northwind;Trusted_Connection=yes;',
+  'SELECT
+    YEAR(o.OrderDate) AS ROK,
+    MONTH(o.OrderDate) AS MIESIAC,
+    SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS WARTOSC
+   FROM dbo.[Order Details] AS od
+   INNER JOIN dbo.Orders AS o ON o.OrderID = od.OrderID
+   GROUP BY YEAR(o.OrderDate), MONTH(o.OrderDate)'
+) AS miesiace;
+GO
+
+-- Praca domowa - finalne CTE z OPENROWSET
+;WITH najlepsze_lata AS (
+  SELECT lata.*
+  FROM OPENROWSET(
+    'MSOLEDBSQL',
+    'Server=Mateusz;Database=Northwind;Trusted_Connection=yes;',
+    'SELECT TOP 2
+      YEAR(o.OrderDate) AS ROK,
+      SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS WARTOSC
+     FROM dbo.[Order Details] AS od
+     INNER JOIN dbo.Orders AS o ON o.OrderID = od.OrderID
+     GROUP BY YEAR(o.OrderDate)
+     ORDER BY WARTOSC DESC'
+  ) AS lata
+),
+sprzedaz_miesieczna AS (
+  SELECT miesiace.*
+  FROM OPENROWSET(
+    'MSOLEDBSQL',
+    'Server=Mateusz;Database=Northwind;Trusted_Connection=yes;',
+    'SELECT
+      YEAR(o.OrderDate) AS ROK,
+      MONTH(o.OrderDate) AS MIESIAC,
+      SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS WARTOSC
+     FROM dbo.[Order Details] AS od
+     INNER JOIN dbo.Orders AS o ON o.OrderID = od.OrderID
+     GROUP BY YEAR(o.OrderDate), MONTH(o.OrderDate)'
+  ) AS miesiace
+)
+SELECT sm.ROK, sm.MIESIAC, sm.WARTOSC
+FROM sprzedaz_miesieczna AS sm
+INNER JOIN najlepsze_lata AS nl
+  ON sm.ROK = nl.ROK
+ORDER BY sm.ROK, sm.MIESIAC;
+GO
+
+/*
+-- Zadanie 2 - uruchom w Oracle jako SYSTEM, gdy user NORTHWIND nie istnieje.
+
+ALTER SESSION SET CONTAINER = PDB;
+
+CREATE USER NORTHWIND IDENTIFIED BY "12345"
+DEFAULT TABLESPACE USERS
+TEMPORARY TABLESPACE TEMP;
+
+GRANT CONNECT TO NORTHWIND;
+GRANT RESOURCE TO NORTHWIND;
+ALTER USER NORTHWIND DEFAULT ROLE CONNECT, RESOURCE;
+GRANT CREATE VIEW TO NORTHWIND;
+GRANT UNLIMITED TABLESPACE TO NORTHWIND;
+
+-- Jezeli user juz istnieje:
+ALTER USER NORTHWIND IDENTIFIED BY "12345" ACCOUNT UNLOCK;
+*/
+GO
+
+-- Zadanie 4 - data systemowa Oracle przez OPENROWSET
+SELECT d.*
+FROM OPENROWSET(
+  'OraOLEDB.Oracle',
+  '(DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.64.133)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVICE_NAME = PDB)
+    )
+  )';'system';'12345',
+  'SELECT to_char(SYSDATE, ''YYYY-MM-DD:HH24:MI'') AS OracleTime FROM dual'
+) AS d;
+GO
+
+-- Zadanie 5 - produkty z Oracle osobno
+SELECT p.*
+FROM OPENROWSET(
+  'OraOLEDB.Oracle',
+  '(DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.64.133)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVICE_NAME = PDB)
+    )
+  )';'NORTHWIND';'12345',
+  'SELECT PRODUCTID AS "ProductID", PRODUCTNAME AS "ProductName", UNITPRICE AS "UnitPrice" FROM PRODUCTS'
+) AS p;
+GO
+
+CREATE OR ALTER VIEW dbo.V1_LAB03_ORACLE_PRODUCTS
+WITH ENCRYPTION
+AS
+SELECT p.*
+FROM OPENROWSET(
+  'OraOLEDB.Oracle',
+  '(DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.64.133)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVICE_NAME = PDB)
+    )
+  )';'NORTHWIND';'12345',
+  'SELECT PRODUCTID AS "ProductID", PRODUCTNAME AS "ProductName", UNITPRICE AS "UnitPrice" FROM PRODUCTS'
+) AS p;
+GO
+
+SELECT *
+FROM dbo.V1_LAB03_ORACLE_PRODUCTS;
+GO
+
+-- Zadanie 6 - najpierw produkty lokalne
+SELECT ProductID, ProductName, UnitPrice
+FROM Northwind.dbo.Products;
+GO
+
+-- Zadanie 6 - potem produkty Oracle
+SELECT p.*
+FROM OPENROWSET(
+  'OraOLEDB.Oracle',
+  '(DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.64.133)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVICE_NAME = PDB)
+    )
+  )';'NORTHWIND';'12345',
+  'SELECT PRODUCTNAME AS "ProductName", UNITPRICE AS "UnitPrice" FROM PRODUCTS'
+) AS p;
+GO
+
+-- Zadanie 6 - finalne porownanie cen
+SELECT
+  p.ProductName AS ProduktSQLServer,
+  p.UnitPrice AS CenaSQLServer,
+  o.ProductName AS ProduktOracle,
+  o.UnitPrice AS CenaOracle
+FROM Northwind.dbo.Products AS p
+INNER JOIN OPENROWSET(
+  'OraOLEDB.Oracle',
+  '(DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.64.133)(PORT = 1521))
+    (CONNECT_DATA =
+      (SERVICE_NAME = PDB)
+    )
+  )';'NORTHWIND';'12345',
+  'SELECT PRODUCTNAME AS "ProductName", UNITPRICE AS "UnitPrice" FROM PRODUCTS'
+) AS o
+  ON p.ProductName = o.ProductName
+  AND p.UnitPrice = o.UnitPrice
+ORDER BY p.ProductName;
+GO

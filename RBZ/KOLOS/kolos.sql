@@ -66,6 +66,31 @@
     - Podstawy Oracle: Umiejętność założenia lub skopiowania czegoś we własnym schemacie w bazie Oracle, jeśli zajdzie taka potrzeba.
 */
 
+/*
+Obowiązuje zakres materiału związany z definiowaniem:
+
+0. zakładanie loginów i użytkowników oraz nadawanie niezbędnych minimalnych praw w środowisku SQL Server
+
+a. ustanawiania serwerów połączonych w środowisku SQL Server oraz mapowania praw loginu lokalnego na prawa loginu zdalnego
+    - dostęp SQL Server – SQL Server
+    - dostęp SQL Server – ORACLE
+    - dostęp SQL Server – Access
+    - dostęp SQL Server – *.xls
+
+b. pisanie (przy ustanowionym serwerze połączonym) zapytań przekazujących (przetwarzanie lokalne i zdalne danych) w tym z zastosowaniem funkcji: OPENQUERY
+
+c. pisanie zapytań AD HOC – funkcja OPENROWSET – dostęp vide pkt. a.
+
+d. pisanie widoków umożliwiających pracę na danych lokalnych i zdalnych (pamiętając o prawidłowym rzutowaniu typów (np. ze środowiska ORACLE))
+
+e. pisanie procedur składowanych
+
+f. MSDTC - transakcje
+
+UWAGA !!! - zakres materiału związany z pracą z danymi rozproszonymi w środowisku ORACLE tzn. uchwytami database link nie obowiązuje na kolokwium.
+
+*/
+
 
 --- W SQL Server obiekty identyfikowane są są przez:
 -- <NazwaSerwera>.<NazwaBazy>.<Schemat>.<nazwaObiektu>
@@ -567,3 +592,249 @@ FROM OPENROWSET(
     )';'system';'12345',
     'SELECT * FROM Northwind.Categories'
 ) AS a;
+
+
+
+/*
+-- Uruchom w Oracle jako SYSTEM, gdy user NORTHWIND nie istnieje.
+
+ALTER SESSION SET CONTAINER = PDB;
+
+CREATE USER NORTHWIND IDENTIFIED BY "12345"
+DEFAULT TABLESPACE USERS
+TEMPORARY TABLESPACE TEMP;
+
+GRANT CONNECT TO NORTHWIND;
+GRANT RESOURCE TO NORTHWIND;
+ALTER USER NORTHWIND DEFAULT ROLE CONNECT, RESOURCE;
+GRANT CREATE VIEW TO NORTHWIND;
+GRANT UNLIMITED TABLESPACE TO NORTHWIND;
+
+-- Jezeli user juz istnieje:
+ALTER USER NORTHWIND IDENTIFIED BY "12345" ACCOUNT UNLOCK;
+*/
+
+
+-- Zadanie 5 - produkty z Oracle osobno
+SELECT p.*
+FROM OPENROWSET(
+    'OraOLEDB.Oracle',
+    '(DESCRIPTION =
+        (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.64.133)(PORT = 1521))
+        (CONNECT_DATA =
+        (SERVICE_NAME = PDB)
+        )
+    )';'NORTHWIND';'12345',
+    'SELECT ProductID, ProductName, UnitPrice FROM Products'
+) AS p;
+GO
+
+-- Widok
+CREATE OR ALTER VIEW dbo.V1_LAB03_ORACLE_PRODUCTS
+WITH ENCRYPTION
+AS
+SELECT p.*
+FROM OPENROWSET(
+    'OraOLEDB.Oracle',
+    '(DESCRIPTION =
+        (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.64.133)(PORT = 1521))
+        (CONNECT_DATA =
+        (SERVICE_NAME = PDB)
+        )
+    )';'NORTHWIND';'12345',
+    'SELECT ProductID, ProductName, UnitPrice FROM Products'
+) AS p;
+GO
+
+SELECT *
+FROM dbo.V1_LAB03_ORACLE_PRODUCTS;
+GO
+
+-- Zadanie 6 - najpierw produkty lokalne
+SELECT ProductID, ProductName, UnitPrice
+FROM Northwind.dbo.Products;
+GO
+
+-- Zadanie 6 - potem produkty Oracle
+SELECT p.*
+FROM OPENROWSET(
+    'OraOLEDB.Oracle',
+    '(DESCRIPTION =
+        (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.64.133)(PORT = 1521))
+        (CONNECT_DATA =
+        (SERVICE_NAME = PDB)
+        )
+    )';'NORTHWIND';'12345',
+    'SELECT ProductName, UnitPrice FROM Products'
+) AS p;
+GO
+
+-- Zadanie 6 - finalne porownanie cen
+SELECT
+    p.ProductName AS ProduktSQLServer,
+    p.UnitPrice AS CenaSQLServer,
+    o.ProductName AS ProduktOracle,
+    o.UnitPrice AS CenaOracle
+FROM Northwind.dbo.Products AS p
+INNER JOIN OPENROWSET(
+    'OraOLEDB.Oracle',
+    '(DESCRIPTION =
+        (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.64.133)(PORT = 1521))
+        (CONNECT_DATA =
+        (SERVICE_NAME = PDB)
+        )
+    )';'NORTHWIND';'12345',
+    'SELECT ProductName, UnitPrice FROM Products'
+) AS o
+    ON p.ProductName = o.ProductName
+    AND p.UnitPrice = o.UnitPrice
+ORDER BY p.ProductName;
+GO
+
+
+
+
+
+-- Zadania:
+-- Jaki klient (ORACLE) zrealizował jakie zamówienia (SQLSERVER lokalny) na którym są jakie produkty ACCESS)
+-- obsłużone przez jakiego pracownika (SQL Server: WA-03) 
+
+-- Najpierw zwykle zapytanie lokalne
+SELECT
+	c.CompanyName AS Klient,
+	c.ContactName AS KontaktKlienta,
+	o.OrderID AS NrZamowienia,
+	p.ProductName AS Produkt,
+	od.UnitPrice AS CenaJednostkowa,
+	od.Quantity AS Ilosc,
+	e.LastName + ' ' + e.FirstName AS Pracownik
+FROM Northwind.dbo.Customers AS c
+INNER JOIN Northwind.dbo.Orders AS o
+	ON c.CustomerID = o.CustomerID
+INNER JOIN Northwind.dbo.[Order Details] AS od
+	ON o.OrderID = od.OrderID
+INNER JOIN Northwind.dbo.Products AS p
+	ON od.ProductID = p.ProductID
+INNER JOIN Northwind.dbo.Employees AS e
+	ON o.EmployeeID = e.EmployeeID;
+GO
+
+-- Klienci z Oracle osobno
+SELECT c.*
+FROM OPENROWSET(
+	'OraOLEDB.Oracle',
+	'(DESCRIPTION =
+		(ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.64.133)(PORT = 1521))
+		(CONNECT_DATA =
+			(SERVICE_NAME = PDB)
+		)
+	)';'NORTHWIND';'12345',
+	'SELECT CustomerID, CompanyName, ContactName FROM Customers'
+) AS c;
+GO
+
+-- Zamowienia z SQL Server lokalnego osobno
+SELECT o.*
+FROM OPENROWSET(
+	'MSOLEDBSQL',
+	'Server=Mateusz;Database=Northwind;Trusted_Connection=yes;',
+	'SELECT o.OrderID, o.CustomerID, o.EmployeeID, od.ProductID, od.UnitPrice, od.Quantity
+	 FROM dbo.Orders AS o
+	 INNER JOIN dbo.[Order Details] AS od ON o.OrderID = od.OrderID'
+) AS o;
+GO
+
+-- Produkty z Access osobno
+SELECT
+	p.IDproduktu AS ProductID,
+	p.NazwaProduktu AS ProductName
+FROM OPENROWSET(
+	'Microsoft.ACE.OLEDB.12.0',
+	'C:\Northwind\Northwind.mdb';'admin';'',
+	'SELECT IDproduktu, NazwaProduktu FROM Produkty'
+) AS p;
+GO
+
+-- Pracownicy z SQL Server osobno
+SELECT e.*
+FROM OPENROWSET(
+	'MSOLEDBSQL',
+	'Server=Mateusz;Database=Northwind;Trusted_Connection=yes;',
+	'SELECT EmployeeID, LastName, FirstName FROM dbo.Employees'
+) AS e;
+GO
+
+-- Finalne zapytanie rozproszone z with
+;WITH klienci AS (
+	SELECT c.*
+	FROM OPENROWSET(
+		'OraOLEDB.Oracle',
+		'(DESCRIPTION =
+			(ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.64.133)(PORT = 1521))
+			(CONNECT_DATA =
+				(SERVICE_NAME = PDB)
+			)
+		)';'NORTHWIND';'12345',
+		'SELECT CustomerID, CompanyName, ContactName FROM Customers'
+	) AS c
+),
+zamowienia AS (
+	SELECT o.*
+	FROM OPENROWSET(
+		'MSOLEDBSQL',
+		'Server=Mateusz;Database=Northwind;Trusted_Connection=yes;',
+		'SELECT o.OrderID, o.CustomerID, o.EmployeeID, od.ProductID, od.UnitPrice, od.Quantity
+		 FROM dbo.Orders AS o
+		 INNER JOIN dbo.[Order Details] AS od ON o.OrderID = od.OrderID'
+	) AS o
+),
+produkty AS (
+	SELECT
+		p.IDproduktu AS ProductID,
+		p.NazwaProduktu AS ProductName
+	FROM OPENROWSET(
+		'Microsoft.ACE.OLEDB.12.0',
+		'C:\Northwind\Northwind.mdb';'admin';'',
+		'SELECT IDproduktu, NazwaProduktu FROM Produkty'
+	) AS p
+),
+pracownicy AS (
+	SELECT e.*
+	FROM OPENROWSET(
+		'MSOLEDBSQL',
+		'Server=Mateusz;Database=Northwind;Trusted_Connection=yes;',
+		'SELECT EmployeeID, LastName, FirstName FROM dbo.Employees'
+	) AS e
+)
+SELECT
+	k.CompanyName AS Klient,
+	k.ContactName AS KontaktKlienta,
+	z.OrderID AS NrZamowienia,
+	p.ProductName AS Produkt,
+	z.UnitPrice AS CenaJednostkowa,
+	z.Quantity AS Ilosc,
+	pr.LastName + ' ' + pr.FirstName AS Pracownik
+FROM zamowienia AS z
+INNER JOIN klienci AS k
+	ON z.CustomerID = k.CustomerID
+INNER JOIN produkty AS p
+	ON z.ProductID = p.ProductID
+INNER JOIN pracownicy AS pr
+	ON z.EmployeeID = pr.EmployeeID;
+GO
+
+
+-- Linkowanie serwerów
+/*
+    sp_addlinkedserver - tworzy połączenie.
+    sp_addlinkedsrvlogin - podaje login i hasło.
+    sp_serveroption - włącza RPC.
+    sp_dropserver - usuwa połączenie (pamiętaj o 'droplogins').
+    sp_linkedservers - wyświetla listę aktualnie zlinkowanych serwerów (żeby sprawdzić, czy się udało)
+*/
+
+
+
+
+
+

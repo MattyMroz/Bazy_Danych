@@ -184,3 +184,184 @@ COMMIT TRANSACTION
 
 
 ----------------------------
+
+
+-- ROZWIAZANIE POD MOJ SERWER
+
+/*
+-- Ten fragment uruchom w Oracle SQL Developer jako NORTHWIND / 12345.
+
+CREATE TABLE KOLEDZY (
+    INDEKS NUMBER(15) NOT NULL PRIMARY KEY,
+    NAZWISKO VARCHAR2(50) NOT NULL,
+    IMIE VARCHAR2(25) NOT NULL
+);
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON KOLEDZY TO PUBLIC;
+
+CREATE OR REPLACE PROCEDURE DODAJ_KOLEGE_ORACLE (
+    P_INDEKS IN NUMBER,
+    P_NAZWISKO IN VARCHAR2,
+    P_IMIE IN VARCHAR2
+)
+AS
+BEGIN
+    INSERT INTO KOLEDZY (INDEKS, NAZWISKO, IMIE)
+    VALUES (P_INDEKS, P_NAZWISKO, P_IMIE);
+END;
+/
+
+SELECT * FROM KOLEDZY;
+*/
+GO
+
+USE master;
+GO
+
+EXEC sp_configure 'show advanced options', 1;
+RECONFIGURE;
+GO
+
+EXEC sp_configure 'Ad Hoc Distributed Queries', 1;
+RECONFIGURE;
+GO
+
+EXEC master.dbo.sp_MSset_oledb_prop N'OraOLEDB.Oracle', N'AllowInProcess', 1;
+GO
+
+IF EXISTS (SELECT 1 FROM sys.servers WHERE name = N'ORACLE_PDB')
+    EXEC sp_dropserver N'ORACLE_PDB', 'droplogins';
+GO
+
+EXEC sp_addlinkedserver
+    @server = N'ORACLE_PDB',
+    @srvproduct = N'Oracle',
+    @provider = N'OraOLEDB.Oracle',
+    @datasrc = N'(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.64.133)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=PDB)))';
+GO
+
+EXEC sp_addlinkedsrvlogin
+    @rmtsrvname = N'ORACLE_PDB',
+    @useself = N'False',
+    @locallogin = NULL,
+    @rmtuser = N'NORTHWIND',
+    @rmtpassword = N'12345';
+GO
+
+EXEC sp_serveroption N'ORACLE_PDB', N'rpc', N'true';
+EXEC sp_serveroption N'ORACLE_PDB', N'rpc out', N'true';
+GO
+
+SELECT *
+FROM OPENQUERY(ORACLE_PDB, 'SELECT INDEKS, NAZWISKO, IMIE FROM KOLEDZY');
+GO
+
+USE Northwind;
+GO
+
+IF OBJECT_ID('dbo.koledzy', 'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.koledzy (
+        indeks INT NOT NULL PRIMARY KEY,
+        nazwisko VARCHAR(50) NOT NULL,
+        imie VARCHAR(25) NOT NULL
+    );
+END;
+GO
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON dbo.koledzy TO PUBLIC;
+GO
+
+SELECT *
+FROM dbo.koledzy;
+GO
+
+SET XACT_ABORT ON;
+GO
+
+BEGIN TRY
+    BEGIN DISTRIBUTED TRANSACTION;
+
+    INSERT INTO dbo.koledzy (indeks, nazwisko, imie)
+    VALUES (61001, 'Kowalski', 'Jan');
+
+    INSERT INTO OPENROWSET(
+        'OraOLEDB.Oracle',
+        '(DESCRIPTION =
+            (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.64.133)(PORT = 1521))
+            (CONNECT_DATA =
+                (SERVICE_NAME = PDB)
+            )
+        )';'NORTHWIND';'12345',
+        'SELECT INDEKS, NAZWISKO, IMIE FROM KOLEDZY'
+    )
+    VALUES (61001, 'Kowalski', 'Jan');
+
+    COMMIT TRANSACTION;
+END TRY
+BEGIN CATCH
+    IF @@TRANCOUNT > 0
+        ROLLBACK TRANSACTION;
+
+    THROW;
+END CATCH;
+GO
+
+SELECT *
+FROM dbo.koledzy
+WHERE indeks = 61001;
+GO
+
+SELECT *
+FROM OPENQUERY(ORACLE_PDB, 'SELECT INDEKS, NAZWISKO, IMIE FROM KOLEDZY WHERE INDEKS = 61001');
+GO
+
+IF OBJECT_ID('dbo.dodaj_kolege_sql', 'P') IS NOT NULL
+    DROP PROCEDURE dbo.dodaj_kolege_sql;
+GO
+
+CREATE PROCEDURE dbo.dodaj_kolege_sql
+    @indeks INT,
+    @nazwisko VARCHAR(50),
+    @imie VARCHAR(25)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO dbo.koledzy (indeks, nazwisko, imie)
+    VALUES (@indeks, @nazwisko, @imie);
+END;
+GO
+
+SET XACT_ABORT ON;
+GO
+
+BEGIN TRY
+    BEGIN DISTRIBUTED TRANSACTION;
+
+    EXEC dbo.dodaj_kolege_sql
+        @indeks = 62001,
+        @nazwisko = 'Nowak',
+        @imie = 'Anna';
+
+    EXEC ('BEGIN DODAJ_KOLEGE_ORACLE(62001, ''Nowak'', ''Anna''); END;') AT ORACLE_PDB;
+
+    COMMIT TRANSACTION;
+END TRY
+BEGIN CATCH
+    IF @@TRANCOUNT > 0
+        ROLLBACK TRANSACTION;
+
+    THROW;
+END CATCH;
+GO
+
+SELECT *
+FROM dbo.koledzy
+WHERE indeks IN (61001, 62001);
+GO
+
+SELECT *
+FROM OPENQUERY(ORACLE_PDB, 'SELECT INDEKS, NAZWISKO, IMIE FROM KOLEDZY WHERE INDEKS IN (61001, 62001)');
+GO
+
