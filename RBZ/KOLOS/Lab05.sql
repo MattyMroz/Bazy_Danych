@@ -244,10 +244,13 @@ GO
 EXEC dbo.usp_lab05_wartosc_sprzedazy_rok @Rok = 1997;
 GO
 
-INSERT INTO [z-01].RBD_g10d.dbo.Products
-	(ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued)
+SET XACT_ABORT OFF;
+GO
+
+INSERT INTO[z-01].RBD_g10d.dbo.Products
+	(ProductID, ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued)
 VALUES
-	('LAB05_TEST_1', 1, 1, '10 boxes', 10.00, 10, 0, 0, 0);
+	(999, 'LAB05_TEST_1', 1, 1, '10 boxes', 10.00, 10, 0, 0, 0);
 GO
 
 SELECT ProductID, ProductName, UnitPrice
@@ -260,12 +263,13 @@ WHERE ProductName = 'LAB05_TEST_1';
 GO
 
 INSERT INTO OPENQUERY([z-01], '
-	SELECT ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued
+	SELECT ProductID, ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued
 	FROM RBD_g10d.dbo.Products
 ')
 VALUES
-	('LAB05_OPENQUERY_1', 1, 1, '10 boxes', 11.00, 11, 0, 0, 0);
+	(999, 'LAB05_OPENQUERY_1', 1, 1, '10 boxes', 11.00, 11, 0, 0, 0);
 GO
+
 
 SELECT *
 FROM OPENQUERY([z-01], '
