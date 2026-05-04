@@ -1,492 +1,461 @@
-/* ============================================================
-   KOLOS RBD — SCIAGA / NOTATKA
-   ============================================================
-   Spis tresci:
-   0.  Konfiguracja srodowiska (raz na sesje)
-   1.  4-czlonowa identyfikacja obiektu
-   2.  OPENROWSET — Ad Hoc (bez linked servera)
-       2a. SQL Server  -> SQL Server
-       2b. SQL Server  -> Oracle
-       2c. SQL Server  -> Access (.mdb)
-       2d. SQL Server  -> Excel  (.xlsx)
-       2e. Multi-zrodlo (SQL + Oracle + Access)
-   3.  LINKED SERVER — sp_addlinkedserver + sp_addlinkedsrvlogin
-       3a. SQL  -> SQL
-       3b. SQL  -> Oracle
-       3c. SQL  -> Access
-       3d. SQL  -> Excel
-       3e. Mapowanie loginu lokalnego na zdalny
-   4.  OPENQUERY — przekazywanie zapytan do linked servera
-       (SELECT / INSERT / UPDATE / DELETE)
-   5.  Widoki rozproszone (w tym WITH ENCRYPTION)
-   6.  Procedury rozproszone (z parametrami i OPENROWSET)
-   7.  Transakcja rozproszona (BEGIN DISTRIBUTED TRANSACTION + DTC)
-   8.  Loginy / uzytkownicy / prawa (SQL Server)
-   9.  Oracle — uzytkownik NORTHWIND, prawa, role
-   10. Cheatsheet — funkcje pomocnicze
-   11. Najczestsze pulapki na kolokwium
-   ============================================================ */
+/* ============================================================================
+   PROMPT - jak pisac kod na kolokwium (RBZ)
+   ============================================================================
+   - Pisz kod tak jak w pliku kolos.ral.sql / kolos.ral.uczelnia.sql:
+     krotko, czysto, GO po kazdym wsadzie, bez nadmiaru BEGIN/END.
+   - Procedury: CREATE OR ALTER PROCEDURE, bez SET NOCOUNT, bez DECLARE
+     dopoki nie musisz. Jesli OPENROWSET nie pozwala na parametr,
+     robisz CTE z SELECT * i filtrujesz @parametr w WHERE na zewnatrz.
+   - Widoki: CREATE OR ALTER VIEW, WITH ENCRYPTION jesli zadanie tego wymaga.
+   - Najpierw ZAWSZE zrob "wersje lokalna" (zwykly SELECT z lokalnej bazy)
+     zeby sprawdzic ze sens zapytania jest poprawny. Potem podmieniasz
+     na OPENROWSET / OPENQUERY / 4-czlonowa nazwe.
+   - Dla OPENROWSET na Access: SELECT * w srodku, NIE wymieniaj kolumn
+     (lookup pola wywalaja "invalid metadata"). JOIN/WHERE w SQL Server.
+   - Dla OPENQUERY do SQL Server: piszesz string T-SQL ktory wykona sie zdalnie.
+   - Dla Oracle: nazwy bez cudzyslowu sa case-insensitive, haslo CASE-SENSITIVE.
+   - Dla DTC: SET XACT_ABORT ON; BEGIN DISTRIBUTED TRANSACTION; ... COMMIT.
+   - Konfiguracja uczelniana: sa/praktyka, Oracle PD251190/12345,
+     host 212.51.216.169:1521 SID=PD25, lokalny komputer WB-20,
+     inne komputery WB-XX (linked server WBxx).
+============================================================================ */
 
 
-/* ============================================================
-   0. KONFIGURACJA SRODOWISKA — odpalic raz na sesje
-   ============================================================ */
+/* ============================================================================
+   INFRASTRUKTURA - co skonfigurowac PRZED uruchomieniem czegokolwiek
+   ============================================================================
 
-USE master;
-GO
+   1) Uslugi Windows
+      - Win + R -> services.msc
+      - SQL Server (MSSQLSERVER): Wlasciwosci -> Logowanie -> Lokalne konto
+        systemowe -> Zastosuj -> Restart uslugi
+      - SQL Server Browser: Wlasciwosci -> Service -> Start Mode = Automatic,
+        Start
+
+   2) SQL Server Configuration Manager (uruchom jako Administrator)
+      - SQL Server Network Configuration -> MSSQLSERVER:
+          TCP/IP        -> Enable
+          Named Pipes   -> Enable
+      - SQL Server Services -> SQL Server (MSSQLSERVER) -> Restart
+
+   3) Zapora sieciowa (Firewall)
+      - Panel sterowania -> System i zabezpieczenia -> Zapora systemowa
+        Windows -> Zaawansowane ustawienia
+      - Reguly wejsciowe (potem wyjsciowe) -> Nowa regula -> Port:
+          TCP 1433  (SQL Server)
+          TCP 1521  (Oracle)
+        -> Zezwol na polaczenie -> Nazwa: SQL Server / Oracle -> Zakoncz
+
+   4) Oracle Net Manager (na potrzeby connect string'ow do Oracle z PL/SQL)
+      - Directory -> Local -> Service Naming -> Create
+          Name: PD25
+          Protocol: TCP
+          Host: 212.51.216.169
+          Port: 1521
+          SID: PD25
+
+   5) Sterownik ACE dla Excela i Access
+      - Microsoft.ACE.OLEDB.12.0  (32-bit lub 64-bit zgodny z SQL Server)
+      - Alternatywa: Microsoft.ACE.OLEDB.16.0
+
+   6) Pliki Excel/Access
+      - C:\Northwind\Northwind.mdb
+      - C:\Northwind\listy.xlsx
+      Klik prawy na folder C:\Northwind -> Wlasciwosci -> Zabezpieczenia
+        -> Edytuj -> Dodaj -> "Wszyscy" (Everyone) -> Odczyt + Wykonanie
+
+============================================================================ */
+
+
+/* ============================================================================
+   KONFIGURACJA SQL SERVER - jednorazowa
+   ============================================================================ */
 
 EXEC sp_configure 'show advanced options', 1; RECONFIGURE;
 EXEC sp_configure 'Ad Hoc Distributed Queries', 1; RECONFIGURE;
 GO
 
--- AllowInProcess + DynamicParameters dla kazdego sterownika OLE DB ktory uzywamy
-EXEC master.dbo.sp_MSset_oledb_prop 'MSOLEDBSQL',              'AllowInProcess',    1;
-EXEC master.dbo.sp_MSset_oledb_prop 'MSOLEDBSQL',              'DynamicParameters', 1;
-EXEC master.dbo.sp_MSset_oledb_prop 'OraOLEDB.Oracle',         'AllowInProcess',    1;
-EXEC master.dbo.sp_MSset_oledb_prop 'OraOLEDB.Oracle',         'DynamicParameters', 1;
-EXEC master.dbo.sp_MSset_oledb_prop 'Microsoft.ACE.OLEDB.12.0','AllowInProcess',    1;
-EXEC master.dbo.sp_MSset_oledb_prop 'Microsoft.ACE.OLEDB.12.0','DynamicParameters', 1;
+USE master;
 GO
 
--- Co jest dostepne:
-EXEC sp_enum_oledb_providers;
+EXEC master.dbo.sp_MSset_oledb_prop N'MSOLEDBSQL',              N'AllowInProcess',    1;
+EXEC master.dbo.sp_MSset_oledb_prop N'MSOLEDBSQL',              N'DynamicParameters', 1;
+EXEC master.dbo.sp_MSset_oledb_prop N'OraOLEDB.Oracle',         N'AllowInProcess',    1;
+EXEC master.dbo.sp_MSset_oledb_prop N'OraOLEDB.Oracle',         N'DynamicParameters', 1;
+EXEC master.dbo.sp_MSset_oledb_prop N'Microsoft.ACE.OLEDB.12.0',N'AllowInProcess',    1;
+EXEC master.dbo.sp_MSset_oledb_prop N'Microsoft.ACE.OLEDB.12.0',N'DynamicParameters', 1;
+GO
+
+
+/* ============================================================================
+   LOGINY / USERZY / GRANTY
+   ============================================================================ */
+
+CREATE LOGIN KONTO1 WITH PASSWORD = '12345', CHECK_POLICY = OFF;
+GO
+
+USE Northwind;
+GO
+CREATE USER KONTO1 FOR LOGIN KONTO1;
+GRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::dbo TO KONTO1;
+GO
+
+
+/* ============================================================================
+   LINKED SERVER - SQL Server -> SQL Server (Serwer1, mapping sa -> KONTO1)
+   ============================================================================ */
+
+EXEC sp_addlinkedserver
+    @server     = 'Serwer1',
+    @srvproduct = '',
+    @provider   = 'MSOLEDBSQL',
+    @datasrc    = 'WB-20',
+    @catalog    = 'Northwind';
+GO
+
+EXEC sp_addlinkedsrvlogin
+    @rmtsrvname = 'Serwer1',
+    @useself    = 'false',
+    @locallogin = 'sa',
+    @rmtuser    = 'KONTO1',
+    @rmtpassword= '12345';
+GO
+
+EXEC sp_serveroption 'Serwer1', 'data access', 'true';
+EXEC sp_serveroption 'Serwer1', 'rpc',         'true';
+EXEC sp_serveroption 'Serwer1', 'rpc out',     'true';
+GO
+
 EXEC sp_linkedservers;
+SELECT TOP 5 * FROM OPENQUERY(Serwer1, 'SELECT ProductID, ProductName FROM Northwind.dbo.Products');
 GO
 
--- Infrastruktura (poza SQL):
--- 1) SQL Server Configuration Manager -> TCP/IP enabled, port 1433, SQL Browser auto+start
--- 2) Firewall: regula przychodzaca TCP 1433 (i 1521 dla Oracle)
--- 3) Konto uslugi MSSQLSERVER musi miec dostep do plikow Access/Excel (Win+R services.msc)
--- 4) Folder z Access/Excel: prawa "Everyone" -> read
--- 5) Oracle Net Manager: Service Naming -> wpis (host, port 1521, SERVICE_NAME=PDB)
+
+/* ============================================================================
+   LINKED SERVER - SQL Server -> Oracle
+   ============================================================================ */
+
+EXEC sp_addlinkedserver
+    @server     = 'OraPD25',
+    @srvproduct = 'Oracle',
+    @provider   = 'OraOLEDB.Oracle',
+    @datasrc    = '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=212.51.216.169)(PORT=1521))(CONNECT_DATA=(SID=PD25)))';
+GO
+
+EXEC sp_addlinkedsrvlogin
+    @rmtsrvname = 'OraPD25',
+    @useself    = 'false',
+    @locallogin = 'sa',
+    @rmtuser    = 'PD251190',
+    @rmtpassword= '12345';
+GO
+
+EXEC sp_serveroption 'OraPD25', 'rpc out', 'true';
+GO
 
 
-/* ============================================================
-   1. 4-CZLONOWA IDENTYFIKACJA OBIEKTU
-   ============================================================ */
+/* ============================================================================
+   LINKED SERVER - SQL Server -> Access
+   ============================================================================ */
 
--- <Serwer>.<Baza>.<Schemat>.<Obiekt>
-SELECT * FROM Mateusz.Northwind.dbo.Categories;
-SELECT * FROM Northwind.dbo.Categories;          -- serwer = lokalny
-SELECT * FROM Northwind..Categories;             -- schemat = domyslny (dbo)
+EXEC sp_addlinkedserver
+    @server     = 'AccessNW',
+    @srvproduct = 'OLE DB Provider for ACE',
+    @provider   = 'Microsoft.ACE.OLEDB.12.0',
+    @datasrc    = 'C:\Northwind\Northwind.mdb';
+GO
 
 
-/* ============================================================
-   2. OPENROWSET — AD HOC (bez stalego linked servera)
-   ============================================================
-   Skladnia ogolna:
-   OPENROWSET( '<provider>', '<connection-string>'  ;'<user>';'<pwd>',
-               '<query do zdalnego zrodla>')
-   Kazde wystapienie tworzy osobne polaczenie -> drogo!
-   ============================================================ */
+/* ============================================================================
+   LINKED SERVER - SQL Server -> Excel
+   ============================================================================ */
 
--- 2a. SQL -> SQL (Trusted_Connection)
+EXEC sp_addlinkedserver
+    @server     = 'ExcelLST',
+    @srvproduct = 'OLE DB Provider for ACE',
+    @provider   = 'Microsoft.ACE.OLEDB.12.0',
+    @datasrc    = 'C:\Northwind\listy.xlsx',
+    @provstr    = 'Excel 12.0;HDR=YES';
+GO
+
+
+/* ============================================================================
+   OPENROWSET - SQL -> SQL
+   ============================================================================ */
+
 SELECT a.*
 FROM OPENROWSET(
     'MSOLEDBSQL',
-    'Server=Mateusz;Database=Northwind;Trusted_Connection=yes;',
-    'SELECT CategoryID, CategoryName FROM dbo.Categories'
+    'Server=WB-20;Database=Northwind;UID=sa;PWD=praktyka;',
+    'SELECT ProductID, ProductName FROM dbo.Products'
 ) AS a;
-
--- 2a. SQL -> SQL (login + haslo)
-SELECT a.*
-FROM OPENROWSET(
-    'MSOLEDBSQL',
-    'Server=Mateusz;UID=sa;PWD=praktyka;',
-    'SELECT * FROM Northwind.dbo.Categories'
-) AS a;
-
--- alternatywna skladnia z trzema apostrofowanymi czesciami
-SELECT a.*
-FROM OPENROWSET(
-    'MSOLEDBSQL',
-    'Mateusz';'sa';'praktyka',
-    'SELECT * FROM Northwind.dbo.Categories'
-) AS a;
+GO
 
 
--- 2b. SQL -> Oracle
+/* ============================================================================
+   OPENROWSET - SQL -> Oracle
+   ============================================================================ */
+
 SELECT a.*
 FROM OPENROWSET(
     'OraOLEDB.Oracle',
-    '(DESCRIPTION =
-        (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.64.133)(PORT = 1521))
-        (CONNECT_DATA = (SERVICE_NAME = PDB))
-    )';'NORTHWIND';'12345',
-    'SELECT ProductID, ProductName, UnitPrice FROM Products'
+    '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=212.51.216.169)(PORT=1521))(CONNECT_DATA=(SID=PD25)))';'PD251190';'12345',
+    'SELECT EmployeeID, LastName, FirstName FROM Employees'
 ) AS a;
--- Uwaga: w Oracle nazwy bez cudzyslowu sa case-insensitive,
---        haslo natomiast JEST case-sensitive.
+GO
 
 
--- 2c. SQL -> Access (.mdb)
+/* ============================================================================
+   OPENROWSET - SQL -> Access (ZAWSZE SELECT *, JOIN/WHERE w SQL Server)
+   ============================================================================ */
+
 SELECT a.*
 FROM OPENROWSET(
     'Microsoft.ACE.OLEDB.12.0',
     'C:\Northwind\Northwind.mdb';'admin';'',
-    'SELECT IDproduktu, NazwaProduktu FROM Produkty'
+    'SELECT * FROM [Opisy zamówień]'
 ) AS a;
+GO
 
 
--- 2d. SQL -> Excel (.xlsx)
+/* ============================================================================
+   OPENROWSET - SQL -> Excel
+   ============================================================================ */
+
 SELECT a.*
 FROM OPENROWSET(
     'Microsoft.ACE.OLEDB.12.0',
     'Excel 12.0;Database=C:\Northwind\listy.xlsx;HDR=YES;',
-    'SELECT * FROM [oceny_do_www$] WHERE Ocena >= 3'
+    'SELECT * FROM [oceny_do_www$]'
 ) AS a;
+GO
 
 
--- 2e. Multi-zrodlo (sprzezenie SQL + Oracle + Access) — uzywaj CTE
+/* ============================================================================
+   OPENROWSET MULTI-ZRODLO (SQL + Oracle + Access) - CTE pattern
+   ============================================================================ */
+
 ;WITH klienci AS (
-    SELECT c.*
-    FROM OPENROWSET(
+    SELECT * FROM OPENROWSET(
         'OraOLEDB.Oracle',
-        '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.64.133)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=PDB)))';'NORTHWIND';'12345',
+        '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=212.51.216.169)(PORT=1521))(CONNECT_DATA=(SID=PD25)))';'PD251190';'12345',
         'SELECT CustomerID, CompanyName FROM Customers'
-    ) AS c
+    )
 ),
 zamowienia AS (
-    SELECT o.*
-    FROM OPENROWSET(
+    SELECT * FROM OPENROWSET(
         'MSOLEDBSQL',
-        'Server=Mateusz;Database=Northwind;Trusted_Connection=yes;',
+        'Server=WB-20;Database=Northwind;UID=sa;PWD=praktyka;',
         'SELECT OrderID, CustomerID, EmployeeID FROM dbo.Orders'
-    ) AS o
+    )
 ),
 produkty AS (
-    SELECT p.IDproduktu AS ProductID, p.NazwaProduktu AS ProductName
-    FROM OPENROWSET(
+    SELECT * FROM OPENROWSET(
         'Microsoft.ACE.OLEDB.12.0',
         'C:\Northwind\Northwind.mdb';'admin';'',
-        'SELECT IDproduktu, NazwaProduktu FROM Produkty'
-    ) AS p
+        'SELECT * FROM Produkty'
+    )
 )
-SELECT k.CompanyName, z.OrderID, p.ProductName
+SELECT k.CompanyName, z.OrderID, p.NazwaProduktu
 FROM zamowienia z
 JOIN klienci  k ON z.CustomerID = k.CustomerID
 JOIN Northwind.dbo.[Order Details] od ON z.OrderID = od.OrderID
-JOIN produkty p ON od.ProductID = p.ProductID;
-
-
-/* ============================================================
-   3. LINKED SERVER — staly link do zdalnego zrodla
-   ============================================================
-   sp_addlinkedserver       -- tworzy polaczenie
-   sp_addlinkedsrvlogin     -- mapuje login lokalny -> zdalny
-   sp_serveroption          -- wlacza RPC, data access itd.
-   sp_dropserver ... 'droplogins'
-   ============================================================ */
-
--- Wzorzec: zawsze sprzatamy stary, potem zakladamy nowy.
-USE master;
-GO
-
-IF EXISTS (SELECT 1 FROM sys.servers WHERE name = 'LS_NAZWA')
-    EXEC sp_dropserver 'LS_NAZWA', 'droplogins';
+JOIN produkty p ON od.ProductID = p.IDproduktu;
 GO
 
 
--- 3a. SQL -> SQL
-EXEC sp_addlinkedserver
-    @server     = 'LS_SQL',
-    @srvproduct = '',
-    @provider   = 'MSOLEDBSQL',
-    @datasrc    = 'Mateusz',          -- nazwa zdalnej instancji SQL
-    @catalog    = 'Northwind';
+/* ============================================================================
+   OPENQUERY - przetwarzanie zdalne (SELECT, INSERT, UPDATE, DELETE)
+   ============================================================================ */
 
--- mapowanie: kazdy lokalny login -> uzyj swojego (Trusted)
-EXEC sp_addlinkedsrvlogin 'LS_SQL', 'true', NULL;
+SELECT * FROM OPENQUERY(Serwer1, 'SELECT ProductID, ProductName FROM Northwind.dbo.Products');
+GO
 
--- mapowanie: konkretny lokalny login -> zdalny user/pwd
-EXEC sp_addlinkedsrvlogin
-    @rmtsrvname = 'LS_SQL',
-    @useself    = 'false',
-    @locallogin = 'RBDg10L',          -- NULL = wszyscy nie wymienieni
-    @rmtuser    = 'zRBDg10R',
-    @rmtpassword= '123456RBD';
+INSERT INTO OPENQUERY(Serwer1, 'SELECT ProductName, UnitPrice FROM Northwind.dbo.Products')
+VALUES ('Test', 1.0);
+GO
 
-EXEC sp_serveroption 'LS_SQL', 'data access', 'true';
-EXEC sp_serveroption 'LS_SQL', 'rpc',         'true';
-EXEC sp_serveroption 'LS_SQL', 'rpc out',     'true';
+UPDATE OPENQUERY(Serwer1, 'SELECT ProductName, UnitPrice FROM Northwind.dbo.Products WHERE ProductName = ''Test''')
+SET UnitPrice = 9.99;
+GO
+
+DELETE FROM OPENQUERY(Serwer1, 'SELECT ProductID FROM Northwind.dbo.Products WHERE ProductName = ''Test''');
+GO
+
+EXEC ('SELECT TOP 5 * FROM Northwind.dbo.Products') AT Serwer1;
 GO
 
 
--- 3b. SQL -> Oracle
-EXEC sp_addlinkedserver
-    @server     = 'LS_ORA',
-    @srvproduct = 'Oracle',
-    @provider   = 'OraOLEDB.Oracle',
-    @datasrc    = '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.64.133)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=PDB)))';
+/* ============================================================================
+   4-CZLONOWA IDENTYFIKACJA OBIEKTU (przez linked server)
+   ============================================================================ */
 
-EXEC sp_addlinkedsrvlogin 'LS_ORA', 'false', NULL, 'NORTHWIND', '12345';
-EXEC sp_serveroption 'LS_ORA', 'rpc',     'true';
-EXEC sp_serveroption 'LS_ORA', 'rpc out', 'true';
+SELECT TOP 5 * FROM Serwer1.Northwind.dbo.Products;
+SELECT TOP 5 * FROM Serwer1.Northwind.dbo.[Order Details];
 GO
 
 
--- 3c. SQL -> Access
-EXEC sp_addlinkedserver
-    @server     = 'LS_ACC',
-    @srvproduct = 'Access',
-    @provider   = 'Microsoft.ACE.OLEDB.12.0',
-    @datasrc    = 'C:\Northwind\Northwind.mdb';
-
-EXEC sp_addlinkedsrvlogin 'LS_ACC', 'false', NULL, 'Admin', '';
-EXEC sp_serveroption 'LS_ACC', 'data access', 'true';
-GO
-
-
--- 3d. SQL -> Excel
-EXEC sp_addlinkedserver
-    @server     = 'LS_XLS',
-    @srvproduct = 'Excel',
-    @provider   = 'Microsoft.ACE.OLEDB.12.0',
-    @datasrc    = 'C:\Northwind\listy.xlsx',
-    @provstr    = 'Excel 12.0;HDR=YES';
-
-EXEC sp_addlinkedsrvlogin 'LS_XLS', 'false', NULL, 'Admin', '';
-EXEC sp_serveroption 'LS_XLS', 'data access', 'true';
-GO
-
-
--- 3e. Sprawdzenie:
-EXEC sp_linkedservers;
-EXEC sp_helpserver  'LS_SQL';
-EXEC sp_tables_ex   'LS_SQL';
-EXEC sp_columns_ex  'LS_SQL', NULL, NULL, 'Products';
-
-
-/* ============================================================
-   4. OPENQUERY — przekazywanie zapytania do linked servera
-   ============================================================
-   Wszystko w '<query>' wykonuje sie po stronie ZDALNEJ.
-   Apostrofy w srodku podwajamy: '' -> '
-   Dziala SELECT / INSERT / UPDATE / DELETE.
-   ============================================================ */
-
--- SELECT
-SELECT * FROM OPENQUERY(LS_SQL,
-    'SELECT ProductID, ProductName, UnitPrice
-     FROM Northwind.dbo.Products
-     WHERE UnitPrice > 20');
-
--- 4-czlonowy zapis (alternatywa, robi wiecej po lokalnej stronie)
-SELECT * FROM LS_SQL.Northwind.dbo.Products WHERE UnitPrice > 20;
-
--- INSERT przez OPENQUERY
-INSERT INTO OPENQUERY(LS_SQL,
-    'SELECT ProductID, ProductName, SupplierID, CategoryID,
-            QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder,
-            ReorderLevel, Discontinued
-     FROM RBD_g10d.dbo.Products')
-VALUES (999, 'TEST', 1, 1, '10 boxes', 11.00, 11, 0, 0, 0);
-
--- UPDATE przez OPENQUERY
-UPDATE OPENQUERY(LS_SQL, 'SELECT ProductID, UnitPrice FROM RBD_g10d.dbo.Products WHERE ProductID = 999')
-SET UnitPrice = 12.00;
-
--- DELETE przez OPENQUERY
-DELETE FROM OPENQUERY(LS_SQL, 'SELECT ProductID FROM RBD_g10d.dbo.Products WHERE ProductID = 999');
-
--- EXEC procedury zdalnej (Oracle)
-EXEC ('BEGIN DODAJ_KOLEGE_ORACLE(1,''Nowak'',''Anna''); END;') AT LS_ORA;
-
-
-/* ============================================================
-   5. WIDOKI ROZPROSZONE
-   ============================================================
-   - WITH ENCRYPTION         -> tresc widoku ukryta w sys.sql_modules
-   - WITH SCHEMABINDING      -> wiazanie ze schematem (tylko obiekty bez serwera zdalnego)
-   - Rzutuj typy z Oracle (NUMBER, DATE) na typy SQL Server (INT, DATETIME).
-   - W widoku z OPENROWSET trzeba podac KAZDE OPENROWSET osobno (nie da sie dac samego linked servera w 4-czlonowym zapisie i miec OPENROWSET-a w jednym widoku — ale dwa OPENROWSET-y w jednym widoku jak najbardziej dziala).
-   ============================================================ */
+/* ============================================================================
+   WIDOK Z OPENROWSET I SZYFROWANIEM
+   ============================================================================ */
 
 CREATE OR ALTER VIEW dbo.Widok1
 WITH ENCRYPTION
 AS
-SELECT
-    e.EmployeeID,
-    e.LastName,
-    o.OrderID,
-    p.ProductID,
-    p.ProductName
+SELECT e.EmployeeID, e.LastName, o.OrderID, p.ProductName
 FROM OPENROWSET(
     'OraOLEDB.Oracle',
-    '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.64.133)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=PDB)))';'NORTHWIND';'12345',
+    '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=212.51.216.169)(PORT=1521))(CONNECT_DATA=(SID=PD25)))';'PD251190';'12345',
     'SELECT EmployeeID, LastName FROM Employees'
 ) AS e
 INNER JOIN OPENROWSET(
     'OraOLEDB.Oracle',
-    '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.64.133)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=PDB)))';'NORTHWIND';'12345',
+    '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=212.51.216.169)(PORT=1521))(CONNECT_DATA=(SID=PD25)))';'PD251190';'12345',
     'SELECT OrderID, EmployeeID FROM Orders'
 ) AS o ON e.EmployeeID = o.EmployeeID
-INNER JOIN Northwind.dbo.[Order Details] AS od ON o.OrderID = od.OrderID
-INNER JOIN Northwind.dbo.Products AS p        ON od.ProductID = p.ProductID;
+INNER JOIN OPENROWSET(
+    'MSOLEDBSQL',
+    'Server=WB-20;Database=Northwind;UID=sa;PWD=praktyka;',
+    'SELECT ProductID, ProductName FROM dbo.Products'
+) AS p ON 1 = 1;
 GO
 
--- Sprawdzenie szyfrowania:
-SELECT definition FROM sys.sql_modules
-WHERE object_id = OBJECT_ID('dbo.Widok1');   -- powinno zwrocic NULL
+-- sprawdzenie szyfrowania (powinno byc NULL)
+SELECT definition FROM sys.sql_modules WHERE object_id = OBJECT_ID('dbo.Widok1');
+GO
 
 
-/* ============================================================
-   6. PROCEDURY ROZPROSZONE
-   ============================================================
-   - Parametry @In typowane jak w SQL Server.
-   - Wewnatrz mozna miec OPENROWSET / OPENQUERY / 4-czlonowy zapis.
-   - SET NOCOUNT ON na poczatku, by nie zwracal "(N rows affected)".
-   - Aby procedura przyjmowala parametr w OPENROWSET-cie -> trzeba
-     skleic dynamic SQL (EXEC sp_executesql).
-   ============================================================ */
+/* ============================================================================
+   PROCEDURA Z PARAMETREM I OPENROWSET DO ACCESS (pattern z CTE)
+   ============================================================================ */
 
-CREATE OR ALTER PROCEDURE dbo.PROC4
-    @OrderID INT
+CREATE OR ALTER PROCEDURE dbo.PROC4 @OrderID INT
 AS
-BEGIN
-    SET NOCOUNT ON;
-
-    DECLARE @sql NVARCHAR(MAX) = N'
-        SELECT
-            c.CategoryName,
-            SUM(od.UnitPrice * od.Quantity) AS WartoscBezRabatu
-        FROM OPENROWSET(
-            ''Microsoft.ACE.OLEDB.12.0'',
-            ''C:\Northwind\Northwind.mdb'';''admin'';'''',
-            ''SELECT IDzamowienia, IDproduktu, CenaJednostkowa, Ilosc
-              FROM [Szczegoly zamowienia]
-              WHERE IDzamowienia = ' + CAST(@OrderID AS NVARCHAR(10)) + '''
-        ) AS od
-        INNER JOIN Northwind.dbo.Products   AS p ON od.IDproduktu = p.ProductID
-        INNER JOIN Northwind.dbo.Categories AS c ON p.CategoryID  = c.CategoryID
-        GROUP BY c.CategoryName
-        ORDER BY c.CategoryName;';
-
-    EXEC sp_executesql @sql;
-END;
+WITH o AS (
+    SELECT * FROM OPENROWSET(
+        'Microsoft.ACE.OLEDB.12.0',
+        'C:\Northwind\Northwind.mdb';'admin';'',
+        'SELECT * FROM [Opisy zamówień]'
+    )
+),
+p AS (
+    SELECT * FROM OPENROWSET(
+        'Microsoft.ACE.OLEDB.12.0',
+        'C:\Northwind\Northwind.mdb';'admin';'',
+        'SELECT * FROM Produkty'
+    )
+),
+k AS (
+    SELECT * FROM OPENROWSET(
+        'Microsoft.ACE.OLEDB.12.0',
+        'C:\Northwind\Northwind.mdb';'admin';'',
+        'SELECT * FROM Kategorie'
+    )
+)
+SELECT k.NazwaKategorii AS Kategoria,
+       SUM(o.CenaJednostkowa * o.Ilość) AS WartoscBezRabatu
+FROM o
+JOIN p ON o.IDproduktu = p.IDproduktu
+JOIN k ON p.IDkategorii = k.IDkategorii
+WHERE o.IDzamówienia = @OrderID
+GROUP BY k.NazwaKategorii;
 GO
 
--- Wywolanie (rozne sposoby przekazania parametru):
-EXEC dbo.PROC4 10248;                           -- pozycyjnie
-EXEC dbo.PROC4 @OrderID = 10248;                -- nazwany
-DECLARE @id INT = 10250; EXEC dbo.PROC4 @id;    -- ze zmiennej
+-- 4 sposoby wywolania
+EXEC dbo.PROC4 10248;                          -- pozycyjny
+EXEC dbo.PROC4 @OrderID = 10250;               -- nazwany
+DECLARE @id INT = 10251; EXEC dbo.PROC4 @id;   -- ze zmiennej
+DECLARE @id INT = 10252; EXEC dbo.PROC4 @OrderID = @id; -- nazwany ze zmiennej
+GO
 
 
-/* ============================================================
-   7. TRANSAKCJA ROZPROSZONA (MS DTC)
-   ============================================================
-   - Wymaga uruchomionego Distributed Transaction Coordinator
-     (services.msc -> MSDTC).
-   - W dcomcnfg: Component Services -> My Computer -> DTC ->
-     Local DTC -> Properties -> Security:
-       * Network DTC Access
-       * Allow Inbound / Outbound
-       * Enable XA Transactions
-       * No Authentication Required
-   - Firewall: msdtc.exe + port 135 (RPC).
-   - SET XACT_ABORT ON -> kazdy blad rollback'uje cala transakcje.
-   ============================================================ */
+/* ============================================================================
+   DTC - rozproszona transakcja
+   ============================================================================ */
 
-USE Northwind;
 SET XACT_ABORT ON;
-GO
+BEGIN DISTRIBUTED TRANSACTION;
+    INSERT INTO Northwind.dbo.Categories (CategoryName, Description)
+    VALUES ('LokalnaTest', 'lokalna');
 
-BEGIN TRY
-    BEGIN DISTRIBUTED TRANSACTION;
-
-    -- lokalnie
-    INSERT INTO dbo.koledzy(indeks, nazwisko, imie)
-    VALUES (61001, 'Kowalski', 'Jan');
-
-    -- zdalnie (Oracle przez linked server)
-    EXEC ('BEGIN INSERT INTO KOLEDZY VALUES (61001,''Kowalski'',''Jan''); END;') AT LS_ORA;
-
-    COMMIT TRANSACTION;
-END TRY
-BEGIN CATCH
-    IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
-    THROW;
-END CATCH;
+    INSERT INTO OPENQUERY(Serwer1, 'SELECT CategoryName, Description FROM Northwind.dbo.Categories')
+    VALUES ('ZdalnaTest', 'zdalna');
+COMMIT TRANSACTION;
 GO
 
 
-/* ============================================================
-   8. LOGINY / UZYTKOWNICY / PRAWA — SQL Server
-   ============================================================ */
+/* ============================================================================
+   ORACLE - szybkie konto NORTHWIND/PD251190
+   ============================================================================
+   -- po stronie Oracle (SYS):
+   --   CREATE USER NORTHWIND IDENTIFIED BY "12345";
+   --   GRANT CONNECT, RESOURCE, UNLIMITED TABLESPACE TO NORTHWIND;
+   --   GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW TO NORTHWIND;
+   ============================================================================ */
 
-USE master;
-CREATE LOGIN ZA23 WITH PASSWORD = '12345', CHECK_POLICY = OFF;
+
+/* ============================================================================
+   NAJCZESTSZE BLEDY I JAK JE NAPRAWIC
+   ============================================================================
+
+   1) "Ad hoc access to OLE DB provider has been denied"
+      -> sp_configure 'Ad Hoc Distributed Queries', 1; RECONFIGURE;
+
+   2) "Could not find server 'XXX' in sys.servers"
+      -> linked server nie istnieje; sprawdz EXEC sp_linkedservers
+         i ewentualnie EXEC sp_addlinkedserver ponownie
+
+   3) "Cannot create an instance of OLE DB provider"
+      -> sp_MSset_oledb_prop ... 'AllowInProcess', 1
+      -> sterownik ACE/Oracle moze byc niezainstalowany
+      -> bitness sterownika musi pasowac do SQL Server (32 vs 64 bit)
+
+   4) "supplied invalid metadata for column" (ACE / Access)
+      -> nie wymieniaj kolumn w OPENROWSET; uzyj SELECT *,
+         JOIN i WHERE rob na zewnatrz w SQL Server (CTE)
+
+   5) "OLE DB provider returned message: ORA-12541 / ORA-12154"
+      -> sprawdz Oracle Net Manager (alias PD25), Firewall na 1521,
+         oracle service na hoscie
+
+   6) "Login failed for user"
+      -> w Oracle haslo jest CASE-SENSITIVE; sprawdz UID/PWD
+      -> w SQL Server sprawdz CREATE LOGIN i CREATE USER w bazie docelowej
+
+   7) "MSDTC on server 'XXX' is unavailable" (DTC)
+      -> uruchom usluge "Distributed Transaction Coordinator"
+      -> Component Services -> DTC -> Security: Network DTC Access ON,
+         Allow Inbound + Outbound, No Authentication Required
+      -> firewall: dodaj reguly dla msdtc.exe
+
+   8) "The OLE DB provider has not been registered"
+      -> brak sterownika ACE/Oracle; doinstaluj
+
+   9) MSysObjects "no permissions"
+      -> standardowo zablokowane; lista tabel = otwarcie .mdb w Access
+
+  10) Polskie znaki rozjezdzaja sie w wynikach
+      -> upewnij sie ze plik .sql jest UTF-8 i ze SSMS
+         "Use UTF-8 encoding" jest WLACZONE
+
+  11) "Cannot use the OUTPUT option in a PRINT statement" / brak wynikow
+      -> SET NOCOUNT OFF; albo upewnij sie ze procedura ma SELECT,
+         a nie tylko EXEC sp_executesql
+
+  12) Restart SQL Server po zmianach providerow
+      -> Win+R -> services.msc -> SQL Server (MSSQLSERVER) -> Restart
+
+============================================================================ */
+
+
+/* ============================================================================
+   PRZYDATNE sp_*
+   ============================================================================ */
+
+EXEC sp_linkedservers;                            -- lista linked servers
+EXEC sp_helpserver;                               -- szczegoly
+EXEC sp_tables_ex 'Serwer1';                         -- tabele zdalne
+EXEC sp_columns_ex 'Serwer1', 'Products';            -- kolumny zdalne
+EXEC sp_dropserver 'Serwer1', 'droplogins';          -- usuwanie linked serwera
+EXEC sp_helprolemember 'db_owner';                -- czlonkowie roli
 GO
-
-USE Northwind;
-CREATE USER ZA23 FOR LOGIN ZA23;
-GRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::dbo TO ZA23;
-GRANT EXECUTE ON dbo.PROC4 TO ZA23;
-GO
-
--- Sprzatanie:
--- DROP USER ZA23;
--- DROP LOGIN ZA23;
-
-
-/* ============================================================
-   9. ORACLE — uzytkownik NORTHWIND (uruchamiac w SQL Developer / sqlplus)
-   ============================================================
-   ALTER SESSION SET CONTAINER = PDB;
-
-   CREATE USER NORTHWIND IDENTIFIED BY "12345"
-       DEFAULT TABLESPACE USERS
-       TEMPORARY TABLESPACE TEMP;
-
-   GRANT CONNECT, RESOURCE TO NORTHWIND;
-   ALTER USER NORTHWIND DEFAULT ROLE CONNECT, RESOURCE;
-   GRANT CREATE VIEW TO NORTHWIND;
-   GRANT UNLIMITED TABLESPACE TO NORTHWIND;
-
-   -- gdy juz istnieje:
-   ALTER USER NORTHWIND IDENTIFIED BY "12345" ACCOUNT UNLOCK;
-
-   -- prawa obiektowe na konkretna tabele:
-   GRANT SELECT, INSERT, UPDATE, DELETE ON KOLEDZY TO PUBLIC;
-   ============================================================ */
-
-
-/* ============================================================
-   10. CHEATSHEET — funkcje pomocnicze
-   ============================================================
-   sp_configure 'show advanced options', 1
-   sp_configure 'Ad Hoc Distributed Queries', 1
-   sp_MSset_oledb_prop '<provider>', 'AllowInProcess', 1
-   sp_enum_oledb_providers
-   sp_linkedservers
-   sp_helpserver       '<LS>'
-   sp_catalogs         '<LS>'
-   sp_tables_ex        '<LS>'
-   sp_columns_ex       '<LS>', NULL, NULL, '<tabela>'
-   sp_addlinkedserver  @server, @srvproduct, @provider, @datasrc [, @catalog, @provstr]
-   sp_addlinkedsrvlogin @rmtsrvname, @useself, @locallogin, @rmtuser, @rmtpassword
-   sp_serveroption     '<LS>', 'rpc'/'rpc out'/'data access', 'true'
-   sp_dropserver       '<LS>', 'droplogins'
-   ============================================================ */
-
-
-/* ============================================================
-   11. NAJCZESTSZE PULAPKI
-   ============================================================
-   - Brak 'Ad Hoc Distributed Queries' = 1  ->  OPENROWSET nie dziala.
-   - Brak AllowInProcess = 1 dla ACE/Oracle  ->  64-bit SQL Server failuje.
-   - SQL Server uruchomiony jako "NT Service\..." nie ma dostepu do C:\Northwind.
-     -> services.msc -> MSSQLSERVER -> Log On -> Local System
-        + na folderze "Everyone" Read.
-   - Apostrofy w OPENQUERY podwajamy: 'WHERE Name = ''ABC'''.
-   - W Oracle nazwa bez cudzyslowu = duze litery; haslo case-sensitive.
-   - Dla linked Oracle uzywaj OPENQUERY (po stronie zdalnej) albo
-     czteroczlonowo z TO_CHAR/CAST (typy NUMBER/DATE).
-   - Widok z OPENROWSET musi miec apostrofy w connection-stringu
-     podwojone, jesli tworzysz go przez dynamiczny SQL.
-   - WITH ENCRYPTION  ->  nie da sie pozniej podejrzec definicji,
-     wiec trzymaj kopie skryptu.
-   - DTC: bez wlaczonego Network DTC Access dostaniesz
-     "Unable to begin a distributed transaction".
-   - SET XACT_ABORT ON jest praktycznie obowiazkowe dla DTC.
-   ============================================================ */
