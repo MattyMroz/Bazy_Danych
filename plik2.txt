@@ -1,0 +1,156 @@
+USE master;
+GO
+
+-- Tworzenie loginu w SQL Server
+CREATE LOGIN ZAL WITH PASSWORD = '12345', CHECK_POLICY = OFF;
+GO
+
+USE Northwind;
+GO
+
+-- Tworzenie użytkownika w bazie Northwind
+CREATE USER ZAL FOR LOGIN ZAL;
+GO
+
+-- Nadanie uprawnień do czytania i wstawiania dla konkretnych tabel
+GRANT SELECT, INSERT ON dbo.Employees TO ZAL;
+GRANT SELECT, INSERT ON dbo.Orders TO ZAL;
+GRANT SELECT, INSERT ON dbo.[Order Details] TO ZAL;
+GRANT SELECT, INSERT ON dbo.Products TO ZAL;
+GRANT SELECT, INSERT ON dbo.Categories TO ZAL;
+
+-- Nadanie uprawnień do tworzenia widoków i procedur w schemacie dbo
+GRANT CREATE VIEW TO ZAL;
+GRANT CREATE PROCEDURE TO ZAL;
+GO
+
+/* ============================================================================
+   SKRYPT DLA ORACLE (informacyjnie - do wykonania po stronie Oracle):
+   Zakładając, że tabele są już skopiowane do Twojego schematu PDalbum, 
+   jako właściciel masz do nich pełne prawa. Jeśli musiałbyś je nadać jawnie:
+   
+   GRANT SELECT, INSERT ON EMPLOYEES TO PDalbum;
+   GRANT SELECT, INSERT ON CUSTOMERS TO PDalbum;
+   GRANT SELECT, INSERT ON ORDERS TO PDalbum;
+   GRANT SELECT, INSERT ON ORDERDETAILS TO PDalbum;
+   GRANT SELECT, INSERT ON CATEGORIES TO PDalbum;
+============================================================================ */
+
+
+USE master;
+GO
+
+EXEC sp_addlinkedserver
+    @server     = 'ORACLE',
+    @srvproduct = 'Oracle',
+    @provider   = 'OraOLEDB.Oracle',
+    @datasrc    = '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=212.51.216.169)(PORT=1521))(CONNECT_DATA=(SID=PD25)))';
+GO
+
+-- Mapowanie loginu ZAL na użytkownika Oracle (PAMIĘTAJ O ZMIANIE 'PDalbum')
+EXEC sp_addlinkedsrvlogin
+    @rmtsrvname = 'ORACLE',
+    @useself    = 'false',
+    @locallogin = 'ZAL',
+    @rmtuser    = 'PDalbum', 
+    @rmtpassword= '12345';
+GO
+
+EXEC sp_serveroption 'ORACLE', 'rpc out', 'true';
+GO
+
+
+CREATE OR ALTER PROCEDURE dbo.Zadanie3
+AS
+WITH KlienciOracle AS (
+    SELECT * FROM OPENQUERY(ORACLE, 'SELECT CUSTOMERID, COUNTRY FROM CUSTOMERS')
+),
+KategorieOracle AS (
+    SELECT * FROM OPENQUERY(ORACLE, 'SELECT CATEGORYID, CATEGORYNAME FROM CATEGORIES')
+),
+Dane1997 AS (
+    SELECT 
+        p.CategoryID, 
+        SUM(od.UnitPrice * od.Quantity) AS Przychody
+    FROM Northwind.dbo.Orders o
+    JOIN Northwind.dbo.[Order Details] od ON o.OrderID = od.OrderID
+    JOIN Northwind.dbo.Products p ON od.ProductID = p.ProductID
+    JOIN Northwind.dbo.Shippers s ON o.ShipVia = s.ShipperID
+    JOIN KlienciOracle c ON o.CustomerID = c.CUSTOMERID
+    WHERE YEAR(o.OrderDate) = 1997
+      AND c.COUNTRY = s.Country 
+    GROUP BY p.CategoryID
+),
+Dane1998 AS (
+    SELECT 
+        p.CategoryID, 
+        SUM(od.UnitPrice * od.Quantity) AS Przychody
+    FROM Northwind.dbo.Orders o
+    JOIN Northwind.dbo.[Order Details] od ON o.OrderID = od.OrderID
+    JOIN Northwind.dbo.Products p ON od.ProductID = p.ProductID
+    JOIN Northwind.dbo.Shippers s ON o.ShipVia = s.ShipperID
+    JOIN KlienciOracle c ON o.CustomerID = c.CUSTOMERID
+    WHERE YEAR(o.OrderDate) = 1998
+      AND c.COUNTRY = s.Country
+    GROUP BY p.CategoryID
+)
+SELECT TOP 1 
+    ko.CATEGORYNAME,
+    d97.Przychody AS Przychody1997,
+    ISNULL(d98.Przychody, 0) AS Przychody1998,
+    ((d97.Przychody - ISNULL(d98.Przychody, 0)) / d97.Przychody) * 100 AS ProcentowySpadek
+FROM Dane1997 d97
+LEFT JOIN Dane1998 d98 ON d97.CategoryID = d98.CategoryID
+JOIN KategorieOracle ko ON d97.CategoryID = ko.CATEGORYID
+WHERE d97.Przychody > ISNULL(d98.Przychody, 0)
+ORDER BY ProcentowySpadek DESC;
+GO
+
+-- Przykłady wyzwalania procedury:
+EXEC dbo.Zadanie3;
+EXECUTE dbo.Zadanie3;
+GO
+
+CREATE OR ALTER VIEW dbo.WidokKategorieOracle
+WITH ENCRYPTION
+AS
+SELECT CATEGORYID, CATEGORYNAME, DESCRIPTION
+FROM ORACLE..PDALBUM.CATEGORIES;
+GO
+
+-- Operacja wstawiania danych przez widok (trafi bezpośrednio do Oracle):
+INSERT INTO dbo.WidokKategorieOracle (CATEGORYID, CATEGORYNAME, DESCRIPTION)
+VALUES (99, 'Nowa Kategoria', 'Opis nowej kategorii testowej');
+GO
+
+CREATE OR ALTER VIEW dbo.WidokKategorieOracle
+WITH ENCRYPTION
+AS
+SELECT CATEGORYID, CATEGORYNAME, DESCRIPTION
+FROM ORACLE..PDALBUM.CATEGORIES;
+GO
+
+-- Operacja wstawiania danych przez widok (trafi bezpośrednio do Oracle):
+INSERT INTO dbo.WidokKategorieOracle (CATEGORYID, CATEGORYNAME, DESCRIPTION)
+VALUES (99, 'Nowa Kategoria', 'Opis nowej kategorii testowej');
+GO
+
+SELECT 
+    e_sql.LastName AS Nazwisko_SQL, 
+    e_sql.FirstName AS Imie_SQL,
+    o_ora.ORDERID,
+    e_acc.Nazwisko AS Nazwisko_Access,
+    e_acc.Imię AS Imie_Access
+FROM Northwind.dbo.Employees e_sql
+INNER JOIN OPENROWSET(
+    'OraOLEDB.Oracle',
+    '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=212.51.216.169)(PORT=1521))(CONNECT_DATA=(SID=PD25)))';'PDalbum';'12345',
+    'SELECT ORDERID, EMPLOYEEID FROM ORDERS'
+) AS o_ora ON e_sql.EmployeeID = o_ora.EMPLOYEEID
+INNER JOIN OPENROWSET(
+    'Microsoft.ACE.OLEDB.12.0',
+    'C:\Northwind\Northwind.mdb';'admin';'',
+    'SELECT * FROM Pracownicy' -- W Accessie używamy SELECT * (żeby uniknąć błędu metadanych)
+) AS e_acc ON o_ora.EMPLOYEEID = e_acc.IDpracownika;
+GO
+

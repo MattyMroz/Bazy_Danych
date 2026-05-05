@@ -1,0 +1,37 @@
+--Mateusz Mróz
+--251190
+
+Zaliczenie (proszę o realizację wszystkich poniższych punktów):
+
+0. W systemie SQLServer założyć login ZAL (hasło: 12345) oraz użytkownika w bazie danych NORTHWIND z prawami  tylko do czytania i wstawiania danych do tabeli EMPLOYEES, EMPLOYEES, ORDERS, "Order details", PRODUCTS, CATEGORIES oraz możliwością tworzenia widoków i  procedur składowanych w schemacie dbo. W systemie ORACLE  pracujemy  z wykorzystaniem własnego użytkownika PD<album> (hasło: 12345) oraz z dostępem do skopiowanych do własnego schematu tabel:   EMPLOYEES, CUSTOMERS, ORDERS, ORDERDETAILS, CATEGORIES do których należy nadać uprawnienia do czytania i wstawiania danych.
+
+1. W systemie SQL Server ustanowić serwer połączony ORACLE z wykorzystaniem loginu: ZAL  (SQLServer) oraz   PD<album> hasło: 12345 (ORACLE).
+
+2.  Napisz zapytanie z bezwzględną identyfikacją obiektów: jaki pracownik tab. EMPLOYEES(kolumny: LASTNAME, FIRSTNAME- ORALCE) obsłużył jaką ilość różnych produktów (SQLServer). 
+
+3. Napisać procedurę bez parametrów wejściowych która zawiera zapytanie przekazujące (przetwarzanie zdalne dla wybranych tabel przez OPENQUERY) : Która kategoria produktów (tabela CATEGORIES na ORACLE) zanotowała największy procentowy spadek przychodów w 1998 roku w porównaniu do 1997 roku (tabela ORDERS,  "Order details" serwera lokalnego), biorąc pod uwagę tylko klientów (tabela CUSTOMERS  na ORACLE), którzy mieszkają w tym samym kraju (pole Country w tabeli CUSTOMERS), co biuro spedytora (tabela SHIPPERS serwera lokalnego)? Podać przykłady instrukcji wyzwalania procedury przechowywanej.
+
+4. Opracować widok (zaszyfrowany) w bazie NORTHWIND (SQL Server), przez który możliwa będzie operacja wstawiania danych do tabeli CATEGORIES(UWAGA !!! - tabela na ORACLE założona we własnym schemacie na podstawie schematu NORTHWIND) - Wykonać operację wstawiania danych przez ten widok (wykorzystując serwer ORACLE - ustanowiony jako serwer zdalny). Podać przykłady instrukcji wstawiającej dane do systemu ORACLE.
+
+5. Napisać zapytanie z wykorzystaniem funkcji OPENROWSET():  Jaki pracownik tab. EMPLOYEES (SQL Server) obsłużył jakie zamówienie tab. ORDERS (ORACLE), które zostało obsłużone przez jakiego pracownika (ACCESS).
+
+
+
+
+--1
+
+
+--2
+
+
+--3
+
+
+--4
+
+
+--5
+
+
+--6
+
