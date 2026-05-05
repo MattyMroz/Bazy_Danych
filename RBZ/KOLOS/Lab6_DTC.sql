@@ -1,0 +1,367 @@
+
+-----------------------------------------------
+
+-------------
+Transakcja rozproszona:
+---------------------
+
+Zadanie 1.
+---------------------
+Zapoznaj się z dokumentacją środowiska SQLServer w temacie dotyczącym korzystania z koordynatora transakcji rozproszonych oraz przeprowadź jego instalację jeżeli nie jest on zainstalowany.
+
+Cel:
+-- Celem przeprowadzenia transakcji rozproszonej między systemem SQL Server a systemem ORACLE należy wykorzystać 
+-- Koordynatora transakcji rozproszonych Microsoft (MS DTC)
+-- W przypadku braku tego koordynatora należy go doinstalować. Szczegóły opisane są w dokumentacji technicznej Microsoft.
+-- MS DTC - powinien być zainstalowany razem z instalacją produktu SQL Server tzn. na każdym komputerze uczestniczącym w koordynowaniu transakcji rozproszonych. 
+
+--- Transakcja rozproszona:
+-----------------------------------------------
+-- Transakcja rozproszona obejmuje dwie lub więcej baz danych. 
+-- Transakcję między SQL Server i innymi źródłami danych koordynuje menedżer transakcji: DTC. 
+-- Każde wystąpienie silnika bazy danych (SQL Server) może działać jako menedżer zasobów. Po skonfigurowaniu 
+-- Transakcja z dwiema lub więcej bazami danych w jednym wystąpieniu transakcją rozproszoną. 
+-- To instancja i DTC zarządza wewnętrznie transakcją rozproszoną. Użytkownik widzi ją jak transakcja lokalną. 
+-- SQL Server od 2017 (14.x) promuje wszystkie transakcje między bazami danych do DTC, tzn. gdy bazy danych są w grupie dostępności skonfigurowanej 
+-- z DTC_SUPPORT = PER_DB- nawet w ramach pojedynczej instancji SQL Server.
+
+-- Od strony aplikacji SQL Management Studio - transakcja rozproszona jest zarządzana podobnie jak transakcja lokalna. 
+-- Pod koniec transakcji aplikacja żąda zatwierdzenia lub 
+-- wycofania transakcji. Menedżer transakcji musi zarządzać rozproszonym zatwierdzeniem w taki sposób, aby zminimalizować ryzyko, że awaria sieci 
+-- może spowodować, że niektóre usługi menedżerów zasobów z powodzeniem dokonają zatwierdzenia, a inni wycofają transakcję. 
+-- Osiąga się to poprzez zarządzanie procesem zatwierdzania w dwóch fazach (faza przygotowania i faza zatwierdzenia), która jest znana 
+-- jako zatwierdzanie dwufazowe (two-phase commit).:
+
+
+-- Jak przebiega two-phase commit:
+-------------------------------------------
+
+-- Faza przygotowawcza:
+-------------------------------
+-- Gdy menedżer transakcji otrzyma żądanie zatwierdzenia, wysyła polecenie przygotowania do wszystkich menedżerów zasobów zaangażowanych w transakcję. -- Następnie każdy menedżer zasobów robi wszystko, aby transakcja była trwała, a wszystkie bufory zawierające obrazy dziennika dla transakcji są -- składowane na dysk. Gdy każdy menedżer zasobów zakończy fazę przygotowania, zwraca informację: (sukces lub porażkę) przygotowania do 
+-- menedżera transakcji (MS DTC).
+
+
+-- Faza zatwierdzania:
+---------------------------
+-- Jeśli menedżer transakcji otrzyma pomyślne przygotowania od wszystkich menedżerów zasobów, wysyła polecenia zatwierdzenia do każdego 
+-- menedżera zasobów. Menedżerowie zasobów mogą następnie dokończyć zatwierdzenie. Jeśli wszyscy menedżerowie zasobów zgłoszą pomyślne zatwierdzenie,
+-- menedżer transakcji następnie wysyła powiadomienie o powodzeniu do aplikacji. Jeśli dowolny menedżer zasobów zgłosił błąd w przygotowaniu, 
+-- to menedżer transakcji wysyła polecenie wycofania do każdego menedżera zasobów i wskazuje niepowodzenie zatwierdzenia do aplikacji.
+
+
+-- Krok A:
+-- dokonać odpowiedniej konfiguracji MSDTC
+ --------------------------
+-- Korzystanie z transakcji XA jest domyślnie wyłączone, aby zapobiec potencjalnemu ryzyku bezpieczeństwa, które powstaje, gdy określona -- przez użytkownika biblioteka DLL, której DTC używa do komunikowania się z menedżerem transakcji partnera XA, jest ładowana bezpośrednio 
+-- do procesu DTC. Ta sytuacja może narazić bazy danych menedżera zasobów na poważne uszkodzenie danych. 
+-- Może również powodować ataki typu „odmowa usługi”. Aby umożliwić koordynację i przepływ transakcji XA, musisz włączyć transakcje XA.
+
+
+----------
+-- Zadanie 2:
+---------------
+-- Przeprowadź konfigurację MSDTC i włącz obsługę przeprowadzenia transakcji rozproszonych z wykorzystaniem MSDTC.
+-- Aby włączyć transakcje XA - najpierw upewnij się, że żadne transakcje nie są w toku.
+-- 
+-----------------------------
+    -- 1. Otwórz przystawkę Usługi składowe:
+
+          --kliknij przycisk Start . 
+          -----W polu wyszukiwania wpisz: dcomcnfg , a następnie naciśnij klawisz ENTER.
+
+    -- 2. W drzewie: Katalog główny konsoli -  rozwiń: Usługi składowe -- dalej: komputery -- dalej Mój komputer
+            dalej: Koordynator transakcji rozproszonych wybrać DTC (Lokalna usługa DTC), dla którego chcesz włączyć transakcje XA.
+
+    -- Wybrać prawym przyciskiem myszy --> kliknij Właściwości .
+
+    -- 3. Kliknij kartę: Zabezpieczenia
+
+    -- 4. Zaznacz pole: wyboru Włącz transakcje XA oraz opcje wyżej dla transakcji rozproszonych w tym komunikację i ustawienia zabezpieczeń
+
+-- Kliknij OK .
+
+
+----------
+-- Zadanie 3:
+---------------
+-- Oprócz włączania transakcji XA przeprowadź konfigurację dostępu DTC przez zaporę Firewall, (np. zapora systemu Windows). 
+-- 
+-----------------------------
+
+
+-----------
+-- Zadanie 4:
+----------------
+-- po przelogowaniu się do aplikacji SQL Developer - założyć tabelę w systemie Oracle:
+
+create table koledzy(
+indeks number(15) not null Primary key,
+nazwisko varchar(50) not null,
+imie varchar(25) not null);
+
+-----------
+-- Zadanie 5:
+----------------
+-- Nadaj odpowiednie uprawnienia do tej tabeli np. grupie PUBLIC nadaj wszystkie prawa obiektowe (SELECT, INSERT,UPDATE, DELETE). W tym celu wykonaj instrukcję GRANT.
+
+
+
+-----------
+-- Krok B:
+----------------
+-- Sprawdzamy, czy tabela istnieje i możemy z innego użytkownika z niej skorzystać z poziomu użytkownika (serwer zdalny). W tym celu napisz odpowiednią instrukcję SELECT
+
+
+
+-----------
+-- Zadanie 6:
+----------------
+--  w środowisku SQL Server - założyć tabelę taką samą tabelę:
+
+
+create table koledzy(
+indeks int not null Primary key,
+nazwisko varchar(50) not null,
+imie varchar(25) not null);
+
+
+-----------
+-- Krok B:
+----------------
+-- Nadaj odpowiednie uprawnienia do tej tabeli np. grupie PUBLIC nadaj wszystkie prawa obiektowe (SELECT, INSERT,UPDATE, DELETE). W tym celu wykonaj instrukcję GRANT.
+
+
+
+-----------
+-- Krok C:
+----------------
+-- Sprawdzamy, czy tabela istnieje i możemy z innego użytkownika z niej skorzystać z poziomu użytkownika (serwer lokalny). W tym celu napisz odpowiednią instrukcję SELECT
+
+
+
+-----------
+-- Zadanie 7:
+----------------
+--  Zapoznaj się z dokumentacja środowiska SQLServer oraz opcją sesji: XACT_ABORT. Odpowiedz na pytanie czym ta 
+--  opcja jest i do czego jest ona wykorzystywana
+
+
+--  wykonać transakcję rozproszoną:
+USE northwind
+GO
+---opcja sesji XACT_ABORT - w przyp. niepowodzenia cała transakcja zostanie ---anulowana.
+SET XACT_ABORT ON
+---
+GO
+
+BEGIN DISTRIBUTED TRANSACTION
+
+---instrukcje transakcji rozproszonej --> wstawianie do serwera lokalnego i serwera połączonego
+
+
+COMMIT TRANSACTION
+
+
+-----------
+-- Krok B:
+----------------
+
+---Sprawdź, czy wstawianie na lokalny i zdalny serwer się się powiodło. W tym celu napisz odpowiednie instrukcje SELECT.
+
+
+
+
+
+-- Zadanie 8:
+-- Opracować procedurę składowaną, która wprowadzi rekordy na serwer ORACLE oraz taką samą procedurę, która wprowadzi 
+-- rekordy do tabeli Northwind (SQL Server)
+-- Następnie napisać transakcję rozproszoną z wykorzystaniem tej procedury
+
+----------------------------
+
+
+
+
+----------------------------
+
+
+-- ROZWIAZANIE POD MOJ SERWER
+
+/*
+-- Ten fragment uruchom w Oracle SQL Developer jako NORTHWIND / 12345.
+
+CREATE TABLE KOLEDZY (
+    INDEKS NUMBER(15) NOT NULL PRIMARY KEY,
+    NAZWISKO VARCHAR2(50) NOT NULL,
+    IMIE VARCHAR2(25) NOT NULL
+);
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON KOLEDZY TO PUBLIC;
+
+CREATE OR REPLACE PROCEDURE DODAJ_KOLEGE_ORACLE (
+    P_INDEKS IN NUMBER,
+    P_NAZWISKO IN VARCHAR2,
+    P_IMIE IN VARCHAR2
+)
+AS
+BEGIN
+    INSERT INTO KOLEDZY (INDEKS, NAZWISKO, IMIE)
+    VALUES (P_INDEKS, P_NAZWISKO, P_IMIE);
+END;
+/
+
+SELECT * FROM KOLEDZY;
+*/
+GO
+
+USE master;
+GO
+
+EXEC sp_configure 'show advanced options', 1;
+RECONFIGURE;
+GO
+
+EXEC sp_configure 'Ad Hoc Distributed Queries', 1;
+RECONFIGURE;
+GO
+
+EXEC master.dbo.sp_MSset_oledb_prop N'OraOLEDB.Oracle', N'AllowInProcess', 1;
+GO
+
+IF EXISTS (SELECT 1 FROM sys.servers WHERE name = N'ORACLE_PDB')
+    EXEC sp_dropserver N'ORACLE_PDB', 'droplogins';
+GO
+
+EXEC sp_addlinkedserver
+    @server = N'ORACLE_PDB',
+    @srvproduct = N'Oracle',
+    @provider = N'OraOLEDB.Oracle',
+    @datasrc = N'(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=192.168.64.133)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=PDB)))';
+GO
+
+EXEC sp_addlinkedsrvlogin
+    @rmtsrvname = N'ORACLE_PDB',
+    @useself = N'False',
+    @locallogin = NULL,
+    @rmtuser = N'NORTHWIND',
+    @rmtpassword = N'12345';
+GO
+
+EXEC sp_serveroption N'ORACLE_PDB', N'rpc', N'true';
+EXEC sp_serveroption N'ORACLE_PDB', N'rpc out', N'true';
+GO
+
+SELECT *
+FROM OPENQUERY(ORACLE_PDB, 'SELECT INDEKS, NAZWISKO, IMIE FROM KOLEDZY');
+GO
+
+USE Northwind;
+GO
+
+IF OBJECT_ID('dbo.koledzy', 'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.koledzy (
+        indeks INT NOT NULL PRIMARY KEY,
+        nazwisko VARCHAR(50) NOT NULL,
+        imie VARCHAR(25) NOT NULL
+    );
+END;
+GO
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON dbo.koledzy TO PUBLIC;
+GO
+
+SELECT *
+FROM dbo.koledzy;
+GO
+
+SET XACT_ABORT ON;
+GO
+
+BEGIN TRY
+    BEGIN DISTRIBUTED TRANSACTION;
+
+    INSERT INTO dbo.koledzy (indeks, nazwisko, imie)
+    VALUES (61001, 'Kowalski', 'Jan');
+
+    INSERT INTO OPENROWSET(
+        'OraOLEDB.Oracle',
+        '(DESCRIPTION =
+            (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.64.133)(PORT = 1521))
+            (CONNECT_DATA =
+                (SERVICE_NAME = PDB)
+            )
+        )';'NORTHWIND';'12345',
+        'SELECT INDEKS, NAZWISKO, IMIE FROM KOLEDZY'
+    )
+    VALUES (61001, 'Kowalski', 'Jan');
+
+    COMMIT TRANSACTION;
+END TRY
+BEGIN CATCH
+    IF @@TRANCOUNT > 0
+        ROLLBACK TRANSACTION;
+
+    THROW;
+END CATCH;
+GO
+
+SELECT *
+FROM dbo.koledzy
+WHERE indeks = 61001;
+GO
+
+SELECT *
+FROM OPENQUERY(ORACLE_PDB, 'SELECT INDEKS, NAZWISKO, IMIE FROM KOLEDZY WHERE INDEKS = 61001');
+GO
+
+IF OBJECT_ID('dbo.dodaj_kolege_sql', 'P') IS NOT NULL
+    DROP PROCEDURE dbo.dodaj_kolege_sql;
+GO
+
+CREATE PROCEDURE dbo.dodaj_kolege_sql
+    @indeks INT,
+    @nazwisko VARCHAR(50),
+    @imie VARCHAR(25)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO dbo.koledzy (indeks, nazwisko, imie)
+    VALUES (@indeks, @nazwisko, @imie);
+END;
+GO
+
+SET XACT_ABORT ON;
+GO
+
+BEGIN TRY
+    BEGIN DISTRIBUTED TRANSACTION;
+
+    EXEC dbo.dodaj_kolege_sql
+        @indeks = 62001,
+        @nazwisko = 'Nowak',
+        @imie = 'Anna';
+
+    EXEC ('BEGIN DODAJ_KOLEGE_ORACLE(62001, ''Nowak'', ''Anna''); END;') AT ORACLE_PDB;
+
+    COMMIT TRANSACTION;
+END TRY
+BEGIN CATCH
+    IF @@TRANCOUNT > 0
+        ROLLBACK TRANSACTION;
+
+    THROW;
+END CATCH;
+GO
+
+SELECT *
+FROM dbo.koledzy
+WHERE indeks IN (61001, 62001);
+GO
+
+SELECT *
+FROM OPENQUERY(ORACLE_PDB, 'SELECT INDEKS, NAZWISKO, IMIE FROM KOLEDZY WHERE INDEKS IN (61001, 62001)');
+GO
+

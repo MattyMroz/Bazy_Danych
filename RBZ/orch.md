@@ -1,4 +1,4 @@
----
+--
 description: "Executive Orchestrator — jedyny stały agent systemu. Intake, thinking protocol, skill dispatch, spawn subagentów, synteza, HITL."
 ---
 

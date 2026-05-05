@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+      - run: uv sync --frozen --group dev
+      - run: uv run ruff check mangashift/
+      - run: uv run ruff format --check mangashift/
+      - run: uv run lint-imports
+
+  typecheck:
+    name: Type Check (mypy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+      - run: uv sync --frozen --group dev
+      - run: uv run mypy mangashift/
+
+  test:
+    name: Test (pytest) [${{ matrix.os }}]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+      - run: uv sync --frozen --group dev
+      - run: uv run pytest -m "not gpu and not model and not slow and not integration and not e2e" --no-header -q
+
+  catalog:
+    name: Catalog ↔ Manifest Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          version: "latest"
+      - run: uv sync --frozen --group dev
+      - name: validate-catalog (catalog ↔ external/model_hashes.json)
+        env:
+          PYTHONIOENCODING: utf-8
+        run: uv run python -X utf8 scripts/model_manager.py validate-catalog
+
+  portability:
+    name: Utils Portability Smoke Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Copy utils/ to isolated directory
+        run: |
+          mkdir -p /tmp/portability_test/utils
+          cp -r mangashift/utils/* /tmp/portability_test/utils/
+      - name: Install only declared dependencies
+        run: |
+          pip install loguru rich pydantic
+      - name: Smoke test — core imports
+        run: |
+          cd /tmp/portability_test
+          python -c "from utils.logger import setup_mode, LoggerMode; setup_mode(LoggerMode.SILENT); print('logger OK')"
+          python -c "from utils.timer import Timer; t = Timer('x', auto_start=True); t.stop(); print('timer OK')"
+          python -c "from utils.rich_console import console; console.print('[bold]OK[/bold]')"
+          python -c "from utils.safe_path import safe_resolve; print('safe_path OK')"
+          echo "All portability smoke tests passed"

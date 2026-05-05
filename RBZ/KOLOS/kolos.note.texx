@@ -1,0 +1,420 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\usepackage[margin=0.4in]{geometry}
+\usepackage{multicol}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{parskip}
+
+\setlength{\columnsep}{0.4cm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1pt}
+\pagestyle{empty}
+
+\definecolor{kw}{RGB}{0,0,180}
+\definecolor{cm}{RGB}{0,128,0}
+\definecolor{st}{RGB}{163,21,21}
+
+\lstdefinelanguage{TSQL}{
+  morekeywords={SELECT,FROM,WHERE,INNER,JOIN,LEFT,RIGHT,ON,AS,GROUP,BY,HAVING,
+    ORDER,TOP,UNION,ALL,WITH,CTE,CREATE,OR,ALTER,VIEW,PROCEDURE,FUNCTION,LOGIN,
+    USER,FOR,GRANT,SCHEMA,USE,EXEC,EXECUTE,DECLARE,SET,IF,ELSE,BEGIN,END,
+    DISTRIBUTED,TRANSACTION,COMMIT,ROLLBACK,XACT_ABORT,ENCRYPTION,PASSWORD,
+    CHECK_POLICY,INSERT,INTO,VALUES,UPDATE,DELETE,SUM,COUNT,YEAR,NOT,EXISTS,
+    OPENROWSET,OPENQUERY,GO,RECONFIGURE,AT},
+  sensitive=false,
+  morecomment=[l]{--},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]'
+}
+
+\lstset{
+  language=TSQL,
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{kw}\bfseries,
+  commentstyle=\color{cm},
+  stringstyle=\color{st},
+  breaklines=true,
+  breakatwhitespace=false,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  tabsize=2,
+  aboveskip=2pt,
+  belowskip=2pt,
+  xleftmargin=0pt
+}
+
+\renewcommand{\section}[1]{\vspace{2pt}\par\textbf{\footnotesize #1}\par\vspace{1pt}}
+
+\begin{document}
+\begin{multicols}{2}
+
+\section{Infrastruktura (jednorazowo)}
+\begin{lstlisting}
+-- services.msc:
+--   SQL Server (MSSQLSERVER) -> Lokalne konto systemowe -> Restart
+--   SQL Server Browser -> Automatic -> Start
+-- SQL Server Configuration Manager (Admin):
+--   Network Conf. -> MSSQLSERVER: TCP/IP Enable, Named Pipes Enable
+--   SQL Server Services -> Restart MSSQLSERVER
+-- Firewall: Reguly wejsciowe + wyjsciowe -> Port TCP 1433 (SQL), 1521 (Oracle)
+-- Oracle Net Manager: Local -> Service Naming -> Create
+--   Name=PD25, Protocol=TCP, Host=212.51.216.169, Port=1521, SID=PD25
+-- Sterownik: Microsoft.ACE.OLEDB.12.0 (lub 16.0)
+-- Plik C:\Northwind -> Properties -> Security -> Add Everyone (Read+Execute)
+\end{lstlisting}
+
+\section{Konfiguracja SQL Server}
+\begin{lstlisting}
+EXEC sp_configure 'show advanced options', 1; RECONFIGURE;
+EXEC sp_configure 'Ad Hoc Distributed Queries', 1; RECONFIGURE;
+GO
+USE master;
+EXEC master.dbo.sp_MSset_oledb_prop N'MSOLEDBSQL',              N'AllowInProcess',    1;
+EXEC master.dbo.sp_MSset_oledb_prop N'MSOLEDBSQL',              N'DynamicParameters', 1;
+EXEC master.dbo.sp_MSset_oledb_prop N'OraOLEDB.Oracle',         N'AllowInProcess',    1;
+EXEC master.dbo.sp_MSset_oledb_prop N'OraOLEDB.Oracle',         N'DynamicParameters', 1;
+EXEC master.dbo.sp_MSset_oledb_prop N'Microsoft.ACE.OLEDB.12.0',N'AllowInProcess',    1;
+EXEC master.dbo.sp_MSset_oledb_prop N'Microsoft.ACE.OLEDB.12.0',N'DynamicParameters', 1;
+GO
+\end{lstlisting}
+
+\section{Login / User / Granty}
+\begin{lstlisting}
+CREATE LOGIN KONTO1 WITH PASSWORD = '12345', CHECK_POLICY = OFF;
+USE Northwind;
+CREATE USER KONTO1 FOR LOGIN KONTO1;
+GRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::dbo TO KONTO1;
+GO
+\end{lstlisting}
+
+\section{Linked server: SQL $\to$ SQL (Serwer1, sa $\to$ KONTO1)}
+\begin{lstlisting}
+EXEC sp_addlinkedserver @server='Serwer1', @srvproduct='', @provider='MSOLEDBSQL',
+     @datasrc='WB-20', @catalog='Northwind';
+EXEC sp_addlinkedsrvlogin @rmtsrvname='Serwer1', @useself='false',
+     @locallogin='sa', @rmtuser='KONTO1', @rmtpassword='12345';
+EXEC sp_serveroption 'Serwer1','data access','true';
+EXEC sp_serveroption 'Serwer1','rpc','true';
+EXEC sp_serveroption 'Serwer1','rpc out','true';
+GO
+\end{lstlisting}
+
+\section{Linked server: SQL $\to$ Oracle}
+\begin{lstlisting}
+EXEC sp_addlinkedserver @server='OraPD25', @srvproduct='Oracle',
+     @provider='OraOLEDB.Oracle',
+     @datasrc='(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=212.51.216.169)(PORT=1521))(CONNECT_DATA=(SID=PD25)))';
+EXEC sp_addlinkedsrvlogin @rmtsrvname='OraPD25', @useself='false',
+     @locallogin='sa', @rmtuser='PD251190', @rmtpassword='12345';
+EXEC sp_serveroption 'OraPD25','rpc out','true';
+GO
+\end{lstlisting}
+
+\section{Linked server: SQL $\to$ Access / Excel}
+\begin{lstlisting}
+EXEC sp_addlinkedserver @server='AccessNW', @srvproduct='OLE DB Provider for ACE',
+     @provider='Microsoft.ACE.OLEDB.12.0', @datasrc='C:\Northwind\Northwind.mdb';
+EXEC sp_addlinkedserver @server='ExcelLST', @srvproduct='OLE DB Provider for ACE',
+     @provider='Microsoft.ACE.OLEDB.12.0', @datasrc='C:\Northwind\listy.xlsx',
+     @provstr='Excel 12.0;HDR=YES';
+GO
+\end{lstlisting}
+
+\section{OPENROWSET: SQL / Oracle / Access / Excel}
+\begin{lstlisting}
+SELECT a.* FROM OPENROWSET('MSOLEDBSQL',
+  'Server=WB-20;Database=Northwind;UID=sa;PWD=praktyka;',
+  'SELECT ProductID, ProductName FROM dbo.Products') AS a;
+
+SELECT a.* FROM OPENROWSET('OraOLEDB.Oracle',
+  '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=212.51.216.169)(PORT=1521))(CONNECT_DATA=(SID=PD25)))';'PD251190';'12345',
+  'SELECT EmployeeID, LastName, FirstName FROM Employees') AS a;
+
+-- Access: ZAWSZE SELECT *, JOIN/WHERE poza OPENROWSET
+SELECT a.* FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0',
+  'C:\Northwind\Northwind.mdb';'admin';'',
+  'SELECT * FROM [Opisy zamowien]') AS a;
+
+SELECT a.* FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0',
+  'Excel 12.0;Database=C:\Northwind\listy.xlsx;HDR=YES;',
+  'SELECT * FROM [oceny_do_www$]') AS a;
+\end{lstlisting}
+
+\section{OPENROWSET multi-zrodlo (CTE)}
+\begin{lstlisting}
+;WITH klienci AS (
+  SELECT * FROM OPENROWSET('OraOLEDB.Oracle',
+    '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=212.51.216.169)(PORT=1521))(CONNECT_DATA=(SID=PD25)))';'PD251190';'12345',
+    'SELECT CustomerID, CompanyName FROM Customers')),
+zamowienia AS (
+  SELECT * FROM OPENROWSET('MSOLEDBSQL',
+    'Server=WB-20;Database=Northwind;UID=sa;PWD=praktyka;',
+    'SELECT OrderID, CustomerID FROM dbo.Orders')),
+produkty AS (
+  SELECT * FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0',
+    'C:\Northwind\Northwind.mdb';'admin';'',
+    'SELECT * FROM Produkty'))
+SELECT k.CompanyName, z.OrderID, p.NazwaProduktu
+FROM zamowienia z
+JOIN klienci k ON z.CustomerID = k.CustomerID
+JOIN Northwind.dbo.[Order Details] od ON z.OrderID = od.OrderID
+JOIN produkty p ON od.ProductID = p.IDproduktu;
+\end{lstlisting}
+
+\section{OPENQUERY (SELECT/INSERT/UPDATE/DELETE/EXEC AT)}
+\begin{lstlisting}
+SELECT * FROM OPENQUERY(Serwer1, 'SELECT ProductID, ProductName FROM Northwind.dbo.Products');
+INSERT INTO OPENQUERY(Serwer1, 'SELECT ProductName, UnitPrice FROM Northwind.dbo.Products') VALUES ('Test', 1.0);
+UPDATE OPENQUERY(Serwer1, 'SELECT ProductName, UnitPrice FROM Northwind.dbo.Products WHERE ProductName = ''Test''') SET UnitPrice = 9.99;
+DELETE FROM OPENQUERY(Serwer1, 'SELECT ProductID FROM Northwind.dbo.Products WHERE ProductName = ''Test''');
+EXEC ('SELECT TOP 5 * FROM Northwind.dbo.Products') AT Serwer1;
+\end{lstlisting}
+
+\section{4-czlonowa identyfikacja}
+\begin{lstlisting}
+SELECT TOP 5 * FROM Serwer1.Northwind.dbo.Products;
+SELECT TOP 5 * FROM Serwer1.Northwind.dbo.[Order Details];
+\end{lstlisting}
+
+\section{Widok zaszyfrowany z OPENROWSET}
+\begin{lstlisting}
+CREATE OR ALTER VIEW dbo.Widok1 WITH ENCRYPTION AS
+SELECT e.EmployeeID, e.LastName, o.OrderID, p.ProductName
+FROM OPENROWSET('OraOLEDB.Oracle',
+  '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=212.51.216.169)(PORT=1521))(CONNECT_DATA=(SID=PD25)))';'PD251190';'12345',
+  'SELECT EmployeeID, LastName FROM Employees') AS e
+INNER JOIN OPENROWSET('OraOLEDB.Oracle',
+  '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=212.51.216.169)(PORT=1521))(CONNECT_DATA=(SID=PD25)))';'PD251190';'12345',
+  'SELECT OrderID, EmployeeID FROM Orders') AS o ON e.EmployeeID = o.EmployeeID
+INNER JOIN OPENROWSET('MSOLEDBSQL',
+  'Server=WB-20;Database=Northwind;UID=sa;PWD=praktyka;',
+  'SELECT ProductID, ProductName FROM dbo.Products') AS p ON 1=1;
+GO
+SELECT definition FROM sys.sql_modules WHERE object_id = OBJECT_ID('dbo.Widok1');
+\end{lstlisting}
+
+\section{Procedura z parametrem (Access, CTE)}
+\begin{lstlisting}
+CREATE OR ALTER PROCEDURE dbo.PROC4 @OrderID INT AS
+WITH o AS (SELECT * FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0',
+  'C:\Northwind\Northwind.mdb';'admin';'','SELECT * FROM [Opisy zamowien]')),
+p AS (SELECT * FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0',
+  'C:\Northwind\Northwind.mdb';'admin';'','SELECT * FROM Produkty')),
+k AS (SELECT * FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0',
+  'C:\Northwind\Northwind.mdb';'admin';'','SELECT * FROM Kategorie'))
+SELECT k.NazwaKategorii AS Kategoria, SUM(o.CenaJednostkowa * o.Ilosc) AS WartoscBezRabatu
+FROM o JOIN p ON o.IDproduktu = p.IDproduktu
+       JOIN k ON p.IDkategorii = k.IDkategorii
+WHERE o.IDzamowienia = @OrderID
+GROUP BY k.NazwaKategorii;
+GO
+EXEC dbo.PROC4 10248;
+EXEC dbo.PROC4 @OrderID = 10250;
+DECLARE @id INT = 10251; EXEC dbo.PROC4 @id;
+DECLARE @id INT = 10252; EXEC dbo.PROC4 @OrderID = @id;
+\end{lstlisting}
+
+\section{DTC (rozproszona transakcja)}
+\begin{lstlisting}
+SET XACT_ABORT ON;
+BEGIN DISTRIBUTED TRANSACTION;
+  INSERT INTO Northwind.dbo.Categories (CategoryName, Description) VALUES ('LokalnaTest','lokalna');
+  INSERT INTO OPENQUERY(Serwer1, 'SELECT CategoryName, Description FROM Northwind.dbo.Categories')
+    VALUES ('ZdalnaTest','zdalna');
+COMMIT TRANSACTION;
+\end{lstlisting}
+
+\section{Oracle: konto (po stronie SYS)}
+\begin{lstlisting}
+-- CREATE USER NORTHWIND IDENTIFIED BY "12345";
+-- GRANT CONNECT, RESOURCE, UNLIMITED TABLESPACE TO NORTHWIND;
+-- GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW TO NORTHWIND;
+\end{lstlisting}
+
+\section{Przydatne sp\_*}
+\begin{lstlisting}
+EXEC sp_linkedservers;
+EXEC sp_helpserver;
+EXEC sp_tables_ex 'Serwer1';
+EXEC sp_columns_ex 'Serwer1','Products';
+EXEC sp_dropserver 'Serwer1','droplogins';
+\end{lstlisting}
+
+\section{Sprzatanie / DROP / ALTER}
+\begin{lstlisting}
+DROP VIEW IF EXISTS dbo.Widok1;
+DROP PROCEDURE IF EXISTS dbo.PROC4;
+EXEC sp_dropserver 'Serwer1','droplogins';   -- usuwa linked + mapping
+DROP USER IF EXISTS KONTO1;                  -- najpierw user w bazie
+DROP LOGIN KONTO1;                           -- potem login
+ALTER LOGIN sa WITH PASSWORD = 'praktyka' OLD_PASSWORD = 'stare';
+ALTER LOGIN KONTO1 DISABLE;                  -- wylacz konto
+\end{lstlisting}
+
+\section{Patterny zadan kolokwiowych}
+\begin{lstlisting}
+-- A) Wzrost YoY (rok do roku) - kto najwiekszy wzrost
+;WITH r1997 AS (
+  SELECT s.ShipperID, SUM(od.UnitPrice*od.Quantity) AS W
+  FROM Northwind.dbo.Shippers s
+  JOIN Northwind.dbo.Orders o ON s.ShipperID = o.ShipVia
+  JOIN Northwind.dbo.[Order Details] od ON o.OrderID = od.OrderID
+  WHERE YEAR(o.OrderDate) = 1997 GROUP BY s.ShipperID),
+r1998 AS ( ... analogicznie YEAR=1998 ... )
+SELECT TOP 1 a.ShipperID, b.W - a.W AS Wzrost
+FROM r1997 a JOIN r1998 b ON a.ShipperID = b.ShipperID
+ORDER BY Wzrost DESC;
+
+-- B) Kto nie zrealizowal (NOT EXISTS lokalnie + OPENQUERY zdalnie)
+SELECT c.CustomerID FROM Northwind.dbo.Customers c
+WHERE NOT EXISTS (SELECT 1 FROM Northwind.dbo.Orders o WHERE o.CustomerID = c.CustomerID);
+
+SELECT * FROM OPENQUERY(Serwer1,'
+  SELECT c.CustomerID FROM Northwind.dbo.Customers c
+  LEFT JOIN Northwind.dbo.Orders o ON c.CustomerID = o.CustomerID
+  GROUP BY c.CustomerID HAVING COUNT(o.OrderID)=0');
+
+-- C) TOP N po agregacji (najwiekszy klient/produkt)
+SELECT TOP 3 p.ProductName, SUM(od.UnitPrice*od.Quantity) AS W
+FROM Northwind.dbo.Products p
+JOIN Northwind.dbo.[Order Details] od ON p.ProductID = od.ProductID
+GROUP BY p.ProductName ORDER BY W DESC;
+
+-- D) Suma sprzedazy w roku (procedura przez linked server)
+CREATE OR ALTER PROCEDURE dbo.SprzedazRok @Rok INT AS
+SELECT YEAR(o.OrderDate) AS Rok,
+       SUM(od.UnitPrice * od.Quantity * (1 - od.Discount)) AS Wartosc
+FROM Serwer1.Northwind.dbo.Orders o
+JOIN Serwer1.Northwind.dbo.[Order Details] od ON o.OrderID = od.OrderID
+WHERE YEAR(o.OrderDate) = @Rok GROUP BY YEAR(o.OrderDate);
+GO
+GRANT EXECUTE ON dbo.SprzedazRok TO KONTO1;
+
+-- E) Zapytanie rozproszone 4 zrodla (Customers lokal + Orders/OD/Products zdalne)
+SELECT c.CompanyName, o.OrderID, p.ProductName, od.UnitPrice*od.Quantity AS W
+FROM Northwind.dbo.Customers c
+JOIN Serwer1.Northwind.dbo.Orders o ON c.CustomerID = o.CustomerID
+JOIN Serwer1.Northwind.dbo.[Order Details] od ON o.OrderID = od.OrderID
+JOIN Serwer1.Northwind.dbo.Products p ON od.ProductID = p.ProductID;
+\end{lstlisting}
+
+\section{INSERT/DELETE przez linked + OPENQUERY (lokalny SQL i Oracle)}
+\begin{lstlisting}
+-- 4-czlonowo
+INSERT INTO Serwer1.Northwind.dbo.Products (ProductName, UnitPrice) VALUES ('TestX', 1);
+DELETE FROM Serwer1.Northwind.dbo.Products WHERE ProductName='TestX';
+
+-- OPENQUERY (T-SQL wykonywany po zdalnej stronie)
+INSERT INTO OPENQUERY(Serwer1,'SELECT ProductName, UnitPrice FROM Northwind.dbo.Products')
+VALUES ('TestY', 2);
+
+-- Oracle przez OPENQUERY
+INSERT INTO OPENQUERY(OraPD25,'SELECT EMPLOYEEID, LASTNAME, FIRSTNAME FROM EMPLOYEES')
+VALUES (999, 'Test', 'X');
+DELETE FROM OPENQUERY(OraPD25,'SELECT EMPLOYEEID FROM EMPLOYEES WHERE EMPLOYEEID=999');
+\end{lstlisting}
+
+\section{Tabela docelowa (SQL i Oracle)}
+\begin{lstlisting}
+-- SQL Server
+CREATE TABLE dbo.koledzy (
+  indeks   INT NOT NULL PRIMARY KEY,
+  nazwisko VARCHAR(50) NOT NULL,
+  imie     VARCHAR(25) NOT NULL);
+GRANT SELECT, INSERT, UPDATE, DELETE ON dbo.koledzy TO PUBLIC;
+
+-- Oracle (po stronie NORTHWIND/PD251190 w SQL Developer)
+-- CREATE TABLE KOLEDZY (
+--   INDEKS NUMBER(15) NOT NULL PRIMARY KEY,
+--   NAZWISKO VARCHAR2(50) NOT NULL,
+--   IMIE VARCHAR2(25) NOT NULL);
+-- GRANT SELECT, INSERT, UPDATE, DELETE ON KOLEDZY TO PUBLIC;
+\end{lstlisting}
+
+\section{Procedura SQL z parametrami (insert lokalny)}
+\begin{lstlisting}
+CREATE OR ALTER PROCEDURE dbo.dodaj_kolege_sql
+  @indeks   INT,
+  @nazwisko VARCHAR(50),
+  @imie     VARCHAR(25)
+AS
+BEGIN
+  SET NOCOUNT ON;
+  INSERT INTO dbo.koledzy (indeks, nazwisko, imie)
+  VALUES (@indeks, @nazwisko, @imie);
+END;
+GO
+EXEC dbo.dodaj_kolege_sql @indeks=62001, @nazwisko='Nowak', @imie='Anna';
+\end{lstlisting}
+
+\section{Procedura Oracle (PL/SQL, po stronie Oracle)}
+\begin{lstlisting}
+-- CREATE OR REPLACE PROCEDURE DODAJ_KOLEGE_ORACLE (
+--   P_INDEKS   IN NUMBER,
+--   P_NAZWISKO IN VARCHAR2,
+--   P_IMIE     IN VARCHAR2)
+-- AS BEGIN
+--   INSERT INTO KOLEDZY (INDEKS, NAZWISKO, IMIE)
+--   VALUES (P_INDEKS, P_NAZWISKO, P_IMIE);
+-- END;
+-- /
+\end{lstlisting}
+
+\section{DTC: TRY/CATCH + DISTRIBUTED TRANSACTION (lokal + OPENROWSET Oracle)}
+\begin{lstlisting}
+SET XACT_ABORT ON;
+GO
+BEGIN TRY
+  BEGIN DISTRIBUTED TRANSACTION;
+
+  INSERT INTO dbo.koledzy (indeks, nazwisko, imie)
+  VALUES (61001, 'Kowalski', 'Jan');
+
+  INSERT INTO OPENROWSET(
+    'OraOLEDB.Oracle',
+    '(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=212.51.216.169)(PORT=1521))(CONNECT_DATA=(SID=PD25)))';'PD251190';'12345',
+    'SELECT INDEKS, NAZWISKO, IMIE FROM KOLEDZY')
+  VALUES (61001, 'Kowalski', 'Jan');
+
+  COMMIT TRANSACTION;
+END TRY
+BEGIN CATCH
+  IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
+  THROW;
+END CATCH;
+GO
+\end{lstlisting}
+
+\section{DTC: TRY/CATCH + procedura SQL + EXEC AT Oracle}
+\begin{lstlisting}
+SET XACT_ABORT ON;
+GO
+BEGIN TRY
+  BEGIN DISTRIBUTED TRANSACTION;
+
+  EXEC dbo.dodaj_kolege_sql @indeks=62001, @nazwisko='Nowak', @imie='Anna';
+
+  EXEC ('BEGIN DODAJ_KOLEGE_ORACLE(62001, ''Nowak'', ''Anna''); END;') AT OraPD25;
+
+  COMMIT TRANSACTION;
+END TRY
+BEGIN CATCH
+  IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
+  THROW;
+END CATCH;
+GO
+\end{lstlisting}
+
+\section{Default mapping (locallogin = NULL)}
+\begin{lstlisting}
+-- mapuje WSZYSTKIE lokalne loginy na ten sam zdalny user
+EXEC sp_addlinkedsrvlogin 'Serwer1','False', NULL, 'KONTO1','12345';
+EXEC sp_addlinkedsrvlogin 'OraPD25','False', NULL, 'PD251190','12345';
+\end{lstlisting}
+
+\end{multicols}
+\end{document}
