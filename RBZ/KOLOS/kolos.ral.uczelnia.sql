@@ -1,3 +1,4 @@
+-- Zadania przykładowe z pliku kolos.ral.uczelnia.sql na ich podstawie masz zrobić kolos.
 -- Ustanowić serwer połączony SQLServer o nazwie Serwer1 z wykorzystaniem loginu sa
 -- w systemie SQLServer, mapowanego na prawa konta: ZA23, hasło: 12345, tego samego lokalnego serwera.
 
