@@ -1,0 +1,93 @@
+Replikacja
+--------------
+-- Zadania:
+-- 1. Zapoznać się z dokumentacją Microsoft dot. Replikacji danych:
+-- https://learn.microsoft.com/en-us/sql/relational-databases/replication/sql-server-replication?view=sql-server-ver16&viewFallbackFrom=sql-server-ver22
+
+
+-- Zadanie 1:
+-- Wykonać proces uruchomienia i skonfigurowana agenta SQL Server Agent. W tym celu przejść do odpowiedniej konsoli mmc:
+https://learn.microsoft.com/en-us/sql/tools/configuration-manager/sql-server-configuration-manager?view=sql-server-ver17&viewFallbackFrom=sql-server-ver17
+
+-- UWAGA celem braku zgłaszania komunikatów i ostrzeżeń agent powinien działać w trybie automatycznym (a nie manualnym)
+
+
+-- Zadanie 2:
+-- Po zapoznaniu się z dokumentacją dot. replikacji --> wykonać na własnej (jednej instancji SQLServer) replikację migawkową.
+--a. -- W tym celu założyć lub wykorzystać jako bazę do publikowania: NorthWind
+--b. -- baza docelowa: TestDB
+--c. -- baza dystrybutora: distributions
+
+-- W pierwszej kolejności założyć na dysku c:\ 
+	--> katalog: RBD_Repl a w nim: 
+		--> podfolder: logs
+		--> podfolder: bazaDystr
+
+--d. -- Nadać odpowiednie uprawnienia do podfolderów.
+--e. Zdefiniować dystrybutora
+--f. Zdefiniować Publikatora dla tabeli Categories (w pierwszym zadaniu nie ustawiamy filtrów dla konkretnych krotek)
+--g. Zdefiniować Subskrybenta da potrzeb publikacji
+
+
+-- Zadanie 2.
+-- Pracujemy w grupach 3 osobowych z trzema instancjami.
+-- Zdefiniować replikację transakcyjną w środowisku rozproszonym między trzema serwerami. 
+-- Dystrybutor, publikator i subskrybent powinni być zdefiniowani na osobnych maszynach. W tym celu założyć (lub wykorzystać) we własnym środowisku odpowiednie loginy domenowe.
+
+
+-- Proces omówiony jest na stronie: Setup and Configure Transactional Replication with a Remote Distributor SQL Server - Step by Step:
+-- https://www.youtube.com/watch?v=GakyGJ89Pu8&t=956s
+
+-- Serwer1: --> ma być publikatorem,
+-- Serwer2: --> ma być dystrybutorem,
+-- Serwer3: --> ma być subskrybentem,
+
+--- W celu dokonania replikacji założyć na dystrybutorze katalog: replData --> do którego nadać minimalne wymagane uprawnienia pozwalające na udostępnianie danych 
+-- z wykorzystaniem tych trzech użytkowników domenowych. Pamiętajmy, że katalog powinien zostać udostępniony domenowo.
+
+-- Następnie skonfigurować dystrybutora, publikatora i subskrybenta.
+
+-- Przetestować działanie replikacji  transakcyjnej.
+
+
+
+
+------------------------------- Dodatek:-----------------------
+--- Usuwanie dystrybutora:
+
+--- Usuwanie dystrybutora: 
+
+USE master;
+GO
+DECLARE @spid INT;
+
+DECLARE kill_cursor CURSOR FOR
+SELECT session_id 
+FROM sys.dm_exec_sessions
+WHERE database_id = DB_ID('distribution');
+
+OPEN kill_cursor;
+FETCH NEXT FROM kill_cursor INTO @spid;
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    EXEC('KILL ' + @spid);
+    FETCH NEXT FROM kill_cursor INTO @spid;
+END;
+
+CLOSE kill_cursor;
+DEALLOCATE kill_cursor;
+go
+
+
+USE master
+EXEC sp_dropdistributor @no_checks = 1, @ignore_distributor = 1;
+
+go
+
+
+
+--- sprawdzanie usunięcia:
+SELECT is_distributor
+FROM sys.databases
+WHERE name = 'distribution';
