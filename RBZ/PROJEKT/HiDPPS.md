@@ -842,17 +842,9 @@ Zaprojektowane środowisko realizuje wszystkie trzynaście wymagań technicznych
 
 ### 6.2 Ograniczenia projektu
 
-Projekt celowo upraszcza pewne aspekty, które w środowisku produkcyjnym wymagałyby dodatkowej pracy:
+Projekt celowo upraszcza wybrane aspekty:
 
-- Hasła do serwerów połączonych i łączy bazodanowych są w przykładach zastąpione symbolami `***`; w produkcji wymagałyby zarządzania sekretami (np. `xp_instance_regwrite` lub konta zarządzane przez Active Directory).
-- Replikacja transakcyjna obejmuje tylko jedną tabelę (katalog produktów); w realnym wdrożeniu wymagałaby rozszerzenia o słowniki i monitoringu agentów.
-- Wszystkie schematy Oracle leżą fizycznie na jednej instancji - rozproszenie jest symulowane przez database links zgodnie z wymaganiem dziesiątym projektu.
-- Strefy temperaturowe są modelowane na poziomie atrybutu produktu i partii; pełna kontrola zgodności HACCP wymagałaby dodatkowych wyzwalaczy walidujących umieszczenie partii w strefie o odpowiednim profilu temperatury.
-
-### 6.3 Podział pracy
-
-| Obszar | Wykonawca |
-|---|---|
-| Struktura baz Microsoft SQL Server (`HurtowniaCentrala`, `HurtowniaMagazyn`), replikacja transakcyjna, OPENROWSET, serwery połączone, OPENQUERY, procedury T-SQL, transakcja rozproszona MS DTC | Mateusz Mróz (251190) |
-| Schematy Oracle (`SPRZEDAZ`, `ARCHIWUM`, `FINANSE`), użytkownicy i role, database links, widok rozproszony, wyzwalacze INSTEAD OF, pakiet PL/SQL `PKG_SPRZEDAZ`, integracja źródeł Access i Excel | Maciej Górka (251143) |
-| Architektura całości, dokumentacja, diagramy, weryfikacja pokrycia wymagań | wspólnie |
+- hasła do serwerów połączonych i łączy bazodanowych są zastąpione symbolami `***`;
+- replikacja transakcyjna obejmuje tylko katalog produktów (`PRODUKT`);
+- wszystkie schematy Oracle leżą fizycznie na jednej instancji, a rozproszenie jest symulowane przez database links zgodnie z wymaganiem 10;
+- pełna kontrola zgodności HACCP (strefa temperaturowa partii vs strefa magazynu) wymagałaby dodatkowych wyzwalaczy walidacyjnych.
