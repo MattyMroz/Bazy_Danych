@@ -424,6 +424,29 @@ SELECT AVG(cena_zewnetrzna) AS srednia, COUNT(*) AS liczba
 FROM dbo.v_porownanie_cen;
 ```
 
+Procedura składowana wykorzystująca `OPENROWSET` - import pozycji cennika z arkusza Excel do tabeli buforowej w centrali, z lokalną agregacją do raportu (realizuje wymóg "widoki **i procedury** rozproszone"):
+
+```sql
+CREATE OR ALTER PROCEDURE dbo.sp_importuj_cennik_excel
+    @sciezka NVARCHAR(260)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @sql NVARCHAR(MAX) = N'
+        INSERT INTO dbo.CENNIK_IMPORT (id_produktu, cena_netto, data_importu)
+        SELECT CAST([id_produktu] AS INT), CAST([cena_netto] AS DECIMAL(10,2)), SYSDATETIME()
+        FROM OPENROWSET(
+            ''Microsoft.ACE.OLEDB.16.0'',
+            ''Excel 12.0;Database='' + @sciezka + '';HDR=YES;'',
+            ''SELECT id_produktu, cena_netto FROM [Cennik$]'');';
+    EXEC sp_executesql @sql, N'@sciezka NVARCHAR(260)', @sciezka;
+
+    SELECT COUNT(*) AS pozycji_zaimportowano, AVG(cena_netto) AS srednia_cena
+    FROM dbo.CENNIK_IMPORT
+    WHERE data_importu >= DATEADD(MINUTE, -1, SYSDATETIME());
+END;
+```
+
 ### 5.3 Serwery połączone i mapowanie loginów
 
 Wszystkie serwery połączone zostały skonfigurowane z jawnym mapowaniem loginu lokalnego na login zdalny, tak aby nie używać kont uprzywilejowanych. Dla połączenia z Oracle wykorzystano sterownik `OraOLEDB.Oracle`. Dla plików Access i Excel wykorzystano sterownik `Microsoft.ACE.OLEDB.16.0`.
@@ -443,6 +466,33 @@ EXEC sp_addlinkedsrvlogin
     @locallogin = 'CentralaApp',
     @rmtuser = 'SPRZEDAZ',
     @rmtpassword = '***';
+```
+
+Analogicznie zarejestrowano pozostałe trzy serwery połączone:
+
+```sql
+-- SQL Server -> SQL Server (centrala -> magazyn)
+EXEC sp_addlinkedserver
+    @server = 'SRV_MAGAZYN',
+    @srvproduct = '',
+    @provider = 'SQLNCLI',
+    @datasrc = 'MAGAZYN-SRV',
+    @catalog = 'HurtowniaMagazyn';
+
+-- SQL Server -> Microsoft Access (.accdb)
+EXEC sp_addlinkedserver
+    @server = 'SRV_ACCESS',
+    @srvproduct = 'ACE',
+    @provider = 'Microsoft.ACE.OLEDB.16.0',
+    @datasrc = 'C:\dane\przedstawiciele.accdb';
+
+-- SQL Server -> Microsoft Excel (.xlsx)
+EXEC sp_addlinkedserver
+    @server = 'SRV_EXCEL',
+    @srvproduct = 'ACE',
+    @provider = 'Microsoft.ACE.OLEDB.16.0',
+    @datasrc = 'C:\dane\cenniki_dostawcow.xlsx',
+    @provstr = 'Excel 12.0;HDR=YES;';
 ```
 
 Do diagnostyki konfiguracji wykorzystano następujące funkcje systemowe:
@@ -620,6 +670,17 @@ Publikacją objęto tabelę `PRODUKT` z centrali, która po stronie magazynu poj
 W instancji Oracle utworzono trzech użytkowników (schematy: `SPRZEDAZ`, `ARCHIWUM`, `FINANSE`) oraz trzy role dziedzinowe pozwalające zarządzać uprawnieniami zbiorczo:
 
 ```sql
+CREATE USER SPRZEDAZ IDENTIFIED BY "***"
+    DEFAULT TABLESPACE USERS QUOTA UNLIMITED ON USERS;
+CREATE USER ARCHIWUM IDENTIFIED BY "***"
+    DEFAULT TABLESPACE USERS QUOTA UNLIMITED ON USERS;
+CREATE USER FINANSE IDENTIFIED BY "***"
+    DEFAULT TABLESPACE USERS QUOTA UNLIMITED ON USERS;
+
+GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW, CREATE PROCEDURE,
+      CREATE TRIGGER, CREATE SEQUENCE, CREATE DATABASE LINK
+    TO SPRZEDAZ, ARCHIWUM, FINANSE;
+
 CREATE ROLE rola_sprzedaz;
 CREATE ROLE rola_archiwum_ro;
 CREATE ROLE rola_finanse;
@@ -655,6 +716,20 @@ CREATE DATABASE LINK LNK_FINANSE
 ```
 
 Łącze `LNK_ARCHIWUM` jest publiczne i służy do dostępu do schematu archiwum z dowolnego konta. Łącze `LNK_FINANSE` jest prywatne, należy do użytkownika `FINANSE` i nie pojawia się w `ALL_DB_LINKS` dla innych użytkowników. Dzięki temu schemat sprzedaży nie ma żadnej możliwości odpytania faktur ani płatności, nawet znając ich nazwy.
+
+Przykład wykorzystania łącza prywatnego - raport sald płatności uruchamiany przez użytkownika `FINANSE`:
+
+```sql
+-- Z perspektywy uzytkownika FINANSE: wywolanie zwroci dane.
+SELECT f.NUMER_FAKTURY, f.KWOTA_BRUTTO, NVL(SUM(p.KWOTA), 0) AS zaplacono
+FROM FAKTURA@LNK_FINANSE f
+LEFT JOIN PLATNOSC@LNK_FINANSE p ON p.ID_FAKTURY = f.ID_FAKTURY
+GROUP BY f.NUMER_FAKTURY, f.KWOTA_BRUTTO;
+
+-- Z perspektywy uzytkownika SPRZEDAZ: ta sama instrukcja zwroci
+-- ORA-02019 (connection description for remote database not found),
+-- poniewaz LNK_FINANSE nie istnieje w przestrzeni nazw tego uzytkownika.
+```
 
 ### 5.10 Symulacja zdalnych źródeł przez wielu użytkowników Oracle
 
@@ -830,7 +905,55 @@ END PKG_SPRZEDAZ;
 /
 ```
 
-Po stronie Microsoft SQL Server analogiczną logikę pełnią procedury `dbo.sp_rezerwuj_fefo` (rezerwacja partii zgodnie z FEFO, z użyciem kursora po dostępnych partiach posortowanych po dacie przydatności) oraz `dbo.sp_push_produkty_to_oracle` (cykliczna synchronizacja katalogu do cache Oracle przez polecenie `MERGE` wykonywane notacją czteroczęściową na serwerze `SRV_ORACLE`).
+Po stronie Microsoft SQL Server analogiczną logikę pełnią procedury `dbo.sp_rezerwuj_fefo` (pokazana w sekcji 5.6) oraz `dbo.sp_push_produkty_to_oracle`, która cyklicznie synchronizuje katalog do cache Oracle. Procedura korzysta z polecenia `MERGE` wykonywanego po stronie Oracle przez `EXECUTE ... AT SRV_ORACLE`:
+
+```sql
+CREATE OR ALTER PROCEDURE dbo.sp_push_produkty_to_oracle
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @merge NVARCHAR(MAX);
+
+    -- Tabela tymczasowa w Oracle wypełniana wstawkami z notacji 4-czesciowej
+    EXEC ('TRUNCATE TABLE SPRZEDAZ.PRODUKT_CACHE_STG') AT SRV_ORACLE;
+
+    INSERT INTO SRV_ORACLE..SPRZEDAZ.PRODUKT_CACHE_STG
+        (id_produktu, nazwa, jednostka_miary, stawka_vat, cena_netto)
+    SELECT
+        p.id_produktu,
+        p.nazwa,
+        p.jednostka_miary,
+        v.stawka,
+        c.cena_netto
+    FROM dbo.PRODUKT p
+    JOIN dbo.STAWKA_VAT v ON v.id_stawki = p.id_stawki_vat
+    OUTER APPLY (
+        SELECT TOP 1 cena_netto
+        FROM dbo.CENNIK_DOSTAWCY
+        WHERE id_produktu = p.id_produktu
+          AND GETDATE() BETWEEN data_od AND ISNULL(data_do, '9999-12-31')
+        ORDER BY data_od DESC
+    ) c
+    WHERE p.aktywny = 1;
+
+    -- MERGE po stronie Oracle: upsert do PRODUKT_CACHE ze stagingu
+    SET @merge = N'
+        MERGE INTO SPRZEDAZ.PRODUKT_CACHE t
+        USING SPRZEDAZ.PRODUKT_CACHE_STG s
+        ON (t.ID_PRODUKTU = s.ID_PRODUKTU)
+        WHEN MATCHED THEN UPDATE SET
+            t.NAZWA = s.NAZWA,
+            t.JEDNOSTKA_MIARY = s.JEDNOSTKA_MIARY,
+            t.STAWKA_VAT = s.STAWKA_VAT,
+            t.CENA_NETTO = s.CENA_NETTO,
+            t.DATA_SYNCHRONIZACJI = SYSDATE
+        WHEN NOT MATCHED THEN INSERT
+            (ID_PRODUKTU, NAZWA, JEDNOSTKA_MIARY, STAWKA_VAT, CENA_NETTO, DATA_SYNCHRONIZACJI)
+        VALUES
+            (s.ID_PRODUKTU, s.NAZWA, s.JEDNOSTKA_MIARY, s.STAWKA_VAT, s.CENA_NETTO, SYSDATE)';
+    EXEC (@merge) AT SRV_ORACLE;
+END;
+```
 
 ---
 
