@@ -337,7 +337,38 @@ erDiagram
 
 ---
 
-## 4.6 Scenariusze użycia
+### 4.6 Źródło zewnętrzne — Microsoft Access (`SRV_ACCESS`)
+
+Plik `przedstawiciele.accdb` zawiera kartotekę przedstawicieli handlowych pracujących w terenie. Centrala odczytuje te dane przez serwer połączony `SRV_ACCESS`.
+
+```mermaid
+erDiagram
+    PRZEDSTAWICIELE {
+        int id_przedstawiciela PK
+        nvarchar imie
+        nvarchar nazwisko
+        nvarchar region
+        nvarchar telefon
+        nvarchar email
+    }
+```
+
+### 4.7 Źródło zewnętrzne — Microsoft Excel (`SRV_EXCEL`)
+
+Plik `cenniki_dostawcow.xlsx` zawiera cennik przesłany przez dostawcę. Centrala wczytuje arkusz `Cennik$` przez serwer połączony `SRV_EXCEL` i ładuje dane do tabeli buforowej `CENNIK_IMPORT`.
+
+```mermaid
+erDiagram
+    CENNIK_ARKUSZ {
+        int id_produktu
+        decimal cena_netto
+        date data_od
+    }
+```
+
+---
+
+## 4.8 Scenariusze użycia
 
 Dla zrozumienia, jak zaprojektowane mechanizmy współpracują w realnej eksploatacji, poniżej zebrano cztery najważniejsze scenariusze biznesowe wraz ze wskazaniem zaangażowanych elementów systemu.
 
