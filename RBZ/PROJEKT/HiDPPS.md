@@ -165,7 +165,15 @@ erDiagram
         date data_od
         date data_do
     }
+    CENNIK_IMPORT {
+        int id_importu PK
+        int id_produktu
+        decimal cena_netto
+        datetime data_importu
+    }
 ```
+
+Tabela `CENNIK_IMPORT` jest pomocniczą tabelą buforową (poza modelem domenowym), do której trafiają wiersze odczytane z arkusza Excel przez procedurę `sp_importuj_cennik_excel` (sekcja 5.2) przed dalszym przetwarzaniem.
 
 ### 4.2 Baza HurtowniaMagazyn (Microsoft SQL Server)
 
@@ -260,7 +268,16 @@ erDiagram
         number cena_netto
         date data_synchronizacji
     }
+    PRODUKT_CACHE_STG {
+        number id_produktu PK
+        varchar2 nazwa
+        varchar2 jednostka_miary
+        number stawka_vat
+        number cena_netto
+    }
 ```
+
+Tabela `PRODUKT_CACHE_STG` jest pomocniczą tabelą stagingową dla procedury `sp_push_produkty_to_oracle` (sekcja 5.13): centrala wypełnia ją przez notację czteroczęściową, a `MERGE` po stronie Oracle wykonuje upsert do docelowej `PRODUKT_CACHE`.
 
 Słownik `STATUS_ZAMOWIENIA` zawiera cztery rekordy zgodne z dopuszczalnymi przejściami statusów opisanymi w wymaganiu 8: `1 = NOWE`, `2 = ZATWIERDZONE`, `3 = ANULOWANE`, `4 = ZREALIZOWANE`. Te wartości są używane przez procedury w sekcjach 5.6 i 5.13.
 
