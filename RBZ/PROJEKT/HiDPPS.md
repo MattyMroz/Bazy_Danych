@@ -355,6 +355,37 @@ Dla zrozumienia, jak zaprojektowane mechanizmy współpracują w realnej eksploa
 
 Rozdział ten szczegółowo opisuje realizację trzynastu wymagań technicznych projektu, zgodnie z kolejnością z karty przedmiotu. Każdy podrozdział zawiera krótkie omówienie problemu, decyzje projektowe oraz przykładowy kod.
 
+### 5.0 Spis widoków i procedur
+
+Poniższe tabele zbierają wszystkie widoki, procedury, funkcje, wyzwalacze i pakiety zdefiniowane w projekcie z podziałem na serwer i schemat.
+
+**Microsoft SQL Server — HurtowniaCentrala (`dbo`)**
+
+| Obiekt | Typ | Sekcja | Co robi |
+|---|---|---|---|
+| `dbo.v_porownanie_cen` | widok rozproszony | 5.2 | Zestawia ceny produktów z dwóch różnych źródeł naraz — z bazy Oracle i z pliku Excel. Pozwala w jednym zapytaniu zobaczyć, czy cena w Excelu zgadza się z ceną zapisaną w systemie sprzedaży. |
+| `dbo.v_klienci_z_stanami` | widok rozproszony | 5.4 | Łączy dane o wartości zamówień klientów (z Oracle) z aktualnym stanem towaru w magazynie (z SQL Servera). Daje obraz: kto kupuje i ile towaru zostało. |
+| `dbo.sp_importuj_cennik_excel` | procedura | 5.2 | Czyta plik Excel z cennikiem dostawcy i wgrywa ceny do bazy. Na końcu wyświetla, ile pozycji zostało zaimportowanych i jaka jest ich średnia cena. |
+| `dbo.sp_zatwierdz_zamowienie_dtc` | procedura | 5.6 | Zatwierdza zamówienie w sposób bezpieczny: jednocześnie rezerwuje towar w magazynie i zmienia status zamówienia w Oracle. Jeśli cokolwiek się nie uda, obie zmiany są cofane razem. |
+| `dbo.sp_rezerwuj_fefo` | procedura | 5.6 | Rezerwuje towar pod zamówienie. Zawsze sięga najpierw po partie z najkrótszą datą przydatności (zasada FEFO), żeby nic nie przeterminowało się w magazynie. |
+| `dbo.sp_push_produkty_to_oracle` | procedura | 5.13 | Kopiuje aktualny katalog produktów z centrali do systemu sprzedaży w Oracle. Jeśli produkt już tam istnieje, aktualizuje jego dane; jeśli nie — dodaje go. |
+
+**Oracle Database — schemat `SPRZEDAZ`**
+
+| Obiekt | Typ | Sekcja | Co robi |
+|---|---|---|---|
+| `SPRZEDAZ.V_ZAMOWIENIA_PELNE` | widok rozproszony (RO) | 5.11 | Pokazuje wszystkie zamówienia — zarówno bieżące, jak i te historyczne z archiwum. Dane są tylko do odczytu; nic przez ten widok zmienić się nie da. |
+| `SPRZEDAZ.V_POZYCJE_PELNE` | widok rozproszony (RO) | 5.11 | To samo co wyżej, ale dla pozycji zamówień (czyli konkretnych produktów i ilości). Łączy pozycje bieżące z historycznymi. Tylko do odczytu. |
+| `SPRZEDAZ.trg_v_zamowienia_io` | wyzwalacz INSTEAD OF | 5.12 | Pilnuje, co się dzieje, gdy ktoś próbuje coś zapisać przez widok `V_ZAMOWIENIA_PELNE`. Nowe zamówienie trafi do bieżącej tabeli albo do archiwum zależnie od daty. Modyfikacja lub usunięcie danych archiwalnych jest blokowane z błędem. |
+| `SPRZEDAZ.PKG_SPRZEDAZ` | pakiet PL/SQL | 5.13 | Zbiór procedur i funkcji obsługujących sprzedaż — zgrupowanych razem dla porządku. Zawiera wszystko, co potrzebne do przyjęcia i obsługi zamówienia. |
+| `PKG_SPRZEDAZ.sp_zarejestruj_zamowienie` | procedura (pakiet) | 5.13 | Tworzy nowe zamówienie dla klienta ze statusem „NOWE" i zwraca jego numer. |
+| `PKG_SPRZEDAZ.sp_dodaj_pozycje` | procedura (pakiet) | 5.13 | Dodaje produkt do zamówienia. W tym momencie zapisuje aktualną cenę i stawkę VAT, żeby późniejsza zmiana cennika nie wpłynęła na to zamówienie. |
+| `PKG_SPRZEDAZ.sp_anuluj_zamowienie` | procedura (pakiet) | 5.13 | Anuluje zamówienie. Sprawdza najpierw, czy zamówienie w ogóle można anulować — już zrealizowanego lub wcześniej anulowanego anulować się nie da. |
+| `PKG_SPRZEDAZ.sp_raport_top_klienci` | procedura (pakiet) | 5.13 | Wyświetla listę N największych klientów według łącznej wartości ich zamówień. Domyślnie pokazuje top 10. |
+| `PKG_SPRZEDAZ.fn_pobierz_aktualna_cena` | funkcja (pakiet) | 5.13 | Zwraca aktualną cenę netto produktu. Używana przy dodawaniu pozycji do zamówienia, żeby zamrozić właściwą cenę. |
+
+---
+
 ### 5.1 Opracowanie struktury rozproszonej bazy i uzasadnienie podziału
 
 Uzasadnienie podziału znajduje się w rozdziale 3.1. Każdy obiekt umieszczono w bazie, która jest jego właścicielem: katalog w `HurtowniaCentrala`, partie i stany w `HurtowniaMagazyn`, klienci i zamówienia w schemacie `SPRZEDAZ`, dane historyczne w `ARCHIWUM`, faktury i płatności w `FINANSE`. Procedury są umieszczone tam, gdzie ich główne tabele, co minimalizuje ruch sieciowy.
