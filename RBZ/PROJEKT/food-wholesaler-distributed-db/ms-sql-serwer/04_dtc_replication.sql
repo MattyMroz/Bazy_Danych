@@ -47,18 +47,18 @@ CREATE OR ALTER PROCEDURE dbo.sp_zatwierdz_zamowienie_dtc
     @id_zamowienia INT
 AS
 BEGIN
-    SET NOCOUNT ON;
-    SET XACT_ABORT ON;
+    SET NOCOUNT ON; -- bez komunikatow "(X wierszy)"
+    SET XACT_ABORT ON; -- blad = cofnij cala transakcje
 
     DECLARE @oracle_sql NVARCHAR(MAX);
 
     BEGIN TRY
         BEGIN DISTRIBUTED TRANSACTION;
 
-        -- 1. Magazyn (SQL Server): rezerwacja towaru FEFO.
+        -- 1. Magazyn (SQL Server): rezerwacja towaru FEFO
         EXEC dbo.sp_rezerwuj_fefo @id_zamowienia = @id_zamowienia;
 
-        -- 2. Sprzedaz (Oracle): zmiana statusu zamowienia na ZATWIERDZONE.
+        -- 2. Sprzedaz (Oracle): zmiana statusu zamowienia na ZATWIERDZONE
         SET @oracle_sql = N'
             UPDATE ZAMOWIENIE
             SET ID_STATUSU = 2
@@ -67,11 +67,11 @@ BEGIN
 
         EXEC (@oracle_sql) AT SRV_ORACLE;
 
-        -- 3. Zatwierdzenie obu operacji razem (protokol dwufazowy 2PC).
+        -- 3. Zatwierdzenie obu operacji razem (protokol dwufazowy 2PC)
         COMMIT TRANSACTION;
     END TRY
     BEGIN CATCH
-        -- Blad w ktorejkolwiek operacji = wycofanie calej transakcji.
+        -- Blad w ktorejkolwiek operacji = wycofanie calej transakcji
         IF XACT_STATE() <> 0
             ROLLBACK TRANSACTION;
 

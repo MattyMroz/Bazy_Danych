@@ -23,11 +23,13 @@ WITH aktualny_cennik AS (
     SELECT
         cd.id_produktu,
         cd.cena_netto,
+        -- numeruje ceny produktu: najnowsza dostaje 1, starsze 2, 3 itd...
         ROW_NUMBER() OVER (
             PARTITION BY cd.id_produktu
             ORDER BY cd.data_od DESC, cd.id_cennika DESC
         ) AS rn
     FROM dbo.CENNIK_DOSTAWCY AS cd
+    -- zostawia tylko ceny obowiazujace dzis (nie z przyszlosci i nie wygasle)
     WHERE cd.data_od <= CAST(GETDATE() AS DATE)
       AND (cd.data_do IS NULL OR cd.data_do >= CAST(GETDATE() AS DATE))
 )
@@ -161,24 +163,24 @@ BEGIN
         ac.cena_netto AS cena_obecna
     INTO #zmiany
     FROM dbo.CENNIK_IMPORT AS i
-    OUTER APPLY (
+    OUTER APPLY ( -- dla każdego wiersza z lewej (cena z Excela) odpala osobne  zapytanie po prawej (znajdź obecną cenę tego produktu) i dokleja wynik obok i jak nic nie znajdzie, wiersz zostaje, a cena jest pusta (NULL).
         SELECT TOP 1 cd.id_cennika, cd.cena_netto
         FROM dbo.CENNIK_DOSTAWCY AS cd
-        WHERE cd.id_dostawcy = @id_dostawcy
-          AND cd.id_produktu = i.id_produktu
-          AND cd.data_do IS NULL
+        WHERE cd.id_dostawcy = @id_dostawcy -- tego dostawcy
+          AND cd.id_produktu = i.id_produktu -- tego samego produktu co w Excelu
+          AND cd.data_do IS NULL -- tylko AKTUALNA cena (nie wygasła)
         ORDER BY cd.data_od DESC, cd.id_cennika DESC
     ) AS ac
     WHERE i.zrodlo = N'Excel'
       AND (ac.cena_netto IS NULL OR ac.cena_netto <> i.cena_netto);
 
-    -- 3. Zamkniecie starych wpisow (data_do = dzis) dla zmienionych cen
+    -- 3. Starym cenom zmienionych produktów wpisuje datę końca = dzisiaj (zamyka je jako wygasłe)
     UPDATE cd
     SET cd.data_do = @dzis
     FROM dbo.CENNIK_DOSTAWCY AS cd
     JOIN #zmiany AS z ON cd.id_cennika = z.id_cennika;
 
-    -- 4. Dodanie nowych wpisow z cena z Excela (data_do = NULL = aktualny)
+    -- 4. Dodaje nowe ceny z Excela jako aktualne (data_do = NULL)
     INSERT INTO dbo.CENNIK_DOSTAWCY (id_dostawcy, id_produktu, cena_netto, data_od, data_do)
     SELECT @id_dostawcy, z.id_produktu, z.cena_nowa, @dzis, NULL
     FROM #zmiany AS z;
@@ -210,7 +212,7 @@ CREATE OR ALTER PROCEDURE dbo.sp_rezerwuj_fefo
     @id_zamowienia INT
 AS
 BEGIN
-    SET NOCOUNT ON;
+    SET NOCOUNT ON; -- off komunikaty ;)
 
     -- 1. Pozycje zamowienia z Oracle do tabeli tymczasowej
     CREATE TABLE #pozycje (
@@ -218,6 +220,7 @@ BEGIN
         ilosc DECIMAL(10,3) NOT NULL
     );
 
+    -- Z oracle co trzeba zrealkizować
     INSERT INTO #pozycje (id_produktu, ilosc)
     SELECT
         CAST(p.ID_PRODUKTU AS INT),
@@ -247,13 +250,13 @@ BEGIN
     -- Pobranie pierwszej pozycji do zmiennych.
     FETCH NEXT FROM pozycje_cursor INTO @id_produktu, @ilosc_potrzebna;
 
-    -- @@FETCH_STATUS = 0 oznacza, ze udalo sie pobrac wiersz (sa jeszcze pozycje).
+    -- @@FETCH_STATUS = 0 oznacza, ze udalo sie pobrac wiersz (sa jeszcze pozycje)
     WHILE @@FETCH_STATUS = 0
     BEGIN
         -- Dopoki dla tej pozycji brakuje towaru, bierzemy kolejna partie.
         WHILE @ilosc_potrzebna > 0
         BEGIN
-            -- Partia z najkrotszym terminem przydatnosci (FEFO), ktora ma jeszcze stan.
+            -- Partia z najkrotszym terminem przydatnosci (FEFO), ktora ma jeszcze stan
             SELECT TOP 1
                 @id_partii = pa.id_partii,
                 @ilosc_dostepna = sp.ilosc_dostepna
@@ -264,37 +267,39 @@ BEGIN
               AND sp.ilosc_dostepna > 0
             ORDER BY pa.data_przydatnosci, pa.id_partii;
 
-            -- Brak partii ze stanem = nie da sie zarezerwowac calej ilosci.
+            -- Brak partii ze stanem = nie da sie zarezerwowac calej ilosci
             IF @id_partii IS NULL
                 THROW 51001, 'Brak wystarczajacego stanu magazynowego.', 1;
 
-            -- Ile mozna zarezerwowac z tej partii: albo tyle ile potrzeba, albo tyle ile jest dostepne.
+            -- Ile mozna zarezerwowac z tej partii: albo tyle ile potrzeba, albo tyle ile jest dostepne
             SET @ilosc_rezerwowana =
                 CASE
                     WHEN @ilosc_dostepna >= @ilosc_potrzebna THEN @ilosc_potrzebna
                     ELSE @ilosc_dostepna
                 END;
 
+            -- Zdejmuje zarezerwowaną ilość ze stanu
             UPDATE SRV_MAGAZYN.HurtowniaMagazyn.dbo.STAN_PARTII
             SET ilosc_dostepna = ilosc_dostepna - @ilosc_rezerwowana
             WHERE id_partii = @id_partii;
 
+            -- Zapisuje rezerwację
             INSERT INTO SRV_MAGAZYN.HurtowniaMagazyn.dbo.REZERWACJA
                 (id_partii, id_zamowienia_zewn, ilosc)
             VALUES
                 (@id_partii, @id_zamowienia, @ilosc_rezerwowana);
 
-            -- Zostalo mniej do zarezerwowania; zerujemy zmienne partii przed kolejnym obrotem.
+            -- Zostalo mniej do zarezerwowania; zerujemy zmienne partii przed kolejnym obrotem
             SET @ilosc_potrzebna = @ilosc_potrzebna - @ilosc_rezerwowana;
             SET @id_partii = NULL;
             SET @ilosc_dostepna = NULL;
         END;
 
-        -- Nastepna pozycja zamowienia (gdy brak - @@FETCH_STATUS != 0 i petla sie konczy).
+        -- Nastepna pozycja zamowienia (gdy brak - @@FETCH_STATUS != 0 i petla sie konczy)
         FETCH NEXT FROM pozycje_cursor INTO @id_produktu, @ilosc_potrzebna;
     END;
 
-    -- Zamkniecie i zwolnienie kursora.
+    -- Zamkniecie i zwolnienie kursora
     CLOSE pozycje_cursor;
     DEALLOCATE pozycje_cursor;
 
@@ -316,10 +321,10 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    -- 1. Czyszczenie stagingu w Oracle (DELETE, bo SPRZEDAZ_USER nie ma praw do TRUNCATE).
+    -- 1. Oprozniamy "poczekalnie" (staging) w Oracle, zeby nie bylo danych ze starego razu
     EXEC ('DELETE FROM PRODUKT_CACHE_STG') AT SRV_ORACLE;
 
-    -- 2. Wstawienie produktow do stagingu - kazdy osobnym INSERT na Oracle.
+    -- 2. Wstawienie produktow do stagingu - kazdy osobnym INSERT na Oracle
     DECLARE
         @id_produktu INT,
         @nazwa NVARCHAR(100),
@@ -328,20 +333,23 @@ BEGIN
         @cena DECIMAL(10,2),
         @sql NVARCHAR(1000);
 
-    -- Kursor bierze aktywne produkty z jednostka, stawka VAT i aktualna cena.
+    -- Kursor bierze aktywne produkty z jednostka, stawka VAT i aktualna cena
     DECLARE produkty_cursor CURSOR LOCAL FAST_FORWARD FOR
         WITH aktualny_cennik AS (
             SELECT
                 cd.id_produktu,
                 cd.cena_netto,
+                -- numeruje ceny produktu: najnowsza dostaje 1, starsze 2, 3 itd...
                 ROW_NUMBER() OVER (
                     PARTITION BY cd.id_produktu
                     ORDER BY cd.data_od DESC, cd.id_cennika DESC
                 ) AS rn
             FROM dbo.CENNIK_DOSTAWCY AS cd
+            -- zostawia tylko ceny obowiazujace dzis (nie z przyszlosci i nie wygasle)
             WHERE cd.data_od <= CAST(GETDATE() AS DATE)
               AND (cd.data_do IS NULL OR cd.data_do >= CAST(GETDATE() AS DATE))
         )
+        -- aktywne produkty + ich aktualna cena (rn = 1) i stawka VAT
         SELECT p.id_produktu, p.nazwa, p.jednostka_miary, sv.stawka, ac.cena_netto
         FROM dbo.PRODUKT AS p
         JOIN dbo.STAWKA_VAT AS sv
@@ -351,9 +359,11 @@ BEGIN
            AND ac.rn = 1
         WHERE p.aktywny = 1;
 
+    -- otwarcie kursora i pobranie pierwszego produktu
     OPEN produkty_cursor;
     FETCH NEXT FROM produkty_cursor INTO @id_produktu, @nazwa, @jednostka, @stawka, @cena;
 
+    -- petla: dla kazdego produktu buduje INSERT i wysyla go do Oracle
     WHILE @@FETCH_STATUS = 0
     BEGIN
         SET @sql =
@@ -369,10 +379,11 @@ BEGIN
         FETCH NEXT FROM produkty_cursor INTO @id_produktu, @nazwa, @jednostka, @stawka, @cena;
     END;
 
+    -- zamkniecie i zwolnienie kursora
     CLOSE produkty_cursor;
     DEALLOCATE produkty_cursor;
 
-    -- 3. Ile rekordow rozni sie miedzy stagingiem a cache (nowe lub zmienione).
+    -- 3. Ile rekordow rozni sie miedzy stagingiem a cache (nowe lub zmienione)
     DECLARE @liczba_zmienionych INT;
 
     SELECT @liczba_zmienionych = COUNT(*)
@@ -387,7 +398,7 @@ BEGIN
            OR pc.CENA_NETTO <> stg.CENA_NETTO
     ') AS r;
 
-    -- 4. MERGE na Oracle: zmienione aktualizuje (WHEN MATCHED AND ...), nowe dodaje.
+    -- 4. MERGE na Oracle: zmienione aktualizuje (WHEN MATCHED AND ...), nowe dodaje
     EXEC ('
         MERGE INTO PRODUKT_CACHE pc
         USING PRODUKT_CACHE_STG stg

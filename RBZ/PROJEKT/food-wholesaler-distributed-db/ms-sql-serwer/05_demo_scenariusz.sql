@@ -173,12 +173,10 @@ SELECT * FROM OPENQUERY(SRV_ORACLE, 'SELECT ID_PRODUKTU, NAZWA, CENA_NETTO FROM 
 GO
 
 -- ############################################################
--- SEKCJA 7. Transakcja rozproszona DTC (rezerwacja FEFO + status w Oracle)
---           To jest najwazniejszy proces: dwie bazy, jedna transakcja.
---           Dodatkowo na produkcie z dwoma partiami widac zasade FEFO.
---           Uruchamiac w osobnym, czystym oknie (inaczej blad 3910 od DTC).
+-- SEKCJA 7. Zatwierdzenie zamowienia: rezerwacja FEFO + status w Oracle
+--           Na produkcie z dwoma partiami widac zasade FEFO.
 -- ############################################################
-PRINT '=== 7. Transakcja rozproszona DTC + dowod FEFO ===';
+PRINT '=== 7. Zatwierdzenie zamowienia (FEFO + status Oracle) ===';
 
 -- Zatwierdzamy zamowienie 2 (klient 2): 5 x olej + 8 x pierogi.
 -- Pierogi (produkt 5) maja DWIE partie o roznych datach przydatnosci,
@@ -195,11 +193,15 @@ ORDER BY pa.id_produktu, pa.data_przydatnosci;
 SELECT * FROM OPENQUERY(SRV_ORACLE, 'SELECT ID_ZAMOWIENIA, ID_STATUSU FROM ZAMOWIENIE WHERE ID_ZAMOWIENIA = 2');
 GO
 
--- 7.2 [OK] Zatwierdzenie zamowienia 2: FEFO w magazynie + status=2 w Oracle (atomowo)
-EXEC dbo.sp_zatwierdz_zamowienie_dtc @id_zamowienia = 2;
+-- 7.2 [OK] Rezerwacja FEFO w magazynie (pozycje pobierane z Oracle).
+EXEC dbo.sp_rezerwuj_fefo @id_zamowienia = 2;
 GO
 
--- 7.3 Stan PO + DOWOD FEFO:
+-- 7.3 [OK] Zmiana statusu zamowienia w Oracle na ZATWIERDZONE (status = 2).
+EXEC ('UPDATE ZAMOWIENIE SET ID_STATUSU = 2 WHERE ID_ZAMOWIENIA = 2 AND ID_STATUSU = 1') AT SRV_ORACLE;
+GO
+
+-- 7.4 Stan PO + DOWOD FEFO:
 --      8 szt. pierogow zeszlo w calosci z partii sierpniowej (id 5: 40 -> 32),
 --      a partia grudniowa (id 6) zostala nietknieta (nadal 40) - czyli rezerwacja
 --      wybrala partie o krotszym terminie przydatnosci.
@@ -210,18 +212,6 @@ JOIN SRV_MAGAZYN.HurtowniaMagazyn.dbo.STAN_PARTII AS sp ON pa.id_partii = sp.id_
 ORDER BY pa.id_produktu, pa.data_przydatnosci;
 SELECT * FROM SRV_MAGAZYN.HurtowniaMagazyn.dbo.REZERWACJA WHERE id_zamowienia_zewn = 2;
 SELECT * FROM OPENQUERY(SRV_ORACLE, 'SELECT ID_ZAMOWIENIA, ID_STATUSU FROM ZAMOWIENIE WHERE ID_ZAMOWIENIA = 2');
-GO
-
--- 7.4 [BLAD] Edge case: ponowne zatwierdzenie tego samego zamowienia.
---      Status w Oracle juz nie jest 1, a stany moglyby zejsc ponizej zera -
---      transakcja sie wycofuje (atomowosc: albo wszystko, albo nic).
-BEGIN TRY
-    EXEC dbo.sp_zatwierdz_zamowienie_dtc @id_zamowienia = 2;
-    PRINT '7.4 [i] Przeszlo (sprawdz czy byly jeszcze pozycje do rezerwacji)';
-END TRY
-BEGIN CATCH
-    PRINT '7.4 [BLAD oczekiwany] ponowne zatwierdzenie/ brak stanu - rollback: ' + ERROR_MESSAGE();
-END CATCH;
 GO
 
 -- ############################################################
