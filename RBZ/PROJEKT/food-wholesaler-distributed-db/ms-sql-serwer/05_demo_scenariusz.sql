@@ -175,29 +175,48 @@ GO
 -- ############################################################
 -- SEKCJA 7. Transakcja rozproszona DTC (rezerwacja FEFO + status w Oracle)
 --           To jest najwazniejszy proces: dwie bazy, jedna transakcja.
+--           Dodatkowo na produkcie z dwoma partiami widac zasade FEFO.
+--           Uruchamiac w osobnym, czystym oknie (inaczej blad 3910 od DTC).
 -- ############################################################
-PRINT '=== 7. Transakcja rozproszona DTC ===';
+PRINT '=== 7. Transakcja rozproszona DTC + dowod FEFO ===';
 
--- 7.1 Stan PRZED: stany partii w magazynie i status zamowienia 1 w Oracle
-SELECT id_partii, ilosc_dostepna FROM SRV_MAGAZYN.HurtowniaMagazyn.dbo.STAN_PARTII ORDER BY id_partii;
-SELECT * FROM OPENQUERY(SRV_ORACLE, 'SELECT ID_ZAMOWIENIA, ID_STATUSU FROM ZAMOWIENIE WHERE ID_ZAMOWIENIA = 1');
+-- Zatwierdzamy zamowienie 2 (klient 2): 5 x olej + 8 x pierogi.
+-- Pierogi (produkt 5) maja DWIE partie o roznych datach przydatnosci,
+-- wiec na nich widac dzialanie FEFO - rezerwacja schodzi z partii o
+-- najkrotszym terminie, a partia z dluzszym terminem zostaje nietknieta.
+
+-- 7.1 Stan PRZED: partie z data przydatnosci (posortowane FEFO) i status zamowienia 2 w Oracle.
+--      Dla pierogow: partia sierpniowa (id 5) ma byc uzyta PRZED grudniowa (id 6).
+SELECT pa.id_produktu, pa.id_partii, pa.numer_partii_dostawcy,
+       pa.data_przydatnosci, sp.ilosc_dostepna
+FROM SRV_MAGAZYN.HurtowniaMagazyn.dbo.PARTIA AS pa
+JOIN SRV_MAGAZYN.HurtowniaMagazyn.dbo.STAN_PARTII AS sp ON pa.id_partii = sp.id_partii
+ORDER BY pa.id_produktu, pa.data_przydatnosci;
+SELECT * FROM OPENQUERY(SRV_ORACLE, 'SELECT ID_ZAMOWIENIA, ID_STATUSU FROM ZAMOWIENIE WHERE ID_ZAMOWIENIA = 2');
 GO
 
--- 7.2 [OK] Zatwierdzenie zamowienia 1: FEFO w magazynie + status=2 w Oracle (atomowo)
-EXEC dbo.sp_zatwierdz_zamowienie_dtc @id_zamowienia = 1;
+-- 7.2 [OK] Zatwierdzenie zamowienia 2: FEFO w magazynie + status=2 w Oracle (atomowo)
+EXEC dbo.sp_zatwierdz_zamowienie_dtc @id_zamowienia = 2;
 GO
 
--- 7.3 Stan PO: stany zmniejszone, rezerwacje utworzone, status w Oracle = 2 (ZATWIERDZONE)
-SELECT id_partii, ilosc_dostepna FROM SRV_MAGAZYN.HurtowniaMagazyn.dbo.STAN_PARTII ORDER BY id_partii;
-SELECT * FROM SRV_MAGAZYN.HurtowniaMagazyn.dbo.REZERWACJA WHERE id_zamowienia_zewn = 1;
-SELECT * FROM OPENQUERY(SRV_ORACLE, 'SELECT ID_ZAMOWIENIA, ID_STATUSU FROM ZAMOWIENIE WHERE ID_ZAMOWIENIA = 1');
+-- 7.3 Stan PO + DOWOD FEFO:
+--      8 szt. pierogow zeszlo w calosci z partii sierpniowej (id 5: 40 -> 32),
+--      a partia grudniowa (id 6) zostala nietknieta (nadal 40) - czyli rezerwacja
+--      wybrala partie o krotszym terminie przydatnosci.
+SELECT pa.id_produktu, pa.id_partii, pa.numer_partii_dostawcy,
+       pa.data_przydatnosci, sp.ilosc_dostepna
+FROM SRV_MAGAZYN.HurtowniaMagazyn.dbo.PARTIA AS pa
+JOIN SRV_MAGAZYN.HurtowniaMagazyn.dbo.STAN_PARTII AS sp ON pa.id_partii = sp.id_partii
+ORDER BY pa.id_produktu, pa.data_przydatnosci;
+SELECT * FROM SRV_MAGAZYN.HurtowniaMagazyn.dbo.REZERWACJA WHERE id_zamowienia_zewn = 2;
+SELECT * FROM OPENQUERY(SRV_ORACLE, 'SELECT ID_ZAMOWIENIA, ID_STATUSU FROM ZAMOWIENIE WHERE ID_ZAMOWIENIA = 2');
 GO
 
 -- 7.4 [BLAD] Edge case: ponowne zatwierdzenie tego samego zamowienia.
 --      Status w Oracle juz nie jest 1, a stany moglyby zejsc ponizej zera -
 --      transakcja sie wycofuje (atomowosc: albo wszystko, albo nic).
 BEGIN TRY
-    EXEC dbo.sp_zatwierdz_zamowienie_dtc @id_zamowienia = 1;
+    EXEC dbo.sp_zatwierdz_zamowienie_dtc @id_zamowienia = 2;
     PRINT '7.4 [i] Przeszlo (sprawdz czy byly jeszcze pozycje do rezerwacji)';
 END TRY
 BEGIN CATCH
@@ -228,9 +247,12 @@ PRINT '=== 8B. Kontrola dostepu ===';
 
 -- 8B.1 [BLAD] Magazyn NIE moze modyfikowac repliki katalogu (DENY z 01).
 --      Replika jest tylko do odczytu - katalog prowadzi centrala.
+--      Test wykonujemy w bazie HurtowniaMagazyn, bo tam istnieje user MagazynApp.
+USE HurtowniaMagazyn;
+GO
 BEGIN TRY
     EXECUTE AS USER = 'MagazynApp';
-    INSERT INTO HurtowniaMagazyn.dbo.PRODUKT (id_produktu, nazwa, strefa_temperaturowa)
+    INSERT INTO dbo.PRODUKT (id_produktu, nazwa, strefa_temperaturowa)
     VALUES (999, N'HACK', N'SUCHY');
     REVERT;
     PRINT '8B.1 [!] Nie powinno przejsc!';
@@ -239,6 +261,8 @@ BEGIN CATCH
     IF USER_NAME() = 'MagazynApp' REVERT;
     PRINT '8B.1 [BLAD oczekiwany] magazyn nie moze pisac do repliki: ' + ERROR_MESSAGE();
 END CATCH;
+GO
+USE HurtowniaCentrala;
 GO
 
 -- 8B.2 [OK] Konto centrali (CentralaApp) ma dostep do swoich danych (GRANT z 01).
