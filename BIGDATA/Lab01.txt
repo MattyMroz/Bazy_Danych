@@ -1,0 +1,53 @@
+
+UWAGA!!! - zmienić nazwę zamieszczonego na WIKAMP pliku: <210234 Nowak Jan.txt> na nazwę: nazwisko_imię_Album.txt (wprowadzić własne dane) 
+
+Dodatkowo w pierwszym wierszy umieścić:
+
+Nazwisko i imię 	Album
+---------------------------------------
+
+dalej...
+Podać numer maszyny na której rozwiązywane były zadania problemowe.
+
+
+
+
+UWAGA:
+-----------------
+a.) Pracujemy na danych MovieLens (plik ml-100k):
+Cel: Przygotowanie zbioru danych do przesłania do HDFS.
+
+A1. Pobierz i rozpakuj zestaw danych MovieLens Dataset (ml-100k.zip) do katalogu "data".
+A2. Wyświetl strukturę katalogu ~/data/ml-100k i zidentyfikuj pliki zbioru danych (u.data, u.item, u.user itd.).
+A3. Przeczytaj plik README.txt tego zestawu danych.
+
+-------------
+0. Ćwiczenia – Polecenia HDFS z użyciem zbioru MovieLens (ml-100k.zip):
+---------------------------
+Uruchom w trybie terminalowym (aplikacja PuTTY) i połącz się z adresem swojej maszyny
+(np. maria_dev@212.51.216.241:<własny numer portu>, odpowiadający kolumnie dla portu: 2222).
+
+Korzystając z poleceń systemu plików HDFS (hadoop fs lub hdfs dfs), wykonaj następujące zadania:
+
+0.1. Wyświetl wszystkie katalogi (w HDFS) znajdujące się w katalogu użytkownika: /user/maria_dev
+
+0.2. Podaj polecenie tworzące katalog: ASSESSMENT/ml100k w katalogu użytkownika: /user/maria_dev
+
+0.3. Podaj polecenie kopiujące pliki u.data i u.item z systemu operacyjnego do utworzonego katalogu HDFS: /user/maria_dev/ASSESSMENT/ml100k
+
+0.4. Zweryfikuj pliki w HDFS – sprawdź, czy zostały poprawnie przesłane. Wyświetl wszystkie pliki w katalogu: /user/maria_dev/ASSESSMENT/ml100k/
+
+0.5. Wyświetl próbkę danych – zobacz część pliku zbioru danych bez jego pobierania. (Pokaż pierwsze 10 wierszy pliku u.data)
+
+0.6. Skopiuj plik w obrębie HDFS – przećwicz duplikowanie plików. Skopiuj plik u.data do nowego katalogu: /user/<twoj_login>/movielens/copy/
+
+0.7. Pobierz plik z HDFS do lokalnego systemu (pobieranie danych z HDFS). Pobierz plik u.item z HDFS do lokalnego katalogu ~/downloads:
+
+0.8. Usuń katalog z HDFS (ćwiczenie usuwania danych z HDFS). Usuń katalog: /user/<twoj_login>/movielens/copy
+
+0.9. Sprawdź rozmiar danych w HDFS.Wyświetl łączny rozmiar katalogu: /user/<twoj_login>/movielens/copy/
+
+0.10. Przygotuj dane do analizy w Hive lub Spark:
+
+hdfs dfs -cat /user/<twoj_login>/movielens/copy/* > all_data.txt
+hdfs dfs -put all_data.txt /user/<twoj_login>/movielens/copy/
