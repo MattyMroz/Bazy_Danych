@@ -1,0 +1,23 @@
+Zadania do realizacji - pracujemy na danych MovieLens (plik ml-100k):
+-------------------------------
+Wykorzystując framework Apache Spark:
+1. Podać najstarszy film,  który posiada najwyższą średnią oceną (tzn. posiadający powyżej 4 gwiazdek) i podać nazwę(y) filmu(ów).
+Następnie zweryfikować, czy jest to najstarszy film stosując do tego framework Hive.
+
+UWAGA!!!
+-------
+W środowisku Spark do operowania na dacie wykorzystać funkcję: 
+ToUnixTime(ToDate(<atrybut>,'dd-MMM'-yyyy')) AS relDate
+
+2. Podać najgorzej oceniany film (z największą liczbą ocen wynoszących poniżej <2)
+
+Przeanalizować pozostałe pliki archiwum ml100k, następnie wykorzystując framework Spark (w Zeppelin) odpowiedzieć na pytania:
+-------------------------------------------------------------------------------------
+3. Jaki(ie) gatunek(i) filmów oglądały najczęściej kobiety a jaki(e) mężczyźni?
+4. Jakie gatunki filmów oglądane przez kobiety były najwyżej oceniane?
+5. Czy kobiety dawały (ogólnie) wyższe oceny niż mężczyźni czy jest odwrotnie?
+6. Podać które gatunki filmów były najczęściej oglądane przez osoby danych grup zawodowych (wykonywanych zawodów)?
+7. Osoby których grup zawodowych dawały najwyższe oceny jakim gatunkom filmów?
+8. Zastanów się - czy istnieje związek między samymi ocenami, ocenianymi gatunkami filmów, wykonywam zawodem a płcią?
+
+
