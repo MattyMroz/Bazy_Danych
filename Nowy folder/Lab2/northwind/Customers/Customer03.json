@@ -1,0 +1,10 @@
+{
+    "_id" : 3,
+    "firstName" : "Ewa",
+    "lastName" : "Nowak",
+    "phone" : "768 211 546",
+    "email" : "ewanowak@poczta.eu",
+    "created_date" : "2021-02-18",
+    "isBusiness" : false,
+    "purchase" : ["o1"]
+}

@@ -1,0 +1,6 @@
+{
+    "_id" : "lambda",
+    "city" : "Gdańsk",
+    "address" : { "block" : 11, "postalCode" : "80-209" },
+    "sections" : ["Logistics", "Sales"]
+}

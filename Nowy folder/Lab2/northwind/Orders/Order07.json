@@ -1,0 +1,8 @@
+{
+    "_id" : "o7",
+    "customer" : 3,
+    "product" : "Drukarka laserowa",
+    "cost" : 1950.00,
+    "discount" : 25,
+    "totalCost" : 1462.50
+}

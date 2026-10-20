@@ -1,0 +1,11 @@
+{
+    "_id" : 5,
+    "firstName" : "Antoni",
+    "lastName" : "Pit",
+    "phone" : "122 506 506",
+    "email" : "antoni.pit@firma.eu",
+    "created_date" : "2021-04-30",
+    "isBusiness" : true,
+    "NIP" : "1256917711",
+    "purchase" : ["o13"]
+}

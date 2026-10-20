@@ -1,0 +1,6 @@
+{
+    "_id" : "beta",
+    "city" : "Warszawa",
+    "address" : { "street" : "Pierwsza", "block" : 21, "postalCode" : "00-145" },
+    "sections" : ["Logistics", "Warehouse"]
+}

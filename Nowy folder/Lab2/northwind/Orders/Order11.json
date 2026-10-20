@@ -1,0 +1,8 @@
+{
+    "_id" : "o11",
+    "customer" : 4,
+    "product" : "Marker czarny",
+    "quantity" : 50,
+    "cost" : 100.00,
+    "totalCost" : 100.00
+}

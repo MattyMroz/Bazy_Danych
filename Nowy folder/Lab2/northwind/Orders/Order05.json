@@ -1,0 +1,9 @@
+{
+    "_id" : "o5",
+    "customer" : 2,
+    "quantity" : 5,
+    "product" : "Tusz kolorowy do drukarki",
+    "cost" : 750.00,
+    "discount" : 10,
+    "totalCost" : 675.00
+}

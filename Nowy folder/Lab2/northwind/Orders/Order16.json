@@ -1,0 +1,10 @@
+{
+    "_id" : "o16",
+    "customer" : 5,
+    "product" : "Papier biurowy 500 arkuszy",
+    "quantity" : 750,
+    "cost" : 17250.00,
+    "discount" : 15,
+    "totalCost" : 14662.50,
+    "withDelivery" : true
+}

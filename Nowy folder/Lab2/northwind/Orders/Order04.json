@@ -1,0 +1,9 @@
+{
+    "_id" : "o4",
+    "customer" : 2,
+    "quantity" : 5,
+    "product" : "Tusz czarny do drukarki",
+    "cost" : 500.00,
+    "discount" : 10,
+    "totalCost" : 450.00
+}

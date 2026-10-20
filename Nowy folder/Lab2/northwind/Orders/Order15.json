@@ -1,0 +1,9 @@
+{
+    "_id" : "o15",
+    "customer" : 5,
+    "product" : "Oprogramowanie biurowe 12 msc",
+    "quantity" : 100,
+    "cost" : 44500.00,
+    "discount" : 10,
+    "totalCost" : 40050.50
+}

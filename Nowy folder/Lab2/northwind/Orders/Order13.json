@@ -1,0 +1,9 @@
+{
+    "_id" : "o13",
+    "customer" : 4,
+    "product" : "Długopis żelowy",
+    "quantity" : 100,
+    "cost" : 250.00,
+    "discount" : 10,
+    "totalCost" : 225.00
+}

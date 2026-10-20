@@ -1,0 +1,9 @@
+{
+    "_id" : 1,
+    "firstName" : "Adam",
+    "lastName" : "Kowalski",
+    "phone" : "235 786 123",
+    "email" : "adam_kowalski@inlook.pl",
+    "created_date" : "2021-01-16",
+    "purchase" : ["o2", "o4", "o6"]
+}

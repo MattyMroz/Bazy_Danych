@@ -1,0 +1,6 @@
+{
+    "_id" : "delta",
+    "city" : "Poznań",
+    "address" : { "street" : "Wojska Polskiego", "block" : 11, "postalCode" : "60-111" },
+    "sections" : ["Logistics"]
+}

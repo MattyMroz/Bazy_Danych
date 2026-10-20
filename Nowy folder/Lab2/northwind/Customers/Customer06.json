@@ -1,0 +1,11 @@
+{
+    "_id" : 6,
+    "firstName" : "Agnieszka",
+    "lastName" : "Zaradna",
+    "phone" : "100 700 600",
+    "email" : "a.zaradnapit@biznes.eu",
+    "created_date" : "2021-05-06",
+    "isBusiness" : true,
+    "NIP" : "5348001235",
+    "purchase" : ["o14", "o15", "o16", "o17", "o18"]
+}

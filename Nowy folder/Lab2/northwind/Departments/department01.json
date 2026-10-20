@@ -1,0 +1,6 @@
+{
+    "_id" : "alpha",
+    "city" : "Warszawa",
+    "address" : { "street" : "Ostatnia", "block" : 12, "postalCode" : "00-120" },
+    "sections" : ["Sales", "Finance", "Logistics"]
+}

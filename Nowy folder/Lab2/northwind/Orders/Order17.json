@@ -1,0 +1,10 @@
+{
+    "_id" : "o17",
+    "customer" : 5,
+    "product" : "Długopis niebieski kulkowy",
+    "quantity" : 5000,
+    "cost" : 8250.00,
+    "discount" : 60,
+    "totalCost" : 3300.00,
+    "withDelivery" : true
+}

@@ -1,0 +1,8 @@
+{
+    "_id" : "o1",
+    "customer" : 1,
+    "quantity" : 10,
+    "cost" : 1200.00,
+    "discount" : 20,
+    "totalCost" : 960.00
+}

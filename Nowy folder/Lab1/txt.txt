@@ -1,0 +1,23 @@
+1. Uruchomienie Docker'a i zainstalowanie obrazu MongoDB (docker pull mongodb/mongodb-community-server). 
+2. Konfiguracja kontenera zgodnie z przykładami podanymi na wykładzie o nazwie mongodb.
+3. Uruchomienie MongoDB oraz Mongosh w celu połączenia się z serwerem (kontener).
+   polecenie: show dbs, use test1
+4. Zatrzymujemy kontener MongoDB i docker'a.
+---------------------------------------------------------------------------------------------------------
+5. Instalacja MongoDB lokalnie na komputerze z systemem Windows.
+6. Ściągamy plik zip ze strony mongodb.com MongoDB Community Server, MongoDB Shell oraz MongoDB Compass(GUI)
+Całość rozpakowujemy w katalogu C:\data oraz dokładamy katalog db (c:\data\db), który jest potrzebny do uruchomienia serwera lokalnie.
+7. Uruchamiamy mongod.exe jak serwis serwera, a następnie mongosh.exe jak shell do obsługi bazy.
+8. Uruchamiamy MongoDBCompass.exe do przeglądania danych (GUI)
+9. Uruchamiamy VS Code i dogrywamy rozszerzenia do MongoDB oraz JSON. 
+Przyłączamy się do uruchomionego MongoDB i uruchamiamy shell'a z poziomu VS Code. 
+10. Zamykamy server MongoDB lokalnie i uruchamiamy kontener z MongoDB w celu sprawdzenia połączenia.
+---------------------------------------------------------------------------------------------------------
+11. Aby pracować z oboma serwerami (lokalny i konteneryzowany) dokładamy nowy kontener z innym portem niż standardowy i nazywamy go np. mongodb1 (port 27018).
+12. Próbujemy się poprzez VS Code dostać się do obu instancji MongoDB. 
+13. Tworzymy nowy Playground dostępny w VSCode, w każdej z instancji mongodb. 
+    wykonujemy polecenia: 
+    use('mongodbVSCodePlaygroundDB');
+    //db.getCollection('sales').find();
+    db.sales.find()
+---------------------------------------------------------------------------------------------------------

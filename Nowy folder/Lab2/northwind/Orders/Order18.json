@@ -1,0 +1,8 @@
+{
+    "_id" : "o18",
+    "customer" : 5,
+    "product" : "Płyn do czyszczenia tablic 300 ml",
+    "quantity" : 1200,
+    "cost" : 4800.00,
+    "withDelivery" : true
+}

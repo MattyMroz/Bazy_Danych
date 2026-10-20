@@ -1,0 +1,9 @@
+{
+    "_id" : "o12",
+    "customer" : 4,
+    "product" : "Długopis kulkowy",
+    "quantity" : 70,
+    "cost" : 70.00,
+    "discount" : 50,
+    "totalCost" : 35.00
+}

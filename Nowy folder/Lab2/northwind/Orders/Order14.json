@@ -1,0 +1,9 @@
+{
+    "_id" : "o14",
+    "customer" : 4,
+    "product" : "Skoroszyt kratka",
+    "quantity" : 100,
+    "cost" : 350.00,
+    "discount" : 35,
+    "totalCost" : 227.50
+}

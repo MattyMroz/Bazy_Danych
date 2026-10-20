@@ -1,0 +1,6 @@
+{
+    "_id" : "gamma",
+    "city" : "Gdynia",
+    "address" : { "street" : "Pierwsza", "block" : "13/31", "postalCode" : "80-209" },
+    "sections" : ["Logistics", "Warehouse", "Helpdesk"]
+}
