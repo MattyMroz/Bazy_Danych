@@ -1,0 +1,237 @@
+<title>Big Data Quiz</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: jedna kolumna jak terminal z kartą pytania; bursztyn = żółty słoń Hadoopa */
+:root {
+  --bg: #eef1f4; --surface: #ffffff; --line: #d5dbe2; --fg: #17202a; --muted: #5b6673;
+  --accent: #d79a07; --accent-ink: #855c00; --accent-soft: #fff4d6;
+  --good: #1f7a4d; --good-soft: #e3f4ea; --bad: #b3362b; --bad-soft: #fbe7e4;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12161b; --surface: #1b2128; --line: #2c343d; --fg: #e6eaee; --muted: #98a3ae;
+  --accent: #f2b632; --accent-ink: #f2b632; --accent-soft: #33290f;
+  --good: #4cc38a; --good-soft: #15302a; --bad: #f07167; --bad-soft: #3a1d1b; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12161b; --surface: #1b2128; --line: #2c343d; --fg: #e6eaee; --muted: #98a3ae;
+  --accent: #f2b632; --accent-ink: #f2b632; --accent-soft: #33290f;
+  --good: #4cc38a; --good-soft: #15302a; --bad: #f07167; --bad-soft: #3a1d1b; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--fg); font: 16px/1.55 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px 48px }
+.wrap { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px }
+header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px }
+h1 { font: 800 clamp(26px, 5vw, 36px)/1.1 var(--f-display); margin: 0; text-wrap: balance }
+h1 span { color: var(--accent-ink) }
+h2 { font: 600 22px/1.25 var(--f-display); margin: 0; text-wrap: balance }
+.sub { color: var(--muted); margin: 4px 0 0; font-size: 14px }
+select { font: inherit; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px }
+select:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px }
+.bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden }
+.bar > i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .25s }
+.meta { display: flex; justify-content: space-between; gap: 12px; font: 13px var(--f-mono); color: var(--muted); font-variant-numeric: tabular-nums }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; display: flex; flex-direction: column; gap: 16px; min-width: 0 }
+.tag { align-self: flex-start; font: 600 11px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent-ink); background: var(--accent-soft); padding: 3px 8px; border-radius: 4px }
+.q { font-size: 19px; font-weight: 500; line-height: 1.45 }
+.opts { display: flex; flex-direction: column; gap: 10px }
+.opt { display: flex; gap: 12px; align-items: flex-start; text-align: left; font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; cursor: pointer; transition: border-color .15s, background .15s }
+.opt:hover:not(:disabled) { border-color: var(--accent) }
+.opt b { font: 600 13px var(--f-mono); width: 22px; height: 22px; flex: none; display: grid; place-items: center; border-radius: 5px; border: 1px solid var(--line); background: var(--surface) }
+.opt:disabled { cursor: default }
+.opt.ok { border-color: var(--good); background: var(--good-soft) }
+.opt.no { border-color: var(--bad); background: var(--bad-soft) }
+.opt.dim { opacity: .55 }
+code, .mono { font-family: var(--f-mono); font-size: .92em }
+code { background: var(--accent-soft); padding: 1px 5px; border-radius: 4px; word-break: break-word }
+.fb { border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px }
+.fb.ok { background: var(--good-soft); border-left: 4px solid var(--good) }
+.fb.no { background: var(--bad-soft); border-left: 4px solid var(--bad) }
+.fb strong { font-family: var(--f-display); font-size: 17px }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center }
+.btn { font: 600 15px var(--f-body); border-radius: 9px; padding: 10px 18px; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--fg) }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #1b1300 }
+.btn.link { background: none; border: 0; padding: 6px 0; color: var(--accent-ink); text-decoration: underline; font-weight: 500 }
+.hint { font-size: 13px; color: var(--muted) }
+.score { font: 800 56px/1 var(--f-display); font-variant-numeric: tabular-nums }
+.score small { font-size: 22px; color: var(--muted); font-weight: 600 }
+.wrong { display: flex; flex-direction: column; gap: 12px; padding: 0; margin: 0; list-style: none }
+.wrong li { border-top: 1px solid var(--line); padding-top: 12px; display: flex; flex-direction: column; gap: 4px; min-width: 0 }
+.wrong .you { color: var(--bad) } .wrong .right { color: var(--good) }
+.hist { font: 13px var(--f-mono); color: var(--muted); font-variant-numeric: tabular-nums }
+.empty { color: var(--muted) }
+.modes { display: flex; gap: 6px }
+.modes .btn { padding: 7px 14px; font-size: 14px }
+.modes .btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #1b1300 }
+.learn { display: flex; flex-direction: column; gap: 22px }
+.learn section { display: flex; flex-direction: column; gap: 12px }
+.learn h2 { border-bottom: 2px solid var(--accent); padding-bottom: 4px }
+.fact { display: flex; flex-direction: column; gap: 3px; padding-left: 12px; border-left: 3px solid var(--line); min-width: 0 }
+.fact .ans { font-weight: 600; color: var(--good) }
+.fact .why { color: var(--muted); font-size: 14px }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Big Data <span>Quiz</span></h1>
+      <p class="sub">Hadoop, Hive, Spark, Kafka. Pytania z wykładów i labów.</p>
+    </div>
+    <div class="row">
+      <label class="row hint" for="mod">Moduł
+        <select id="mod"></select>
+      </label>
+      <div class="modes">
+        <button class="btn" id="m-learn" type="button" aria-pressed="false">Nauka</button>
+        <button class="btn" id="m-quiz" type="button" aria-pressed="true">Quiz</button>
+      </div>
+    </div>
+  </header>
+  <div class="meta"><span id="pos">–</span><span id="pts">–</span></div>
+  <div class="bar"><i id="prog"></i></div>
+  <main id="view" class="card"><p class="empty">Wczytuję pytania…</p></main>
+  <p class="hint">Klawisze: <span class="mono">1–4</span> lub <span class="mono">A–D</span> wybierają odpowiedź, <span class="mono">Enter</span> przechodzi dalej.</p>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fmt = s => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const L = "ABCD";
+
+let data = null, mod = null, run = null, db = null;
+
+function start(onlyIds) {
+  let qs = mod.questions;
+  if (onlyIds) qs = qs.filter(q => onlyIds.includes(q.id));
+  run = { items: shuffle(qs).map(q => ({ q, order: q.fixed ? q.options.map((_, i) => i) : shuffle(q.options.map((_, i) => i)) })), i: 0, done: [], retry: !!onlyIds };
+  show();
+}
+
+function header() {
+  const n = run.items.length, i = Math.min(run.i + 1, n);
+  const ok = run.done.filter(d => d.ok).length;
+  $("#pos").textContent = run.i >= n ? `Koniec: ${n} pytań` : `Pytanie ${i} / ${n}`;
+  $("#pts").textContent = `${ok} dobrze · ${run.done.length - ok} źle`;
+  $("#prog").style.width = (run.done.length / n * 100) + "%";
+}
+
+function show() {
+  header();
+  if (run.i >= run.items.length) return finish();
+  const { q, order } = run.items[run.i];
+  const v = $("#view");
+  v.innerHTML = `<span class="tag">${esc(q.topic || mod.title)}</span><div class="q">${fmt(q.q)}</div>` +
+    `<div class="opts">${order.map((oi, k) => `<button class="opt" data-k="${k}" type="button"><b>${L[k]}</b><span>${fmt(q.options[oi])}</span></button>`).join("")}</div>` +
+    `<div id="fb"></div>`;
+  v.querySelectorAll(".opt").forEach(b => b.onclick = () => pick(+b.dataset.k));
+}
+
+function pick(k) {
+  const it = run.items[run.i]; if (it.answered) return;
+  const { q, order } = it, ok = order[k] === q.answer;
+  it.answered = true;
+  $("#view").querySelectorAll(".opt").forEach((b, j) => {
+    b.disabled = true;
+    if (order[j] === q.answer) b.classList.add("ok");
+    else if (j === k) b.classList.add("no");
+    else b.classList.add("dim");
+  });
+  record(ok, q.options[order[k]], q.options[q.answer]);
+}
+
+function record(ok, given, correct) {
+  const it = run.items[run.i];
+  run.done.push({ id: it.q.id, ok, given, correct, q: it.q.q }); header();
+  $("#fb").innerHTML = `<div class="fb ${ok ? "ok" : "no"}"><strong>${ok ? "Dobrze" : "Źle"}</strong>` +
+    `<span>${fmt(it.q.explain || "")}</span></div>` +
+    `<div class="row"><button class="btn primary" id="next" type="button">${run.i + 1 < run.items.length ? "Dalej" : "Zobacz wynik"}</button></div>`;
+  $("#next").onclick = next; $("#next").focus();
+}
+
+function next() { run.i++; show(); }
+
+async function finish() {
+  const n = run.items.length, ok = run.done.filter(d => d.ok).length, bad = run.done.filter(d => !d.ok);
+  $("#prog").style.width = "100%";
+  $("#view").innerHTML = `<span class="tag">${esc(mod.title)}${run.retry ? " · powtórka błędnych" : ""}</span>
+    <div class="score">${ok}<small> / ${n} · ${Math.round(ok / n * 100)}%</small></div>
+    <p id="save" class="hint">Zapisuję wynik…</p>
+    <div class="row">${bad.length ? `<button class="btn primary" id="again-bad" type="button">Powtórz błędne (${bad.length})</button>` : ""}<button class="btn" id="again" type="button">Cały moduł od nowa</button></div>
+    ${bad.length ? `<h2>Do poprawy</h2><ul class="wrong">${bad.map(d => `<li><span>${fmt(d.q)}</span><span class="you">Ty: ${fmt(d.given)}</span><span class="right">Dobrze: ${fmt(d.correct)}</span></li>`).join("")}</ul>` : `<p>Bez błędów. Możesz iść dalej.</p>`}`;
+  if (bad.length) $("#again-bad").onclick = () => start(bad.map(d => d.id));
+  $("#again").onclick = () => start();
+  const msg = $("#save");
+  if (!db) { msg.textContent = "Wynik nie został zapisany (baza niedostępna w tym widoku)."; return; }
+  try {
+    await db.collection("attempts").add({ module: mod.id, at: new Date().toISOString(), retry: run.retry, score: ok, total: n,
+      answers: run.done.map(d => ({ id: d.id, ok: d.ok, given: String(d.given).slice(0, 300) })) });
+    msg.textContent = "Wynik zapisany. Claude zobaczy, gdzie były błędy.";
+  } catch (e) { msg.textContent = "Nie udało się zapisać wyniku (" + (e && e.code || "błąd") + ")."; }
+  loadHistory();
+}
+
+async function loadHistory() {
+  if (!db || !mod) return;
+  try {
+    const snap = await db.collection("attempts").where("module", "==", mod.id).get();
+    const rows = snap.docs.map(d => d.data()).sort((a, b) => b.at.localeCompare(a.at)).slice(0, 5);
+    const el = $("#hist") || Object.assign(document.createElement("p"), { id: "hist", className: "hist" });
+    el.textContent = rows.length ? "Ostatnie podejścia: " + rows.map(r => `${r.score}/${r.total}`).join(" · ") : "";
+    $("#view").after(el);
+  } catch (e) {}
+}
+
+document.addEventListener("keydown", e => {
+  if (!run || e.target.tagName === "SELECT") return;
+  const it = run.items[run.i];
+  if (e.key === "Enter" && $("#next")) { e.preventDefault(); next(); return; }
+  if (!it || it.answered) return;
+  let k = "1234".indexOf(e.key); if (k < 0) k = "abcd".indexOf(e.key.toLowerCase());
+  if (k >= 0 && k < it.order.length) pick(k);
+});
+
+let mode = "quiz";
+function setMode(m) {
+  mode = m;
+  $("#m-learn").setAttribute("aria-pressed", m === "learn");
+  $("#m-quiz").setAttribute("aria-pressed", m === "quiz");
+  document.querySelector(".meta").hidden = document.querySelector(".bar").hidden = m === "learn";
+  if (m === "learn") learn(); else start();
+}
+
+function learn() {
+  run = null;
+  const groups = [];
+  mod.questions.forEach(q => {
+    let g = groups.find(x => x.topic === q.topic);
+    if (!g) groups.push(g = { topic: q.topic, qs: [] });
+    g.qs.push(q);
+  });
+  $("#view").innerHTML = `<div class="learn"><p class="hint">Każde pytanie z modułu „${esc(mod.title)}” z poprawną odpowiedzią. Przeczytaj, potem przełącz na Quiz.</p>` +
+    groups.map(g => `<section><h2>${esc(g.topic)}</h2>` + g.qs.map(q =>
+      `<div class="fact"><span>${fmt(q.q)}</span><span class="ans">${fmt(q.options[q.answer])}</span>${q.explain ? `<span class="why">${fmt(q.explain)}</span>` : ""}</div>`).join("") + `</section>`).join("") +
+    `</div>`;
+}
+
+$("#m-learn").onclick = () => setMode("learn");
+$("#m-quiz").onclick = () => setMode("quiz");
+$("#mod").addEventListener("change", e => { mod = data.modules.find(m => m.id === e.target.value); try { localStorage.setItem("bdq-mod", mod.id); } catch (x) {} setMode(mode); loadHistory(); });
+
+(async () => {
+  try {
+    data = await (await fetch("quiz.json", { cache: "no-store" })).json();
+  } catch (e) { $("#view").innerHTML = `<p class="empty">Nie udało się wczytać pytań.</p>`; return; }
+  let saved = null; try { saved = localStorage.getItem("bdq-mod"); } catch (x) {}
+  $("#mod").innerHTML = data.modules.map(m => `<option value="${m.id}">${esc(m.title)} (${m.questions.length})</option>`).join("");
+  mod = data.modules.find(m => m.id === saved) || data.modules[data.modules.length - 1];
+  $("#mod").value = mod.id;
+  start();
+  if (window.claude && window.claude.use) { db = await window.claude.use("db"); loadHistory(); }
+})();
+</script>
