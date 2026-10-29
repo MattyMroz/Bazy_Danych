@@ -1,0 +1,233 @@
+Big Data. Wersja do słuchania.
+
+Ten tekst zawiera tylko to, co może się pojawić na teście. Dziewięć rozdziałów: Big Data, Hadoop, HDFS, komendy HDFS, Hive, składnia HiveQL, uczenie maszynowe w Sparku, systemy rekomendacyjne oraz Kafka ze Spark Streaming. Na końcu jest lista najczęstszych pułapek.
+
+
+Rozdział pierwszy. Czym jest Big Data.
+
+Big Data to nie jest po prostu duża baza danych. To strategia i zestaw technik oraz technologii do przetwarzania danych, które są duże, zmienne i różnorodne, a ich analiza jest trudna, ale wartościowa, bo daje nową wiedzę. Sam prowadzący mówi, że nazwa jest trochę myląca, bo nie ma granicy, od której dane stają się duże. To zależy od tego, jakie to dane i jak je przetwarzamy.
+
+Najważniejszy model to trzy V. Opublikowała go firma META Group w roku dwa tysiące pierwszym, a autorem jest analityk Doug Laney. Trzy V to: Volume, czyli ilość danych. Velocity, czyli szybkość, z jaką dane powstają i płyną. Variety, czyli różnorodność źródeł i rodzajów danych. Model czterech V dodaje Value, czyli wartość: czy danym można ufać i czy dają realny zysk. Na slajdzie pojawiają się jeszcze Validity, czyli poprawność, i Visualization, ale rdzeń to trzy V.
+
+Dane dzielimy na trzy typy. Ustrukturyzowane, czyli tabele relacyjne o stałym schemacie. Półustrukturyzowane, czyli XML i JSON. I nieustrukturyzowane: dokumenty Word, PDF, zwykły tekst, logi, zdjęcia i filmy. Zapamiętaj liczbę: około osiemdziesięciu procent danych na świecie nie ma jasno określonej struktury.
+
+Jest też podział na dane w ruchu i dane w spoczynku. Dane w ruchu to strumienie: Twitter, Facebook, notowania giełdowe, odczyty czujników. Dane w spoczynku to to, co już zgromadzono: logi serwerów, e-maile, dokumenty, dane z różnych systemów.
+
+Dlaczego zbieramy tak dużo danych? Bo przechowywanie stale tanieje. Światowe Forum Ekonomiczne w roku dwa tysiące jedenastym uznało, że dane są dziś tym, czym ropa naftowa była w dziewiętnastym wieku. Według Gartnera tylko dziesięć do piętnastu procent firm w pełni wykorzystuje Big Data, a te, którym się udaje, zyskują około dwudziestu procent przewagi nad konkurencją.
+
+
+Rozdział drugi. Hadoop.
+
+Hadoop to platforma do przechowywania i przetwarzania wszystkich rodzajów danych na wielu komputerach jednocześnie. Najprostsze porównanie: jedna osoba czyta tysiąc książek przez rok, a tysiąc osób, każda z jedną książką, robi to w kilka dni. Hadoop dzieli pracę dokładnie w ten sposób.
+
+Fakty do zapamiętania. Hadoop jest open source i rozwija go fundacja Apache. Jest napisany głównie w Javie. Stworzył go Doug Cutting. Pojedynczy węzeł to zwykły komputer, czyli procesor plus dyski. Węzły łączy się w klaster, a nowe węzły można dokładać bez zmiany formatu danych, danych w klastrze ani napisanych zadań. W jednej szafie, czyli w racku, mieści się do czterdziestu węzłów. Klaster to zbiór racków. Hadoop skaluje się do około sześciu tysięcy węzłów i około pięciuset petabajtów danych na klaster.
+
+Teraz bardzo ważne: do czego Hadoop się nie nadaje. Nie nadaje się do przetwarzania transakcyjnego, na przykład przelewów bankowych. Nie nadaje się do pracy, której nie da się zrównoleglić. Nie nadaje się do dostępu do danych z małym opóźnieniem. Nie nadaje się do przetwarzania wielu małych plików. I nie nadaje się do intensywnych obliczeń na małej ilości danych.
+
+Czy Hadoop to hurtownia danych? Odpowiedź z wykładu brzmi: nie. To rozproszony system przetwarzania plików. Porównanie z relacyjną bazą danych wygląda tak. W relacyjnej bazie schemat trzeba zdefiniować przed zapisem danych, odczyty są szybkie, a baza służy do transakcji. W Hadoopie schemat stosuje się dopiero przy odczycie, zapisy są szybkie, przyjmuje się dowolne formy danych, a całość służy do masowego przetwarzania.
+
+Architektura. Rdzeń Hadoopa to dwa elementy. Pierwszy to HDFS, czyli rozproszony system plików, w którym leżą dane. Drugi to silnik MapReduce, a od drugiej wersji Hadoopa YARN. YARN to skrót od Yet Another Resource Negotiator. Zarządza zasobami klastra i dzięki niemu na jednym klastrze mogą współpracować różne narzędzia.
+
+Ekosystem Hadoopa. Spark przetwarza dane w pamięci operacyjnej. Hive daje język podobny do SQL, czyli HiveQL. Pig to skrypty przepływu danych w języku Pig Latin. HBase to baza NoSQL. Storm przetwarza strumienie. Solr służy do wyszukiwania pełnotekstowego. Flume zbiera logi i przesyła je do HDFS. Oozie planuje zadania i łączy je w przepływy pracy. Ambari instaluje, zarządza i monitoruje klaster. HCatalog przechowuje metadane i informacje o tabelach.
+
+
+Rozdział trzeci. HDFS, czyli rozproszony system plików.
+
+W HDFS są dwie role. NameNode to spis treści. Zarządza metadanymi klastra, wie, na którym węźle leży każdy blok pliku, pilnuje liczby kopii i trzyma obraz całej przestrzeni nazw w pamięci RAM. DataNode to półka z danymi. Takich węzłów jest wiele, przechowują i przetwarzają dane, a co jakiś czas raportują swój stan do NameNode.
+
+Bloki. Każdy plik jest cięty na bloki. Domyślny rozmiar bloku to sto dwadzieścia osiem megabajtów. W starszych wersjach było sześćdziesiąt cztery megabajty, a zalecane jest dwieście pięćdziesiąt sześć. Dla porównania zwykły blok w systemie UNIX ma cztery kilobajty. Duże bloki oznaczają mniej czasu na szukanie danych na dysku i więcej czasu na czytanie z pełną prędkością. Dlatego Hadoop najlepiej działa na bardzo dużych plikach. Przykład: plik o rozmiarze trzystu megabajtów da trzy bloki, dwa pełne po sto dwadzieścia osiem i jeden mniejszy.
+
+Replikacja. Każdy blok jest kopiowany na kilka węzłów, domyślnie trzy razy, żeby awaria jednego węzła nie oznaczała utraty danych. Rozmieszczenie kopii trzeba znać dokładnie. Pierwsza kopia trafia na węzeł w jednym racku. Druga kopia trafia na losowy węzeł w innym racku, żeby przetrwać awarię całej szafy. Trzecia kopia trafia na inny węzeł w tym samym racku co druga.
+
+Zapis pliku. Klient wysyła do NameNode żądanie utworzenia pliku. NameNode sprawdza, czy taki plik już istnieje i czy klient ma uprawnienia do zapisu, a potem wskazuje, na którym DataNode zapisać pierwszy blok. Potwierdzenia zapisu wracają łańcuchem: od trzeciego węzła do drugiego, od drugiego do pierwszego, a od pierwszego do NameNode. NameNode sprawdza jeszcze, czy wszystkie bloki są poprawnie zreplikowane, i dopiero wtedy odpowiada klientowi. Proces powtarza się dla każdego bloku.
+
+Odczyt pliku. Klient pobiera metadane z NameNode, a same dane czyta bezpośrednio z DataNode'ów. NameNode tylko mówi, gdzie są bloki, ale danych nie przesyła.
+
+
+Rozdział czwarty. Komendy HDFS.
+
+Każda komenda zaczyna się od hadoop fs albo od hdfs dfs. Obie wersje działają tak samo. Potem jest opcja zaczynająca się od myślnika, jak w Linuksie, a na końcu ścieżka.
+
+Myślnik ls wyświetla zawartość katalogu. Na przykład hdfs dfs myślnik ls ukośnik, czyli zawartość katalogu głównego.
+
+Myślnik mkdir tworzy katalog. Z opcją myślnik p tworzy też brakujące katalogi nadrzędne.
+
+Myślnik put kopiuje plik z dysku lokalnego do HDFS. To samo robi myślnik copyFromLocal.
+
+Myślnik get kopiuje plik z HDFS na dysk lokalny. To samo robi myślnik copyToLocal. Zapamiętaj: put wrzuca do HDFS, get ściąga z HDFS.
+
+Myślnik cp kopiuje plik wewnątrz HDFS, z jednego katalogu HDFS do drugiego.
+
+Myślnik cat wypisuje zawartość pliku. Żeby zobaczyć tylko dziesięć pierwszych linii, przekazuje się wynik do linuksowego polecenia head z opcją myślnik n dziesięć.
+
+Myślnik getmerge zbiera wiele plików z katalogu w HDFS i skleja je w jeden plik na dysku lokalnym.
+
+Myślnik setrep zmienia liczbę kopii pliku. Najpierw podaje się liczbę kopii, potem ścieżkę. Opcja myślnik duże R zmienia replikację dla całego drzewa katalogów, a opcja myślnik w każe poleceniu czekać, aż nowa replikacja się zakończy.
+
+Myślnik rm usuwa plik, a myślnik rm myślnik r usuwa katalog razem z zawartością.
+
+Myślnik du pokazuje rozmiar danych. Opcja myślnik s daje jedną sumę zamiast listy plików, a myślnik h pokazuje czytelne jednostki, czyli kilobajty i megabajty.
+
+Kolejność argumentów jest zawsze taka sama: najpierw skąd, potem dokąd.
+
+HDFS nie jest w pełni zgodny ze standardem POSIX, ale obsługuje większość znanych poleceń systemu UNIX, na przykład cat, chmod, ls, mkdir i rm. Ścieżki można podawać jako adresy URI. Schemat file oznacza lokalny system plików, a schemat hdfs oznacza HDFS.
+
+
+Rozdział piąty. Hive.
+
+Hive zamienia Hadoopa w coś w rodzaju hurtowni danych. Pozwala opisać strukturę danych i odpytywać je językiem HiveQL, który przypomina SQL. Hive stworzył Facebook. Pig powstał w Yahoo w roku dwa tysiące szóstym.
+
+Różnica między nimi jest często pytana. HiveQL jest językiem deklaratywnym: opisujesz, jaki wynik chcesz dostać, a Hive sam ustala, jak go policzyć. Pig Latin to język przepływu danych: sam budujesz kolejne kroki przetwarzania. Motto Piga brzmi: świnie jedzą wszystko, czyli Pig przyjmuje każdy format danych. HiveQL nie jest językiem kompletnym w sensie Turinga. Rozszerza się go funkcjami użytkownika: UDF to zwykłe funkcje skalarne, UDAF to funkcje agregujące, a UDTF to funkcje zwracające tabelę.
+
+Hive nie jest relacyjną bazą danych, nie służy do transakcji i nie nadaje się do zapytań w czasie rzeczywistym. Jest do zadań wsadowych na dużych danych, na przykład logach. Każde zapytanie Hive zamienia na zadania MapReduce albo na graf zadań w silniku Tez.
+
+Metastore to miejsce, gdzie Hive przechowuje metadane, czyli schematy tabel. Zwykle jest to relacyjna baza danych, domyślnie Apache Derby. Metastore ma trzy konfiguracje. Embedded: metastore działa w tym samym procesie co Hive. Local: kod metastore działa w procesie Hive, ale baza jest w osobnym procesie. Remote: sam metastore jest poza procesem, co pozwala współdzielić go z innymi użytkownikami.
+
+Z Hive można pracować przez interfejsy JDBC i ODBC, przez interfejs WWW, przez stary Hive CLI i przez nowy Beeline. Polecenie hive bez argumentów uruchamia interaktywną powłokę. Hive z opcją myślnik f uruchamia skrypt z pliku. Hive z opcją myślnik e wykonuje jedno zapytanie podane w cudzysłowie.
+
+Schema-on-Read, czyli schemat przy odczycie. W zwykłej bazie schemat sprawdza się w momencie ładowania danych. Hive odkłada to do momentu odczytu. Zaleta: ładowanie jest szybkie, a dla tych samych danych można mieć wiele schematów. Wada: zapytania są wolniejsze. Wiersz, który nie pasuje do schematu, jest odczytywany jako NULL.
+
+Czego HiveQL według wykładu nie ma: UPDATE i DELETE, transakcji, indeksów, skorelowanych podzapytań, widoków zmaterializowanych i procedur składowanych. Ma za to INSERT OVERWRITE TABLE i wstawianie do wielu tabel naraz. Najbardziej przypomina dialekt MySQL. Słowa kluczowe i nazwy funkcji nie rozróżniają wielkości liter.
+
+Tabele. Tabela wewnętrzna, zwana też zarządzaną, to taka, której pliki Hive przenosi do swojego katalogu. Po poleceniu DROP znikają i dane, i metadane. Tabela zewnętrzna to tylko opis danych, które leżą gdzie indziej. Po poleceniu DROP znikają tylko metadane, a dane zostają na miejscu.
+
+Formaty przechowywania. Domyślny format to TEXTFILE, czyli zwykły tekst. Są też SEQUENCEFILE, RCFILE, PARQUET, ORC, AVRO i od Hive w wersji czwartej JSONFILE. Najważniejszy jest ORC, czyli Optimized Row Columnar. To format kolumnowy. Dzieli plik na paski, domyślnie po dwieście pięćdziesiąt megabajtów. Daje jeden plik na zadanie, co odciąża NameNode. Ma lekkie indeksy, pozwala pominąć grupy wierszy niespełniające warunku, kompresuje dane i obsługuje transakcje ACID.
+
+Silnik Tez buduje skierowany graf acykliczny zadań, w skrócie DAG. Według wykładu działa około dziesięć razy szybciej niż klasyczny MapReduce. Silnik wybiera się parametrem hive kropka execution kropka engine, z wartością tez albo mr.
+
+
+Rozdział szósty. Składnia HiveQL.
+
+Tworzenie tabeli z pliku tekstowego, w którym pola są rozdzielone przecinkiem, wygląda tak: CREATE TABLE, nazwa tabeli, w nawiasie kolumny z typami, a potem ROW FORMAT DELIMITED FIELDS TERMINATED BY, przecinek w apostrofach, STORED AS TEXTFILE i średnik. Każda instrukcja HiveQL kończy się średnikiem. Tabelę w formacie ORC tworzy się, pisząc na końcu STORED AS ORC.
+
+Ładowanie danych. LOAD DATA LOCAL INPATH, ścieżka, INTO TABLE, nazwa tabeli. Słowo LOCAL oznacza, że plik jest na dysku lokalnym. Bez słowa LOCAL plik jest brany z HDFS. Jeśli dopiszesz OVERWRITE, czyli LOAD DATA INPATH ścieżka OVERWRITE INTO TABLE, stare dane zostaną zastąpione. Bez OVERWRITE nowe dane są dopisywane. Hive nie zmienia ładowanych plików.
+
+Zapisywanie wyników. INSERT OVERWRITE TABLE nazwa tabeli SELECT i tak dalej zastępuje dane w tabeli wynikiem zapytania. INSERT OVERWRITE DIRECTORY zapisuje wynik do katalogu w HDFS. INSERT OVERWRITE LOCAL DIRECTORY zapisuje wynik na dysk lokalny.
+
+Partycjonowanie dzieli dane według wartości kolumny i może przyspieszyć zapytania. Przy tworzeniu tabeli używa się klauzuli PARTITIONED BY z nazwą kolumny. Na slajdzie jest napisane PARTITION BY, ale poprawna składnia to PARTITIONED BY. Przy ładowaniu danych podaje się PARTITION i wartość, do której partycji trafiają dane. Partycję usuwa się poleceniem ALTER TABLE nazwa tabeli DROP PARTITION.
+
+Zarządzanie tabelami. SHOW TABLES wyświetla tabele. DESCRIBE nazwa tabeli pokazuje kolumny. ALTER TABLE nazwa RENAME TO nowa nazwa zmienia nazwę. ALTER TABLE nazwa ADD COLUMNS dodaje kolumny. SHOW FUNCTIONS wyświetla wszystkie funkcje, a DESCRIBE FUNCTION nazwa funkcji opisuje jedną z nich.
+
+Podzapytania. Według wykładu w Hive mogą występować tylko w klauzuli FROM i muszą mieć nazwę, czyli alias. Na przykład SELECT total FROM, w nawiasie podzapytanie, a za nawiasem nazwa tego podzapytania.
+
+Warunek WHERE Hive wykonuje jako operację map. LIMIT zwraca losowe wiersze, a nie pierwsze.
+
+Sortowanie. ORDER BY sortuje globalnie i używa jednego reducera. SORT BY używa wielu reducerów i każdy z nich daje osobno posortowany plik, więc całość nie jest posortowana globalnie.
+
+Złączenia. INNER JOIN zwraca część wspólną dwóch tabel. LEFT OUTER JOIN zwraca wszystkie wiersze z pierwszej tabeli. RIGHT OUTER JOIN zwraca wszystkie wiersze z drugiej tabeli. FULL OUTER JOIN zwraca wszystkie wiersze z obu tabel.
+
+LATERAL VIEW explode. W przykładzie z gatunkami filmów oglądanymi przez kobiety i mężczyzn każdy gatunek był osobną kolumną. Konstrukcja LATERAL VIEW explode z funkcją map zamienia te kolumny na wiersze w postaci klucz i wartość. Potem można je łatwo posortować i wybrać największą wartość. Wynik: zarówno kobiety, jak i mężczyźni najczęściej oglądali dramaty.
+
+Funkcje dat. Funkcja unix_timestamp zamienia datę na liczbę sekund od początku epoki Unix, czyli od pierwszego stycznia tysiąc dziewięćset siedemdziesiątego roku. Przy błędzie zwraca zero. Funkcja from_unixtime działa odwrotnie: zamienia liczbę sekund na datę w formacie rok, miesiąc, dzień, godzina, minuta, sekunda. Funkcja to_date zwraca samą datę bez godziny. Funkcje date_add i date_sub dodają i odejmują dni. Funkcja datediff zwraca różnicę w dniach między dwiema datami. Funkcje current_date i current_timestamp zwracają bieżącą datę i czas. Funkcje from_utc_timestamp i to_utc_timestamp przeliczają strefy czasowe.
+
+Typy danych. Liczby całkowite: TINYINT ma jeden bajt, SMALLINT dwa bajty, INT cztery bajty, BIGINT osiem bajtów. Są też BOOLEAN, FLOAT, DOUBLE, DECIMAL, STRING, VARCHAR, CHAR, TIMESTAMP, DATE i BINARY. Typy złożone są trzy. STRUCT: do pola dostajesz się przez kropkę. MAP: do wartości dostajesz się przez nazwę klucza w nawiasie kwadratowym. ARRAY: elementy muszą być tego samego typu, a indeksy liczy się od zera. Czyli w tablicy z elementami a, b, c element o indeksie jeden to b. Niejawna konwersja typów działa od potomka do przodka w hierarchii typów, a hierarchia pozwala na przykład zamienić STRING na DOUBLE.
+
+
+Rozdział siódmy. Uczenie maszynowe w Sparku, czyli MLlib.
+
+MLlib to biblioteka uczenia maszynowego w Apache Spark. Jest mniej rozbudowana niż PyTorch, TensorFlow czy Scikit-learn. Jej zaletą jest praca na klastrze z dużymi danymi. Oferuje algorytmy klasyfikacji, regresji, klasteryzacji i filtrowania, narzędzia do przygotowania cech, pipeline'y, zapis i odczyt modeli oraz algebrę liniową i statystykę.
+
+Zalecane jest API oparte na DataFrame zamiast na RDD. DataFrame jest wygodniejszy, daje zapytania SQL, optymalizator Catalyst, jednolity interfejs w różnych językach i łatwiejsze budowanie pipeline'ów. API oparte na RDD jest w trybie utrzymania, ale nie jest oznaczone jako przestarzałe.
+
+Cztery pojęcia, które trzeba znać. Estimator to algorytm, który uczy się z danych. Ma metodę fit, której podajesz DataFrame, a ona zwraca wytrenowany model, czyli Transformer. Transformer zamienia jeden DataFrame w drugi. Ma metodę transform, która na przykład dodaje kolumnę z przewidywaniami. Evaluator liczy metryki jakości na podstawie przewidywań. Pipeline to szeregowe połączenie kolejnych etapów w jeden przepływ. Sam Pipeline też jest estymatorem i kolejność jego etapów ma znaczenie.
+
+Przykład z wykładu to rozpoznawanie liter. Zbiór Letter Recognition ma dwadzieścia tysięcy rekordów, dwadzieścia sześć liter od A do Z i szesnaście cech liczbowych w zakresie od zera do piętnastu. Litery pochodzą z dwudziestu różnych czcionek. W zbiorze nie ma brakujących wartości.
+
+Kroki budowy modelu. Najpierw tworzy się sesję Sparka i wczytuje plik CSV. Bez nagłówka ustawia się header na false, a inferSchema na true, żeby Spark sam rozpoznał typy kolumn. Potem dzieli się dane na zbiór treningowy i testowy metodą randomSplit, na przykład w proporcji siedemdziesiąt do trzydziestu. Liczba czterdzieści dwa w tym wywołaniu to ziarno losowania, czyli seed, dzięki któremu podział jest powtarzalny.
+
+Następnie StringIndexer zamienia litery na liczby, bo model operuje na macierzach i potrzebuje liczb. StringIndexer jest estymatorem. Potem VectorAssembler składa wszystkie cechy w jeden wektor. VectorAssembler jest transformerem, bo niczego nie musi się uczyć z danych. Potem StandardScaler skaluje dane, używając średniej i odchylenia standardowego, żeby zakresy wartości były podobne. StandardScaler jest estymatorem, bo musi najpierw policzyć średnią i odchylenie.
+
+Model to RandomForestClassifier, czyli las losowy złożony z wielu drzew decyzyjnych. Obsługuje etykiety binarne i wieloklasowe. W przykładzie ustawiono maksymalną głębokość drzewa na osiem, minimalną liczbę przykładów w węźle na pięć i seed na czterdzieści dwa. Domyślnie las ma dwadzieścia drzew i maksymalną głębokość pięć. Parametr numTrees to liczba drzew, a maxDepth to głębokość. Dla porównania GBTClassifier obsługuje tylko etykiety binarne.
+
+Ocena modelu. Accuracy, czyli dokładność, to liczba poprawnych przewidywań podzielona przez liczbę wszystkich przykładów. Precision, czyli precyzja, to prawdziwie pozytywne podzielone przez wszystkie przewidziane jako pozytywne. Recall, czyli czułość, to prawdziwie pozytywne podzielone przez wszystkie faktycznie pozytywne. F1 to średnia harmoniczna precyzji i czułości. W Sparku liczy to MulticlassClassificationEvaluator z parametrem metricName ustawionym na accuracy, weightedPrecision, weightedRecall albo weightedFMeasure. W przykładzie dokładność na zbiorze treningowym wyniosła około siedemdziesięciu dziewięciu procent, a na testowym około siedemdziesięciu sześciu, czyli kilka procent mniej.
+
+Macierz pomyłek pokazuje, ile razy model pomylił jedną klasę z inną. Jest potrzebna, bo sama dokładność może oszukiwać. Przykład ze spamem: jeśli dziewięćdziesiąt pięć procent maili to nie spam, model, który zawsze mówi, że to nie spam, ma dziewięćdziesiąt pięć procent dokładności, a nie wykrywa żadnego spamu. W przykładzie z literami najtrudniejsza była litera H, często mylona z X, a najważniejszą cechą okazała się x_ege, czyli liczba krawędzi w poziomie.
+
+Strojenie hiperparametrów. Hiperparametry ustawia się przed treningiem, na przykład liczbę drzew czy maksymalną głębokość. Grid Search sprawdza wszystkie kombinacje. Trzy wartości liczby drzew i trzy wartości głębokości dają dziewięć konfiguracji. Random Search losuje tylko część kombinacji, co jest szybsze przy dużej przestrzeni. W Sparku siatkę buduje się klasą ParamGridBuilder. CrossValidator robi walidację krzyżową k-krotną. Przy k równym trzy powstają trzy pary zbiorów treningowego i testowego, każda używa dwóch trzecich danych do treningu i jednej trzeciej do testu, a każda część jest zbiorem testowym dokładnie raz. Druga możliwość to TrainValidationSplit, który dzieli dane tylko raz.
+
+
+Rozdział ósmy. Systemy rekomendacyjne.
+
+Czterdzieści procent instalacji aplikacji w Google Play i sześćdziesiąt procent czasu oglądania na YouTube pochodzi z rekomendacji. System rekomendacyjny to rodzaj systemu filtrowania informacji. Przewiduje, jak użytkownik oceniłby dany element. Odpowiada na problem nadmiaru informacji: opcji jest tak dużo, że użytkownik sam nie jest w stanie wybrać.
+
+Terminologia. Item, czyli element, to to, co polecamy: aplikacja, film, produkt. Query, czyli kontekst, to informacje, na podstawie których system poleca: identyfikator użytkownika, jego historia, pora dnia, urządzenie. Embedding, czyli osadzenie, to zamiana elementów i zapytań na wektory liczb w jednej wspólnej przestrzeni.
+
+Trzy podejścia. Filtrowanie demograficzne poleca te same popularne filmy wszystkim podobnym demograficznie użytkownikom. Filtrowanie oparte na treści poleca elementy podobne do tych, które użytkownik już lubi, korzystając z metadanych, takich jak gatunek, reżyser czy aktorzy. Filtrowanie kolaboracyjne korzysta jednocześnie z podobieństwa między użytkownikami i między elementami i nie potrzebuje metadanych. Klasyczny przykład: jeśli użytkownik A jest podobny do użytkownika B, a B lubi film pierwszy, system poleci ten film użytkownikowi A, nawet jeśli A nie widział niczego podobnego.
+
+Ważona ocena. Sama średnia ocen nie wystarcza, bo film ze średnią osiem i dziewięć dziesiątych przy trzech głosach nie jest lepszy niż film ze średnią siedem i osiem dziesiątych przy czterdziestu głosach. Dlatego używa się średniej ważonej, w której v to liczba głosów na film, m to minimalna liczba głosów wymagana do zestawienia, R to średnia ocena filmu, a C to średnia ocena w całym zestawieniu.
+
+Typowa architektura ma trzy etapy. Pierwszy to generowanie kandydatów: z ogromnego zbioru, na przykład miliardów filmów, system wybiera setki lub tysiące. Drugi to ocena, czyli scoring: dokładniejszy model ocenia kandydatów i wybiera około dziesięciu. Trzeci to ponowne szeregowanie, czyli re-ranking: system usuwa to, czego użytkownik nie lubi, promuje świeże treści i dba o różnorodność i sprawiedliwość.
+
+Miary podobieństwa są trzy: cosinus kąta między wektorami, iloczyn skalarny i odległość euklidesowa. Przy odległości euklidesowej mniejsza odległość oznacza większe podobieństwo. Gdy wektory są znormalizowane, iloczyn skalarny i cosinus dają to samo.
+
+Faktoryzacja macierzy. Mamy macierz, w której wiersze to użytkownicy, a kolumny to filmy. Rozkładamy ją na iloczyn dwóch mniejszych macierzy: macierzy użytkowników i macierzy filmów. Ocena użytkownika dla filmu to iloczyn skalarny ich wektorów. Feedback może być jawny, gdy użytkownik wystawia ocenę, albo niejawny, gdy system wnioskuje z tego, że użytkownik obejrzał film. Zwykły rozkład SVD słabo się sprawdza, bo macierz jest bardzo rzadka. Ważona faktoryzacja macierzy liczy osobno sumę dla wpisów obserwowanych i nieobserwowanych, a ważny hiperparametr w zero ustala proporcję między nimi.
+
+Funkcję celu minimalizuje się dwoma algorytmami. SGD, czyli stochastyczny spadek gradientu, jest elastyczny, obsługuje różne funkcje straty i da się go zrównoleglić, ale wolniej zbiega i gorzej radzi sobie z nieobserwowanymi wpisami. WALS, czyli ważone naprzemienne najmniejsze kwadraty, też da się zrównoleglić, zbiega szybciej i łatwiej obsługuje nieobserwowane wpisy, ale działa tylko z kwadratową funkcją straty. WALS na zmianę ustala jedną macierz i liczy drugą.
+
+W Sparku służy do tego algorytm ALS z pakietu pyspark kropka ml kropka recommendation. Dane to MovieLens w małej wersji: sto tysięcy ocen, około dziewięciu tysięcy filmów i sześciuset użytkowników, z których każdy ocenił co najmniej dwadzieścia filmów. Oceny są w skali od zera do pięciu co pół punktu. Dane dzieli się w proporcji osiemdziesiąt do dwudziestu z seedem czterdzieści dwa. W ALS ustawia się kolumny userId, movieId i rating, liczbę iteracji maxIter równą pięć, parametr regularyzacji regParam równy zero przecinek zero jeden oraz coldStartStrategy równe drop. Ten ostatni parametr usuwa wiersze z pustymi przewidywaniami dla nowych użytkowników i filmów, żeby dało się policzyć metrykę. Model ocenia się klasą RegressionEvaluator z metryką RMSE, czyli pierwiastkiem z błędu średniokwadratowego. Wynik w przykładzie to około jeden przecinek zero osiem. Metoda recommendForAllUsers z liczbą trzy zwraca trzy filmy dla każdego użytkownika, a recommendForAllItems z liczbą trzy zwraca trzech użytkowników dla każdego filmu.
+
+
+Rozdział dziewiąty. Kafka i Spark Streaming.
+
+Przetwarzanie strumieni polega na tym, że dane ze źródeł, takich jak logi czy czujniki, są przetwarzane na bieżąco, w czasie rzeczywistym. Do przesyłania takich danych służy Apache Kafka.
+
+Kafka działa w modelu publikuj i subskrybuj. Producent publikuje wiadomości do tematu, czyli topicu, za pośrednictwem brokera. Konsument subskrybuje topic i odbiera wiadomości. Producent nie musi nic wiedzieć o konsumencie. Kafka powstała w LinkedIn, jest napisana w Scali, rozwija ją fundacja Apache, a open source jest od początku roku dwa tysiące jedenastego.
+
+Pojęcia. Topic to szyna danych, która grupuje wiadomości jednego rodzaju. Topic może być podzielony na partycje. Partycja to sekwencja danych, do której nowe wiadomości dopisuje się na końcu. Partycje zwiększają przepustowość, bo trzy partycje na trzech brokerach dają teoretycznie trzy razy większą przepustowość. Broker to instancja systemu kolejkowego, czyli serwer Kafki. Offset zapamiętuje, który rekord został odczytany ostatni, dzięki czemu po awarii konsument wie, od którego miejsca czytać dalej. Każda partycja ma jednego lidera, przez którego idą wszystkie zapisy i odczyty, a pozostałe brokery trzymają kopie. Gdy lider padnie, jego rolę przejmuje broker z kopią.
+
+Zookeeper zarządza brokerami i dba o kolejność wiadomości. Przechowuje tylko metadane: listę topiców, brokerów i konsumentów. Samych wiadomości nie przechowuje. Zwykle działa na trzech węzłach.
+
+Spark Streaming. Starsze API opiera się na DStreamach. DStream to sekwencja RDD, z których każde zawiera dane z jednego przedziału czasu, na przykład z jednej sekundy. Nowsze API to Structured Streaming, oparte na Spark SQL i mikro-paczkach, czyli micro-batch. Zamiast read pisze się readStream, a zamiast write pisze się writeStream.
+
+Tryby wyjścia są trzy. Append zapisuje tylko nowe wiersze. Update zapisuje tylko wiersze, które się zmieniły. Complete zapisuje za każdym razem całą tabelę wyników.
+
+Czas zdarzenia to moment zapisany w samych danych, czyli kiedy zdarzenie naprawdę nastąpiło. Czas przetwarzania to moment, w którym Spark je przetworzył. Różnią się, bo dane mogą się spóźniać w sieci. Watermark określa, jak bardzo zdarzenie może się spóźnić, żeby jeszcze zostało uwzględnione w obliczeniach. Ogranicza też ilość pamięci potrzebnej na przechowywanie stanu.
+
+Okna czasowe są trzy. Okno przesuwne, czyli sliding, jest dłuższe niż przesunięcie, więc okna się na siebie nakładają, na przykład okno trzydzieści sekund przesuwane co dwadzieścia sekund. Okno stałe, czyli tumbling, ma długość równą przesunięciu, więc okna się nie nakładają, na przykład trzydzieści sekund co trzydzieści sekund. Okno sesyjne trwa tak długo, jak trwa aktywność, i zamyka się po przerwie bez zdarzeń.
+
+Połączenie Sparka z Kafką wygląda tak: spark kropka readStream, format kafka, opcja kafka kropka bootstrap kropka servers z adresem serwera, opcja subscribe z nazwą topicu, i na końcu load. Wynik wypisuje się przez writeStream z trybem wyjścia append, formatem console i metodą start. Domyślny adres serwera Kafki to localhost, port dziewięć tysięcy dziewięćdziesiąt dwa.
+
+
+Najczęstsze pułapki. Powtórka na koniec.
+
+Pierwsza. Put wrzuca plik do HDFS, get ściąga go z HDFS. Put to to samo co copyFromLocal, a get to to samo co copyToLocal.
+
+Druga. Domyślny blok HDFS ma sto dwadzieścia osiem megabajtów, a nie sześćdziesiąt cztery.
+
+Trzecia. Druga kopia bloku trafia do innego racka, a trzecia do tego samego racka co druga.
+
+Czwarta. NameNode trzyma metadane w RAM-ie. Dane leżą na DataNode'ach i stamtąd są czytane.
+
+Piąta. Hadoop nie nadaje się do transakcji, małych plików ani zadań wymagających małego opóźnienia. I nie jest hurtownią danych.
+
+Szósta. Hive stworzył Facebook, Pig stworzył Yahoo. HiveQL jest deklaratywny, Pig Latin opisuje przepływ danych.
+
+Siódma. Schema-on-Read daje szybkie ładowanie i wolniejsze zapytania.
+
+Ósma. DROP na tabeli zewnętrznej usuwa tylko metadane. DROP na tabeli wewnętrznej usuwa dane i metadane.
+
+Dziewiąta. LOCAL INPATH oznacza dysk lokalny, samo INPATH oznacza HDFS. Bez OVERWRITE dane są dopisywane.
+
+Dziesiąta. ORDER BY to jeden reducer i sortowanie globalne, SORT BY to wiele reducerów.
+
+Jedenasta. Podzapytania w Hive tylko w klauzuli FROM i zawsze z nazwą.
+
+Dwunasta. Indeksy tablic w Hive zaczynają się od zera.
+
+Trzynasta. Estimator ma metodę fit i zwraca Transformer. Transformer ma metodę transform i zwraca nowy DataFrame. VectorAssembler jest transformerem, a StringIndexer i StandardScaler są estymatorami.
+
+Czternasta. Liczba czterdzieści dwa w randomSplit i w modelach to seed, czyli ziarno losowania.
+
+Piętnasta. Precyzja to prawdziwie pozytywne przez wszystkie przewidziane pozytywne. Czułość to prawdziwie pozytywne przez wszystkie faktycznie pozytywne.
+
+Szesnasta. Filtrowanie kolaboracyjne nie potrzebuje metadanych. Filtrowanie oparte na treści ich potrzebuje.
+
+Siedemnasta. W ważonej ocenie filmu C to średnia ocena w całym zestawieniu, a nie średnia liczba głosów.
+
+Osiemnasta. Parametr coldStartStrategy równy drop usuwa puste przewidywania, żeby dało się policzyć RMSE.
+
+Dziewiętnasta. Zookeeper przechowuje tylko metadane, nie wiadomości. Offset mówi, skąd czytać dalej.
+
+Dwudziesta. Tryb complete zapisuje całą tabelę wyników. Okno tumbling się nie nakłada, a okno sliding się nakłada.
+
+Koniec.

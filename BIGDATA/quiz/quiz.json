@@ -1,0 +1,3306 @@
+{
+ "modules": [
+  {
+   "id": "m1",
+   "title": "Moduł 1: Big Data, Hadoop, HDFS",
+   "questions": [
+    {
+     "id": "m1-01",
+     "topic": "Big Data",
+     "q": "Co obejmuje model 3V (META Group, 2001)?",
+     "options": [
+      "Volume, Velocity, Variety",
+      "Volume, Value, Validity",
+      "Velocity, Visualization, Value",
+      "Variety, Validity, Volume"
+     ],
+     "answer": 0,
+     "explain": "3V = ilość (Volume), szybkość (Velocity), różnorodność (Variety)."
+    },
+    {
+     "id": "m1-02",
+     "topic": "Big Data",
+     "q": "Jakie czwarte V dodaje model 4V?",
+     "options": [
+      "Value",
+      "Velocity",
+      "Virtualization",
+      "Volatility"
+     ],
+     "answer": 0,
+     "explain": "Value: czy dane dają realną wartość, czy można im ufać. Na slajdzie są jeszcze Validity i Visualization."
+    },
+    {
+     "id": "m1-03",
+     "topic": "Typy danych",
+     "q": "Do jakiego typu należą dane XML i JSON?",
+     "options": [
+      "półustrukturyzowane",
+      "ustrukturyzowane (relacyjne)",
+      "nieustrukturyzowane",
+      "strumieniowe"
+     ],
+     "answer": 0,
+     "explain": "Relacyjne = ustrukturyzowane. XML/JSON = półustrukturyzowane. Word, PDF, tekst, logi, media = nieustrukturyzowane."
+    },
+    {
+     "id": "m1-04",
+     "topic": "Typy danych",
+     "q": "Jaka część danych świata według wykładu nie ma jasno zdefiniowanej struktury?",
+     "options": [
+      "ok. 80%",
+      "ok. 20%",
+      "ok. 50%",
+      "ok. 99%"
+     ],
+     "answer": 0,
+     "explain": "Około 80% danych świata jest nieustrukturyzowanych."
+    },
+    {
+     "id": "m1-05",
+     "topic": "Typy danych",
+     "q": "Który przykład to dane w ruchu (data in motion)?",
+     "options": [
+      "odczyty czujników pogodowych płynące na bieżąco",
+      "archiwum e-maili z 2019 r.",
+      "logi serwera zapisane na dysku",
+      "zeskanowane formularze w PDF"
+     ],
+     "answer": 0,
+     "explain": "Dane w ruchu to strumienie: Twitter/Facebook, giełda, czujniki. Dane w spoczynku to to, co już zgromadzone: logi, maile, dokumenty."
+    },
+    {
+     "id": "m1-06",
+     "topic": "Hadoop",
+     "q": "Kto stworzył Hadoop i w jakim języku jest głównie napisany?",
+     "options": [
+      "Doug Cutting, Java",
+      "Facebook, Python",
+      "Yahoo, Scala",
+      "Google, C++"
+     ],
+     "answer": 0,
+     "explain": "Doug Cutting, Java, open source pod opieką Apache Software Foundation."
+    },
+    {
+     "id": "m1-07",
+     "topic": "Hadoop",
+     "q": "Do którego zadania Hadoop się NIE nadaje?",
+     "options": [
+      "obsługi transakcji bankowych z małym opóźnieniem",
+      "analizy logów z całego roku",
+      "przetwarzania danych nieustrukturyzowanych",
+      "równoległego liczenia statystyk z setek TB"
+     ],
+     "answer": 0,
+     "explain": "Hadoop nie jest do transakcji, dostępu o małym opóźnieniem, wielu małych plików, zadań, których nie da się zrównoleglić, ani intensywnych obliczeń na małych danych."
+    },
+    {
+     "id": "m1-08",
+     "topic": "Hadoop",
+     "q": "Dlaczego Hadoop źle radzi sobie z ogromną liczbą małych plików?",
+     "options": [
+      "każdy plik i blok zajmuje metadane w RAM NameNode, a duże bloki działają najlepiej przy dużych plikach",
+      "bo HDFS nie pozwala zapisać pliku mniejszego niż 128 MB",
+      "bo małe pliki nie są replikowane",
+      "bo YARN odrzuca zadania na małych plikach"
+     ],
+     "answer": 0,
+     "explain": "Wykład: Hadoop najlepiej działa na bardzo dużych plikach (mniej szukania, więcej czytania). NameNode trzyma całą przestrzeń nazw w RAM, więc miliony małych plików go zapychają."
+    },
+    {
+     "id": "m1-09",
+     "topic": "Hadoop vs RDBMS",
+     "q": "Czym Hadoop różni się od relacyjnej bazy (RDBMS)?",
+     "options": [
+      "schemat stosuje się przy odczycie, a zapisy są szybkie",
+      "schemat trzeba zdefiniować przed zapisem",
+      "jest przeznaczony do zadań transakcyjnych",
+      "przyjmuje tylko dane o stałej strukturze"
+     ],
+     "answer": 0,
+     "explain": "RDBMS: schemat przed zapisem, szybkie odczyty, transakcje. Hadoop: schemat przy odczycie, szybkie zapisy, masowe przetwarzanie dowolnych danych."
+    },
+    {
+     "id": "m1-10",
+     "topic": "Hadoop vs RDBMS",
+     "q": "Czy Hadoop to hurtownia danych?",
+     "options": [
+      "Nie, to rozproszony system przetwarzania (plików)",
+      "Tak, to klasyczna hurtownia danych",
+      "Tak, ale tylko z Hive",
+      "Nie, to relacyjna baza danych"
+     ],
+     "answer": 0,
+     "explain": "Odpowiedź z wykładu: NIE, to rozproszony system przetwarzania plików. Hurtownię danych robi z niego dopiero Hive."
+    },
+    {
+     "id": "m1-11",
+     "topic": "Architektura",
+     "q": "Co oznacza skrót YARN i za co odpowiada?",
+     "options": [
+      "Yet Another Resource Negotiator: zarządza zasobami klastra, dzięki czemu wiele frameworków działa na jednym klastrze",
+      "Yahoo Analytics Runtime Node: przechowuje bloki",
+      "Yet Another Replication Node: replikuje dane",
+      "Your Apache Relational Network: język zapytań"
+     ],
+     "answer": 0,
+     "explain": "YARN doszedł w Hadoop v2. Rdzeń Hadoopa to HDFS (dane) + MapReduce/YARN (obliczenia i zasoby)."
+    },
+    {
+     "id": "m1-12",
+     "topic": "Ekosystem",
+     "q": "Do czego służy Apache Oozie?",
+     "options": [
+      "do planowania i łączenia zadań w przepływy (workflow)",
+      "do zbierania logów do HDFS",
+      "do zapytań SQL",
+      "do wyszukiwania pełnotekstowego"
+     ],
+     "answer": 0,
+     "explain": "Oozie = harmonogram i workflow. Flume = logi do HDFS. Hive = SQL. Solr = wyszukiwanie."
+    },
+    {
+     "id": "m1-13",
+     "topic": "Ekosystem",
+     "q": "Które narzędzie służy do zbierania i przesyłania dużych ilości logów do HDFS?",
+     "options": [
+      "Flume",
+      "Ambari",
+      "Oozie",
+      "Pig"
+     ],
+     "answer": 0,
+     "explain": "Flume zbiera i przenosi logi (strumienie zdarzeń) do HDFS."
+    },
+    {
+     "id": "m1-14",
+     "topic": "Ekosystem",
+     "q": "Które narzędzie z ekosystemu Hadoop to baza NoSQL?",
+     "options": [
+      "HBase",
+      "Hive",
+      "Storm",
+      "Solr"
+     ],
+     "answer": 0,
+     "explain": "HBase to kolumnowa baza NoSQL. Hive to SQL, Storm to strumienie, Solr to wyszukiwanie."
+    },
+    {
+     "id": "m1-15",
+     "topic": "Ekosystem",
+     "q": "Do czego służy Apache Ambari?",
+     "options": [
+      "do instalowania, zarządzania i monitorowania klastra Hadoop",
+      "do uczenia maszynowego",
+      "do przechowywania metadanych tabel Hive",
+      "do przetwarzania w pamięci"
+     ],
+     "answer": 0,
+     "explain": "Ambari zarządza i monitoruje klaster (ma też REST API). W Ambari był Hive View, którego używaliście."
+    },
+    {
+     "id": "m1-16",
+     "topic": "Ekosystem",
+     "q": "Które narzędzie przetwarza dane w pamięci (in-memory)?",
+     "options": [
+      "Spark",
+      "MapReduce",
+      "Pig",
+      "Oozie"
+     ],
+     "answer": 0,
+     "explain": "Spark = in-memory. MapReduce = batch z zapisem na dysk."
+    },
+    {
+     "id": "m1-17",
+     "topic": "HDFS",
+     "q": "Co robi NameNode?",
+     "options": [
+      "zarządza metadanymi, zna mapowanie bloków na DataNode'y i pilnuje liczby replik",
+      "przechowuje bloki danych",
+      "wykonuje zadania Map",
+      "przydziela pamięć aplikacjom Spark"
+     ],
+     "answer": 0,
+     "explain": "NameNode = spis treści. DataNode = półki z danymi."
+    },
+    {
+     "id": "m1-18",
+     "topic": "HDFS",
+     "q": "Gdzie NameNode trzyma obraz całej przestrzeni nazw?",
+     "options": [
+      "w pamięci RAM",
+      "na każdym DataNode",
+      "w tabeli Hive",
+      "w Zookeeperze"
+     ],
+     "answer": 0,
+     "explain": "Cały namespace image siedzi w RAM NameNode."
+    },
+    {
+     "id": "m1-19",
+     "topic": "HDFS",
+     "q": "Co robi DataNode?",
+     "options": [
+      "przechowuje i przetwarza bloki danych oraz okresowo raportuje swój stan do NameNode",
+      "przechowuje tylko metadane",
+      "decyduje, gdzie trafi kolejna replika",
+      "obsługuje zapytania HiveQL"
+     ],
+     "answer": 0,
+     "explain": "DataNode'ów jest wiele w klastrze, przechowują dane i meldują się NameNode'owi."
+    },
+    {
+     "id": "m1-20",
+     "topic": "HDFS",
+     "q": "Jaki jest domyślny rozmiar bloku HDFS?",
+     "options": [
+      "128 MB",
+      "64 MB",
+      "256 MB",
+      "4 KB"
+     ],
+     "answer": 0,
+     "explain": "128 MB domyślnie. 64 MB w starszych wersjach, 256 MB zalecane. 4 KB to blok w UNIX-ie."
+    },
+    {
+     "id": "m1-21",
+     "topic": "HDFS",
+     "q": "Plik ma 300 MB, blok ma rozmiar domyślny. Na ile bloków HDFS go potnie?",
+     "options": [
+      "3",
+      "2",
+      "1",
+      "5"
+     ],
+     "answer": 0,
+     "explain": "128 + 128 + 44 MB = 3 bloki. Ostatni blok nie zajmuje pełnych 128 MB."
+    },
+    {
+     "id": "m1-22",
+     "topic": "HDFS",
+     "q": "Dlaczego HDFS używa dużych bloków?",
+     "options": [
+      "żeby mniej czasu tracić na szukanie danych na dysku, a więcej czytać z pełną przepustowością",
+      "żeby zmniejszyć liczbę replik",
+      "żeby pliki były szyfrowane",
+      "bo system UNIX tego wymaga"
+     ],
+     "answer": 0,
+     "explain": "Im większy plik i blok, tym mniej szukania i więcej czytania przy pełnej przepustowości dysku."
+    },
+    {
+     "id": "m1-23",
+     "topic": "Replikacja",
+     "q": "Gdzie trafia DRUGA kopia bloku przy replikacji 3?",
+     "options": [
+      "na losowy węzeł w innym racku niż pierwsza",
+      "na ten sam węzeł co pierwsza",
+      "na inny węzeł w tym samym racku co pierwsza",
+      "do NameNode"
+     ],
+     "answer": 0,
+     "explain": "Inny rack chroni przed awarią całej szafy."
+    },
+    {
+     "id": "m1-24",
+     "topic": "Replikacja",
+     "q": "Gdzie trafia TRZECIA kopia bloku przy replikacji 3?",
+     "options": [
+      "na inny węzeł w tym samym racku co druga kopia",
+      "do trzeciego, osobnego racka",
+      "na ten sam węzeł co pierwsza",
+      "na klienta HDFS"
+     ],
+     "answer": 0,
+     "explain": "1. kopia: rack A. 2. kopia: rack B. 3. kopia: inny węzeł w racku B."
+    },
+    {
+     "id": "m1-25",
+     "topic": "Zapis i odczyt",
+     "q": "Co robi NameNode, gdy klient wysyła żądanie „Create”?",
+     "options": [
+      "sprawdza, czy plik już istnieje i czy klient ma uprawnienia, potem wskazuje DataNode na pierwszy blok",
+      "od razu zapisuje cały plik u siebie",
+      "dzieli plik na bloki i sam je przesyła",
+      "odrzuca żądanie, jeśli plik ma ponad 128 MB"
+     ],
+     "answer": 0,
+     "explain": "NameNode śledzi, gdzie leżą bloki, ale samych danych nie przesyła."
+    },
+    {
+     "id": "m1-26",
+     "topic": "Zapis i odczyt",
+     "q": "Jak wraca potwierdzenie (ack) zapisu bloku?",
+     "options": [
+      "łańcuchem: 3. węzeł → 2. → 1. → NameNode, który sprawdza replikację i odpowiada klientowi",
+      "każdy DataNode wysyła ack prosto do klienta",
+      "NameNode potwierdza od razu, przed zapisem replik",
+      "ack nie jest wysyłany"
+     ],
+     "answer": 0,
+     "explain": "Potwierdzenia idą wstecz po łańcuchu replik. NameNode dodatkowo sprawdza replikację przed odpowiedzią."
+    },
+    {
+     "id": "m1-27",
+     "topic": "Zapis i odczyt",
+     "q": "Skąd klient czyta dane pliku przy odczycie z HDFS?",
+     "options": [
+      "metadane z NameNode, a dane bezpośrednio z DataNode'ów",
+      "wszystko przez NameNode",
+      "z Zookeepera",
+      "z lokalnej kopii klienta"
+     ],
+     "answer": 0,
+     "explain": "NameNode mówi, gdzie są bloki, a dane płyną prosto z DataNode'ów."
+    },
+    {
+     "id": "m1-28",
+     "topic": "Klaster",
+     "q": "Czym jest klaster Hadoop według wykładu?",
+     "options": [
+      "zbiorem racków, w których są węzły (CPU + dyski)",
+      "jednym dużym serwerem",
+      "bazą danych w chmurze",
+      "zbiorem tabel Hive"
+     ],
+     "answer": 0,
+     "explain": "Węzeł = CPU + HDD. Do ok. 40 węzłów w racku. Klaster = zbiór racków, do ok. 6 tys. węzłów i ok. 500 PB."
+    },
+    {
+     "id": "m1-29",
+     "topic": "Polecenia",
+     "q": "Które pary poleceń robią to samo?",
+     "options": [
+      "put = copyFromLocal oraz get = copyToLocal",
+      "put = copyToLocal oraz get = copyFromLocal",
+      "put = getmerge oraz get = cat",
+      "put = cp oraz get = mv"
+     ],
+     "answer": 0,
+     "explain": "put / copyFromLocal: z dysku lokalnego DO HDFS. get / copyToLocal: Z HDFS na dysk lokalny."
+    },
+    {
+     "id": "m1-30",
+     "topic": "Polecenia",
+     "q": "Masz w HDFS katalog z 20 plikami wyników i chcesz je mieć lokalnie jako JEDEN plik. Czego użyjesz?",
+     "options": [
+      "-getmerge",
+      "-get",
+      "-put",
+      "-cp"
+     ],
+     "answer": 0,
+     "explain": "getmerge skleja pliki z HDFS w jeden plik lokalny: hdfs dfs -getmerge <src> <localdst>."
+    },
+    {
+     "id": "m1-31",
+     "topic": "Polecenia",
+     "q": "Co robi opcja -w w poleceniu setrep?",
+     "options": [
+      "czeka, aż replikacja osiągnie nowy poziom",
+      "zmienia replikację rekurencyjnie dla całego drzewa",
+      "wyświetla tylko obecną replikację",
+      "usuwa nadmiarowe repliki natychmiast"
+     ],
+     "answer": 0,
+     "explain": "-R = rekurencyjnie. -w = czekaj na zakończenie. Bez -w polecenie wraca od razu."
+    },
+    {
+     "id": "m1-32",
+     "topic": "Polecenia",
+     "q": "Czy HDFS jest w pełni zgodny z POSIX?",
+     "options": [
+      "Nie, ale obsługuje wiele poleceń w stylu UNIX (cat, chmod, ls, mkdir, rm…)",
+      "Tak, w 100%",
+      "Nie i nie obsługuje żadnych poleceń UNIX",
+      "Tak, ale tylko przez Java API"
+     ],
+     "answer": 0,
+     "explain": "HDFS nie jest w pełni zgodny z POSIX, ale ma wiele znanych poleceń. Do tego polecenia specyficzne: copyFromLocal, getmerge, setrep."
+    },
+    {
+     "id": "m1-33",
+     "topic": "Polecenia",
+     "q": "Jaki schemat URI wskazuje lokalny system plików, a jaki HDFS?",
+     "options": [
+      "file:// oraz hdfs://",
+      "local:// oraz dfs://",
+      "disk:// oraz hadoop://",
+      "os:// oraz hdfs://"
+     ],
+     "answer": 0,
+     "explain": "URI = schemat + authority + ścieżka, np. hdfs://namenode/user/maria_dev albo file:///home/u."
+    },
+    {
+     "id": "m1-c1",
+     "topic": "Komendy (Lab1)",
+     "q": "Którą komendą wyświetlisz zawartość katalogu HDFS /user/maria_dev?",
+     "options": [
+      "`hdfs dfs -ls /user/maria_dev`",
+      "`hdfs ls /user/maria_dev`",
+      "`hdfs dfs -dir /user/maria_dev`",
+      "`hadoop -ls /user/maria_dev`"
+     ],
+     "answer": 0,
+     "explain": "Zawsze `hdfs dfs` (albo `hadoop fs`), potem opcja z myślnikiem, potem ścieżka."
+    },
+    {
+     "id": "m1-c2",
+     "topic": "Komendy (Lab1)",
+     "q": "Która komenda utworzy katalog /user/maria_dev/ASSESSMENT/ml100k razem z brakującymi katalogami nadrzędnymi?",
+     "options": [
+      "`hdfs dfs -mkdir -p /user/maria_dev/ASSESSMENT/ml100k`",
+      "`hdfs dfs -mkdir -r /user/maria_dev/ASSESSMENT/ml100k`",
+      "`hdfs dfs -md -p /user/maria_dev/ASSESSMENT/ml100k`",
+      "`hdfs mkdir -p /user/maria_dev/ASSESSMENT/ml100k`"
+     ],
+     "answer": 0,
+     "explain": "`-p` tworzy po drodze brakujące katalogi, tak jak w Linuksie. `-r` to opcja od usuwania, nie od tworzenia."
+    },
+    {
+     "id": "m1-c3",
+     "topic": "Komendy (Lab1)",
+     "q": "Którą komendą skopiujesz lokalny plik u.user do katalogu HDFS /user/maria_dev/ml?",
+     "options": [
+      "`hdfs dfs -put u.user /user/maria_dev/ml`",
+      "`hdfs dfs -get u.user /user/maria_dev/ml`",
+      "`hdfs dfs -copyToLocal u.user /user/maria_dev/ml`",
+      "`hdfs dfs -cp u.user /user/maria_dev/ml`"
+     ],
+     "answer": 0,
+     "explain": "`put` (= `copyFromLocal`): z dysku lokalnego DO HDFS. `get` i `copyToLocal` działają w drugą stronę, a `-cp` kopiuje tylko wewnątrz HDFS."
+    },
+    {
+     "id": "m1-c4",
+     "topic": "Komendy (Lab1)",
+     "q": "Jak podejrzysz 10 pierwszych linii pliku HDFS /user/maria_dev/ml/u.data bez pobierania go na dysk?",
+     "options": [
+      "`hdfs dfs -cat /user/maria_dev/ml/u.data | head -n 10`",
+      "`head -n 10 /user/maria_dev/ml/u.data`",
+      "`hdfs dfs -get /user/maria_dev/ml/u.data | head -n 10`",
+      "`hdfs dfs -head 10 /user/maria_dev/ml/u.data`"
+     ],
+     "answer": 0,
+     "explain": "`-cat` wypisuje plik z HDFS, a zwykły linuksowy `head` przycina wynik. Sam `head` nie widzi HDFS, bo patrzy na dysk lokalny."
+    },
+    {
+     "id": "m1-c5",
+     "topic": "Komendy (Lab1)",
+     "q": "Którą komendą skopiujesz plik /user/maria_dev/ml/u.data do katalogu /user/maria_dev/copy WEWNĄTRZ HDFS?",
+     "options": [
+      "`hdfs dfs -cp /user/maria_dev/ml/u.data /user/maria_dev/copy`",
+      "`hdfs dfs -put /user/maria_dev/ml/u.data /user/maria_dev/copy`",
+      "`hdfs dfs -getmerge /user/maria_dev/ml/u.data /user/maria_dev/copy`",
+      "`hdfs dfs -copyFromLocal /user/maria_dev/ml/u.data /user/maria_dev/copy`"
+     ],
+     "answer": 0,
+     "explain": "`-cp` kopiuje w obrębie HDFS. `put` i `copyFromLocal` biorą plik z dysku lokalnego."
+    },
+    {
+     "id": "m1-c6",
+     "topic": "Komendy (Lab1)",
+     "q": "Którą komendą pobierzesz plik HDFS /user/maria_dev/ml/u.item do lokalnego katalogu ~/downloads?",
+     "options": [
+      "`hdfs dfs -get /user/maria_dev/ml/u.item ~/downloads`",
+      "`hdfs dfs -put /user/maria_dev/ml/u.item ~/downloads`",
+      "`hdfs dfs -get ~/downloads /user/maria_dev/ml/u.item`",
+      "`hdfs dfs -copyFromLocal /user/maria_dev/ml/u.item ~/downloads`"
+     ],
+     "answer": 0,
+     "explain": "`get` (= `copyToLocal`): najpierw ŹRÓDŁO w HDFS, potem CEL lokalny. Kolejność argumentów jak w `cp`: skąd, dokąd."
+    },
+    {
+     "id": "m1-c7",
+     "topic": "Komendy (Lab1)",
+     "q": "Którą komendą usuniesz z HDFS katalog /user/maria_dev/copy razem z zawartością?",
+     "options": [
+      "`hdfs dfs -rm -r /user/maria_dev/copy`",
+      "`hdfs dfs -rm /user/maria_dev/copy`",
+      "`hdfs dfs -rmdir /user/maria_dev/copy`",
+      "`hdfs dfs -del -r /user/maria_dev/copy`"
+     ],
+     "answer": 0,
+     "explain": "`-rm -r` usuwa rekurencyjnie. Samo `-rm` nie usunie katalogu, a `-rmdir` usuwa tylko pusty katalog."
+    },
+    {
+     "id": "m1-c8",
+     "topic": "Komendy (Lab1)",
+     "q": "Którą komendą sprawdzisz łączny rozmiar katalogu /user/maria_dev/ml w czytelnych jednostkach (KB, MB…)?",
+     "options": [
+      "`hdfs dfs -du -s -h /user/maria_dev/ml`",
+      "`hdfs dfs -df -h /user/maria_dev/ml`",
+      "`hdfs dfs -ls -h /user/maria_dev/ml`",
+      "`hdfs dfs -size -h /user/maria_dev/ml`"
+     ],
+     "answer": 0,
+     "explain": "`-du` = rozmiar danych, `-s` = jedna suma zamiast listy plików, `-h` = czytelne jednostki. `-df` pokazuje wolne miejsce całego systemu plików."
+    },
+    {
+     "id": "m1-c9",
+     "topic": "Komendy (Lab1)",
+     "q": "Którą komendą ustawisz replikację pliku /user/maria_dev/ml/u.data na 2?",
+     "options": [
+      "`hdfs dfs -setrep 2 /user/maria_dev/ml/u.data`",
+      "`hdfs dfs -setrep /user/maria_dev/ml/u.data 2`",
+      "`hdfs dfs -replicate 2 /user/maria_dev/ml/u.data`",
+      "`hdfs dfs -chmod 2 /user/maria_dev/ml/u.data`"
+     ],
+     "answer": 0,
+     "explain": "Składnia: `setrep [-R] [-w] <liczba> <ścieżka>`. Najpierw liczba replik, potem plik."
+    },
+    {
+     "id": "m1-c10",
+     "topic": "Komendy (Lab1)",
+     "q": "Którą komendą scalisz wszystkie pliki z katalogu HDFS /user/maria_dev/out w jeden plik lokalny wynik.txt?",
+     "options": [
+      "`hdfs dfs -getmerge /user/maria_dev/out wynik.txt`",
+      "`hdfs dfs -getmerge wynik.txt /user/maria_dev/out`",
+      "`hdfs dfs -merge /user/maria_dev/out wynik.txt`",
+      "`hdfs dfs -put -merge /user/maria_dev/out wynik.txt`"
+     ],
+     "answer": 0,
+     "explain": "`getmerge <źródło w HDFS> <plik lokalny>`. Znowu: najpierw skąd, potem dokąd."
+    }
+   ]
+  },
+  {
+   "id": "eco",
+   "title": "Ekosystem Hadoopa (narzędzia)",
+   "questions": [
+    {
+     "id": "eco-s-Flume",
+     "topic": "Ekosystem: scenariusz",
+     "q": "Sto serwerów WWW produkuje logi i trzeba je automatycznie zbierać do HDFS. Czego użyjesz?",
+     "options": [
+      "Flume",
+      "Oozie",
+      "Pig",
+      "Ambari"
+     ],
+     "answer": 0,
+     "explain": "Flume: rynna, którą logi spływają do HDFS. Flume = zbieranie logów i wlewanie ich do HDFS."
+    },
+    {
+     "id": "eco-s-HBase",
+     "topic": "Ekosystem: scenariusz",
+     "q": "Potrzebujesz bazy danych NoSQL, która trzyma miliardy wierszy w Hadoopie. Czego używasz?",
+     "options": [
+      "HBase",
+      "Hive",
+      "Solr",
+      "Storm"
+     ],
+     "answer": 0,
+     "explain": "HBase: „base” = baza. HBase = baza danych NoSQL (kolumnowa)."
+    },
+    {
+     "id": "eco-s-Hive",
+     "topic": "Ekosystem: scenariusz",
+     "q": "Analityk zna tylko SQL i chce policzyć średnią ocen filmów z plików w HDFS. Czego użyje?",
+     "options": [
+      "Hive",
+      "HBase",
+      "Pig",
+      "Sqoop"
+     ],
+     "answer": 0,
+     "explain": "Hive = SQL. Nie myl z HBase (baza NoSQL). Hive = zapytania SQL (HiveQL) na danych w Hadoopie."
+    },
+    {
+     "id": "eco-s-Oozie",
+     "topic": "Ekosystem: scenariusz",
+     "q": "Co noc o 2:00 ma ruszyć import, potem obliczenia w Hive, a na końcu raport. Co tym steruje?",
+     "options": [
+      "Oozie",
+      "Flume",
+      "Ambari",
+      "YARN"
+     ],
+     "answer": 0,
+     "explain": "Oozie: dyrygent, który mówi, co i kiedy uruchomić. Oozie = harmonogram i łączenie zadań w przepływy (workflow)."
+    },
+    {
+     "id": "eco-s-Ambari",
+     "topic": "Ekosystem: scenariusz",
+     "q": "Administrator chce w przeglądarce zobaczyć, czy wszystkie węzły klastra działają, i zainstalować nową usługę. Czego używa?",
+     "options": [
+      "Ambari",
+      "Oozie",
+      "HCatalog",
+      "Solr"
+     ],
+     "answer": 0,
+     "explain": "Ambari: panel admina, w którym mieliście Hive View. Ambari = instalacja, zarządzanie i monitoring klastra."
+    },
+    {
+     "id": "eco-s-Solr",
+     "topic": "Ekosystem: scenariusz",
+     "q": "Użytkownicy mają wpisać słowo i znaleźć wszystkie dokumenty, w których ono występuje. Czego użyjesz?",
+     "options": [
+      "Solr",
+      "Storm",
+      "Spark",
+      "Sqoop"
+     ],
+     "answer": 0,
+     "explain": "Solr: search, czyli szukanie. Solr = wyszukiwanie pełnotekstowe."
+    },
+    {
+     "id": "eco-s-Storm",
+     "topic": "Ekosystem: scenariusz",
+     "q": "Dane z czujników płyną bez przerwy i trzeba je przetwarzać na bieżąco, sekunda po sekundzie. Które narzędzie z ekosystemu?",
+     "options": [
+      "Storm",
+      "Solr",
+      "Flume",
+      "MapReduce"
+     ],
+     "answer": 0,
+     "explain": "Storm: burza, ciągły strumień danych. Storm = przetwarzanie strumieni danych na bieżąco."
+    },
+    {
+     "id": "eco-s-Sqoop",
+     "topic": "Ekosystem: scenariusz",
+     "q": "Masz tabelę klientów w bazie MySQL i chcesz ją skopiować do Hadoopa. Czego użyjesz?",
+     "options": [
+      "Sqoop",
+      "Flume",
+      "Hive",
+      "Pig"
+     ],
+     "answer": 0,
+     "explain": "Sqoop: SQ(L) + (Had)oop. Sqoop = przenoszenie danych między relacyjną bazą SQL a Hadoopem."
+    },
+    {
+     "id": "eco-s-Spark",
+     "topic": "Ekosystem: scenariusz",
+     "q": "Zadanie musi działać szybko, bo wiele razy przechodzi po tych samych danych, trzymając je w RAM-ie. Co wybierasz?",
+     "options": [
+      "Spark",
+      "MapReduce",
+      "Storm",
+      "Pig"
+     ],
+     "answer": 0,
+     "explain": "Spark: iskra, czyli szybko, bo w pamięci. Spark = szybkie przetwarzanie w pamięci RAM."
+    },
+    {
+     "id": "eco-s-Pig",
+     "topic": "Ekosystem: scenariusz",
+     "q": "Chcesz napisać skrypt, który krok po kroku filtruje, łączy i grupuje dane w dowolnym formacie. Czego użyjesz?",
+     "options": [
+      "Pig",
+      "Hive",
+      "Oozie",
+      "Spark"
+     ],
+     "answer": 0,
+     "explain": "Pig: świnia je wszystko, przyjmuje każdy format. Pig = skrypty przepływu danych w języku Pig Latin."
+    },
+    {
+     "id": "eco-s-HCatalog",
+     "topic": "Ekosystem: scenariusz",
+     "q": "Hive i Pig mają widzieć te same tabele i ich schematy. Gdzie trzymane są te metadane?",
+     "options": [
+      "HCatalog",
+      "Ambari",
+      "HBase",
+      "HDFS"
+     ],
+     "answer": 0,
+     "explain": "HCatalog: katalog tabel. HCatalog = metadane: spis tabel i ich schematów."
+    },
+    {
+     "id": "eco-s-YARN",
+     "topic": "Ekosystem: scenariusz",
+     "q": "Spark, Hive i MapReduce działają na jednym klastrze i ktoś musi rozdzielać między nie CPU i RAM. Kto?",
+     "options": [
+      "YARN",
+      "Oozie",
+      "Ambari",
+      "HDFS"
+     ],
+     "answer": 0,
+     "explain": "YARN: Yet Another Resource Negotiator, czyli negocjator zasobów. YARN = przydział zasobów (CPU, RAM) aplikacjom w klastrze."
+    },
+    {
+     "id": "eco-s-MapReduce",
+     "topic": "Ekosystem: scenariusz",
+     "q": "Masz klasyczne zadanie wsadowe, które raz na noc przelicza dane i zapisuje wyniki pośrednie na dysk. To który silnik?",
+     "options": [
+      "MapReduce",
+      "Spark",
+      "Storm",
+      "Flume"
+     ],
+     "answer": 0,
+     "explain": "MapReduce: wolniejszy, bo zapisuje wyniki pośrednie na dysk. MapReduce = przetwarzanie wsadowe (batch) z zapisem na dysk."
+    },
+    {
+     "id": "eco-s-HDFS",
+     "topic": "Ekosystem: scenariusz",
+     "q": "Masz plik o rozmiarze 2 TB i chcesz go po prostu przechować w klastrze, pocięty na bloki z kopiami. Czego używasz?",
+     "options": [
+      "HDFS",
+      "HBase",
+      "HCatalog",
+      "Hive"
+     ],
+     "answer": 0,
+     "explain": "HDFS = dysk całego klastra. HDFS = system plików: przechowuje pliki pocięte na bloki."
+    },
+    {
+     "id": "eco-f-Flume",
+     "topic": "Ekosystem: do czego",
+     "q": "Do czego służy Flume?",
+     "options": [
+      "zbieranie logów i wlewanie ich do HDFS",
+      "harmonogram i łączenie zadań w przepływy (workflow)",
+      "skrypty przepływu danych w języku Pig Latin",
+      "instalacja, zarządzanie i monitoring klastra"
+     ],
+     "answer": 0,
+     "explain": "Flume: rynna, którą logi spływają do HDFS."
+    },
+    {
+     "id": "eco-f-HBase",
+     "topic": "Ekosystem: do czego",
+     "q": "Do czego służy HBase?",
+     "options": [
+      "baza danych NoSQL (kolumnowa)",
+      "zapytania SQL (HiveQL) na danych w Hadoopie",
+      "wyszukiwanie pełnotekstowe",
+      "przetwarzanie strumieni danych na bieżąco"
+     ],
+     "answer": 0,
+     "explain": "HBase: „base” = baza."
+    },
+    {
+     "id": "eco-f-Hive",
+     "topic": "Ekosystem: do czego",
+     "q": "Do czego służy Hive?",
+     "options": [
+      "zapytania SQL (HiveQL) na danych w Hadoopie",
+      "baza danych NoSQL (kolumnowa)",
+      "skrypty przepływu danych w języku Pig Latin",
+      "przenoszenie danych między relacyjną bazą SQL a Hadoopem"
+     ],
+     "answer": 0,
+     "explain": "Hive = SQL. Nie myl z HBase (baza NoSQL)."
+    },
+    {
+     "id": "eco-f-Oozie",
+     "topic": "Ekosystem: do czego",
+     "q": "Do czego służy Oozie?",
+     "options": [
+      "harmonogram i łączenie zadań w przepływy (workflow)",
+      "zbieranie logów i wlewanie ich do HDFS",
+      "instalacja, zarządzanie i monitoring klastra",
+      "przydział zasobów (CPU, RAM) aplikacjom w klastrze"
+     ],
+     "answer": 0,
+     "explain": "Oozie: dyrygent, który mówi, co i kiedy uruchomić."
+    },
+    {
+     "id": "eco-f-Ambari",
+     "topic": "Ekosystem: do czego",
+     "q": "Do czego służy Ambari?",
+     "options": [
+      "instalacja, zarządzanie i monitoring klastra",
+      "harmonogram i łączenie zadań w przepływy (workflow)",
+      "metadane: spis tabel i ich schematów",
+      "wyszukiwanie pełnotekstowe"
+     ],
+     "answer": 0,
+     "explain": "Ambari: panel admina, w którym mieliście Hive View."
+    },
+    {
+     "id": "eco-f-Solr",
+     "topic": "Ekosystem: do czego",
+     "q": "Do czego służy Solr?",
+     "options": [
+      "wyszukiwanie pełnotekstowe",
+      "przetwarzanie strumieni danych na bieżąco",
+      "szybkie przetwarzanie w pamięci RAM",
+      "przenoszenie danych między relacyjną bazą SQL a Hadoopem"
+     ],
+     "answer": 0,
+     "explain": "Solr: search, czyli szukanie."
+    },
+    {
+     "id": "eco-f-Storm",
+     "topic": "Ekosystem: do czego",
+     "q": "Do czego służy Storm?",
+     "options": [
+      "przetwarzanie strumieni danych na bieżąco",
+      "wyszukiwanie pełnotekstowe",
+      "zbieranie logów i wlewanie ich do HDFS",
+      "przetwarzanie wsadowe (batch) z zapisem na dysk"
+     ],
+     "answer": 0,
+     "explain": "Storm: burza, ciągły strumień danych."
+    },
+    {
+     "id": "eco-f-Sqoop",
+     "topic": "Ekosystem: do czego",
+     "q": "Do czego służy Sqoop?",
+     "options": [
+      "przenoszenie danych między relacyjną bazą SQL a Hadoopem",
+      "zbieranie logów i wlewanie ich do HDFS",
+      "zapytania SQL (HiveQL) na danych w Hadoopie",
+      "skrypty przepływu danych w języku Pig Latin"
+     ],
+     "answer": 0,
+     "explain": "Sqoop: SQ(L) + (Had)oop."
+    },
+    {
+     "id": "eco-f-Spark",
+     "topic": "Ekosystem: do czego",
+     "q": "Do czego służy Spark?",
+     "options": [
+      "szybkie przetwarzanie w pamięci RAM",
+      "przetwarzanie wsadowe (batch) z zapisem na dysk",
+      "przetwarzanie strumieni danych na bieżąco",
+      "skrypty przepływu danych w języku Pig Latin"
+     ],
+     "answer": 0,
+     "explain": "Spark: iskra, czyli szybko, bo w pamięci."
+    },
+    {
+     "id": "eco-f-Pig",
+     "topic": "Ekosystem: do czego",
+     "q": "Do czego służy Pig?",
+     "options": [
+      "skrypty przepływu danych w języku Pig Latin",
+      "zapytania SQL (HiveQL) na danych w Hadoopie",
+      "harmonogram i łączenie zadań w przepływy (workflow)",
+      "szybkie przetwarzanie w pamięci RAM"
+     ],
+     "answer": 0,
+     "explain": "Pig: świnia je wszystko, przyjmuje każdy format."
+    },
+    {
+     "id": "eco-f-HCatalog",
+     "topic": "Ekosystem: do czego",
+     "q": "Do czego służy HCatalog?",
+     "options": [
+      "metadane: spis tabel i ich schematów",
+      "instalacja, zarządzanie i monitoring klastra",
+      "baza danych NoSQL (kolumnowa)",
+      "system plików: przechowuje pliki pocięte na bloki"
+     ],
+     "answer": 0,
+     "explain": "HCatalog: katalog tabel."
+    },
+    {
+     "id": "eco-f-YARN",
+     "topic": "Ekosystem: do czego",
+     "q": "Do czego służy YARN?",
+     "options": [
+      "przydział zasobów (CPU, RAM) aplikacjom w klastrze",
+      "harmonogram i łączenie zadań w przepływy (workflow)",
+      "instalacja, zarządzanie i monitoring klastra",
+      "system plików: przechowuje pliki pocięte na bloki"
+     ],
+     "answer": 0,
+     "explain": "YARN: Yet Another Resource Negotiator, czyli negocjator zasobów."
+    },
+    {
+     "id": "eco-f-MapReduce",
+     "topic": "Ekosystem: do czego",
+     "q": "Do czego służy MapReduce?",
+     "options": [
+      "przetwarzanie wsadowe (batch) z zapisem na dysk",
+      "szybkie przetwarzanie w pamięci RAM",
+      "przetwarzanie strumieni danych na bieżąco",
+      "zbieranie logów i wlewanie ich do HDFS"
+     ],
+     "answer": 0,
+     "explain": "MapReduce: wolniejszy, bo zapisuje wyniki pośrednie na dysk."
+    },
+    {
+     "id": "eco-f-HDFS",
+     "topic": "Ekosystem: do czego",
+     "q": "Do czego służy HDFS?",
+     "options": [
+      "system plików: przechowuje pliki pocięte na bloki",
+      "baza danych NoSQL (kolumnowa)",
+      "metadane: spis tabel i ich schematów",
+      "zapytania SQL (HiveQL) na danych w Hadoopie"
+     ],
+     "answer": 0,
+     "explain": "HDFS = dysk całego klastra."
+    }
+   ]
+  },
+  {
+   "id": "m2",
+   "title": "Moduł 2: Spark MLlib",
+   "questions": [
+    {
+     "id": "m2-01",
+     "topic": "MLlib",
+     "q": "Jaka jest główna zaleta MLlib w porównaniu z PyTorch, TensorFlow czy Scikit-learn?",
+     "options": [
+      "praca na klastrze ze Sparkiem przy dużych ilościach danych",
+      "najwięcej gotowych algorytmów na rynku",
+      "działa tylko na GPU",
+      "nie wymaga danych treningowych"
+     ],
+     "answer": 0,
+     "explain": "MLlib jest mniej rozbudowana niż te biblioteki, ale działa na klastrze z dużymi danymi."
+    },
+    {
+     "id": "m2-02",
+     "topic": "MLlib",
+     "q": "Które API MLlib jest zalecane?",
+     "options": [
+      "API oparte na DataFrame",
+      "API oparte na RDD",
+      "API oparte na HiveQL",
+      "API oparte na DStream"
+     ],
+     "answer": 0,
+     "explain": "DataFrame: wygodniejszy, daje SQL, optymalizator Catalyst, jednolite API w różnych językach i łatwiejsze pipeline'y."
+    },
+    {
+     "id": "m2-03",
+     "topic": "MLlib",
+     "q": "Jaki jest status API MLlib opartego na RDD?",
+     "options": [
+      "jest w trybie utrzymania (maintenance), ale nie jest przestarzałe (deprecated)",
+      "zostało usunięte ze Sparka",
+      "jest przestarzałe i nie działa",
+      "jest jedynym zalecanym API"
+     ],
+     "answer": 0,
+     "explain": "Maintenance mode, ale NIE deprecated. MLlib jako całość też nie jest przestarzała."
+    },
+    {
+     "id": "m2-04",
+     "topic": "MLlib",
+     "q": "Które narzędzie NIE należy do oferty MLlib według wykładu?",
+     "options": [
+      "silnik zapytań HiveQL",
+      "algorytmy klasyfikacji, regresji i klasteryzacji",
+      "Pipelines do budowy i strojenia modeli",
+      "zapis i odczyt modeli (Persistence)"
+     ],
+     "answer": 0,
+     "explain": "MLlib: algorytmy ML, funkcje cech, Pipelines, Persistence i narzędzia (algebra liniowa, statystyka). HiveQL to Hive."
+    },
+    {
+     "id": "m2-05",
+     "topic": "Zbiór danych",
+     "q": "Ile rekordów, klas i cech ma zbiór Letter Recognition?",
+     "options": [
+      "20 000 rekordów, 26 liter, 16 cech",
+      "16 000 rekordów, 20 liter, 26 cech",
+      "4 000 rekordów, 26 liter, 20 cech",
+      "100 000 rekordów, 10 cyfr, 16 cech"
+     ],
+     "answer": 0,
+     "explain": "20 000 rekordów, litery A–Z (26 klas), 16 cech całkowitych 0–15, 20 czcionek, brak braków danych."
+    },
+    {
+     "id": "m2-06",
+     "topic": "Zbiór danych",
+     "q": "Jaki zakres wartości mają cechy w zbiorze Letter Recognition?",
+     "options": [
+      "liczby całkowite od 0 do 15",
+      "liczby rzeczywiste od 0 do 1",
+      "liczby całkowite od 1 do 26",
+      "dowolne napisy"
+     ],
+     "answer": 0,
+     "explain": "Cechy przeskalowano do liczb całkowitych 0–15."
+    },
+    {
+     "id": "m2-07",
+     "topic": "Wczytanie",
+     "q": "Co robi `inferSchema=True` w `spark.read.csv(...)`?",
+     "options": [
+      "Spark sam rozpoznaje typy kolumn",
+      "Spark traktuje pierwszy wiersz jako nagłówek",
+      "Spark pomija puste wiersze",
+      "Spark zapisuje schemat do Metastore"
+     ],
+     "answer": 0,
+     "explain": "inferSchema = zgadnij typy. Za nagłówek odpowiada `header`."
+    },
+    {
+     "id": "m2-08",
+     "topic": "Wczytanie",
+     "q": "Plik letter-recognition.data nie ma nagłówka. Jak to zaznaczysz przy wczytywaniu?",
+     "options": [
+      "`header=False`",
+      "`header=True`",
+      "`inferSchema=False`",
+      "`schema=None`"
+     ],
+     "answer": 0,
+     "explain": "Brak nagłówka: header=False. Kolumny dostają wtedy nazwy _c0, _c1… albo nadajesz je własnym schematem."
+    },
+    {
+     "id": "m2-09",
+     "topic": "Wczytanie",
+     "q": "Co oznacza trzeci argument `True` w `StructField(\"lettr\", StringType(), True)`?",
+     "options": [
+      "kolumna może zawierać wartości NULL",
+      "kolumna jest kluczem głównym",
+      "kolumna jest etykietą",
+      "kolumna ma być posortowana"
+     ],
+     "answer": 0,
+     "explain": "StructField(nazwa, typ, nullable). True = NULL dozwolony."
+    },
+    {
+     "id": "m2-10",
+     "topic": "Wczytanie",
+     "q": "Co zwraca `df.count()`?",
+     "options": [
+      "liczbę wierszy jako zwykłą liczbę (to akcja)",
+      "nowy DataFrame z kolumną count",
+      "wykres rozkładu etykiet",
+      "liczbę kolumn"
+     ],
+     "answer": 0,
+     "explain": "count() to akcja, zwraca int. Nie ma na niej metody show()."
+    },
+    {
+     "id": "m2-11",
+     "topic": "Wczytanie",
+     "q": "Które polecenie pokazuje podstawowe statystyki kolumn (count, mean, stddev, min, max)?",
+     "options": [
+      "`df.describe().show()`",
+      "`df.schema`",
+      "`df.count()`",
+      "`df.printSchema()`"
+     ],
+     "answer": 0,
+     "explain": "describe() liczy statystyki, show() je wypisuje."
+    },
+    {
+     "id": "m2-12",
+     "topic": "Wczytanie",
+     "q": "Jak policzyć, ile razy występuje każda litera, używając SQL na DataFrame?",
+     "options": [
+      "`df.createOrReplaceTempView(\"df\")`, a potem `spark.sql(\"SELECT lettr, COUNT(*) count FROM df GROUP BY lettr\")`",
+      "`df.sql(\"COUNT lettr\")`",
+      "`spark.read.sql(df)`",
+      "`df.groupBy().sum()`"
+     ],
+     "answer": 0,
+     "explain": "Najpierw rejestrujesz widok tymczasowy, potem zwykły SQL z GROUP BY."
+    },
+    {
+     "id": "m2-13",
+     "topic": "Pojęcia",
+     "q": "Czym jest Estimator?",
+     "options": [
+      "algorytmem z metodą `fit()`, który uczy się na DataFrame i zwraca Transformer",
+      "algorytmem z metodą `transform()`, który zwraca metryki",
+      "obiektem liczącym accuracy",
+      "plikiem z zapisanym modelem"
+     ],
+     "answer": 0,
+     "explain": "Estimator.fit(DF) → model (Transformer)."
+    },
+    {
+     "id": "m2-14",
+     "topic": "Pojęcia",
+     "q": "Czym jest Transformer?",
+     "options": [
+      "algorytmem, który metodą `transform()` zamienia jeden DataFrame w drugi, np. dodaje kolumnę z predykcjami",
+      "algorytmem, który metodą `fit()` uczy się z danych",
+      "narzędziem do strojenia hiperparametrów",
+      "rodzajem pliku CSV"
+     ],
+     "answer": 0,
+     "explain": "Wytrenowany model to Transformer: transform() dodaje kolumny, np. prediction."
+    },
+    {
+     "id": "m2-15",
+     "topic": "Pojęcia",
+     "q": "Co robi Evaluator?",
+     "options": [
+      "liczy metryki jakości na podstawie predykcji",
+      "trenuje model",
+      "dzieli dane na treningowe i testowe",
+      "zapisuje model na dysk"
+     ],
+     "answer": 0,
+     "explain": "Np. MulticlassClassificationEvaluator(metricName=\"accuracy\").evaluate(pred)."
+    },
+    {
+     "id": "m2-16",
+     "topic": "Pojęcia",
+     "q": "Czym jest Pipeline?",
+     "options": [
+      "szeregowym połączeniem etapów (transformerów i estymatorów) w jeden przepływ; sam też jest estymatorem",
+      "pojedynczym drzewem decyzyjnym",
+      "metryką jakości modelu",
+      "tabelą z wynikami"
+     ],
+     "answer": 0,
+     "explain": "Pipeline(stages=[idx, vect, scaler, forest]). Kolejność etapów ma znaczenie."
+    },
+    {
+     "id": "m2-17",
+     "topic": "Przygotowanie danych",
+     "q": "Co oznacza `42` w `df.randomSplit([0.7, 0.3], 42)`?",
+     "options": [
+      "seed, czyli ziarno losowania dające powtarzalny podział",
+      "liczbę partycji",
+      "42% danych testowych",
+      "liczbę drzew"
+     ],
+     "answer": 0,
+     "explain": "[0.7, 0.3] = podział 70/30, 42 = seed."
+    },
+    {
+     "id": "m2-18",
+     "topic": "Przygotowanie danych",
+     "q": "Do czego służy StringIndexer w przykładzie z literami?",
+     "options": [
+      "zamienia litery (napisy) na liczby, bo model działa na liczbach i macierzach",
+      "skaluje cechy",
+      "składa cechy w wektor",
+      "usuwa duplikaty"
+     ],
+     "answer": 0,
+     "explain": "StringIndexer(inputCol=\"lettr\", outputCol=\"label\"): A → 0.0 itd."
+    },
+    {
+     "id": "m2-19",
+     "topic": "Przygotowanie danych",
+     "q": "Do czego służy VectorAssembler?",
+     "options": [
+      "składa wiele kolumn cech w jedną kolumnę-wektor",
+      "zamienia litery na liczby",
+      "liczy średnią i odchylenie",
+      "dzieli dane na zbiory"
+     ],
+     "answer": 0,
+     "explain": "VectorAssembler(inputCols=df.columns[1:], outputCol=\"feat\"). Modele w MLlib chcą jednej kolumny z wektorem cech."
+    },
+    {
+     "id": "m2-20",
+     "topic": "Przygotowanie danych",
+     "q": "Który z tych elementów jest TRANSFORMEREM (nie ma `fit()`, nie uczy się z danych)?",
+     "options": [
+      "VectorAssembler",
+      "StringIndexer",
+      "StandardScaler",
+      "RandomForestClassifier"
+     ],
+     "answer": 0,
+     "explain": "VectorAssembler tylko skleja kolumny. Pozostałe muszą się czegoś nauczyć, więc są estymatorami."
+    },
+    {
+     "id": "m2-21",
+     "topic": "Przygotowanie danych",
+     "q": "Dlaczego StandardScaler jest estymatorem?",
+     "options": [
+      "bo najpierw musi policzyć z danych średnią i odchylenie standardowe każdej kolumny",
+      "bo zwraca metryki",
+      "bo działa tylko na napisach",
+      "bo nie ma metody transform"
+     ],
+     "answer": 0,
+     "explain": "scaler.fit(df) liczy statystyki, a scaler_t.transform(df) skaluje dane."
+    },
+    {
+     "id": "m2-22",
+     "topic": "Przygotowanie danych",
+     "q": "Co robi `df.columns[1:]` w VectorAssembler?",
+     "options": [
+      "bierze wszystkie kolumny poza pierwszą, czyli same cechy bez litery",
+      "bierze tylko pierwszą kolumnę",
+      "bierze kolumnę o indeksie 1",
+      "odwraca kolejność kolumn"
+     ],
+     "answer": 0,
+     "explain": "Pierwsza kolumna to lettr (etykieta), reszta to 16 cech."
+    },
+    {
+     "id": "m2-23",
+     "topic": "Model",
+     "q": "Czym jest RandomForestClassifier?",
+     "options": [
+      "modelem złożonym z wielu drzew decyzyjnych, obsługuje klasy binarne i wieloklasowe",
+      "pojedynczą regresją liniową",
+      "siecią neuronową",
+      "algorytmem rekomendacji"
+     ],
+     "answer": 0,
+     "explain": "Las losowy = wiele prostszych drzew decyzyjnych."
+    },
+    {
+     "id": "m2-24",
+     "topic": "Model",
+     "q": "Jakie są domyślne wartości `numTrees` i `maxDepth` w RandomForestClassifier?",
+     "options": [
+      "20 drzew, głębokość 5",
+      "10 drzew, głębokość 8",
+      "100 drzew, głębokość 30",
+      "5 drzew, głębokość 20"
+     ],
+     "answer": 0,
+     "explain": "numTrees=20, maxDepth=5 (zakres 0–30), maxBins=32, impurity='gini'. W przykładzie ustawiono maxDepth=8, minInstancesPerNode=5."
+    },
+    {
+     "id": "m2-25",
+     "topic": "Model",
+     "q": "Który klasyfikator według wykładu obsługuje TYLKO etykiety binarne?",
+     "options": [
+      "GBTClassifier",
+      "RandomForestClassifier",
+      "DecisionTreeClassifier",
+      "każdy obsługuje wiele klas"
+     ],
+     "answer": 0,
+     "explain": "GBT (Gradient-Boosted Trees) tylko binarnie. RandomForest i DecisionTree: binarne i wieloklasowe."
+    },
+    {
+     "id": "m2-26",
+     "topic": "Model",
+     "q": "Jaka kolumna z wynikiem przewidywania pojawia się po `forest_t.transform(df)`?",
+     "options": [
+      "`prediction`",
+      "`label`",
+      "`features`",
+      "`result`"
+     ],
+     "answer": 0,
+     "explain": "transform dodaje rawPrediction, probability i prediction."
+    },
+    {
+     "id": "m2-27",
+     "topic": "Model",
+     "q": "Do czego służy regresja logistyczna?",
+     "options": [
+      "do przewidywania odpowiedzi kategorycznej, np. czy klient spłaci kredyt",
+      "do przewidywania dokładnej liczby, np. ceny domu",
+      "do grupowania bez etykiet",
+      "do rekomendacji filmów"
+     ],
+     "answer": 0,
+     "explain": "Szczególny przypadek uogólnionych modeli liniowych; przewiduje prawdopodobieństwo wyniku. Binomialna: 2 klasy, multinomialna: wiele klas."
+    },
+    {
+     "id": "m2-28",
+     "topic": "Ocena",
+     "q": "Precision (precyzja) to:",
+     "options": [
+      "TP / (TP + FP)",
+      "TP / (TP + FN)",
+      "(TP + TN) / wszystkie",
+      "2·P·R / (P + R)"
+     ],
+     "answer": 0,
+     "explain": "Precyzja: ile z przewidzianych jako pozytywne było naprawdę pozytywnych. TP/(TP+FN) to Recall, (TP+TN)/wszystkie to Accuracy, ostatnie to F1."
+    },
+    {
+     "id": "m2-29",
+     "topic": "Ocena",
+     "q": "Recall (czułość) to:",
+     "options": [
+      "TP / (TP + FN)",
+      "TP / (TP + FP)",
+      "TN / (TN + FP)",
+      "(TP + TN) / wszystkie"
+     ],
+     "answer": 0,
+     "explain": "Czułość: ile faktycznie pozytywnych model wyłapał."
+    },
+    {
+     "id": "m2-30",
+     "topic": "Ocena",
+     "q": "F1-score to:",
+     "options": [
+      "średnia harmoniczna precyzji i czułości",
+      "średnia arytmetyczna accuracy i recall",
+      "suma TP i TN",
+      "odsetek błędnych przewidywań"
+     ],
+     "answer": 0,
+     "explain": "F1 = 2·P·R / (P + R)."
+    },
+    {
+     "id": "m2-31",
+     "topic": "Ocena",
+     "q": "W przykładzie ze spamem TP=40, TN=45, FP=5, FN=10. Co oznacza FP=5?",
+     "options": [
+      "5 zwykłych maili błędnie oznaczono jako spam",
+      "5 spamów model przepuścił",
+      "5 spamów wykrył poprawnie",
+      "5 zwykłych maili rozpoznał poprawnie"
+     ],
+     "answer": 0,
+     "explain": "FP = fałszywy alarm. FN = spam, którego model nie wykrył."
+    },
+    {
+     "id": "m2-32",
+     "topic": "Ocena",
+     "q": "Dlaczego sama accuracy może wprowadzać w błąd?",
+     "options": [
+      "przy niezrównoważonych klasach model „zawsze nie spam” ma 95% accuracy, a nie wykrywa żadnego spamu",
+      "bo zawsze wynosi 100%",
+      "bo nie da się jej policzyć w Sparku",
+      "bo uwzględnia tylko FN"
+     ],
+     "answer": 0,
+     "explain": "Dlatego potrzebna jest macierz pomyłek."
+    },
+    {
+     "id": "m2-33",
+     "topic": "Ocena",
+     "q": "Jaką wartość `metricName` podasz w MulticlassClassificationEvaluator, żeby dostać ważone F1?",
+     "options": [
+      "`\"weightedFMeasure\"`",
+      "`\"weightedF1Score\"`",
+      "`\"f1Weighted\"`",
+      "`\"harmonicMean\"`"
+     ],
+     "answer": 0,
+     "explain": "Z wykładu: \"accuracy\", \"weightedPrecision\", \"weightedRecall\", \"weightedFMeasure\"."
+    },
+    {
+     "id": "m2-34",
+     "topic": "Ocena",
+     "q": "Jak wypadła dokładność modelu na zbiorze testowym w porównaniu z treningowym?",
+     "options": [
+      "kilka procent gorzej (ok. 0,76 wobec ok. 0,79)",
+      "dokładnie tak samo",
+      "dużo lepiej",
+      "ok. 0,30 wobec 0,99"
+     ],
+     "answer": 0,
+     "explain": "To normalne: na danych, których model nie widział, wynik jest trochę niższy."
+    },
+    {
+     "id": "m2-35",
+     "topic": "Ocena",
+     "q": "Którą metodą DataFrame zbudowano macierz pomyłek?",
+     "options": [
+      "`crosstab(\"label\", \"prediction\")`",
+      "`groupBy(\"label\").sum()`",
+      "`pivot(\"prediction\")`",
+      "`describe(\"label\")`"
+     ],
+     "answer": 0,
+     "explain": "Potem toPandas() i heatmapa z seaborn."
+    },
+    {
+     "id": "m2-36",
+     "topic": "Ocena",
+     "q": "Która cecha okazała się najważniejsza dla lasu losowego?",
+     "options": [
+      "`x_ege`, czyli liczba krawędzi w poziomie",
+      "`high`, czyli wysokość prostokąta",
+      "`x_box`, czyli pozycja pozioma",
+      "`onpix`, czyli liczba zapalonych pikseli"
+     ],
+     "answer": 0,
+     "explain": "Top 3: x_ege, x2ybr, y_ege. Ważności odczytuje się z forest_t.featureImportances."
+    },
+    {
+     "id": "m2-37",
+     "topic": "Ocena",
+     "q": "Która litera była dla modelu najtrudniejsza?",
+     "options": [
+      "H (często mylona z X)",
+      "W",
+      "A",
+      "M"
+     ],
+     "answer": 0,
+     "explain": "H: 69 trafień, a 44 razy pomylona z X. Najlepiej wypadła W."
+    },
+    {
+     "id": "m2-38",
+     "topic": "Pipeline",
+     "q": "Jak zapisać wytrenowany Pipeline na dysk?",
+     "options": [
+      "`pipe_t.save(\"model\")`",
+      "`pipe.write.csv(\"model\")`",
+      "`spark.save(pipe_t)`",
+      "`pipe_t.export(\"model\")`"
+     ],
+     "answer": 0,
+     "explain": "Powstaje katalog z podkatalogami metadata i stages."
+    },
+    {
+     "id": "m2-39",
+     "topic": "Strojenie",
+     "q": "Kiedy ustawia się hiperparametry?",
+     "options": [
+      "przed treningiem modelu",
+      "w trakcie predykcji",
+      "po ewaluacji, automatycznie",
+      "nigdy, Spark dobiera je sam"
+     ],
+     "answer": 0,
+     "explain": "Hiperparametry (np. numTrees, maxDepth) ustawia się przed treningiem; strojenie szuka najlepszych."
+    },
+    {
+     "id": "m2-40",
+     "topic": "Strojenie",
+     "q": "Ile konfiguracji sprawdzi Grid Search dla numTrees [10, 50, 100] i maxDepth [5, 10, 20]?",
+     "options": [
+      "9",
+      "6",
+      "3",
+      "27"
+     ],
+     "answer": 0,
+     "explain": "3 × 3 = 9. Random Search sprawdza tylko losową część."
+    },
+    {
+     "id": "m2-41",
+     "topic": "Strojenie",
+     "q": "Czym Random Search różni się od Grid Search?",
+     "options": [
+      "losuje tylko część kombinacji, więc jest szybszy przy dużej przestrzeni",
+      "sprawdza wszystkie kombinacje dwa razy",
+      "działa tylko dla regresji",
+      "nie potrzebuje ewaluatora"
+     ],
+     "answer": 0,
+     "explain": "Grid Search = wszystkie kombinacje, Random Search = losowa próbka."
+    },
+    {
+     "id": "m2-42",
+     "topic": "Strojenie",
+     "q": "Którą klasą buduje się siatkę hiperparametrów?",
+     "options": [
+      "`ParamGridBuilder`",
+      "`CrossValidator`",
+      "`VectorAssembler`",
+      "`MulticlassClassificationEvaluator`"
+     ],
+     "answer": 0,
+     "explain": "ParamGridBuilder().addGrid(rf.numTrees, [...]).addGrid(rf.maxDepth, [...]).build()."
+    },
+    {
+     "id": "m2-43",
+     "topic": "Strojenie",
+     "q": "Jak działa CrossValidator przy k = 3?",
+     "options": [
+      "tworzy 3 pary (trening, test), każda używa 2/3 danych do treningu i 1/3 do testu, a każda część jest testowa dokładnie raz",
+      "dzieli dane raz w proporcji 3:1",
+      "trenuje 3 modele na tych samych danych",
+      "losuje 3 hiperparametry"
+     ],
+     "answer": 0,
+     "explain": "Druga klasa do wyboru modelu w MLlib to TrainValidationSplit (jeden podział)."
+    },
+    {
+     "id": "m2-44",
+     "topic": "Strojenie",
+     "q": "Jak po strojeniu dostać najlepszy model?",
+     "options": [
+      "`cvModel.bestModel`",
+      "`cv.best()`",
+      "`paramGrid.max()`",
+      "`evaluator.bestModel`"
+     ],
+     "answer": 0,
+     "explain": "cvModel = cv.fit(df_train), a potem cvModel.bestModel."
+    }
+   ]
+  },
+  {
+   "id": "m3",
+   "title": "Moduł 3: Rekomendacje i ALS",
+   "questions": [
+    {
+     "id": "m3-01",
+     "topic": "Po co",
+     "q": "Jaka część czasu oglądania na YouTube pochodzi według wykładu z rekomendacji?",
+     "options": [
+      "60%",
+      "40%",
+      "10%",
+      "90%"
+     ],
+     "answer": 0,
+     "explain": "60% czasu oglądania na YouTube i 40% instalacji w Google Play pochodzi z rekomendacji."
+    },
+    {
+     "id": "m3-02",
+     "topic": "Po co",
+     "q": "Jaka część instalacji aplikacji w Google Play pochodzi z rekomendacji?",
+     "options": [
+      "40%",
+      "60%",
+      "20%",
+      "80%"
+     ],
+     "answer": 0,
+     "explain": "Google Play: 40%. YouTube: 60% czasu oglądania."
+    },
+    {
+     "id": "m3-03",
+     "topic": "Po co",
+     "q": "Czym jest system rekomendacyjny?",
+     "options": [
+      "rodzajem systemu filtrowania informacji, który przewiduje ocenę lub preferencję użytkownika dla elementu",
+      "bazą danych NoSQL",
+      "wyszukiwarką pełnotekstową",
+      "systemem kolejkowym wiadomości"
+     ],
+     "answer": 0,
+     "explain": "Filtruje nadmiar informacji i przewiduje, co użytkownikowi się spodoba."
+    },
+    {
+     "id": "m3-04",
+     "topic": "Po co",
+     "q": "Na jaki problem odpowiadają systemy rekomendacyjne?",
+     "options": [
+      "nadmiar informacji (information overload): opcji jest tyle, że użytkownik sam nie wybierze",
+      "brak danych o użytkownikach",
+      "zbyt wolne dyski",
+      "awarie węzłów klastra"
+     ],
+     "answer": 0,
+     "explain": "Za dużo wyboru, więc system podpowiada to, co pasuje."
+    },
+    {
+     "id": "m3-05",
+     "topic": "Po co",
+     "q": "Który cel systemu rekomendacyjnego jest celem FIRMY, a nie użytkownika?",
+     "options": [
+      "wzrost sprzedaży i utrzymanie lojalności klientów",
+      "większa satysfakcja użytkownika",
+      "lepsze doświadczenie zakupowe",
+      "pomoc w podjęciu decyzji"
+     ],
+     "answer": 0,
+     "explain": "Firma: sprzedaż, lojalność, optymalizacja oferty. Użytkownik: satysfakcja, wygoda, zaangażowanie."
+    },
+    {
+     "id": "m3-06",
+     "topic": "Pojęcia",
+     "q": "Co to jest item (element) w systemie rekomendacyjnym?",
+     "options": [
+      "to, co system poleca, np. aplikacja w Google Play albo film na YouTube",
+      "identyfikator użytkownika",
+      "wektor liczb",
+      "ocena wystawiona przez użytkownika"
+     ],
+     "answer": 0,
+     "explain": "Item = document = rzecz polecana."
+    },
+    {
+     "id": "m3-07",
+     "topic": "Pojęcia",
+     "q": "Co to jest query (kontekst)?",
+     "options": [
+      "informacje, na podstawie których system tworzy rekomendację: ID użytkownika, historia, pora dnia, urządzenie",
+      "film polecany użytkownikowi",
+      "zapytanie SQL do bazy",
+      "lista ocen filmu"
+     ],
+     "answer": 0,
+     "explain": "Query = wszystko, co system wie w chwili polecania."
+    },
+    {
+     "id": "m3-08",
+     "topic": "Pojęcia",
+     "q": "Co to jest embedding (osadzenie)?",
+     "options": [
+      "zamiana elementów i zapytań na wektory liczb we wspólnej przestrzeni",
+      "zapis modelu na dysk",
+      "podział danych na treningowe i testowe",
+      "kompresja pliku z ocenami"
+     ],
+     "answer": 0,
+     "explain": "Podobne rzeczy lądują blisko siebie w tej przestrzeni."
+    },
+    {
+     "id": "m3-09",
+     "topic": "Pojęcia",
+     "q": "Jaka jest zwykle przestrzeń embeddingów?",
+     "options": [
+      "niskowymiarowa, czyli dużo mniejsza niż liczba wszystkich elementów",
+      "zawsze dwuwymiarowa",
+      "nieskończenie wymiarowa",
+      "równa liczbie użytkowników"
+     ],
+     "answer": 0,
+     "explain": "d jest dużo mniejsze niż rozmiar korpusu."
+    },
+    {
+     "id": "m3-10",
+     "topic": "Podejścia",
+     "q": "Na czym polega filtrowanie demograficzne?",
+     "options": [
+      "poleca te same popularne lub dobrze oceniane filmy użytkownikom o podobnych cechach demograficznych",
+      "szuka filmów podobnych do lubianego na podstawie opisu",
+      "uczy się z podobieństwa użytkowników i filmów naraz",
+      "losuje filmy"
+     ],
+     "answer": 0,
+     "explain": "Proste: popularność i gatunek."
+    },
+    {
+     "id": "m3-11",
+     "topic": "Podejścia",
+     "q": "Na czym polega content-based filtering?",
+     "options": [
+      "poleca elementy podobne do tych, które użytkownik lubi, na podstawie metadanych (gatunek, reżyser, aktorzy, opis)",
+      "poleca to, co lubią podobni użytkownicy, bez metadanych",
+      "poleca najpopularniejsze filmy wszystkim",
+      "poleca filmy losowo"
+     ],
+     "answer": 0,
+     "explain": "„Lubisz ten film, to polubisz podobny.”"
+    },
+    {
+     "id": "m3-12",
+     "topic": "Podejścia",
+     "q": "Na czym polega collaborative filtering?",
+     "options": [
+      "korzysta jednocześnie z podobieństwa użytkowników i elementów i nie potrzebuje metadanych",
+      "wymaga metadanych: gatunku, reżysera, obsady",
+      "poleca to samo osobom o podobnej demografii",
+      "porównuje tylko opisy fabuły"
+     ],
+     "answer": 0,
+     "explain": "„A jest podobny do B, B lubi film 1, więc poleć film 1 użytkownikowi A.”"
+    },
+    {
+     "id": "m3-13",
+     "topic": "Podejścia",
+     "q": "Użytkownik A jest podobny do B. B lubi film 1, a A nie widział niczego podobnego do filmu 1. Które podejście i tak poleci A film 1?",
+     "options": [
+      "collaborative filtering",
+      "content-based filtering",
+      "filtrowanie demograficzne",
+      "żadne"
+     ],
+     "answer": 0,
+     "explain": "To jest przykład z wykładu na collaborative filtering."
+    },
+    {
+     "id": "m3-14",
+     "topic": "Podejścia",
+     "q": "Które podejście NIE potrzebuje metadanych filmów?",
+     "options": [
+      "collaborative filtering",
+      "content-based filtering",
+      "TF-IDF na opisach",
+      "podobieństwo po gatunku"
+     ],
+     "answer": 0,
+     "explain": "Collaborative patrzy na zachowania (kto co lubi), a nie na opis filmu."
+    },
+    {
+     "id": "m3-15",
+     "topic": "Ważona ocena",
+     "q": "Dlaczego sama średnia ocen nie wystarcza do rankingu filmów?",
+     "options": [
+      "film ze średnią 8,9 i 3 głosami nie jest lepszy niż film ze średnią 7,8 i 40 głosami",
+      "bo średnią trudno policzyć",
+      "bo oceny są tekstowe",
+      "bo średnia zawsze wynosi 5"
+     ],
+     "answer": 0,
+     "explain": "Mało głosów = mało wiarygodna średnia. Dlatego liczy się średnią ważoną."
+    },
+    {
+     "id": "m3-16",
+     "topic": "Ważona ocena",
+     "q": "Co oznacza v we wzorze WR = v/(v+m)·R + m/(v+m)·C?",
+     "options": [
+      "liczbę głosów oddanych na film",
+      "minimalną liczbę głosów do zestawienia",
+      "średnią ocenę filmu",
+      "średnią ocenę w całym zestawieniu"
+     ],
+     "answer": 0,
+     "explain": "v = votes filmu."
+    },
+    {
+     "id": "m3-17",
+     "topic": "Ważona ocena",
+     "q": "Co oznacza m we wzorze na ważoną ocenę?",
+     "options": [
+      "minimalną liczbę głosów wymaganą, żeby film trafił do zestawienia",
+      "liczbę głosów filmu",
+      "średnią ocenę filmu",
+      "liczbę filmów"
+     ],
+     "answer": 0,
+     "explain": "m = minimum."
+    },
+    {
+     "id": "m3-18",
+     "topic": "Ważona ocena",
+     "q": "Co oznacza R we wzorze na ważoną ocenę?",
+     "options": [
+      "średnią ocenę danego filmu",
+      "średnią ocenę w całym zestawieniu",
+      "liczbę głosów",
+      "RMSE"
+     ],
+     "answer": 0,
+     "explain": "R = Rating filmu."
+    },
+    {
+     "id": "m3-19",
+     "topic": "Ważona ocena",
+     "q": "Co oznacza C we wzorze na ważoną ocenę?",
+     "options": [
+      "średnią ocenę w całym zestawieniu (wszystkich filmów)",
+      "średnią liczbę głosów",
+      "liczbę głosów filmu",
+      "minimalną liczbę głosów"
+     ],
+     "answer": 0,
+     "explain": "Na slajdzie błędnie napisano „średnia liczba głosów”. Poprawnie: średnia ocena globalna."
+    },
+    {
+     "id": "m3-20",
+     "topic": "Content-based",
+     "q": "Do czego służy TF-IDF w content-based filtering?",
+     "options": [
+      "zamienia opisy filmów na wektory słów, ważąc częstość słowa i to, jak rzadko występuje w innych opisach",
+      "liczy RMSE",
+      "dzieli dane na zbiory",
+      "rozkłada macierz na dwie mniejsze"
+     ],
+     "answer": 0,
+     "explain": "TF = częstość w dokumencie, IDF = log(wszystkie dokumenty / dokumenty z tym słowem)."
+    },
+    {
+     "id": "m3-21",
+     "topic": "Content-based",
+     "q": "Której miary podobieństwa użyto w content-based filtering na slajdach i dlaczego?",
+     "options": [
+      "cosinusowej, bo nie zależy od długości wektora i jest szybka",
+      "euklidesowej, bo jest najdokładniejsza",
+      "RMSE, bo to standard",
+      "Pearsona, bo nie wymaga wektorów"
+     ],
+     "answer": 0,
+     "explain": "Cosinus mierzy kąt, a nie długość."
+    },
+    {
+     "id": "m3-22",
+     "topic": "Content-based",
+     "q": "Dlaczego w liście 10 najbardziej podobnych filmów pomija się pierwszy wynik?",
+     "options": [
+      "bo najbardziej podobny do filmu jest on sam",
+      "bo pierwszy wynik jest zawsze błędny",
+      "bo to najgorzej oceniany film",
+      "bo Spark tak sortuje"
+     ],
+     "answer": 0,
+     "explain": "Podobieństwo filmu do samego siebie = 1."
+    },
+    {
+     "id": "m3-23",
+     "topic": "Architektura",
+     "q": "Jaka jest kolejność etapów w typowym systemie rekomendacyjnym?",
+     "options": [
+      "Candidate Generation → Scoring → Re-ranking",
+      "Scoring → Candidate Generation → Re-ranking",
+      "Re-ranking → Scoring → Candidate Generation",
+      "Candidate Generation → Re-ranking → Scoring"
+     ],
+     "answer": 0,
+     "explain": "Najpierw zgrubnie wybierz kandydatów, potem oceń dokładnie, na końcu popraw ranking."
+    },
+    {
+     "id": "m3-24",
+     "topic": "Architektura",
+     "q": "Co robi etap Candidate Generation?",
+     "options": [
+      "z ogromnego zbioru (np. miliardów filmów) wybiera setki lub tysiące kandydatów",
+      "wybiera finałowe 10 pozycji",
+      "usuwa filmy, których użytkownik nie lubi",
+      "liczy RMSE"
+     ],
+     "answer": 0,
+     "explain": "YouTube: miliardy → setki/tysiące."
+    },
+    {
+     "id": "m3-25",
+     "topic": "Architektura",
+     "q": "Co robi etap Re-ranking?",
+     "options": [
+      "uwzględnia dodatkowe ograniczenia: usuwa nielubiane, podbija świeże, dba o różnorodność i sprawiedliwość",
+      "generuje pierwszych kandydatów",
+      "trenuje model ALS",
+      "zamienia tekst na wektory"
+     ],
+     "answer": 0,
+     "explain": "Diversity, freshness, fairness."
+    },
+    {
+     "id": "m3-26",
+     "topic": "Podobieństwo",
+     "q": "Jakie trzy miary podobieństwa embeddingów podano na wykładzie?",
+     "options": [
+      "cosinus, iloczyn skalarny, odległość euklidesowa",
+      "RMSE, accuracy, F1",
+      "TF, IDF, TF-IDF",
+      "SGD, WALS, ALS"
+     ],
+     "answer": 0,
+     "explain": "Te trzy miary porównują wektor zapytania z wektorami elementów."
+    },
+    {
+     "id": "m3-27",
+     "topic": "Podobieństwo",
+     "q": "Co oznacza mniejsza odległość euklidesowa między embeddingami?",
+     "options": [
+      "większe podobieństwo",
+      "mniejsze podobieństwo",
+      "brak związku",
+      "błąd modelu"
+     ],
+     "answer": 0,
+     "explain": "Bliżej = bardziej podobne."
+    },
+    {
+     "id": "m3-28",
+     "topic": "Podobieństwo",
+     "q": "Kiedy iloczyn skalarny i cosinus dają to samo?",
+     "options": [
+      "gdy wektory są znormalizowane (mają długość 1)",
+      "zawsze",
+      "nigdy",
+      "gdy wektory są dwuwymiarowe"
+     ],
+     "answer": 0,
+     "explain": "Iloczyn skalarny = długości razy cosinus. Przy długościach 1 zostaje sam cosinus."
+    },
+    {
+     "id": "m3-29",
+     "topic": "Feedback",
+     "q": "Czym różni się feedback jawny (explicit) od niejawnego (implicit)?",
+     "options": [
+      "jawny = użytkownik sam wystawia ocenę; niejawny = system wnioskuje, np. z tego, że obejrzał film",
+      "jawny = z logów, niejawny = z ankiet",
+      "jawny = binarny, niejawny = od 1 do 5",
+      "nie ma różnicy"
+     ],
+     "answer": 0,
+     "explain": "Explicit: gwiazdki. Implicit: obejrzał, więc pewnie zainteresowany."
+    },
+    {
+     "id": "m3-30",
+     "topic": "Faktoryzacja",
+     "q": "Na czym polega faktoryzacja macierzy (Matrix Factorization)?",
+     "options": [
+      "macierz ocen użytkownicy × filmy przybliża się iloczynem dwóch mniejszych macierzy: embeddingów użytkowników i filmów",
+      "macierz dzieli się na partycje w HDFS",
+      "macierz sortuje się według ocen",
+      "macierz zamienia się na tekst"
+     ],
+     "answer": 0,
+     "explain": "A ≈ U·Vᵀ. Ocena użytkownika i dla filmu j to iloczyn skalarny ich wektorów."
+    },
+    {
+     "id": "m3-31",
+     "topic": "Faktoryzacja",
+     "q": "Dlaczego zwykłe SVD słabo się sprawdza w rekomendacjach?",
+     "options": [
+      "macierz ocen jest bardzo rzadka (większość wpisów pusta), więc wynik jest bliski zeru i słabo generalizuje",
+      "bo SVD działa tylko na tekście",
+      "bo SVD wymaga GPU",
+      "bo SVD nie da się policzyć"
+     ],
+     "answer": 0,
+     "explain": "Pomyśl o wszystkich filmach na YouTube i tych kilku, które obejrzał jeden użytkownik."
+    },
+    {
+     "id": "m3-32",
+     "topic": "Faktoryzacja",
+     "q": "Co dodaje Weighted Matrix Factorization (WMF)?",
+     "options": [
+      "osobną sumę po wpisach nieobserwowanych (traktowanych jako 0) z wagą w₀",
+      "dodatkowe filmy do zbioru",
+      "szyfrowanie macierzy",
+      "drugi zbiór testowy"
+     ],
+     "answer": 0,
+     "explain": "w₀ to ważny hiperparametr, który równoważy oba składniki."
+    },
+    {
+     "id": "m3-33",
+     "topic": "SGD vs WALS",
+     "q": "Która cecha dotyczy WALS?",
+     "options": [
+      "zbiega szybciej i łatwiej obsługuje wpisy nieobserwowane, ale działa tylko ze stratą kwadratową",
+      "jest bardzo elastyczny i obsługuje dowolne funkcje straty",
+      "wymaga negative sampling",
+      "nie da się go zrównoleglić"
+     ],
+     "answer": 0,
+     "explain": "WALS: szybki, ale tylko least squares."
+    },
+    {
+     "id": "m3-34",
+     "topic": "SGD vs WALS",
+     "q": "Która cecha dotyczy SGD?",
+     "options": [
+      "elastyczny (różne funkcje straty), ale wolniej zbiega i gorzej radzi sobie z wpisami nieobserwowanymi",
+      "działa tylko ze stratą kwadratową",
+      "zawsze zbiega szybciej niż WALS",
+      "nie da się go zrównoleglić"
+     ],
+     "answer": 0,
+     "explain": "Oba da się zrównoleglić."
+    },
+    {
+     "id": "m3-35",
+     "topic": "SGD vs WALS",
+     "q": "Jak działa WALS (i ALS)?",
+     "options": [
+      "na zmianę: ustala macierz U i liczy V, potem ustala V i liczy U",
+      "liczy U i V jednocześnie gradientem",
+      "losuje U i V w każdym kroku",
+      "liczy tylko U"
+     ],
+     "answer": 0,
+     "explain": "Alternating = naprzemiennie."
+    },
+    {
+     "id": "m3-36",
+     "topic": "MovieLens",
+     "q": "Ile ocen, filmów i użytkowników ma MovieLens small?",
+     "options": [
+      "100 000 ocen, ok. 9 000 filmów, ok. 600 użytkowników",
+      "20 000 ocen, 26 filmów, 16 użytkowników",
+      "1 mln ocen, 100 filmów, 10 użytkowników",
+      "5 000 ocen, 4 800 filmów, 100 użytkowników"
+     ],
+     "answer": 0,
+     "explain": "Każdy użytkownik ocenił co najmniej 20 filmów, brak danych demograficznych."
+    },
+    {
+     "id": "m3-37",
+     "topic": "MovieLens",
+     "q": "W jakiej skali są oceny w MovieLens small?",
+     "options": [
+      "od 0 do 5 co 0,5",
+      "od 1 do 10 co 1",
+      "0 albo 1",
+      "od 0 do 100"
+     ],
+     "answer": 0,
+     "explain": "rating: 0–5 co pół gwiazdki. timestamp: sekundy od 1970-01-01."
+    },
+    {
+     "id": "m3-38",
+     "topic": "ALS w Sparku",
+     "q": "Z którego pakietu importuje się ALS?",
+     "options": [
+      "`pyspark.ml.recommendation`",
+      "`pyspark.ml.classification`",
+      "`pyspark.ml.feature`",
+      "`pyspark.sql.functions`"
+     ],
+     "answer": 0,
+     "explain": "from pyspark.ml.recommendation import ALS"
+    },
+    {
+     "id": "m3-39",
+     "topic": "ALS w Sparku",
+     "q": "Co oznacza `train, test = ratings.randomSplit([0.8, 0.2], 42)`?",
+     "options": [
+      "80% danych do treningu, 20% do testu, seed 42",
+      "80 iteracji, 20 testów, 42 filmy",
+      "80% danych do testu, 20% do treningu",
+      "podział na 42 części"
+     ],
+     "answer": 0,
+     "explain": "Tym razem 80/20, a w MLlib z literami było 70/30."
+    },
+    {
+     "id": "m3-40",
+     "topic": "ALS w Sparku",
+     "q": "Które parametry ALS wskazują kolumny?",
+     "options": [
+      "`userCol`, `itemCol`, `ratingCol`",
+      "`inputCol`, `outputCol`, `labelCol`",
+      "`featuresCol`, `labelCol`, `predictionCol`",
+      "`user`, `movie`, `score`"
+     ],
+     "answer": 0,
+     "explain": "ALS(userCol=\"userId\", itemCol=\"movieId\", ratingCol=\"rating\", ...)."
+    },
+    {
+     "id": "m3-41",
+     "topic": "ALS w Sparku",
+     "q": "Co oznacza `maxIter=5` w ALS?",
+     "options": [
+      "model przejdzie 5 iteracji uczenia",
+      "model poleci 5 filmów",
+      "5 ukrytych cech",
+      "5 użytkowników"
+     ],
+     "answer": 0,
+     "explain": "maxIter = liczba iteracji. regParam = siła regularyzacji."
+    },
+    {
+     "id": "m3-42",
+     "topic": "ALS w Sparku",
+     "q": "Co robi `coldStartStrategy=\"drop\"`?",
+     "options": [
+      "usuwa wiersze z NaN w predykcjach (nowi użytkownicy lub filmy), żeby dało się policzyć metrykę",
+      "usuwa użytkowników z mniej niż 20 ocenami",
+      "wyłącza regularyzację",
+      "kończy trening po pierwszej iteracji"
+     ],
+     "answer": 0,
+     "explain": "Bez tego RMSE wyszłoby NaN."
+    },
+    {
+     "id": "m3-43",
+     "topic": "ALS w Sparku",
+     "q": "Co zwraca `als.fit(train)`?",
+     "options": [
+      "wytrenowany model (transformer) z metodą transform",
+      "liczbę RMSE",
+      "listę rekomendacji",
+      "nowy zbiór treningowy"
+     ],
+     "answer": 0,
+     "explain": "Ta sama zasada co w MLlib: fit daje model, a transform daje predykcje."
+    },
+    {
+     "id": "m3-44",
+     "topic": "Ocena",
+     "q": "Którą klasą i metryką oceniono model ALS?",
+     "options": [
+      "`RegressionEvaluator` z metryką RMSE",
+      "`MulticlassClassificationEvaluator` z accuracy",
+      "`BinaryClassificationEvaluator` z AUC",
+      "`CrossValidator` z F1"
+     ],
+     "answer": 0,
+     "explain": "Oceny to liczby, więc to zadanie regresji: RMSE."
+    },
+    {
+     "id": "m3-45",
+     "topic": "Ocena",
+     "q": "Ile wyniosło RMSE modelu ALS w przykładzie?",
+     "options": [
+      "ok. 1,08",
+      "ok. 0,08",
+      "ok. 10,8",
+      "ok. 0,76"
+     ],
+     "answer": 0,
+     "explain": "Model myli się średnio o około jedną gwiazdkę."
+    },
+    {
+     "id": "m3-46",
+     "topic": "Wyniki",
+     "q": "Co zwraca `model.recommendForAllUsers(3)`?",
+     "options": [
+      "3 polecane filmy dla każdego użytkownika",
+      "3 użytkowników dla każdego filmu",
+      "3 najlepsze filmy w całym zbiorze",
+      "RMSE policzone 3 razy"
+     ],
+     "answer": 0,
+     "explain": "ForAllUsers: dla każdego użytkownika lista filmów."
+    },
+    {
+     "id": "m3-47",
+     "topic": "Wyniki",
+     "q": "Co zwraca `model.recommendForAllItems(3)`?",
+     "options": [
+      "3 użytkowników, którym każdy film najprawdopodobniej się spodoba",
+      "3 filmy dla każdego użytkownika",
+      "3 najpopularniejszych użytkowników",
+      "3 kategorie filmów"
+     ],
+     "answer": 0,
+     "explain": "ForAllItems: dla każdego filmu lista użytkowników."
+    }
+   ]
+  },
+  {
+   "id": "m4",
+   "title": "Moduł 4: Kafka i Spark Streaming",
+   "questions": [
+    {
+     "id": "m4-01",
+     "topic": "Strumienie",
+     "q": "Na czym polega przetwarzanie strumieni danych?",
+     "options": [
+      "dane ze źródeł (logi, czujniki IoT) są przetwarzane na bieżąco, w czasie rzeczywistym, bez ręcznego ładowania porcji",
+      "dane są raz na noc ładowane wsadowo do HDFS",
+      "dane są ręcznie kopiowane poleceniem put",
+      "dane są przechowywane w tabelach Hive"
+     ],
+     "answer": 0,
+     "explain": "Strumień = dane płyną cały czas i są przetwarzane od razu."
+    },
+    {
+     "id": "m4-02",
+     "topic": "Strumienie",
+     "q": "Jakie dwa wyzwania przetwarzania strumieni podaje wykład?",
+     "options": [
+      "skalowalny i niezawodny transport danych do klastra oraz wydobycie z nich wartościowej informacji",
+      "mała pojemność dysków i brak SQL",
+      "brak sieci i brak Javy",
+      "za mało użytkowników i za mało danych"
+     ],
+     "answer": 0,
+     "explain": "Najpierw dostarczyć dane (Kafka), potem coś z nich wyciągnąć (Spark)."
+    },
+    {
+     "id": "m4-03",
+     "topic": "Publish-subscribe",
+     "q": "Jak działa model publish-subscribe?",
+     "options": [
+      "producent publikuje wiadomości do topicu przez brokera, a konsument subskrybuje topic i je odbiera",
+      "konsument wysyła zapytania SQL do producenta",
+      "producent zapisuje pliki bezpośrednio na dysk konsumenta",
+      "każdy producent ma dokładnie jednego konsumenta"
+     ],
+     "answer": 0,
+     "explain": "Publikujesz do tematu, subskrybujesz temat, a broker jest pośrodku."
+    },
+    {
+     "id": "m4-04",
+     "topic": "Publish-subscribe",
+     "q": "Czy producent w modelu publish-subscribe musi wiedzieć, kto odbiera jego wiadomości?",
+     "options": [
+      "nie, producent i konsument są od siebie oddzieleni",
+      "tak, musi znać adres każdego konsumenta",
+      "tak, ale tylko pierwszego konsumenta",
+      "tak, inaczej broker odrzuci wiadomość"
+     ],
+     "answer": 0,
+     "explain": "Separacja: producent pisze do topicu, a kto czyta, go nie obchodzi."
+    },
+    {
+     "id": "m4-05",
+     "topic": "Publish-subscribe",
+     "q": "Jakie wyzwania stoją przed systemami kolejkowymi według wykładu?",
+     "options": [
+      "szybkość, bezpieczeństwo, bezawaryjność, proste API, prosta konfiguracja",
+      "tylko szybkość",
+      "tylko pojemność dysku",
+      "obsługa SQL i transakcji"
+     ],
+     "answer": 0,
+     "explain": "Pięć wyzwań: szybkość, bezpieczeństwo, bezawaryjność, proste API, prosta konfiguracja."
+    },
+    {
+     "id": "m4-06",
+     "topic": "Kafka",
+     "q": "Czym jest Apache Kafka?",
+     "options": [
+      "systemem przesyłania wiadomości typu publish-subscribe (brokerem), który przenosi strumienie danych",
+      "bazą danych NoSQL",
+      "silnikiem SQL dla Hadoopa",
+      "biblioteką uczenia maszynowego"
+     ],
+     "answer": 0,
+     "explain": "Kafka = broker wiadomości."
+    },
+    {
+     "id": "m4-07",
+     "topic": "Kafka",
+     "q": "Gdzie powstała Kafka?",
+     "options": [
+      "w LinkedIn",
+      "w Facebooku",
+      "w Yahoo",
+      "w Google"
+     ],
+     "answer": 0,
+     "explain": "LinkedIn. Hive = Facebook, Pig = Yahoo. Nie pomyl."
+    },
+    {
+     "id": "m4-08",
+     "topic": "Kafka",
+     "q": "W jakim języku napisana jest Kafka?",
+     "options": [
+      "w Scali",
+      "w Pythonie",
+      "w C++",
+      "w Go"
+     ],
+     "answer": 0,
+     "explain": "Kafka: Scala. Hadoop: Java."
+    },
+    {
+     "id": "m4-09",
+     "topic": "Kafka",
+     "q": "Od kiedy Kafka jest open source?",
+     "options": [
+      "od początku 2011 r.",
+      "od 2001 r.",
+      "od 2006 r.",
+      "od 2020 r."
+     ],
+     "answer": 0,
+     "explain": "Początek 2011 r., obecnie pod opieką Apache Software Foundation."
+    },
+    {
+     "id": "m4-10",
+     "topic": "Kafka",
+     "q": "Ile komunikatów na sekundę obsługiwał LinkedIn na Kafce według wykładu?",
+     "options": [
+      "ok. 7 mln",
+      "ok. 7 tys.",
+      "ok. 700",
+      "ok. 7 mld"
+     ],
+     "answer": 0,
+     "explain": "Ok. 7 milionów komunikatów na sekundę."
+    },
+    {
+     "id": "m4-11",
+     "topic": "Kafka",
+     "q": "Dlaczego Kafka pozwala konsumentom „nadrobić zaległości”?",
+     "options": [
+      "bo buforuje (przechowuje) dane, więc wolniejszy konsument może czytać później",
+      "bo kasuje stare wiadomości od razu",
+      "bo wysyła każdą wiadomość dwa razy",
+      "bo konsument sam generuje dane"
+     ],
+     "answer": 0,
+     "explain": "Dane czekają w Kafce, aż konsument je odczyta."
+    },
+    {
+     "id": "m4-12",
+     "topic": "Pojęcia Kafki",
+     "q": "Czym jest topic?",
+     "options": [
+      "szyną danych grupującą komunikaty jednego rodzaju; może mieć wiele partycji",
+      "pojedynczym serwerem Kafki",
+      "numerem ostatnio odczytanego rekordu",
+      "programem, który wysyła wiadomości"
+     ],
+     "answer": 0,
+     "explain": "Topic = temat, kanał wiadomości."
+    },
+    {
+     "id": "m4-13",
+     "topic": "Pojęcia Kafki",
+     "q": "Czym jest partycja?",
+     "options": [
+      "sekwencją danych (logiem), do której nowe wiadomości dopisuje się na końcu",
+      "kopią całego brokera",
+      "nazwą konsumenta",
+      "plikiem konfiguracyjnym"
+     ],
+     "answer": 0,
+     "explain": "Topic dzieli się na partycje, a w nich dane leżą po kolei."
+    },
+    {
+     "id": "m4-14",
+     "topic": "Pojęcia Kafki",
+     "q": "Czym jest broker?",
+     "options": [
+      "instancją systemu kolejkowego, czyli serwerem Kafki",
+      "programem czytającym dane",
+      "jedną wiadomością",
+      "oknem czasowym"
+     ],
+     "answer": 0,
+     "explain": "Broker = serwer Kafki. Producenci piszą do brokera, konsumenci czytają z brokera."
+    },
+    {
+     "id": "m4-15",
+     "topic": "Pojęcia Kafki",
+     "q": "Czym jest offset?",
+     "options": [
+      "informacją o ostatnio odczytanym rekordzie, dzięki której po awarii konsument wie, skąd czytać dalej",
+      "rozmiarem partycji",
+      "liczbą brokerów",
+      "czasem zdarzenia"
+     ],
+     "answer": 0,
+     "explain": "Offset = zakładka w książce."
+    },
+    {
+     "id": "m4-16",
+     "topic": "Pojęcia Kafki",
+     "q": "Po co dzieli się topic na partycje?",
+     "options": [
+      "żeby zwiększyć przepustowość: 3 partycje na 3 brokerach to teoretycznie 3× większa przepustowość",
+      "żeby zmniejszyć liczbę wiadomości",
+      "żeby szyfrować dane",
+      "żeby konsument nie musiał subskrybować"
+     ],
+     "answer": 0,
+     "explain": "Partycje = równoległość."
+    },
+    {
+     "id": "m4-17",
+     "topic": "Replikacja Kafki",
+     "q": "Kto w Kafce obsługuje wszystkie zapisy i odczyty danej partycji?",
+     "options": [
+      "jej lider (leader)",
+      "Zookeeper",
+      "każdy broker po równo",
+      "konsument"
+     ],
+     "answer": 0,
+     "explain": "Każda partycja ma jednego lidera. Pozostałe brokery trzymają kopie."
+    },
+    {
+     "id": "m4-18",
+     "topic": "Replikacja Kafki",
+     "q": "Co się dzieje, gdy broker-lider partycji ulegnie awarii?",
+     "options": [
+      "rolę lidera przejmuje broker, który ma kopię tej partycji",
+      "dane partycji przepadają",
+      "Kafka się wyłącza",
+      "konsument staje się liderem"
+     ],
+     "answer": 0,
+     "explain": "Dzięki replikacji kopia przejmuje pracę."
+    },
+    {
+     "id": "m4-19",
+     "topic": "Replikacja Kafki",
+     "q": "Przy replikacji równej 3 ile jest kopii partycji?",
+     "options": [
+      "lider + 2 kopie",
+      "3 liderów",
+      "lider + 3 kopie",
+      "1 kopia"
+     ],
+     "answer": 0,
+     "explain": "Replikacja 3 = łącznie 3 egzemplarze: lider i dwie kopie."
+    },
+    {
+     "id": "m4-20",
+     "topic": "Zookeeper",
+     "q": "Za co odpowiada Zookeeper w Kafce?",
+     "options": [
+      "zarządza brokerami i kolejnością komunikatów, przechowuje metadane (topiki, brokery, konsumenci)",
+      "przechowuje wszystkie wiadomości",
+      "serializuje dane do JSON",
+      "liczy agregacje w oknach"
+     ],
+     "answer": 0,
+     "explain": "Zookeeper = zarządca."
+    },
+    {
+     "id": "m4-21",
+     "topic": "Zookeeper",
+     "q": "Czy Zookeeper przechowuje same wiadomości z topiców?",
+     "options": [
+      "nie, tylko metadane",
+      "tak, wszystkie",
+      "tak, ale tylko ostatnie",
+      "tak, ale skompresowane"
+     ],
+     "answer": 0,
+     "explain": "Tylko metadane. Dane trzymają brokery."
+    },
+    {
+     "id": "m4-22",
+     "topic": "Zookeeper",
+     "q": "Na ilu nodach zwykle działa Zookeeper?",
+     "options": [
+      "na 3 (minimum 1)",
+      "zawsze na 1",
+      "na 10",
+      "na tylu, ile jest konsumentów"
+     ],
+     "answer": 0,
+     "explain": "Minimum 1, zwykle 3."
+    },
+    {
+     "id": "m4-23",
+     "topic": "Spark Streaming",
+     "q": "Jakie źródła danych dla Spark Streaming wymienia wykład?",
+     "options": [
+      "Kafka, Flume, HDFS/S3, Kinesis, Twitter",
+      "tylko pliki CSV",
+      "tylko MySQL",
+      "tylko Hive"
+     ],
+     "answer": 0,
+     "explain": "Wejście: Kafka, Flume, HDFS/S3, Kinesis, Twitter. Wyjście: HDFS, bazy danych, dashboardy."
+    },
+    {
+     "id": "m4-24",
+     "topic": "Spark Streaming",
+     "q": "Czym jest DStream?",
+     "options": [
+      "sekwencją RDD, w której każde RDD zawiera dane z jednego interwału czasu",
+      "jedną tabelą SQL",
+      "topikiem Kafki",
+      "plikiem Parquet"
+     ],
+     "answer": 0,
+     "explain": "Starsze API: Discretized Stream."
+    },
+    {
+     "id": "m4-25",
+     "topic": "Spark Streaming",
+     "q": "Co oznacza `StreamingContext(sc, 1)`?",
+     "options": [
+      "batch (porcja) danych co 1 sekundę",
+      "1 wątek przetwarzania",
+      "1 źródło danych",
+      "1 minuta okna"
+     ],
+     "answer": 0,
+     "explain": "Drugi argument to interwał w sekundach."
+    },
+    {
+     "id": "m4-26",
+     "topic": "Spark Streaming",
+     "q": "Ile aktywnych StreamingContext może działać w jednej JVM?",
+     "options": [
+      "tylko jeden",
+      "dowolnie wiele",
+      "dokładnie dwa",
+      "tyle, ile rdzeni CPU"
+     ],
+     "answer": 0,
+     "explain": "Jeden aktywny. Po zatrzymaniu nie da się go wznowić, a stop() zatrzymuje też SparkContext."
+    },
+    {
+     "id": "m4-27",
+     "topic": "Structured Streaming",
+     "q": "Na czym opiera się Structured Streaming?",
+     "options": [
+      "na Spark SQL i przetwarzaniu micro-batch",
+      "na MapReduce",
+      "na DStreamach z RDD",
+      "na Zookeeperze"
+     ],
+     "answer": 0,
+     "explain": "Nowsze API: DataFrame'y i małe porcje (micro-batch)."
+    },
+    {
+     "id": "m4-28",
+     "topic": "Structured Streaming",
+     "q": "Czym różni się kod Structured Streaming od zwykłego batcha w Sparku?",
+     "options": [
+      "zamiast `read` pisze się `readStream`, a zamiast `write` pisze się `writeStream`",
+      "zamiast Pythona trzeba pisać w Scali",
+      "zamiast DataFrame używa się tabel Hive",
+      "nie ma żadnej różnicy"
+     ],
+     "answer": 0,
+     "explain": "spark.read.format → spark.readStream.format; df.write.format → df.writeStream.format."
+    },
+    {
+     "id": "m4-29",
+     "topic": "Structured Streaming",
+     "q": "Które źródła według wykładu nadają się TYLKO do testów?",
+     "options": [
+      "socket i rate",
+      "Kafka i plik",
+      "HDFS i S3",
+      "Kafka i Kinesis"
+     ],
+     "answer": 0,
+     "explain": "Socket i rate to źródła testowe. Kafka wymaga wersji co najmniej 0.10.0."
+    },
+    {
+     "id": "m4-30",
+     "topic": "Tryby wyjścia",
+     "q": "Który tryb wyjścia zapisuje tylko NOWE wiersze?",
+     "options": [
+      "append",
+      "update",
+      "complete",
+      "overwrite"
+     ],
+     "answer": 0,
+     "explain": "append = dopisz nowe."
+    },
+    {
+     "id": "m4-31",
+     "topic": "Tryby wyjścia",
+     "q": "Który tryb wyjścia zapisuje tylko wiersze, które się ZMIENIŁY?",
+     "options": [
+      "update",
+      "append",
+      "complete",
+      "delta"
+     ],
+     "answer": 0,
+     "explain": "update = tylko zmienione. Bez agregacji działa jak append."
+    },
+    {
+     "id": "m4-32",
+     "topic": "Tryby wyjścia",
+     "q": "Który tryb wyjścia zapisuje za każdym razem CAŁĄ tabelę wyników?",
+     "options": [
+      "complete",
+      "append",
+      "update",
+      "full"
+     ],
+     "answer": 0,
+     "explain": "complete = całość."
+    },
+    {
+     "id": "m4-33",
+     "topic": "Stan",
+     "q": "Czym różni się przetwarzanie bezstanowe (stateless) od stanowego (stateful)?",
+     "options": [
+      "stateless: każda krotka osobno, bez agregacji; stateful: agregacje (np. w oknach), a stan jest trzymany w checkpointach",
+      "stateless jest zawsze wolniejsze",
+      "stateful nie używa pamięci",
+      "nie ma różnicy"
+     ],
+     "answer": 0,
+     "explain": "Stateful pamięta, co było wcześniej."
+    },
+    {
+     "id": "m4-34",
+     "topic": "Czas",
+     "q": "Czym jest czas zdarzenia (event time)?",
+     "options": [
+      "czasem zapisanym w samych danych, czyli kiedy zdarzenie naprawdę nastąpiło",
+      "czasem, w którym Spark przetworzył dane",
+      "czasem uruchomienia klastra",
+      "czasem trwania okna"
+     ],
+     "answer": 0,
+     "explain": "Event time = kiedy to się stało."
+    },
+    {
+     "id": "m4-35",
+     "topic": "Czas",
+     "q": "Czym jest czas przetwarzania (processing time)?",
+     "options": [
+      "czasem, w którym Spark przetworzył zdarzenie; różni się od event time przez opóźnienia sieci",
+      "czasem zapisanym w danych",
+      "czasem utworzenia topicu",
+      "czasem trwania watermarku"
+     ],
+     "answer": 0,
+     "explain": "Processing time = kiedy to dotarło i zostało policzone."
+    },
+    {
+     "id": "m4-36",
+     "topic": "Czas",
+     "q": "Co to jest watermark?",
+     "options": [
+      "granica określająca, jak bardzo zdarzenie może się spóźnić, żeby jeszcze trafiło do agregacji; ogranicza też pamięć na stan",
+      "znak wodny na wykresie",
+      "numer partycji",
+      "maksymalna liczba wiadomości w topicu"
+     ],
+     "answer": 0,
+     "explain": "Spóźnione ponad watermark = pomijane."
+    },
+    {
+     "id": "m4-37",
+     "topic": "Czas",
+     "q": "Czy spóźnione zdarzenie cofa „zegar” strumienia?",
+     "options": [
+      "nie, czas strumienia posuwa się wraz z najwyższym timestampem",
+      "tak, zawsze",
+      "tak, ale tylko o 1 sekundę",
+      "tak, jeśli jest w trybie complete"
+     ],
+     "answer": 0,
+     "explain": "Zegar idzie tylko do przodu."
+    },
+    {
+     "id": "m4-38",
+     "topic": "Okna",
+     "q": "Czym jest okno przesuwne (sliding)?",
+     "options": [
+      "oknem dłuższym niż przesunięcie, więc okna się nakładają (np. 30 s co 20 s)",
+      "oknem równym przesunięciu, bez nakładania (30 s co 30 s)",
+      "oknem, które zamyka się po przerwie bez zdarzeń",
+      "oknem obejmującym cały strumień"
+     ],
+     "answer": 0,
+     "explain": "Sliding: okna się zazębiają, więc jedno zdarzenie może trafić do kilku okien."
+    },
+    {
+     "id": "m4-39",
+     "topic": "Okna",
+     "q": "Czym jest okno stałe (tumbling)?",
+     "options": [
+      "oknem, którego długość jest równa przesunięciu, więc okna się nie nakładają (np. 30 s co 30 s)",
+      "oknem dłuższym niż przesunięcie",
+      "oknem sesyjnym",
+      "oknem bez końca"
+     ],
+     "answer": 0,
+     "explain": "Tumbling: równe kawałki jeden za drugim."
+    },
+    {
+     "id": "m4-40",
+     "topic": "Okna",
+     "q": "Czym jest okno sesyjne (session)?",
+     "options": [
+      "oknem, które trwa, dopóki są zdarzenia, i zamyka się po przerwie bez aktywności",
+      "oknem o stałej długości 30 s",
+      "oknem dłuższym niż przesunięcie",
+      "oknem tylko dla trybu append"
+     ],
+     "answer": 0,
+     "explain": "Session = jak sesja użytkownika na stronie."
+    },
+    {
+     "id": "m4-41",
+     "topic": "Okna",
+     "q": "Czy jeden wiersz może należeć do kilku okien?",
+     "options": [
+      "tak, przy oknach przesuwnych (nakładających się)",
+      "nie, nigdy",
+      "tylko przy oknach sesyjnych",
+      "tylko w trybie complete"
+     ],
+     "answer": 0,
+     "explain": "Okna 30 s co 20 s się zazębiają, więc zdarzenie wpada do dwóch okien."
+    },
+    {
+     "id": "m4-42",
+     "topic": "Kod",
+     "q": "Jak producent w Pythonie wysyła wiadomość do topicu topicBD?",
+     "options": [
+      "`producer.send(\"topicBD\", value=message)`",
+      "`producer.write(\"topicBD\")`",
+      "`spark.send(\"topicBD\", message)`",
+      "`kafka.put(\"topicBD\", message)`"
+     ],
+     "answer": 0,
+     "explain": "KafkaProducer(bootstrap_servers=[...], value_serializer=lambda x: json.dumps(x).encode(\"utf-8\")), a potem producer.send(topic, value=...)."
+    },
+    {
+     "id": "m4-43",
+     "topic": "Kod",
+     "q": "Do czego służy `value_serializer=lambda x: json.dumps(x).encode(\"utf-8\")` w KafkaProducer?",
+     "options": [
+      "zamienia wiadomość (słownik) na JSON i bajty przed wysłaniem",
+      "szyfruje wiadomość",
+      "kompresuje topic",
+      "odczytuje wiadomości z topicu"
+     ],
+     "answer": 0,
+     "explain": "Kafka przesyła bajty, więc obiekt trzeba zserializować."
+    },
+    {
+     "id": "m4-44",
+     "topic": "Kod",
+     "q": "Jaki jest domyślny adres serwera Kafki w przykładzie?",
+     "options": [
+      "`localhost:9092`",
+      "`localhost:8080`",
+      "`localhost:2181`",
+      "`localhost:4040`"
+     ],
+     "answer": 0,
+     "explain": "9092 to port Kafki. 2181 to port Zookeepera, łatwo pomylić."
+    },
+    {
+     "id": "m4-45",
+     "topic": "Kod",
+     "q": "Który fragment poprawnie podłącza Structured Streaming do topicu topicBD?",
+     "options": [
+      "`spark.readStream.format(\"kafka\").option(\"kafka.bootstrap.servers\", server).option(\"subscribe\", \"topicBD\").load()`",
+      "`spark.read.kafka(\"topicBD\").start()`",
+      "`spark.writeStream.format(\"kafka\").option(\"subscribe\", \"topicBD\").load()`",
+      "`spark.readStream.format(\"kafka\").option(\"topic\", \"topicBD\").show()`"
+     ],
+     "answer": 0,
+     "explain": "readStream + format kafka + bootstrap.servers + subscribe + load."
+    },
+    {
+     "id": "m4-46",
+     "topic": "Kod",
+     "q": "Co oznacza opcja `subscribe` przy czytaniu z Kafki?",
+     "options": [
+      "który topic (lub topiki) subskrybujemy; można też podać wyrażenie regularne",
+      "adres brokera",
+      "tryb wyjścia",
+      "długość okna"
+     ],
+     "answer": 0,
+     "explain": "subscribe = nazwa topicu."
+    },
+    {
+     "id": "m4-47",
+     "topic": "Kod",
+     "q": "Jak wypisać wynik strumienia na konsolę, dopisując tylko nowe wiersze?",
+     "options": [
+      "`.writeStream.outputMode(\"append\").format(\"console\").start()`",
+      "`.write.mode(\"append\").show()`",
+      "`.readStream.format(\"console\").load()`",
+      "`.writeStream.outputMode(\"print\").start()`"
+     ],
+     "answer": 0,
+     "explain": "writeStream → outputMode → format → start. Potem awaitTermination(...), żeby program nie skończył się od razu."
+    },
+    {
+     "id": "m4-48",
+     "topic": "Kod",
+     "q": "Po co `spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.1`?",
+     "options": [
+      "żeby dołączyć do Sparka bibliotekę do łączenia z Kafką",
+      "żeby zainstalować Zookeepera",
+      "żeby uruchomić brokera",
+      "żeby utworzyć topic"
+     ],
+     "answer": 0,
+     "explain": "Bez tego pakietu Spark nie zna formatu \"kafka\"."
+    },
+    {
+     "id": "m4-x01",
+     "topic": "Metryki",
+     "q": "Dlaczego przy wielu aplikacjach produkujących metryki wprowadza się brokera (np. Kafkę)?",
+     "options": [
+      "bo bezpośrednie połączenia każdej aplikacji z każdym odbiorcą robią się zbyt skomplikowane, a broker daje jeden punkt integracji",
+      "bo aplikacje nie umieją zapisywać plików",
+      "bo broker liczy średnie",
+      "bo HDFS nie przyjmuje metryk"
+     ],
+     "answer": 0,
+     "explain": "Bez brokera powstaje pajęczyna połączeń „każdy z każdym”."
+    },
+    {
+     "id": "m4-x02",
+     "topic": "Metryki",
+     "q": "Jakie dane produkują same aplikacje frontendowe według wykładu?",
+     "options": [
+      "czasy zapytań, akcje klienta na stronie, sekwencje zdarzeń, naruszenia bezpieczeństwa",
+      "tylko pliki CSV z ocenami",
+      "tylko obrazy",
+      "żadnych, tylko je wyświetlają"
+     ],
+     "answer": 0,
+     "explain": "Frontend nie tylko pokazuje dane, ale też je produkuje (metryki)."
+    },
+    {
+     "id": "m4-x03",
+     "topic": "Przykłady",
+     "q": "Który przykład użycia systemu kolejkowego podaje wykład?",
+     "options": [
+      "aplikacja giełdowa subskrybująca zmiany kursów zamiast odpytywać serwer co kilka ms",
+      "sortowanie tabeli w Hive",
+      "trening lasu losowego",
+      "kopiowanie plików poleceniem put"
+     ],
+     "answer": 0,
+     "explain": "Inne przykłady: GPS pojazdów i czujniki temperatury (IoT)."
+    },
+    {
+     "id": "m4-x04",
+     "topic": "Partycja",
+     "q": "Na czym opiera się filozofia zapisu w partycji Kafki?",
+     "options": [
+      "na plikach logów: nowe dane dopisuje się na końcu, bez aktualizowania starych",
+      "na tabelach relacyjnych z UPDATE",
+      "na losowym miejscu zapisu",
+      "na usuwaniu najstarszych danych przy każdym zapisie"
+     ],
+     "answer": 0,
+     "explain": "Zalety logów: szybki zapis i odczyt na końcu pliku, łatwo dodać producenta lub konsumenta."
+    },
+    {
+     "id": "m4-x05",
+     "topic": "Zookeeper",
+     "q": "W przykładzie z dwoma brokerami producent wysyła 50% danych do Brokera 1 i 50% do Brokera 2. Co jeszcze trzyma każdy broker?",
+     "options": [
+      "kopię części danych drugiego brokera",
+      "nic więcej",
+      "całego Zookeepera",
+      "offset producenta"
+     ],
+     "answer": 0,
+     "explain": "Broker 1: rekordy 0, 2, 4, 6 i kopia 1, 3, 5, 7. Broker 2 odwrotnie."
+    },
+    {
+     "id": "m4-x06",
+     "topic": "Zookeeper",
+     "q": "Czy brokerzy wiedzą, że inny broker trzyma kopię ich danych?",
+     "options": [
+      "nie, całym ruchem zarządza Zookeeper",
+      "tak, każdy broker zna wszystkie kopie",
+      "tak, ale tylko lider",
+      "tak, informację trzyma konsument"
+     ],
+     "answer": 0,
+     "explain": "Konsumenta też nie interesuje, czy czyta z oryginału, czy z kopii."
+    },
+    {
+     "id": "m4-x07",
+     "topic": "Offset",
+     "q": "Dwóch konsumentów (1.1 i 1.2) dzieli ruch po 50%. Konsument 1.1 pada. Skąd 1.2 wie, od której wiadomości zacząć?",
+     "options": [
+      "z offsetu",
+      "z Zookeepera, który trzyma wiadomości",
+      "od producenta",
+      "zaczyna zawsze od początku"
+     ],
+     "answer": 0,
+     "explain": "Offset = informacja o ostatnio odczytanym rekordzie."
+    },
+    {
+     "id": "m4-x08",
+     "topic": "Kafka",
+     "q": "Jak w Kafce najczęściej nazywa się pojedynczą wiadomość?",
+     "options": [
+      "log (zamiennie wiadomość lub event)",
+      "blok",
+      "krotka",
+      "partycja"
+     ],
+     "answer": 0,
+     "explain": "Każdy nowy log jest dopisywany na końcu pliku."
+    },
+    {
+     "id": "m4-x09",
+     "topic": "Kafka",
+     "q": "Pod wpływem czego powstała Kafka?",
+     "options": [
+      "dzienników transakcji (logów)",
+      "relacyjnych baz danych",
+      "systemu plików HDFS",
+      "języka SQL"
+     ],
+     "answer": 0,
+     "explain": "Duża przepustowość, niskie opóźnienia, filozofia logu."
+    },
+    {
+     "id": "m4-x10",
+     "topic": "Replikacja Kafki",
+     "q": "W klastrze z wykładu B2 jest liderem dla topicu T1, a B3 ma kopię T1. Co się stanie, gdy B2 padnie?",
+     "options": [
+      "B3 przejmie rolę lidera T1, a na działających brokerach powstaną nowe kopie",
+      "topic T1 zniknie",
+      "liderem zostanie Zookeeper",
+      "konsumenci przestaną czytać na zawsze"
+     ],
+     "answer": 0,
+     "explain": "Replikacja = bezpieczeństwo klastra."
+    },
+    {
+     "id": "m4-x11",
+     "topic": "Kafka",
+     "q": "Czy każdy producent może pisać do każdego brokera, a każdy konsument czytać z każdego brokera?",
+     "options": [
+      "tak",
+      "nie, każdy producent ma jednego brokera",
+      "nie, konsument czyta tylko z lidera klastra",
+      "tylko jeśli jest jeden topic"
+     ],
+     "answer": 0,
+     "explain": "Producent może pisać do wielu topiców, konsument czytać z wielu."
+    },
+    {
+     "id": "m4-x12",
+     "topic": "Spark",
+     "q": "Co według wykładu wyróżnia Sparka w przetwarzaniu danych?",
+     "options": [
+      "łączy przetwarzanie strumieni i batch podobnym API",
+      "przetwarza dane poniżej milisekundy",
+      "działa tylko na strumieniach",
+      "nie obsługuje SQL"
+     ],
+     "answer": 0,
+     "explain": "Znasz batch, to szybko napiszesz streaming: zmieniasz tylko odczyt i zapis."
+    },
+    {
+     "id": "m4-x13",
+     "topic": "Spark",
+     "q": "Czy Spark przetwarza dane w czasie poniżej milisekundy?",
+     "options": [
+      "nie, ciągłe przetwarzanie jest eksperymentalne i niezalecane",
+      "tak, zawsze",
+      "tak, w trybie complete",
+      "tak, przy oknach sesyjnych"
+     ],
+     "answer": 0,
+     "explain": "Micro-batch zbiera dane przez kilka sekund, więc opóźnienie jest większe niż milisekundy."
+    },
+    {
+     "id": "m4-x14",
+     "topic": "Spark",
+     "q": "Co trzeba zmienić w kodzie batchowym, żeby przetwarzał strumień?",
+     "options": [
+      "początek i koniec: odczyt (readStream) i zapis (writeStream), a transformacje zostają",
+      "wszystko, bo API jest zupełnie inne",
+      "tylko nazwę sesji",
+      "język z Pythona na Scalę"
+     ],
+     "answer": 0,
+     "explain": "select, where i groupBy działają tak samo."
+    },
+    {
+     "id": "m4-x15",
+     "topic": "Structured Streaming",
+     "q": "Jak działa model programowania Structured Streaming?",
+     "options": [
+      "dane dopisują się do Tabeli Wejściowej co interwał wyzwalacza (np. 1 s), co aktualizuje Tabelę Wyników, którą zapisuje się małymi zadaniami wsadowymi",
+      "dane trafiają od razu do HDFS bez przetwarzania",
+      "każde zdarzenie to osobny job MapReduce",
+      "dane są sortowane i usuwane"
+     ],
+     "answer": 0,
+     "explain": "Strumień = tabela, która ciągle rośnie."
+    },
+    {
+     "id": "m4-x16",
+     "topic": "Structured Streaming",
+     "q": "Do czego służy przykład `readStream.format(\"socket\")` z `localhost:9999`?",
+     "options": [
+      "do liczenia słów (word count) z tekstu przychodzącego przez gniazdo TCP",
+      "do łączenia z Kafką",
+      "do zapisu do HDFS",
+      "do trenowania modelu"
+     ],
+     "answer": 0,
+     "explain": "split dzieli linię na słowa, explode robi z nich wiersze, groupBy(\"word\").count() liczy."
+    },
+    {
+     "id": "m4-x17",
+     "topic": "Structured Streaming",
+     "q": "Co robi `explode(split(lines.value, \" \"))` w przykładzie word count?",
+     "options": [
+      "dzieli linię na słowa i każde słowo zamienia w osobny wiersz",
+      "łączy słowa w jedną linię",
+      "usuwa spacje",
+      "liczy linie"
+     ],
+     "answer": 0,
+     "explain": "To samo explode co w Hive przy LATERAL VIEW: tablica → wiersze."
+    },
+    {
+     "id": "m4-x18",
+     "topic": "DStream",
+     "q": "Co dzieje się z operacją (np. flatMap) wykonaną na DStreamie?",
+     "options": [
+      "przekłada się na tę samą operację na każdym RDD wewnątrz DStreamu",
+      "wykonuje się tylko na pierwszym RDD",
+      "zamienia DStream w tabelę Hive",
+      "jest ignorowana"
+     ],
+     "answer": 0,
+     "explain": "DStream = ciąg RDD, więc operacja leci po każdym z nich."
+    },
+    {
+     "id": "m4-x19",
+     "topic": "DStream",
+     "q": "Co jest głównym punktem wejścia do Spark Streaming (DStream)?",
+     "options": [
+      "StreamingContext",
+      "KafkaProducer",
+      "Zookeeper",
+      "HiveContext"
+     ],
+     "answer": 0,
+     "explain": "StreamingContext tworzy się z SparkConf lub SparkContext. W Structured Streaming punktem wejścia jest SparkSession."
+    },
+    {
+     "id": "m4-x20",
+     "topic": "DStream",
+     "q": "Co wolno zrobić po uruchomieniu StreamingContext?",
+     "options": [
+      "nic nowego: nie można go już konfigurować ani dodawać obliczeń, a po zatrzymaniu nie da się go wznowić",
+      "dowolnie dodawać nowe obliczenia",
+      "uruchomić drugi kontekst w tej samej JVM",
+      "zmienić interwał batcha"
+     ],
+     "answer": 0,
+     "explain": "Do tego stop() zatrzymuje też SparkContext, chyba że podasz stopSparkContext=False."
+    },
+    {
+     "id": "m4-x21",
+     "topic": "Źródła",
+     "q": "Jak przetwarzane są pliki ze źródła plikowego w Structured Streaming?",
+     "options": [
+      "w kolejności czasu modyfikacji; opcja latestFirst odwraca kolejność; pliki muszą trafiać do katalogu atomowo",
+      "losowo",
+      "alfabetycznie po nazwie",
+      "tylko ostatni plik"
+     ],
+     "answer": 0,
+     "explain": "Formaty: tekst, CSV, JSON, ORC, Parquet."
+    },
+    {
+     "id": "m4-x22",
+     "topic": "Źródła",
+     "q": "Z jaką wersją brokera Kafka jest kompatybilne źródło Kafki w Structured Streaming?",
+     "options": [
+      "0.10.0 lub wyższą",
+      "tylko 0.8",
+      "dowolną",
+      "tylko 3.0"
+     ],
+     "answer": 0,
+     "explain": "Kafka ≥ 0.10.0. Stąd nazwa pakietu spark-sql-kafka-0-10."
+    },
+    {
+     "id": "m4-x23",
+     "topic": "Źródła",
+     "q": "Dlaczego źródło socket nadaje się tylko do testów?",
+     "options": [
+      "bo nie daje pełnej gwarancji odporności na awarie",
+      "bo nie czyta tekstu",
+      "bo jest zbyt szybkie",
+      "bo wymaga Zookeepera"
+     ],
+     "answer": 0,
+     "explain": "Rate też jest testowe: generuje wiersze z timestamp i value."
+    },
+    {
+     "id": "m4-x24",
+     "topic": "Okna",
+     "q": "Okna 10 minut przesuwane co 5 minut. Do ilu okien trafi słowo o godzinie 12:07?",
+     "options": [
+      "do dwóch: 12:00–12:10 i 12:05–12:15",
+      "do jednego: 12:05–12:15",
+      "do trzech",
+      "do żadnego"
+     ],
+     "answer": 0,
+     "explain": "Przy oknach przesuwnych jeden wiersz może należeć do kilku okien."
+    },
+    {
+     "id": "m4-x25",
+     "topic": "Okna",
+     "q": "Okno 30 s przesuwane co 20 s, mikrobatch ok. 10 s. Ile mikrobatchy agreguje jedno okno?",
+     "options": [
+      "3",
+      "2",
+      "1",
+      "6"
+     ],
+     "answer": 0,
+     "explain": "30 s / 10 s = 3 mikrobatche."
+    },
+    {
+     "id": "m4-x26",
+     "topic": "Okna",
+     "q": "Do czego wykład proponuje okna sesyjne?",
+     "options": [
+      "np. do wyświetlenia dodatkowej oferty lub podpowiedzi po pewnym czasie sesji",
+      "do aktualizacji co równe N sekund",
+      "do podziału topicu na partycje",
+      "do liczenia RMSE"
+     ],
+     "answer": 0,
+     "explain": "Sliding: aktywność w interwałach. Tumbling: aktualizacje co N sekund. Session: zachowanie w sesji."
+    },
+    {
+     "id": "m4-x27",
+     "topic": "Kod",
+     "q": "Co robi producent w przykładzie z wykładu?",
+     "options": [
+      "co sekundę wysyła na topicBD JSON z polami time (z losowym opóźnieniem do 15 s), id studenta i oceną 2–5",
+      "czyta oceny z topicBD",
+      "liczy średnią i zapisuje do HDFS",
+      "tworzy topic topicSR"
+     ],
+     "answer": 0,
+     "explain": "Opóźnienie w polu time symuluje różnicę między event time a processing time."
+    },
+    {
+     "id": "m4-x28",
+     "topic": "Kod",
+     "q": "Co robi `query.awaitTermination(60)` w kodzie konsumenta?",
+     "options": [
+      "czeka 60 sekund na strumień, potem kończy pobieranie",
+      "uruchamia 60 konsumentów",
+      "ustawia okno 60 s",
+      "czeka na 60 wiadomości"
+     ],
+     "answer": 0,
+     "explain": "Potem query.stop() zatrzymuje zapytanie."
+    },
+    {
+     "id": "m4-x29",
+     "topic": "Kod",
+     "q": "Co robi `spark.sparkContext.setLogLevel(\"ERROR\")`?",
+     "options": [
+      "ogranicza komunikaty w konsoli tylko do błędów",
+      "zapisuje błędy do Kafki",
+      "zatrzymuje Sparka przy pierwszym błędzie",
+      "włącza tryb debugowania"
+     ],
+     "answer": 0,
+     "explain": "Żeby w konsoli było widać wyniki, a nie tysiące linii logów."
+    },
+    {
+     "id": "m4-x30",
+     "topic": "Kod",
+     "q": "Na który topic według zadania z wykładu zapisuje się średnią ocenę każdego studenta?",
+     "options": [
+      "topicSR",
+      "topicBD",
+      "topicAVG",
+      "topicOUT"
+     ],
+     "answer": 0,
+     "explain": "Dane wejściowe idą przez topicBD, a średnie wynikowe na topicSR."
+    }
+   ]
+  },
+  {
+   "id": "e",
+   "title": "Pytania z e-learningu",
+   "questions": [
+    {
+     "id": "e-01",
+     "topic": "E-learning",
+     "q": "Co to jest Big Data?",
+     "options": [
+      "Dane o niskiej jakości i małej ilości.",
+      "Zbiory danych bez wartości informacyjnej.",
+      "Ogromne, złożone i różnorodne zbiory danych trudne do przetworzenia tradycyjnymi metodami.",
+      "Małe i proste zbiory danych łatwe do analizy."
+     ],
+     "answer": 2,
+     "explain": "Big Data to duże, zmienne i różnorodne zbiory, których przetwarzanie jest trudne, ale wartościowe.",
+     "fixed": true
+    },
+    {
+     "id": "e-02",
+     "topic": "E-learning",
+     "q": "Wolumen, różnorodność i prędkość są głównymi elementami Big Data.",
+     "options": [
+      "Prawda.",
+      "Fałsz."
+     ],
+     "answer": 0,
+     "explain": "Prawda. To model 3V (Volume, Variety, Velocity): pierwsze i najważniejsze V.",
+     "fixed": true
+    },
+    {
+     "id": "e-03",
+     "topic": "E-learning",
+     "q": "Która z tych technik opiera się na modelu Darwina?",
+     "options": [
+      "Algorytmy genetyczne.",
+      "Sieci neuronowe."
+     ],
+     "answer": 0,
+     "explain": "Algorytmy genetyczne naśladują ewolucję: przetrwanie najlepiej przystosowanych, krzyżowanie i mutację.",
+     "fixed": true
+    },
+    {
+     "id": "e-04",
+     "topic": "E-learning",
+     "q": "Jaki projekt miał na celu przetworzenie wszystkich elementów przestrzeni (kosmosu)?",
+     "options": [
+      "Genom ludzki.",
+      "Sloan Digital Sky Survey."
+     ],
+     "answer": 1,
+     "explain": "Sloan Digital Sky Survey: przegląd i katalogowanie obiektów na niebie.",
+     "fixed": true
+    },
+    {
+     "id": "e-05",
+     "topic": "E-learning",
+     "q": "Różnice między tradycyjnym BI a Big Data można określić w ten sposób:",
+     "options": [
+      "Wszechstronność, granularność i technologia.",
+      "Adaptacyjność, granularność i technologia.",
+      "Skalowalność, granularność i technologia.",
+      "Natura danych, granularność i technologia."
+     ],
+     "answer": 3,
+     "explain": "Natura danych, granularność i technologia. Zapamiętaj pierwszy człon: NATURA DANYCH.",
+     "fixed": true
+    },
+    {
+     "id": "e-06",
+     "topic": "E-learning",
+     "q": "Big Data według analityka Douga Laneya to:",
+     "options": [
+      "Zestaw technik i technologii do przetwarzania i przechowywania danych w środowiskach o małej objętości, z różnorodnymi źródłami i w których szybkość odpowiedzi jest krytyczna.",
+      "Zestaw danych przechowywanych z dużą prędkością w środowiskach o dużym wolumenie, różnorodności źródeł i w których szybkość reakcji jest krytyczna.",
+      "Zestaw technik i technologii do przetwarzania i przechowywania danych w środowiskach o dużej objętości, różnorodności źródeł i w których prędkość reakcji jest krytyczna.",
+      "Wszystkie są ważne."
+     ],
+     "answer": 2,
+     "explain": "Pułapka: Big Data to TECHNIKI I TECHNOLOGIE (nie „zestaw danych”) przy DUŻEJ objętości, różnych źródłach i krytycznej szybkości. Doug Laney to analityk META Group, autor modelu 3V z 2001 r.",
+     "fixed": true
+    },
+    {
+     "id": "e-07",
+     "topic": "E-learning",
+     "q": "Czy Big Data można zastosować w każdym projekcie BI?",
+     "options": [
+      "Nie.",
+      "Tak, z niuansami."
+     ],
+     "answer": 1,
+     "explain": "Tak, z niuansami: ze względu na koszty projekt powinien rozwiązywać problem związany z którymś z V.",
+     "fixed": true
+    },
+    {
+     "id": "e-08",
+     "topic": "E-learning",
+     "q": "Które z tych technik analizy można uznać za tradycyjne?",
+     "options": [
+      "Uczenie się reguł asocjacyjnych.",
+      "Uczenie maszynowe.",
+      "Analiza szeregów czasowych.",
+      "Regresja."
+     ],
+     "answer": 3,
+     "explain": "Regresja to technika tradycyjna. Reguły asocjacyjne, uczenie maszynowe i analiza szeregów czasowych są tu traktowane jako zaawansowane.",
+     "fixed": true
+    },
+    {
+     "id": "e-09",
+     "topic": "E-learning",
+     "q": "Big Data może rozwiązać:",
+     "options": [
+      "Analizy mające na celu prognozy długoterminowe oparte na danych z przeszłości.",
+      "Wszystkie są poprawne.",
+      "Interpretacje dużych wolumenów informacji w czasie rzeczywistym.",
+      "Złożone procesy analizy, w których występuje wiele powiązanych zmiennych."
+     ],
+     "answer": 1,
+     "explain": "Wszystkie są poprawne: prognozy z danych historycznych, analiza w czasie rzeczywistym i złożone procesy z wieloma zmiennymi.",
+     "fixed": true
+    },
+    {
+     "id": "e-10",
+     "topic": "E-learning",
+     "q": "Sieci neuronowe używają systemu przetwarzania podobnego do tego, który jest używany przez:",
+     "options": [
+      "Systemy aerospace.",
+      "Dane inspirowane naturą.",
+      "Medycynę kwantową.",
+      "Biologiczne sieci neuronowe."
+     ],
+     "answer": 3,
+     "explain": "Biologiczne sieci neuronowe, czyli mózg: neurony i połączenia między nimi.",
+     "fixed": true
+    },
+    {
+     "id": "e-11",
+     "topic": "E-learning",
+     "q": "Które z tych technik analizy danych są bardziej zaawansowane?",
+     "options": [
+      "Wszystkie są poprawne.",
+      "Uczenie maszynowe.",
+      "Algorytmy genetyczne.",
+      "Sieci neuronowe."
+     ],
+     "answer": 0,
+     "explain": "Wszystkie są poprawne: uczenie maszynowe, algorytmy genetyczne i sieci neuronowe to techniki zaawansowane, nietradycyjne.",
+     "fixed": true
+    }
+   ]
+  }
+ ]
+}
