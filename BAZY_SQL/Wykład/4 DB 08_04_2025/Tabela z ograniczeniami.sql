@@ -10,7 +10,7 @@ ON DELETE SET NULL ON UPDATE SET NULL
 Opis varchar(33) NOT NULL DEFAULT 'Brak',
 min_v int CHECK(min_v>10),
 max_v int CHECK(max_v<100),
---CONSTRAINT chk 
+--CONSTRAINT chk
 CHECK(min_v<max_v)
 )
 

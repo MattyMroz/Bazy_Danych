@@ -78,7 +78,7 @@ SELECT
     END
 FROM OPENJSON(@JSON) AS c
 WHERE NOT EXISTS (
-    SELECT 1 FROM crunchbase.Company co 
+    SELECT 1 FROM crunchbase.Company co
     WHERE co.mongo_id = JSON_VALUE(c.value, '$._id."$oid"')
 );
 
@@ -96,7 +96,7 @@ FROM OPENJSON(@JSON) AS c
 CROSS APPLY OPENJSON(c.value, '$.relationships') AS r
 WHERE JSON_VALUE(r.value, '$.person.permalink') IS NOT NULL
 AND NOT EXISTS (
-    SELECT 1 FROM crunchbase.Person p 
+    SELECT 1 FROM crunchbase.Person p
     WHERE p.permalink = JSON_VALUE(r.value, '$.person.permalink')
 );
 
@@ -127,7 +127,7 @@ CROSS APPLY OPENJSON(c.value, '$.funding_rounds') AS fr
 CROSS APPLY OPENJSON(fr.value, '$.investments') AS inv
 WHERE JSON_VALUE(inv.value, '$.financial_org.permalink') IS NOT NULL
 AND NOT EXISTS (
-    SELECT 1 FROM crunchbase.FinancialOrg fo 
+    SELECT 1 FROM crunchbase.FinancialOrg fo
     WHERE fo.permalink = JSON_VALUE(inv.value, '$.financial_org.permalink')
 );
 
@@ -403,7 +403,7 @@ SELECT
     JSON_VALUE(c.value, '$.ipo.stock_symbol')
 FROM OPENJSON(@JSON) AS c
 INNER JOIN crunchbase.Company co ON co.mongo_id = JSON_VALUE(c.value, '$._id."$oid"')
-WHERE JSON_VALUE(c.value, '$.ipo.stock_symbol') IS NOT NULL 
+WHERE JSON_VALUE(c.value, '$.ipo.stock_symbol') IS NOT NULL
    OR JSON_VALUE(c.value, '$.ipo.valuation_amount') IS NOT NULL;
 
 PRINT CONCAT('IPO: ', @@ROWCOUNT);

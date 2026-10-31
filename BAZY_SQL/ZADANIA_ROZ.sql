@@ -199,11 +199,11 @@ ORDER BY wartosc_zamowienia DESC;
 ### 5. Utworzenie tabeli z danymi pracowników
 
 ```sql
-SELECT e.EmployeeID, e.FirstName AS imie, e.LastName AS nazwisko, 
+SELECT e.EmployeeID, e.FirstName AS imie, e.LastName AS nazwisko,
        e.Title AS dzial, DATEDIFF(YEAR, e.BirthDate, GETDATE()) AS wiek,
-       GETDATE() AS data_wyplaty, 
-       (SELECT AVG(od.UnitPrice * od.Quantity) 
-        FROM Orders o 
+       GETDATE() AS data_wyplaty,
+       (SELECT AVG(od.UnitPrice * od.Quantity)
+        FROM Orders o
         JOIN [Order Details] od ON o.OrderID = od.OrderID
         WHERE o.EmployeeID = e.EmployeeID) AS kwota
 INTO into_tabela
@@ -329,13 +329,13 @@ CREATE PROCEDURE DzienTygodnia
 AS
 BEGIN
     SET NOCOUNT ON;
-    
+
     IF @data IS NULL
         SET @data = GETDATE();
-    
+
     DECLARE @dzien varchar(20);
     SET @dzien = DATENAME(weekday, @data);
-    
+
     SELECT @data AS 'Data', @dzien AS 'Dzień tygodnia';
 END
 ```
@@ -352,7 +352,7 @@ CREATE PROCEDURE FormatujAdres
 AS
 BEGIN
     SET NOCOUNT ON;
-    
+
     PRINT @ulica;
     PRINT @numer;
     PRINT 'm.' + @mieszkanie;
@@ -398,16 +398,16 @@ BEGIN
     DECLARE @dlugosc1 int = LEN(@ciag1);
     DECLARE @dlugosc2 int = LEN(@ciag2);
     DECLARE @i int = 1;
-    
+
     IF @dlugosc1 <> @dlugosc2
         RETURN 'Błąd długości znaków: ' + CAST(@dlugosc1 AS varchar) + ' <> ' + CAST(@dlugosc2 AS varchar);
-    
+
     WHILE @i <= @dlugosc1
     BEGIN
         SET @wynik = SUBSTRING(@ciag2, @i, 1) + SUBSTRING(@ciag1, @i, 1) + @wynik;
         SET @i = @i + 1;
     END
-    
+
     RETURN @wynik;
 END
 ```
@@ -420,23 +420,23 @@ CREATE PROCEDURE WyswietlPracownikow
 AS
 BEGIN
     SET NOCOUNT ON;
-    
+
     DECLARE @licznik int = 0;
     DECLARE @numer int = 1;
     DECLARE @imie varchar(50);
     DECLARE @nazwisko varchar(50);
     DECLARE @wiek int;
-    
+
     DECLARE kursor_pracownicy CURSOR FOR
-    SELECT imie, nazwisko, wiek 
+    SELECT imie, nazwisko, wiek
     FROM pracownicy
     WHERE @litera IS NULL OR nazwisko LIKE @litera + '%'
     ORDER BY pracID;
-    
+
     OPEN kursor_pracownicy;
-    
+
     FETCH NEXT FROM kursor_pracownicy INTO @imie, @nazwisko, @wiek;
-    
+
     WHILE @@FETCH_STATUS = 0
     BEGIN
         IF @licznik % 2 = 0
@@ -444,11 +444,11 @@ BEGIN
             PRINT 'Pracownik nr #' + CAST(@numer AS varchar) + ' ' + @imie + ' ' + @nazwisko + ' ' + CAST(@wiek AS varchar) + ' lat';
             SET @numer = @numer + 2;
         END
-        
+
         SET @licznik = @licznik + 1;
         FETCH NEXT FROM kursor_pracownicy INTO @imie, @nazwisko, @wiek;
     END
-    
+
     CLOSE kursor_pracownicy;
     DEALLOCATE kursor_pracownicy;
 END

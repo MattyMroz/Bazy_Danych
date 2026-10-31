@@ -268,7 +268,7 @@ EXEC PKG_LEKCJE.plan_nauczyciela('Nowy');
 -- Próba dodania lekcji gdy sala jest zajęta
 -- System powinien zgłosić błąd
 EXEC PKG_LEKCJE.dodaj_lekcje_indywidualna(
-    'Fortepian', 'Kowalska', '101', 
+    'Fortepian', 'Kowalska', '101',
     'Kowalski', 'Jan',
     DATE '2026-02-02', '14:00', 45
 );

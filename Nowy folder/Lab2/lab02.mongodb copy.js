@@ -3,7 +3,7 @@
 use('northwind');
 db.dropDatabase(); // odkomentuj przy ponownym uruchomieniu (createCollection nie nadpisuje istniejących kolekcji)
 
-// 2.  Utwórz kolekcje: customers, orders, departments (bez danych) 
+// 2.  Utwórz kolekcje: customers, orders, departments (bez danych)
 // https://www.mongodb.com/docs/manual/reference/method/db.createCollection/
 db.createCollection('customers');
 db.createCollection('orders');

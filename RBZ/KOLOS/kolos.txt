@@ -7,7 +7,7 @@ Zaliczenie (proszę o realizację wszystkich poniższych punktów):
 
 1. W systemie SQL Server ustanowić serwer połączony ORACLE z wykorzystaniem loginu: ZAL  (SQLServer) oraz   PD<album> hasło: 12345 (ORACLE).
 
-2.  Napisz zapytanie z bezwzględną identyfikacją obiektów: jaki pracownik tab. EMPLOYEES(kolumny: LASTNAME, FIRSTNAME- ORALCE) obsłużył jaką ilość różnych produktów (SQLServer). 
+2.  Napisz zapytanie z bezwzględną identyfikacją obiektów: jaki pracownik tab. EMPLOYEES(kolumny: LASTNAME, FIRSTNAME- ORALCE) obsłużył jaką ilość różnych produktów (SQLServer).
 
 3. Napisać procedurę bez parametrów wejściowych która zawiera zapytanie przekazujące (przetwarzanie zdalne dla wybranych tabel przez OPENQUERY) : Która kategoria produktów (tabela CATEGORIES na ORACLE) zanotowała największy procentowy spadek przychodów w 1998 roku w porównaniu do 1997 roku (tabela ORDERS,  "Order details" serwera lokalnego), biorąc pod uwagę tylko klientów (tabela CUSTOMERS  na ORACLE), którzy mieszkają w tym samym kraju (pole Country w tabeli CUSTOMERS), co biuro spedytora (tabela SHIPPERS serwera lokalnego)? Podać przykłady instrukcji wyzwalania procedury przechowywanej.
 
@@ -181,7 +181,7 @@ FROM ORACLE..PD251190.CATEGORIES;
 
 
 
-INSERT INTO 
+INSERT INTO
 dbo.V_OracleCategories (CategoryID, CategoryName)
     VALUES (101, 'TestKat1')
 
@@ -192,8 +192,8 @@ dbo.V_OracleCategories (CategoryID, CategoryName)
 SELECT *
 FROM OPENQUERY(
 ORACLE,
-'SELECT CategoryID, CategoryName  
-FROM Categories 
+'SELECT CategoryID, CategoryName
+FROM Categories
 ORDER BY CategoryID DESC');
 
 

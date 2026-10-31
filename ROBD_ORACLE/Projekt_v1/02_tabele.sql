@@ -39,8 +39,8 @@ CREATE TABLE t_instrument OF t_instrument_obj (
     id_instrumentu  PRIMARY KEY,
     nazwa           NOT NULL,
     kategoria       NOT NULL,
-    
-    CONSTRAINT chk_instrument_kategoria 
+
+    CONSTRAINT chk_instrument_kategoria
         CHECK (kategoria IN ('dety', 'strunowe', 'perkusyjne', 'klawiszowe'))
 );
 
@@ -54,8 +54,8 @@ CREATE TABLE t_nauczyciel OF t_nauczyciel_obj (
     nazwisko            NOT NULL,
     email               UNIQUE,
     data_zatrudnienia   NOT NULL,
-    
-    CONSTRAINT chk_nauczyciel_email 
+
+    CONSTRAINT chk_nauczyciel_email
         CHECK (email LIKE '%@%')
 );
 
@@ -70,10 +70,10 @@ CREATE TABLE t_uczen OF t_uczen_obj (
     data_urodzenia  NOT NULL,
     email           UNIQUE,
     data_zapisu     NOT NULL,
-    
-    CONSTRAINT chk_uczen_email 
+
+    CONSTRAINT chk_uczen_email
         CHECK (email LIKE '%@%'),
-    CONSTRAINT chk_uczen_data 
+    CONSTRAINT chk_uczen_data
         CHECK (data_zapisu >= data_urodzenia)
 );
 
@@ -86,10 +86,10 @@ CREATE TABLE t_kurs OF t_kurs_obj (
     nazwa           NOT NULL,
     poziom          NOT NULL,
     cena_za_lekcje  NOT NULL,
-    
-    CONSTRAINT chk_kurs_poziom 
+
+    CONSTRAINT chk_kurs_poziom
         CHECK (poziom IN ('poczatkujacy', 'sredni', 'zaawansowany')),
-    CONSTRAINT chk_kurs_cena 
+    CONSTRAINT chk_kurs_cena
         CHECK (cena_za_lekcje > 0)
 )
 NESTED TABLE ref_instrument STORE AS nt_kurs_instrument;
@@ -106,14 +106,14 @@ CREATE TABLE t_kurs OF t_kurs_obj (
     nazwa           NOT NULL,
     poziom          NOT NULL,
     cena_za_lekcje  NOT NULL,
-    
-    CONSTRAINT chk_kurs_poziom 
+
+    CONSTRAINT chk_kurs_poziom
         CHECK (poziom IN ('poczatkujacy', 'sredni', 'zaawansowany')),
-    CONSTRAINT chk_kurs_cena 
+    CONSTRAINT chk_kurs_cena
         CHECK (cena_za_lekcje > 0),
-    
+
     -- SCOPE FOR definiuje do jakiej tabeli wskazuje REF
-    CONSTRAINT fk_kurs_instrument 
+    CONSTRAINT fk_kurs_instrument
         ref_instrument SCOPE IS t_instrument
 );
 
@@ -127,20 +127,20 @@ CREATE TABLE t_lekcja OF t_lekcja_obj (
     godzina_start   NOT NULL,
     czas_trwania    NOT NULL,
     status          NOT NULL,
-    
-    CONSTRAINT chk_lekcja_czas 
+
+    CONSTRAINT chk_lekcja_czas
         CHECK (czas_trwania IN (30, 45, 60, 90)),
-    CONSTRAINT chk_lekcja_status 
+    CONSTRAINT chk_lekcja_status
         CHECK (status IN ('zaplanowana', 'odbyta', 'odwolana')),
-    CONSTRAINT chk_lekcja_godzina 
+    CONSTRAINT chk_lekcja_godzina
         CHECK (REGEXP_LIKE(godzina_start, '^[0-2][0-9]:[0-5][0-9]$')),
-    
+
     -- SCOPE FOR dla referencji
-    CONSTRAINT fk_lekcja_uczen 
+    CONSTRAINT fk_lekcja_uczen
         ref_uczen SCOPE IS t_uczen,
-    CONSTRAINT fk_lekcja_nauczyciel 
+    CONSTRAINT fk_lekcja_nauczyciel
         ref_nauczyciel SCOPE IS t_nauczyciel,
-    CONSTRAINT fk_lekcja_kurs 
+    CONSTRAINT fk_lekcja_kurs
         ref_kurs SCOPE IS t_kurs
 );
 
@@ -153,16 +153,16 @@ CREATE TABLE t_ocena_postepu OF t_ocena_obj (
     data_oceny      NOT NULL,
     ocena           NOT NULL,
     obszar          NOT NULL,
-    
-    CONSTRAINT chk_ocena_zakres 
+
+    CONSTRAINT chk_ocena_zakres
         CHECK (ocena BETWEEN 1 AND 6),
-    CONSTRAINT chk_ocena_obszar 
+    CONSTRAINT chk_ocena_obszar
         CHECK (obszar IN ('technika', 'teoria', 'sluch', 'rytm', 'interpretacja')),
-    
+
     -- SCOPE FOR dla referencji
-    CONSTRAINT fk_ocena_uczen 
+    CONSTRAINT fk_ocena_uczen
         ref_uczen SCOPE IS t_uczen,
-    CONSTRAINT fk_ocena_nauczyciel 
+    CONSTRAINT fk_ocena_nauczyciel
         ref_nauczyciel SCOPE IS t_nauczyciel
 );
 
@@ -201,7 +201,7 @@ PROMPT ========================================
 -- ============================================================================
 -- WERYFIKACJA STRUKTURY
 -- ============================================================================
-SELECT table_name, table_type 
-FROM user_all_tables 
-WHERE table_name IN ('T_INSTRUMENT', 'T_NAUCZYCIEL', 'T_UCZEN', 
+SELECT table_name, table_type
+FROM user_all_tables
+WHERE table_name IN ('T_INSTRUMENT', 'T_NAUCZYCIEL', 'T_UCZEN',
                      'T_KURS', 'T_LEKCJA', 'T_OCENA_POSTEPU');

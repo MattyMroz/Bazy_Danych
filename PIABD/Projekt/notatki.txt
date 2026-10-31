@@ -16,4 +16,3 @@ Błąd wynikał z tego, że w danych JSON jedna firma może mieć na liście kon
 Naprawiłem to, dodając słowo kluczowe DISTINCT do sekcji IMPORT COMPETITOR. Teraz SQL Server odfiltruje powtarzające się pary przed wstawieniem ich do bazy, co usunie konflikt z unikalnym indeksem UQ_Competitor.
 
 Możesz teraz ponownie uruchomić skrypt 04_import.sql.
-

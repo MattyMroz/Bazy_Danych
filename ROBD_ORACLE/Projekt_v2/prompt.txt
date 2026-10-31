@@ -1,6 +1,6 @@
 # 👑 MASTER_AGENT_ORCHESTRATOR - Władca Systemu Promptów
 
-> **Rola:** Master Orchestrator | **Tier:** TIER-GOD | **Domain:** All  
+> **Rola:** Master Orchestrator | **Tier:** TIER-GOD | **Domain:** All
 > **Wersja:** 1.0.0 | **Utworzono:** 2025-10-27
 
 <role>
@@ -120,7 +120,7 @@ tests/                # Test suites
 - Task management (manage_todo_list for complex workflows)
 
 ### Current State
-**Phase:** Agent Ecosystem Expansion ✅  
+**Phase:** Agent Ecosystem Expansion ✅
 **Status:** 6/10 agents active, KB core established, self-improvement enabled
 
 **Completed:**
@@ -282,7 +282,7 @@ Wykonuj plan:
    ```
 
 3. **Dla Każdego Taska:**
-   
+
    **Jeśli delegacja do agenta:**
    ```markdown
    @AGENT_NAME execute:
@@ -295,7 +295,7 @@ Wykonuj plan:
        constraints: ["[list]"]
      priority: [HIGH|MEDIUM|LOW]
    ```
-   
+
    **Jeśli wykonanie bezpośrednie:**
    - Użyj odpowiednich tools z `meta/tooling_capabilities.md`
    - Stosuj best practices (np. read large chunks, nie multi-call read_file)
@@ -317,7 +317,7 @@ Wykonuj plan:
 Po completion subtasków:
 
 1. **Output Validation:**
-   
+
    **Dla Kodu:**
    - [ ] Syntax correct (użyj `get_errors`)
    - [ ] Type hints present (Python/TS)
@@ -365,26 +365,26 @@ Po successful completion całego zadania:
 1. **Log do `logs/tasks_completed.md`:**
    ```markdown
    ## [Timestamp] - [Task Title]
-   
+
    **Task Description:** [...]
    **Agent/Tool:** [...]
    **Status:** ✅ SUCCESS
-   
+
    **Artifacts:**
    - Created: [lista plików]
    - Modified: [lista plików]
-   
+
    **Metrics:**
    - Execution time: [...]
    - LOC: [before → after]
    - Test coverage: [X%]
-   
+
    **Key Decisions:**
    - [Decision 1]: [Rationale]
-   
+
    **Lessons Learned:**
    - [Lesson 1]
-   
+
    **Tags:** #[relevantne tagi]
    ```
 
@@ -404,7 +404,7 @@ Po successful completion całego zadania:
        → Update MASTER_AGENT_ORCHESTRATOR.md (context, capabilities, workflow)
        → Update slave agents jeśli workflow się zmienił
        → Log improvement w logs/decisions.md
-   
+
    Triggers:
    - ✅ Nowi agenci → update "Twoje Zasoby"
    - ✅ Nowe KB → update knowledge_base listing
@@ -422,23 +422,23 @@ Po successful completion całego zadania:
    - Lista artifacts (z linkami)
    - Metryki (jeśli applicable)
    - Recommendations (next steps, potential improvements)
-   
+
    **Ton:** Profesjonalny, confident, actionable
-   
+
    **Format:**
    ```markdown
    ## ✅ Zadanie Ukończone: [Tytuł]
-   
+
    **Wykonano:**
    - [Action 1]
    - [Action 2]
-   
+
    **Artefakty:**
    - `[path]` - [opis]
-   
+
    **Metryki:**
    - [Metric]: [Value]
-   
+
    **Rekomendacje:**
    - [Next action 1]
    - [Next action 2]
@@ -760,7 +760,7 @@ report:
   agent: "CODE_PYTHON"
   status: "SUCCESS" | "PARTIAL_SUCCESS" | "FAILED"
   execution_time: "15 minutes"
-  
+
   artifacts:
     created:
       - path: "[...]"
@@ -769,27 +769,27 @@ report:
       - path: "[...]"
         changes_summary: "[...]"
     deleted: []
-  
+
   metrics:
     lines_of_code_before: 250
     lines_of_code_after: 220
     test_coverage: "85%"
     performance_delta: "+5% faster"
-  
+
   summary: |
     [Multi-line podsumowanie wykonania - co zrobiono, jak]
-  
+
   key_decisions:
     - decision: "[Decyzja 1]"
       rationale: "[Uzasadnienie]"
-  
+
   issues_encountered:
     - issue: "[Problem 1]"
       resolution: "[Jak rozwiązano]"
-  
+
   recommendations:
     - "[Rekomendacja dla przyszłych tasków]"
-  
+
   logs_location: ".prompts/logs/agent_actions/CODE_PYTHON_actions.md"
 ```
 
@@ -816,7 +816,7 @@ Każdy agent loguje swoje szczegółowe działania do:
 ```markdown
 ## [ISO Timestamp] - [Task ID]
 
-**Invoked By:** MASTER_AGENT_ORCHESTRATOR  
+**Invoked By:** MASTER_AGENT_ORCHESTRATOR
 **Priority:** [X]
 
 **Task:**
@@ -916,7 +916,7 @@ Każdy agent loguje swoje szczegółowe działania do:
 
 ### Scenariusz: User Request
 ```
-User: "Potrzebuję stworzyć moduł do automatycznego wykrywania języka mangi (japońska vs. koreańska) 
+User: "Potrzebuję stworzyć moduł do automatycznego wykrywania języka mangi (japońska vs. koreańska)
        na podstawie OCR output. Moduł powinien być szybki (< 50ms) i dokładny (> 95% accuracy)."
 ```
 
@@ -1167,7 +1167,7 @@ runTests(files=["tests/integration/test_language_detection_pipeline.py"])
 ## 2025-10-27T17:45:00Z - Language Detection Module Creation
 
 **Task Description:**
-Stworzenie modułu do automatycznego wykrywania języka mangi (JA vs KO) 
+Stworzenie modułu do automatycznego wykrywania języka mangi (JA vs KO)
 z requirements: speed < 50ms, accuracy > 95%
 
 **Agents Used:**
@@ -1178,7 +1178,7 @@ z requirements: speed < 50ms, accuracy > 95%
 **Status:** ✅ SUCCESS
 
 **Artifacts:**
-- Created: 
+- Created:
   - `src/services/language_detection/` (full module)
   - `tests/unit/test_language_detection.py`
   - `tests/integration/test_language_detection_pipeline.py`
@@ -1245,7 +1245,7 @@ result = detector.detect(text)
 3. Fine-tune ML model na production data po zebraniu ~ 1000 samples
 
 ---
-**Total Execution Time:** 2h 15min  
+**Total Execution Time:** 2h 15min
 **Status:** Production-ready ✅
 ```
 
@@ -1385,11 +1385,11 @@ Maintain scorecard w `agents/README.md`:
 
 ---
 
-**MASTER_AGENT_ORCHESTRATOR v1.0.0**  
+**MASTER_AGENT_ORCHESTRATOR v1.0.0**
 *"Dominacja poprzez systematyczną orkiestrację, dokumentację i bezwzględny enforcement jakości"*
 
-**Utworzono:** 2025-10-27  
-**Status:** ⚡ ACTIVE  
+**Utworzono:** 2025-10-27
+**Status:** ⚡ ACTIVE
 **Next Action:** Await user command
 
 
@@ -1405,11 +1405,11 @@ PLAN ZAJĘĆ:
 Ogólnie chodzi o to że tak robimy system dla szkoły.
 Bierzemy ograniczenie że system jest dla 1 semestru, nie manewrujemy w innych semestrach - uproszczenie - 1 semestr.
 Tworzenie planu lekcji - ułatwianie tworzenia...
-Np mamy zajecia grupowe, trzeba zarezerwować zsale najperw dla grup, potem ręcznie / automatycznie wypełniać indywidualne leckcjie lub inne w tym stylu nie wiem czy moga być dwujkki i tak dalej 
+Np mamy zajecia grupowe, trzeba zarezerwować zsale najperw dla grup, potem ręcznie / automatycznie wypełniać indywidualne leckcjie lub inne w tym stylu nie wiem czy moga być dwujkki i tak dalej
 
 Ogólnie automatyczacja tworzenia planu zajeć
 Ustawiamy plan lekcyjny dla 1 semestru
-Trzeba balansować obciążeniem uczniów i nauczycieli nie moze być sytaucjie że 1 nauczyciel bedzie miał 8h w dzień w dzień co nie 
+Trzeba balansować obciążeniem uczniów i nauczycieli nie moze być sytaucjie że 1 nauczyciel bedzie miał 8h w dzień w dzień co nie
 
 i takie tam inne wymyśl logiczne Ograniczenia
 
@@ -1423,13 +1423,13 @@ jeśli znejdzeisz jakieś ograniczenia które w miarę prosto zrobić to pisz ws
 
 
 
-Ok kolejną sprawą są testy 
+Ok kolejną sprawą są testy
 Testy mają być do wszystkiego dosłownie
-typy tabele pakiety trigery dane użytkownicy 
-i co wiecej scenariusze działania 
+typy tabele pakiety trigery dane użytkownicy
+i co wiecej scenariusze działania
 
 To jest mamy scenariusz co się po kolei dzieje od wpiania wszkich, ukąłnianie plany, administracja danego użytkownika, blokady usunieć, błędne dane, konflikty w palnie zajeć i tak dalej, chodzi o to by pokazac się od jak najlepszej strony
-wszko ma być zabezpieczone i ma to pokazywać że coś działą lub działa tak jak zaplanowaliśmy 
+wszko ma być zabezpieczone i ma to pokazywać że coś działą lub działa tak jak zaplanowaliśmy
 
 tak możesz dodac nowe tabele i typy, nie przekraczaj 10 to limit najlepej nie komplikuj tego, ale może być potrzebne pare table jeszcze
 
@@ -1453,7 +1453,7 @@ sprawozdanie w latechu: Raport_MusicSchoolDB.tex
 
 i wymagania które dam ci poniżej, obeny kod spałnia je wiec nie się o co martwić
 
-co do samego raportu to ma być mini dokumentacja też wszyskich rzeczy które zostały zrobione 
+co do samego raportu to ma być mini dokumentacja też wszyskich rzeczy które zostały zrobione
 
 wiesz każda tabela, każdy trigger, każdy pakiet co robi jak i dlaczego mini dokumentacja - raport ma mieć obecną strukturę
 
@@ -1469,7 +1469,7 @@ Plan działania:
 3. Mając już tyle pomysłów i tak dalej robisz 02_ocena_pomyslow.md ## 🏆 Podsumowanie ocen i Decyzje jaki zostały podjęte
 Opisujesz tam wszko co ustaliłęś liste tabel nowych rzeczy i tak dalej - rozpisujesz co masz zrobić jaka ma być tego strukutra - wszykie ograniczenia i komplikacjie jak to ma działać i tak dalej
 
-4. potem robisz listę rzeczy do zrobienia i po wypełniesz lub twożysz pliki 
+4. potem robisz listę rzeczy do zrobienia i po wypełniesz lub twożysz pliki
 w folderze Projekt_v2 pliki które ci podałem są kopiami z wersji pierwszej należy je uzupełnić / całkowicie poprawić edług wydedukowanych założeń i ograniczeń
 
 5. Realizacja założeń i pisanie dokumentacji
@@ -1485,7 +1485,7 @@ Ok do działa ultrathing
 
 Projekt obiektowej bazy danych powinien zawierać opracowaną strukturę składającą się z:
 - definicji typów obiektowych  (łącznie z przewidzianymi niezbędnymi do ich obsługi metodami) ,
-- definicji tabel obiektowych w których składowane będą obiekty wierszowe  i kolumnowe 
+- definicji tabel obiektowych w których składowane będą obiekty wierszowe  i kolumnowe
 - zastosowana zostanie referencja  (wskaźnikiem do rekordu tabeli obiektowej) i dereferencja pozwalająca na wprowadzenie relacji występujących między obiektami,
 -  wstawianie danych do tabeli z referencją,
 - tworzenie i użytkowanie typu VARRY/ NESTED TABLE - do modelowania relacji jeden do wielu, gdzie po stronie "wiele" występuje kolekcja obiektów,
@@ -1588,7 +1588,7 @@ CREATE OR REPLACE TYPE t_instrument_obj AS OBJECT (
     id_instrumentu  NUMBER,
     nazwa           VARCHAR2(100),
     kategoria       VARCHAR2(50),    -- dety, strunowe, perkusyjne, klawiszowe
-    
+
     -- Metoda: Zwraca pelny opis instrumentu
     MEMBER FUNCTION opis RETURN VARCHAR2
 );
@@ -1621,25 +1621,25 @@ CREATE OR REPLACE TYPE t_nauczyciel_obj AS OBJECT (
     telefon         VARCHAR2(20),
     data_zatrudnienia DATE,
     instrumenty     t_lista_instrumentow,  -- VARRAY - lista instrumentow
-    
+
     -- Metoda: Zwraca pelne dane nauczyciela
     MEMBER FUNCTION pelne_dane RETURN VARCHAR2,
-    
+
     -- Metoda: Sprawdza czy nauczyciel jest seniorem (>10 lat stazu)
     MEMBER FUNCTION czy_senior RETURN VARCHAR2,
-    
+
     -- Metoda: Oblicza lata stazu
     MEMBER FUNCTION lata_stazu RETURN NUMBER
 );
 /
 
 CREATE OR REPLACE TYPE BODY t_nauczyciel_obj AS
-    
+
     MEMBER FUNCTION pelne_dane RETURN VARCHAR2 IS
     BEGIN
         RETURN imie || ' ' || nazwisko || ' (tel: ' || telefon || ')';
     END pelne_dane;
-    
+
     MEMBER FUNCTION czy_senior RETURN VARCHAR2 IS
     BEGIN
         IF MONTHS_BETWEEN(SYSDATE, data_zatrudnienia) / 12 > 10 THEN
@@ -1648,12 +1648,12 @@ CREATE OR REPLACE TYPE BODY t_nauczyciel_obj AS
             RETURN 'NIE';
         END IF;
     END czy_senior;
-    
+
     MEMBER FUNCTION lata_stazu RETURN NUMBER IS
     BEGIN
         RETURN TRUNC(MONTHS_BETWEEN(SYSDATE, data_zatrudnienia) / 12);
     END lata_stazu;
-    
+
 END;
 /
 
@@ -1669,30 +1669,30 @@ CREATE OR REPLACE TYPE t_uczen_obj AS OBJECT (
     email           VARCHAR2(100),
     telefon         VARCHAR2(20),
     data_zapisu     DATE,
-    
+
     -- Metoda: Oblicza wiek ucznia
     MEMBER FUNCTION wiek RETURN NUMBER,
-    
+
     -- Metoda: Zwraca pelne dane ucznia
     MEMBER FUNCTION pelne_dane RETURN VARCHAR2,
-    
+
     -- Metoda: Sprawdza czy uczen jest pelnoletni
     MEMBER FUNCTION czy_pelnoletni RETURN VARCHAR2
 );
 /
 
 CREATE OR REPLACE TYPE BODY t_uczen_obj AS
-    
+
     MEMBER FUNCTION wiek RETURN NUMBER IS
     BEGIN
         RETURN TRUNC(MONTHS_BETWEEN(SYSDATE, data_urodzenia) / 12);
     END wiek;
-    
+
     MEMBER FUNCTION pelne_dane RETURN VARCHAR2 IS
     BEGIN
         RETURN imie || ' ' || nazwisko || ' (wiek: ' || SELF.wiek() || ' lat)';
     END pelne_dane;
-    
+
     MEMBER FUNCTION czy_pelnoletni RETURN VARCHAR2 IS
     BEGIN
         IF SELF.wiek() >= 18 THEN
@@ -1701,7 +1701,7 @@ CREATE OR REPLACE TYPE BODY t_uczen_obj AS
             RETURN 'NIE';
         END IF;
     END czy_pelnoletni;
-    
+
 END;
 /
 
@@ -1715,19 +1715,19 @@ CREATE OR REPLACE TYPE t_kurs_obj AS OBJECT (
     poziom          VARCHAR2(20),    -- poczatkujacy, sredni, zaawansowany
     cena_za_lekcje  NUMBER(10,2),
     ref_instrument  REF t_instrument_obj,  -- REFERENCJA do instrumentu
-    
+
     -- Metoda: Zwraca informacje o kursie
     MEMBER FUNCTION info_kursu RETURN VARCHAR2
 );
 /
 
 CREATE OR REPLACE TYPE BODY t_kurs_obj AS
-    
+
     MEMBER FUNCTION info_kursu RETURN VARCHAR2 IS
     BEGIN
         RETURN nazwa || ' [' || poziom || '] - ' || cena_za_lekcje || ' PLN/lekcja';
     END info_kursu;
-    
+
 END;
 /
 
@@ -1746,22 +1746,22 @@ CREATE OR REPLACE TYPE t_lekcja_obj AS OBJECT (
     ref_uczen       REF t_uczen_obj,
     ref_nauczyciel  REF t_nauczyciel_obj,
     ref_kurs        REF t_kurs_obj,
-    
+
     -- Metoda: Zwraca czas trwania w formacie tekstowym
     MEMBER FUNCTION czas_trwania_txt RETURN VARCHAR2,
-    
+
     -- Metoda: Sprawdza czy lekcja juz sie odbyla
     MEMBER FUNCTION czy_odbyta RETURN VARCHAR2
 );
 /
 
 CREATE OR REPLACE TYPE BODY t_lekcja_obj AS
-    
+
     MEMBER FUNCTION czas_trwania_txt RETURN VARCHAR2 IS
     BEGIN
         RETURN czas_trwania || ' minut';
     END czas_trwania_txt;
-    
+
     MEMBER FUNCTION czy_odbyta RETURN VARCHAR2 IS
     BEGIN
         IF status = 'odbyta' THEN
@@ -1770,7 +1770,7 @@ CREATE OR REPLACE TYPE BODY t_lekcja_obj AS
             RETURN 'NIE';
         END IF;
     END czy_odbyta;
-    
+
 END;
 /
 
@@ -1786,17 +1786,17 @@ CREATE OR REPLACE TYPE t_ocena_obj AS OBJECT (
     obszar          VARCHAR2(100),   -- technika, teoria, sluch, rytm, interpretacja
     ref_uczen       REF t_uczen_obj,
     ref_nauczyciel  REF t_nauczyciel_obj,
-    
+
     -- Metoda: Sprawdza czy ocena jest pozytywna (>=2)
     MEMBER FUNCTION czy_pozytywna RETURN VARCHAR2,
-    
+
     -- Metoda: Zwraca ocene slownie
     MEMBER FUNCTION ocena_slownie RETURN VARCHAR2
 );
 /
 
 CREATE OR REPLACE TYPE BODY t_ocena_obj AS
-    
+
     MEMBER FUNCTION czy_pozytywna RETURN VARCHAR2 IS
     BEGIN
         IF ocena >= 2 THEN
@@ -1805,7 +1805,7 @@ CREATE OR REPLACE TYPE BODY t_ocena_obj AS
             RETURN 'NIE';
         END IF;
     END czy_pozytywna;
-    
+
     MEMBER FUNCTION ocena_slownie RETURN VARCHAR2 IS
     BEGIN
         CASE ocena
@@ -1818,7 +1818,7 @@ CREATE OR REPLACE TYPE BODY t_ocena_obj AS
             ELSE RETURN 'nieznana';
         END CASE;
     END ocena_slownie;
-    
+
 END;
 /
 
@@ -1884,8 +1884,8 @@ CREATE TABLE t_instrument OF t_instrument_obj (
     id_instrumentu  PRIMARY KEY,
     nazwa           NOT NULL,
     kategoria       NOT NULL,
-    
-    CONSTRAINT chk_instrument_kategoria 
+
+    CONSTRAINT chk_instrument_kategoria
         CHECK (kategoria IN ('dety', 'strunowe', 'perkusyjne', 'klawiszowe'))
 );
 
@@ -1899,8 +1899,8 @@ CREATE TABLE t_nauczyciel OF t_nauczyciel_obj (
     nazwisko            NOT NULL,
     email               UNIQUE,
     data_zatrudnienia   NOT NULL,
-    
-    CONSTRAINT chk_nauczyciel_email 
+
+    CONSTRAINT chk_nauczyciel_email
         CHECK (email LIKE '%@%')
 );
 
@@ -1915,10 +1915,10 @@ CREATE TABLE t_uczen OF t_uczen_obj (
     data_urodzenia  NOT NULL,
     email           UNIQUE,
     data_zapisu     NOT NULL,
-    
-    CONSTRAINT chk_uczen_email 
+
+    CONSTRAINT chk_uczen_email
         CHECK (email LIKE '%@%'),
-    CONSTRAINT chk_uczen_data 
+    CONSTRAINT chk_uczen_data
         CHECK (data_zapisu >= data_urodzenia)
 );
 
@@ -1931,10 +1931,10 @@ CREATE TABLE t_kurs OF t_kurs_obj (
     nazwa           NOT NULL,
     poziom          NOT NULL,
     cena_za_lekcje  NOT NULL,
-    
-    CONSTRAINT chk_kurs_poziom 
+
+    CONSTRAINT chk_kurs_poziom
         CHECK (poziom IN ('poczatkujacy', 'sredni', 'zaawansowany')),
-    CONSTRAINT chk_kurs_cena 
+    CONSTRAINT chk_kurs_cena
         CHECK (cena_za_lekcje > 0)
 )
 NESTED TABLE ref_instrument STORE AS nt_kurs_instrument;
@@ -1951,14 +1951,14 @@ CREATE TABLE t_kurs OF t_kurs_obj (
     nazwa           NOT NULL,
     poziom          NOT NULL,
     cena_za_lekcje  NOT NULL,
-    
-    CONSTRAINT chk_kurs_poziom 
+
+    CONSTRAINT chk_kurs_poziom
         CHECK (poziom IN ('poczatkujacy', 'sredni', 'zaawansowany')),
-    CONSTRAINT chk_kurs_cena 
+    CONSTRAINT chk_kurs_cena
         CHECK (cena_za_lekcje > 0),
-    
+
     -- SCOPE FOR definiuje do jakiej tabeli wskazuje REF
-    CONSTRAINT fk_kurs_instrument 
+    CONSTRAINT fk_kurs_instrument
         ref_instrument SCOPE IS t_instrument
 );
 
@@ -1972,20 +1972,20 @@ CREATE TABLE t_lekcja OF t_lekcja_obj (
     godzina_start   NOT NULL,
     czas_trwania    NOT NULL,
     status          NOT NULL,
-    
-    CONSTRAINT chk_lekcja_czas 
+
+    CONSTRAINT chk_lekcja_czas
         CHECK (czas_trwania IN (30, 45, 60, 90)),
-    CONSTRAINT chk_lekcja_status 
+    CONSTRAINT chk_lekcja_status
         CHECK (status IN ('zaplanowana', 'odbyta', 'odwolana')),
-    CONSTRAINT chk_lekcja_godzina 
+    CONSTRAINT chk_lekcja_godzina
         CHECK (REGEXP_LIKE(godzina_start, '^[0-2][0-9]:[0-5][0-9]$')),
-    
+
     -- SCOPE FOR dla referencji
-    CONSTRAINT fk_lekcja_uczen 
+    CONSTRAINT fk_lekcja_uczen
         ref_uczen SCOPE IS t_uczen,
-    CONSTRAINT fk_lekcja_nauczyciel 
+    CONSTRAINT fk_lekcja_nauczyciel
         ref_nauczyciel SCOPE IS t_nauczyciel,
-    CONSTRAINT fk_lekcja_kurs 
+    CONSTRAINT fk_lekcja_kurs
         ref_kurs SCOPE IS t_kurs
 );
 
@@ -1998,16 +1998,16 @@ CREATE TABLE t_ocena_postepu OF t_ocena_obj (
     data_oceny      NOT NULL,
     ocena           NOT NULL,
     obszar          NOT NULL,
-    
-    CONSTRAINT chk_ocena_zakres 
+
+    CONSTRAINT chk_ocena_zakres
         CHECK (ocena BETWEEN 1 AND 6),
-    CONSTRAINT chk_ocena_obszar 
+    CONSTRAINT chk_ocena_obszar
         CHECK (obszar IN ('technika', 'teoria', 'sluch', 'rytm', 'interpretacja')),
-    
+
     -- SCOPE FOR dla referencji
-    CONSTRAINT fk_ocena_uczen 
+    CONSTRAINT fk_ocena_uczen
         ref_uczen SCOPE IS t_uczen,
-    CONSTRAINT fk_ocena_nauczyciel 
+    CONSTRAINT fk_ocena_nauczyciel
         ref_nauczyciel SCOPE IS t_nauczyciel
 );
 
@@ -2046,9 +2046,9 @@ PROMPT ========================================
 -- ============================================================================
 -- WERYFIKACJA STRUKTURY
 -- ============================================================================
-SELECT table_name, table_type 
-FROM user_all_tables 
-WHERE table_name IN ('T_INSTRUMENT', 'T_NAUCZYCIEL', 'T_UCZEN', 
+SELECT table_name, table_type
+FROM user_all_tables
+WHERE table_name IN ('T_INSTRUMENT', 'T_NAUCZYCIEL', 'T_UCZEN',
                      'T_KURS', 'T_LEKCJA', 'T_OCENA_POSTEPU');
 
 
@@ -2066,10 +2066,10 @@ WHERE table_name IN ('T_INSTRUMENT', 'T_NAUCZYCIEL', 'T_UCZEN',
 -- ============================================================================
 
 CREATE OR REPLACE PACKAGE pkg_uczen AS
-    
+
     -- Stala - minimalny wiek ucznia
     c_min_wiek CONSTANT NUMBER := 5;
-    
+
     -- Procedura: Dodaje nowego ucznia
     PROCEDURE dodaj_ucznia(
         p_imie          VARCHAR2,
@@ -2078,20 +2078,20 @@ CREATE OR REPLACE PACKAGE pkg_uczen AS
         p_email         VARCHAR2,
         p_telefon       VARCHAR2 DEFAULT NULL
     );
-    
+
     -- Funkcja: Zwraca liczbe uczniow
     FUNCTION liczba_uczniow RETURN NUMBER;
-    
+
     -- Funkcja: Zwraca uczniow w podanym przedziale wiekowym
-    FUNCTION uczniowie_wiek(p_wiek_min NUMBER, p_wiek_max NUMBER) 
+    FUNCTION uczniowie_wiek(p_wiek_min NUMBER, p_wiek_max NUMBER)
         RETURN SYS_REFCURSOR;
-    
+
     -- Procedura: Wyswietla wszystkich uczniow (uzywa kursora)
     PROCEDURE lista_uczniow;
-    
+
     -- Funkcja: Oblicza srednia ocen ucznia
     FUNCTION srednia_ocen(p_id_ucznia NUMBER) RETURN NUMBER;
-    
+
     -- Wyjatek uzytkownika
     e_za_mlody EXCEPTION;
     PRAGMA EXCEPTION_INIT(e_za_mlody, -20001);
@@ -2116,16 +2116,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_uczen AS
     BEGIN
         -- Obliczamy wiek
         v_wiek := TRUNC(MONTHS_BETWEEN(SYSDATE, p_data_urodzenia) / 12);
-        
+
         -- Walidacja wieku
         IF v_wiek < c_min_wiek THEN
-            RAISE_APPLICATION_ERROR(-20001, 
+            RAISE_APPLICATION_ERROR(-20001,
                 'Uczen musi miec minimum ' || c_min_wiek || ' lat. Podany wiek: ' || v_wiek);
         END IF;
-        
+
         -- Pobieramy nastepny ID
         v_id := seq_uczen.NEXTVAL;
-        
+
         -- Wstawiamy ucznia
         INSERT INTO t_uczen VALUES (
             t_uczen_obj(
@@ -2138,10 +2138,10 @@ CREATE OR REPLACE PACKAGE BODY pkg_uczen AS
                 SYSDATE
             )
         );
-        
+
         COMMIT;
         DBMS_OUTPUT.PUT_LINE('Dodano ucznia: ' || p_imie || ' ' || p_nazwisko || ' (ID: ' || v_id || ')');
-        
+
     EXCEPTION
         WHEN DUP_VAL_ON_INDEX THEN
             DBMS_OUTPUT.PUT_LINE('BLAD: Email ' || p_email || ' juz istnieje w bazie.');
@@ -2150,7 +2150,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_uczen AS
             DBMS_OUTPUT.PUT_LINE('BLAD: ' || SQLERRM);
             ROLLBACK;
     END dodaj_ucznia;
-    
+
     -- ========================================================================
     -- FUNKCJA: liczba_uczniow
     -- ========================================================================
@@ -2160,11 +2160,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_uczen AS
         SELECT COUNT(*) INTO v_liczba FROM t_uczen;
         RETURN v_liczba;
     END liczba_uczniow;
-    
+
     -- ========================================================================
     -- FUNKCJA: uczniowie_wiek (REF CURSOR)
     -- ========================================================================
-    FUNCTION uczniowie_wiek(p_wiek_min NUMBER, p_wiek_max NUMBER) 
+    FUNCTION uczniowie_wiek(p_wiek_min NUMBER, p_wiek_max NUMBER)
         RETURN SYS_REFCURSOR IS
         v_cursor SYS_REFCURSOR;
     BEGIN
@@ -2175,43 +2175,43 @@ CREATE OR REPLACE PACKAGE BODY pkg_uczen AS
             ORDER BY u.wiek();
         RETURN v_cursor;
     END uczniowie_wiek;
-    
+
     -- ========================================================================
     -- PROCEDURA: lista_uczniow (z kursorem jawnym)
     -- ========================================================================
     PROCEDURE lista_uczniow IS
         -- Kursor jawny
         CURSOR c_uczniowie IS
-            SELECT u.id_ucznia, u.imie, u.nazwisko, 
+            SELECT u.id_ucznia, u.imie, u.nazwisko,
                    u.wiek() AS wiek, u.czy_pelnoletni() AS pelnoletni
             FROM t_uczen u
             ORDER BY u.nazwisko, u.imie;
-        
+
         v_rec c_uczniowie%ROWTYPE;
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== LISTA UCZNIOW ===');
-        DBMS_OUTPUT.PUT_LINE(RPAD('ID', 5) || RPAD('Imie', 15) || 
+        DBMS_OUTPUT.PUT_LINE(RPAD('ID', 5) || RPAD('Imie', 15) ||
                              RPAD('Nazwisko', 20) || RPAD('Wiek', 6) || 'Pelnoletni');
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 60, '-'));
-        
+
         OPEN c_uczniowie;
         LOOP
             FETCH c_uczniowie INTO v_rec;
             EXIT WHEN c_uczniowie%NOTFOUND;
-            
+
             DBMS_OUTPUT.PUT_LINE(
-                RPAD(v_rec.id_ucznia, 5) || 
-                RPAD(v_rec.imie, 15) || 
-                RPAD(v_rec.nazwisko, 20) || 
+                RPAD(v_rec.id_ucznia, 5) ||
+                RPAD(v_rec.imie, 15) ||
+                RPAD(v_rec.nazwisko, 20) ||
                 RPAD(v_rec.wiek, 6) ||
                 v_rec.pelnoletni
             );
         END LOOP;
         CLOSE c_uczniowie;
-        
+
         DBMS_OUTPUT.PUT_LINE('Razem uczniow: ' || liczba_uczniow());
     END lista_uczniow;
-    
+
     -- ========================================================================
     -- FUNKCJA: srednia_ocen
     -- ========================================================================
@@ -2221,7 +2221,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_uczen AS
         SELECT AVG(o.ocena) INTO v_srednia
         FROM t_ocena_postepu o
         WHERE DEREF(o.ref_uczen).id_ucznia = p_id_ucznia;
-        
+
         RETURN ROUND(NVL(v_srednia, 0), 2);
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
@@ -2237,7 +2237,7 @@ END pkg_uczen;
 -- ============================================================================
 
 CREATE OR REPLACE PACKAGE pkg_lekcja AS
-    
+
     -- Procedura: Planuje nowa lekcje
     PROCEDURE zaplanuj_lekcje(
         p_id_ucznia     NUMBER,
@@ -2247,24 +2247,24 @@ CREATE OR REPLACE PACKAGE pkg_lekcja AS
         p_godzina       VARCHAR2,
         p_czas_trwania  NUMBER DEFAULT 45
     );
-    
+
     -- Procedura: Oznacza lekcje jako odbyta
     PROCEDURE oznacz_odbyta(
         p_id_lekcji NUMBER,
         p_temat     VARCHAR2,
         p_uwagi     VARCHAR2 DEFAULT NULL
     );
-    
+
     -- Procedura: Odwoluje lekcje
     PROCEDURE odwolaj_lekcje(p_id_lekcji NUMBER);
-    
+
     -- Funkcja: Zwraca lekcje ucznia w danym miesiacu
-    FUNCTION lekcje_ucznia(p_id_ucznia NUMBER, p_miesiac DATE) 
+    FUNCTION lekcje_ucznia(p_id_ucznia NUMBER, p_miesiac DATE)
         RETURN SYS_REFCURSOR;
-    
+
     -- Funkcja: Liczy lekcje nauczyciela w tygodniu
     FUNCTION lekcje_tygodniowo(p_id_nauczyciela NUMBER) RETURN NUMBER;
-    
+
     -- Procedura: Raport lekcji na dzien
     PROCEDURE raport_dzienny(p_data DATE);
 
@@ -2291,15 +2291,15 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         v_konflikt      NUMBER;
     BEGIN
         -- Pobieramy referencje
-        SELECT REF(u) INTO v_ref_uczen 
+        SELECT REF(u) INTO v_ref_uczen
         FROM t_uczen u WHERE u.id_ucznia = p_id_ucznia;
-        
-        SELECT REF(n) INTO v_ref_nauczyciel 
+
+        SELECT REF(n) INTO v_ref_nauczyciel
         FROM t_nauczyciel n WHERE n.id_nauczyciela = p_id_nauczyciela;
-        
-        SELECT REF(k) INTO v_ref_kurs 
+
+        SELECT REF(k) INTO v_ref_kurs
         FROM t_kurs k WHERE k.id_kursu = p_id_kursu;
-        
+
         -- Sprawdzamy konflikt czasowy nauczyciela
         SELECT COUNT(*) INTO v_konflikt
         FROM t_lekcja l
@@ -2307,15 +2307,15 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
           AND l.data_lekcji = p_data
           AND l.godzina_start = p_godzina
           AND l.status != 'odwolana';
-        
+
         IF v_konflikt > 0 THEN
-            RAISE_APPLICATION_ERROR(-20002, 
+            RAISE_APPLICATION_ERROR(-20002,
                 'Nauczyciel ma juz lekcje o tej godzinie!');
         END IF;
-        
+
         -- Wstawiamy lekcje
         v_id := seq_lekcja.NEXTVAL;
-        
+
         INSERT INTO t_lekcja VALUES (
             t_lekcja_obj(
                 v_id,
@@ -2330,12 +2330,12 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
                 v_ref_kurs
             )
         );
-        
+
         COMMIT;
-        DBMS_OUTPUT.PUT_LINE('Zaplanowano lekcje ID: ' || v_id || 
+        DBMS_OUTPUT.PUT_LINE('Zaplanowano lekcje ID: ' || v_id ||
                              ' na dzien ' || TO_CHAR(p_data, 'YYYY-MM-DD') ||
                              ' godz. ' || p_godzina);
-        
+
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             DBMS_OUTPUT.PUT_LINE('BLAD: Nie znaleziono ucznia/nauczyciela/kursu.');
@@ -2344,7 +2344,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
             DBMS_OUTPUT.PUT_LINE('BLAD: ' || SQLERRM);
             ROLLBACK;
     END zaplanuj_lekcje;
-    
+
     -- ========================================================================
     -- PROCEDURA: oznacz_odbyta
     -- ========================================================================
@@ -2360,7 +2360,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
             l.uwagi = p_uwagi
         WHERE l.id_lekcji = p_id_lekcji
           AND l.status = 'zaplanowana';
-        
+
         IF SQL%ROWCOUNT = 0 THEN
             DBMS_OUTPUT.PUT_LINE('UWAGA: Lekcja nie istnieje lub nie jest zaplanowana.');
         ELSE
@@ -2368,7 +2368,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
             DBMS_OUTPUT.PUT_LINE('Lekcja ID: ' || p_id_lekcji || ' oznaczona jako odbyta.');
         END IF;
     END oznacz_odbyta;
-    
+
     -- ========================================================================
     -- PROCEDURA: odwolaj_lekcje
     -- ========================================================================
@@ -2378,7 +2378,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         SET l.status = 'odwolana'
         WHERE l.id_lekcji = p_id_lekcji
           AND l.status = 'zaplanowana';
-        
+
         IF SQL%ROWCOUNT = 0 THEN
             DBMS_OUTPUT.PUT_LINE('UWAGA: Lekcja nie istnieje lub nie mozna jej odwolac.');
         ELSE
@@ -2386,16 +2386,16 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
             DBMS_OUTPUT.PUT_LINE('Lekcja ID: ' || p_id_lekcji || ' zostala odwolana.');
         END IF;
     END odwolaj_lekcje;
-    
+
     -- ========================================================================
     -- FUNKCJA: lekcje_ucznia (REF CURSOR)
     -- ========================================================================
-    FUNCTION lekcje_ucznia(p_id_ucznia NUMBER, p_miesiac DATE) 
+    FUNCTION lekcje_ucznia(p_id_ucznia NUMBER, p_miesiac DATE)
         RETURN SYS_REFCURSOR IS
         v_cursor SYS_REFCURSOR;
     BEGIN
         OPEN v_cursor FOR
-            SELECT l.id_lekcji, 
+            SELECT l.id_lekcji,
                    l.data_lekcji,
                    l.godzina_start,
                    DEREF(l.ref_nauczyciel).pelne_dane() AS nauczyciel,
@@ -2407,7 +2407,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
             ORDER BY l.data_lekcji, l.godzina_start;
         RETURN v_cursor;
     END lekcje_ucznia;
-    
+
     -- ========================================================================
     -- FUNKCJA: lekcje_tygodniowo
     -- ========================================================================
@@ -2417,28 +2417,28 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         SELECT COUNT(*) INTO v_liczba
         FROM t_lekcja l
         WHERE DEREF(l.ref_nauczyciel).id_nauczyciela = p_id_nauczyciela
-          AND l.data_lekcji BETWEEN TRUNC(SYSDATE, 'IW') 
+          AND l.data_lekcji BETWEEN TRUNC(SYSDATE, 'IW')
                                 AND TRUNC(SYSDATE, 'IW') + 6
           AND l.status != 'odwolana';
         RETURN v_liczba;
     END lekcje_tygodniowo;
-    
+
     -- ========================================================================
     -- PROCEDURA: raport_dzienny (z kursorem FOR)
     -- ========================================================================
     PROCEDURE raport_dzienny(p_data DATE) IS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== LEKCJE NA DZIEN ' || TO_CHAR(p_data, 'YYYY-MM-DD') || ' ===');
-        DBMS_OUTPUT.PUT_LINE(RPAD('Godz', 6) || RPAD('Nauczyciel', 25) || 
+        DBMS_OUTPUT.PUT_LINE(RPAD('Godz', 6) || RPAD('Nauczyciel', 25) ||
                              RPAD('Uczen', 25) || RPAD('Kurs', 20) || 'Status');
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 90, '-'));
-        
+
         -- Kursor FOR (niejawny)
         FOR rec IN (
             SELECT l.godzina_start,
-                   DEREF(l.ref_nauczyciel).imie || ' ' || 
+                   DEREF(l.ref_nauczyciel).imie || ' ' ||
                    DEREF(l.ref_nauczyciel).nazwisko AS nauczyciel,
-                   DEREF(l.ref_uczen).imie || ' ' || 
+                   DEREF(l.ref_uczen).imie || ' ' ||
                    DEREF(l.ref_uczen).nazwisko AS uczen,
                    DEREF(l.ref_kurs).nazwa AS kurs,
                    l.status
@@ -2465,7 +2465,7 @@ END pkg_lekcja;
 -- ============================================================================
 
 CREATE OR REPLACE PACKAGE pkg_ocena AS
-    
+
     -- Procedura: Dodaje ocene postepu
     PROCEDURE dodaj_ocene(
         p_id_ucznia     NUMBER,
@@ -2474,17 +2474,17 @@ CREATE OR REPLACE PACKAGE pkg_ocena AS
         p_obszar        VARCHAR2,
         p_komentarz     VARCHAR2 DEFAULT NULL
     );
-    
+
     -- Funkcja: Pobiera ostatnie oceny ucznia
-    FUNCTION ostatnie_oceny(p_id_ucznia NUMBER, p_limit NUMBER DEFAULT 5) 
+    FUNCTION ostatnie_oceny(p_id_ucznia NUMBER, p_limit NUMBER DEFAULT 5)
         RETURN SYS_REFCURSOR;
-    
+
     -- Procedura: Raport postepu ucznia
     PROCEDURE raport_postepu(p_id_ucznia NUMBER);
-    
+
     -- Funkcja: Srednia ocen w obszarze
     FUNCTION srednia_obszar(p_id_ucznia NUMBER, p_obszar VARCHAR2) RETURN NUMBER;
-    
+
     -- Procedura: Porownanie uczniow
     PROCEDURE porownaj_uczniow(p_id_ucznia_1 NUMBER, p_id_ucznia_2 NUMBER);
 
@@ -2509,20 +2509,20 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
     BEGIN
         -- Walidacja oceny
         IF p_ocena NOT BETWEEN 1 AND 6 THEN
-            RAISE_APPLICATION_ERROR(-20003, 
+            RAISE_APPLICATION_ERROR(-20003,
                 'Ocena musi byc w zakresie 1-6. Podano: ' || p_ocena);
         END IF;
-        
+
         -- Pobieramy referencje
-        SELECT REF(u) INTO v_ref_uczen 
+        SELECT REF(u) INTO v_ref_uczen
         FROM t_uczen u WHERE u.id_ucznia = p_id_ucznia;
-        
-        SELECT REF(n) INTO v_ref_nauczyciel 
+
+        SELECT REF(n) INTO v_ref_nauczyciel
         FROM t_nauczyciel n WHERE n.id_nauczyciela = p_id_nauczyciela;
-        
+
         -- Wstawiamy ocene
         v_id := seq_ocena.NEXTVAL;
-        
+
         INSERT INTO t_ocena_postepu VALUES (
             t_ocena_obj(
                 v_id,
@@ -2534,11 +2534,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
                 v_ref_nauczyciel
             )
         );
-        
+
         COMMIT;
-        DBMS_OUTPUT.PUT_LINE('Dodano ocene ' || p_ocena || ' (' || p_obszar || 
+        DBMS_OUTPUT.PUT_LINE('Dodano ocene ' || p_ocena || ' (' || p_obszar ||
                              ') dla ucznia ID: ' || p_id_ucznia);
-        
+
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             DBMS_OUTPUT.PUT_LINE('BLAD: Nie znaleziono ucznia lub nauczyciela.');
@@ -2547,11 +2547,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
             DBMS_OUTPUT.PUT_LINE('BLAD: ' || SQLERRM);
             ROLLBACK;
     END dodaj_ocene;
-    
+
     -- ========================================================================
     -- FUNKCJA: ostatnie_oceny (REF CURSOR)
     -- ========================================================================
-    FUNCTION ostatnie_oceny(p_id_ucznia NUMBER, p_limit NUMBER DEFAULT 5) 
+    FUNCTION ostatnie_oceny(p_id_ucznia NUMBER, p_limit NUMBER DEFAULT 5)
         RETURN SYS_REFCURSOR IS
         v_cursor SYS_REFCURSOR;
     BEGIN
@@ -2564,7 +2564,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
             FETCH FIRST p_limit ROWS ONLY;
         RETURN v_cursor;
     END ostatnie_oceny;
-    
+
     -- ========================================================================
     -- PROCEDURA: raport_postepu
     -- ========================================================================
@@ -2573,17 +2573,17 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
         v_srednia   NUMBER;
     BEGIN
         -- Pobieramy dane ucznia
-        SELECT VALUE(u) INTO v_uczen 
+        SELECT VALUE(u) INTO v_uczen
         FROM t_uczen u WHERE u.id_ucznia = p_id_ucznia;
-        
+
         DBMS_OUTPUT.PUT_LINE('=== RAPORT POSTEPU ===');
         DBMS_OUTPUT.PUT_LINE('Uczen: ' || v_uczen.pelne_dane());
-        DBMS_OUTPUT.PUT_LINE('Status: ' || CASE v_uczen.czy_pelnoletni() 
+        DBMS_OUTPUT.PUT_LINE('Status: ' || CASE v_uczen.czy_pelnoletni()
                                             WHEN 'TAK' THEN 'Pelnoletni'
                                             ELSE 'Niepelnoletni' END);
         DBMS_OUTPUT.PUT_LINE('');
         DBMS_OUTPUT.PUT_LINE('--- Srednie w obszarach ---');
-        
+
         -- Srednie w poszczegolnych obszarach
         FOR rec IN (
             SELECT obszar, ROUND(AVG(ocena), 2) AS srednia, COUNT(*) AS ilosc
@@ -2592,20 +2592,20 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
             GROUP BY obszar
             ORDER BY srednia DESC
         ) LOOP
-            DBMS_OUTPUT.PUT_LINE(RPAD(rec.obszar, 15) || ': ' || 
+            DBMS_OUTPUT.PUT_LINE(RPAD(rec.obszar, 15) || ': ' ||
                                  rec.srednia || ' (ocen: ' || rec.ilosc || ')');
         END LOOP;
-        
+
         -- Srednia ogolna
         v_srednia := pkg_uczen.srednia_ocen(p_id_ucznia);
         DBMS_OUTPUT.PUT_LINE('');
         DBMS_OUTPUT.PUT_LINE('SREDNIA OGOLNA: ' || v_srednia);
-        
+
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             DBMS_OUTPUT.PUT_LINE('BLAD: Nie znaleziono ucznia o ID: ' || p_id_ucznia);
     END raport_postepu;
-    
+
     -- ========================================================================
     -- FUNKCJA: srednia_obszar
     -- ========================================================================
@@ -2616,10 +2616,10 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
         FROM t_ocena_postepu o
         WHERE DEREF(o.ref_uczen).id_ucznia = p_id_ucznia
           AND o.obszar = p_obszar;
-        
+
         RETURN ROUND(NVL(v_srednia, 0), 2);
     END srednia_obszar;
-    
+
     -- ========================================================================
     -- PROCEDURA: porownaj_uczniow
     -- ========================================================================
@@ -2632,20 +2632,20 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
         -- Pobieramy dane uczniow
         SELECT VALUE(u) INTO v_uczen1 FROM t_uczen u WHERE u.id_ucznia = p_id_ucznia_1;
         SELECT VALUE(u) INTO v_uczen2 FROM t_uczen u WHERE u.id_ucznia = p_id_ucznia_2;
-        
+
         v_sr1 := pkg_uczen.srednia_ocen(p_id_ucznia_1);
         v_sr2 := pkg_uczen.srednia_ocen(p_id_ucznia_2);
-        
+
         DBMS_OUTPUT.PUT_LINE('=== POROWNANIE UCZNIOW ===');
         DBMS_OUTPUT.PUT_LINE('');
-        DBMS_OUTPUT.PUT_LINE(RPAD('Kryterium', 20) || RPAD(v_uczen1.nazwisko, 15) || 
+        DBMS_OUTPUT.PUT_LINE(RPAD('Kryterium', 20) || RPAD(v_uczen1.nazwisko, 15) ||
                              RPAD(v_uczen2.nazwisko, 15));
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 50, '-'));
-        DBMS_OUTPUT.PUT_LINE(RPAD('Wiek', 20) || RPAD(v_uczen1.wiek(), 15) || 
+        DBMS_OUTPUT.PUT_LINE(RPAD('Wiek', 20) || RPAD(v_uczen1.wiek(), 15) ||
                              RPAD(v_uczen2.wiek(), 15));
-        DBMS_OUTPUT.PUT_LINE(RPAD('Srednia ocen', 20) || RPAD(v_sr1, 15) || 
+        DBMS_OUTPUT.PUT_LINE(RPAD('Srednia ocen', 20) || RPAD(v_sr1, 15) ||
                              RPAD(v_sr2, 15));
-        
+
         -- Kto lepszy?
         DBMS_OUTPUT.PUT_LINE('');
         IF v_sr1 > v_sr2 THEN
@@ -2655,7 +2655,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
         ELSE
             DBMS_OUTPUT.PUT_LINE('Wyniki sa rowne!');
         END IF;
-        
+
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
             DBMS_OUTPUT.PUT_LINE('BLAD: Nie znaleziono jednego z uczniow.');
@@ -2744,23 +2744,23 @@ DECLARE
 BEGIN
     -- Walidacja 1: Data lekcji nie moze byc w przeszlosci (tylko dla nowych)
     IF INSERTING AND :NEW.data_lekcji < v_data_min THEN
-        RAISE_APPLICATION_ERROR(-20010, 
-            'Data lekcji nie moze byc w przeszlosci. Podano: ' || 
+        RAISE_APPLICATION_ERROR(-20010,
+            'Data lekcji nie moze byc w przeszlosci. Podano: ' ||
             TO_CHAR(:NEW.data_lekcji, 'YYYY-MM-DD'));
     END IF;
-    
+
     -- Walidacja 2: Godzina musi byc w zakresie 08:00 - 20:00
     IF :NEW.godzina_start < '08:00' OR :NEW.godzina_start > '20:00' THEN
-        RAISE_APPLICATION_ERROR(-20011, 
+        RAISE_APPLICATION_ERROR(-20011,
             'Godzina lekcji musi byc miedzy 08:00 a 20:00. Podano: ' || :NEW.godzina_start);
     END IF;
-    
+
     -- Walidacja 3: Nie mozna zmienic statusu z "odbyta" na "zaplanowana"
     IF UPDATING AND :OLD.status = 'odbyta' AND :NEW.status = 'zaplanowana' THEN
-        RAISE_APPLICATION_ERROR(-20012, 
+        RAISE_APPLICATION_ERROR(-20012,
             'Nie mozna zmienic statusu lekcji z "odbyta" na "zaplanowana".');
     END IF;
-    
+
     -- Walidacja 4: Sprawdzamy konflikt ucznia (ten sam uczen w tym samym czasie)
     IF INSERTING OR (UPDATING AND :NEW.data_lekcji != :OLD.data_lekcji) THEN
         SELECT COUNT(*) INTO v_konflikt
@@ -2770,13 +2770,13 @@ BEGIN
           AND l.data_lekcji = :NEW.data_lekcji
           AND l.godzina_start = :NEW.godzina_start
           AND l.status != 'odwolana';
-        
+
         IF v_konflikt > 0 THEN
-            RAISE_APPLICATION_ERROR(-20013, 
+            RAISE_APPLICATION_ERROR(-20013,
                 'Uczen ma juz zaplanowana lekcje o tej godzinie!');
         END IF;
     END IF;
-    
+
     DBMS_OUTPUT.PUT_LINE('[TRG] Lekcja zwalidowana pomyslnie.');
 END;
 /
@@ -2797,32 +2797,32 @@ BEGIN
     IF INSERTING THEN
         v_operacja := 'INSERT';
         v_stara_wartosc := NULL;
-        v_nowa_wartosc := 'ID:' || :NEW.id_oceny || 
-                          ', Ocena:' || :NEW.ocena || 
+        v_nowa_wartosc := 'ID:' || :NEW.id_oceny ||
+                          ', Ocena:' || :NEW.ocena ||
                           ', Obszar:' || :NEW.obszar;
     ELSIF UPDATING THEN
         v_operacja := 'UPDATE';
-        v_stara_wartosc := 'ID:' || :OLD.id_oceny || 
-                           ', Ocena:' || :OLD.ocena || 
+        v_stara_wartosc := 'ID:' || :OLD.id_oceny ||
+                           ', Ocena:' || :OLD.ocena ||
                            ', Obszar:' || :OLD.obszar;
-        v_nowa_wartosc := 'ID:' || :NEW.id_oceny || 
-                          ', Ocena:' || :NEW.ocena || 
+        v_nowa_wartosc := 'ID:' || :NEW.id_oceny ||
+                          ', Ocena:' || :NEW.ocena ||
                           ', Obszar:' || :NEW.obszar;
     ELSIF DELETING THEN
         v_operacja := 'DELETE';
-        v_stara_wartosc := 'ID:' || :OLD.id_oceny || 
-                           ', Ocena:' || :OLD.ocena || 
+        v_stara_wartosc := 'ID:' || :OLD.id_oceny ||
+                           ', Ocena:' || :OLD.ocena ||
                            ', Obszar:' || :OLD.obszar;
         v_nowa_wartosc := NULL;
     END IF;
-    
+
     -- Wstawiamy log
     INSERT INTO t_audit_log (
-        id_logu, 
-        nazwa_tabeli, 
-        operacja, 
-        stara_wartosc, 
-        nowa_wartosc, 
+        id_logu,
+        nazwa_tabeli,
+        operacja,
+        stara_wartosc,
+        nowa_wartosc,
         uzytkownik
     ) VALUES (
         seq_audit_log.NEXTVAL,
@@ -2832,7 +2832,7 @@ BEGIN
         v_nowa_wartosc,
         USER
     );
-    
+
     DBMS_OUTPUT.PUT_LINE('[AUDIT] Zalogowano ' || v_operacja || ' na T_OCENA_POSTEPU');
 END;
 /
@@ -2852,14 +2852,14 @@ BEGIN
     FROM t_lekcja l
     WHERE DEREF(l.ref_uczen).id_ucznia = :OLD.id_ucznia
       AND l.status = 'zaplanowana';
-    
+
     IF v_aktywne_lekcje > 0 THEN
-        RAISE_APPLICATION_ERROR(-20020, 
-            'Nie mozna usunac ucznia (ID: ' || :OLD.id_ucznia || 
+        RAISE_APPLICATION_ERROR(-20020,
+            'Nie mozna usunac ucznia (ID: ' || :OLD.id_ucznia ||
             ') - ma ' || v_aktywne_lekcje || ' zaplanowanych lekcji. ' ||
             'Najpierw odwolaj lub usun lekcje.');
     END IF;
-    
+
     DBMS_OUTPUT.PUT_LINE('[TRG] Uczen ID:' || :OLD.id_ucznia || ' moze zostac usuniety.');
 END;
 /
@@ -2875,13 +2875,13 @@ BEGIN
     -- Jesli nie podano daty zatrudnienia, ustawiamy dzisiejsza
     IF :NEW.data_zatrudnienia IS NULL THEN
         :NEW.data_zatrudnienia := SYSDATE;
-        DBMS_OUTPUT.PUT_LINE('[TRG] Ustawiono date zatrudnienia na: ' || 
+        DBMS_OUTPUT.PUT_LINE('[TRG] Ustawiono date zatrudnienia na: ' ||
                              TO_CHAR(:NEW.data_zatrudnienia, 'YYYY-MM-DD'));
     END IF;
-    
+
     -- Data zatrudnienia nie moze byc w przyszlosci
     IF :NEW.data_zatrudnienia > SYSDATE THEN
-        RAISE_APPLICATION_ERROR(-20021, 
+        RAISE_APPLICATION_ERROR(-20021,
             'Data zatrudnienia nie moze byc w przyszlosci.');
     END IF;
 END;
@@ -2896,11 +2896,11 @@ AFTER UPDATE OF cena_za_lekcje ON t_kurs
 FOR EACH ROW
 BEGIN
     INSERT INTO t_audit_log (
-        id_logu, 
-        nazwa_tabeli, 
-        operacja, 
-        stara_wartosc, 
-        nowa_wartosc, 
+        id_logu,
+        nazwa_tabeli,
+        operacja,
+        stara_wartosc,
+        nowa_wartosc,
         uzytkownik
     ) VALUES (
         seq_audit_log.NEXTVAL,
@@ -2910,8 +2910,8 @@ BEGIN
         'Kurs:' || :NEW.nazwa || ', Cena:' || :NEW.cena_za_lekcje || ' PLN',
         USER
     );
-    
-    DBMS_OUTPUT.PUT_LINE('[AUDIT] Zmiana ceny kursu "' || :NEW.nazwa || 
+
+    DBMS_OUTPUT.PUT_LINE('[AUDIT] Zmiana ceny kursu "' || :NEW.nazwa ||
                          '": ' || :OLD.cena_za_lekcje || ' -> ' || :NEW.cena_za_lekcje || ' PLN');
 END;
 /
@@ -2920,8 +2920,8 @@ END;
 -- WIDOK LOGOW AUDYTOWYCH
 -- ============================================================================
 CREATE OR REPLACE VIEW v_audit_ostatnie AS
-SELECT id_logu, nazwa_tabeli, operacja, 
-       stara_wartosc, nowa_wartosc, 
+SELECT id_logu, nazwa_tabeli, operacja,
+       stara_wartosc, nowa_wartosc,
        uzytkownik, data_zmiany
 FROM t_audit_log
 ORDER BY data_zmiany DESC
@@ -3151,29 +3151,29 @@ BEGIN
     SELECT REF(i) INTO v_ref_skrzypce FROM t_instrument i WHERE i.nazwa = 'Skrzypce';
     SELECT REF(i) INTO v_ref_flet FROM t_instrument i WHERE i.nazwa = 'Flet poprzeczny';
     SELECT REF(i) INTO v_ref_perkusja FROM t_instrument i WHERE i.nazwa = 'Perkusja';
-    
+
     -- Kursy fortepianu
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Fortepian - Poczatki', 'poczatkujacy', 80.00, v_ref_fortepian));
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Fortepian - Sredni', 'sredni', 100.00, v_ref_fortepian));
-    
+
     -- Kurs gitary
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Gitara klasyczna - Poczatki', 'poczatkujacy', 70.00, v_ref_gitara));
-    
+
     -- Kurs skrzypiec
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Skrzypce - Zaawansowany', 'zaawansowany', 120.00, v_ref_skrzypce));
-    
+
     -- Kurs fletu
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Flet - Sredni', 'sredni', 90.00, v_ref_flet));
-    
+
     -- Kurs perkusji
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Perkusja - Poczatki', 'poczatkujacy', 85.00, v_ref_perkusja));
-    
+
     COMMIT;
 END;
 /
@@ -3204,42 +3204,42 @@ BEGIN
     SELECT REF(u) INTO v_ref_uczen2 FROM t_uczen u WHERE u.id_ucznia = 2;
     SELECT REF(u) INTO v_ref_uczen3 FROM t_uczen u WHERE u.id_ucznia = 3;
     SELECT REF(u) INTO v_ref_uczen4 FROM t_uczen u WHERE u.id_ucznia = 4;
-    
+
     SELECT REF(n) INTO v_ref_naucz1 FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
     SELECT REF(n) INTO v_ref_naucz2 FROM t_nauczyciel n WHERE n.id_nauczyciela = 2;
     SELECT REF(n) INTO v_ref_naucz3 FROM t_nauczyciel n WHERE n.id_nauczyciela = 3;
-    
+
     SELECT REF(k) INTO v_ref_kurs1 FROM t_kurs k WHERE k.id_kursu = 1;
     SELECT REF(k) INTO v_ref_kurs2 FROM t_kurs k WHERE k.id_kursu = 2;
     SELECT REF(k) INTO v_ref_kurs3 FROM t_kurs k WHERE k.id_kursu = 3;
     SELECT REF(k) INTO v_ref_kurs4 FROM t_kurs k WHERE k.id_kursu = 4;
-    
+
     -- Lekcje zaplanowane (na przyszly tydzien)
     INSERT INTO t_lekcja VALUES (
-        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start, '10:00', 45, NULL, NULL, 
+        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start, '10:00', 45, NULL, NULL,
                      'zaplanowana', v_ref_uczen1, v_ref_naucz1, v_ref_kurs1));
-    
+
     INSERT INTO t_lekcja VALUES (
-        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start, '11:00', 45, NULL, NULL, 
+        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start, '11:00', 45, NULL, NULL,
                      'zaplanowana', v_ref_uczen2, v_ref_naucz1, v_ref_kurs2));
-    
+
     INSERT INTO t_lekcja VALUES (
-        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start + 1, '14:00', 60, NULL, NULL, 
+        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start + 1, '14:00', 60, NULL, NULL,
                      'zaplanowana', v_ref_uczen3, v_ref_naucz2, v_ref_kurs4));
-    
+
     INSERT INTO t_lekcja VALUES (
-        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start + 1, '15:00', 45, NULL, NULL, 
+        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start + 1, '15:00', 45, NULL, NULL,
                      'zaplanowana', v_ref_uczen4, v_ref_naucz3, v_ref_kurs3));
-    
+
     INSERT INTO t_lekcja VALUES (
-        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start + 2, '09:00', 45, NULL, NULL, 
+        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start + 2, '09:00', 45, NULL, NULL,
                      'zaplanowana', v_ref_uczen1, v_ref_naucz1, v_ref_kurs1));
-    
+
     -- Lekcja odwolana
     INSERT INTO t_lekcja VALUES (
-        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start + 2, '16:00', 45, NULL, 
+        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start + 2, '16:00', 45, NULL,
                      'Choroba ucznia', 'odwolana', v_ref_uczen2, v_ref_naucz2, v_ref_kurs4));
-    
+
     COMMIT;
 END;
 /
@@ -3255,22 +3255,22 @@ BEGIN
     SELECT REF(u) INTO v_ref_uczen2 FROM t_uczen u WHERE u.id_ucznia = 2;
     SELECT REF(n) INTO v_ref_naucz1 FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
     SELECT REF(k) INTO v_ref_kurs1 FROM t_kurs k WHERE k.id_kursu = 1;
-    
+
     -- Wylaczamy trigger tymczasowo
     EXECUTE IMMEDIATE 'ALTER TRIGGER trg_lekcja_walidacja DISABLE';
-    
+
     INSERT INTO t_lekcja VALUES (
-        t_lekcja_obj(seq_lekcja.NEXTVAL, DATE '2025-12-10', '10:00', 45, 
-                     'Podstawy gamy C-dur', 'Uczen robi postepy', 
+        t_lekcja_obj(seq_lekcja.NEXTVAL, DATE '2025-12-10', '10:00', 45,
+                     'Podstawy gamy C-dur', 'Uczen robi postepy',
                      'odbyta', v_ref_uczen1, v_ref_naucz1, v_ref_kurs1));
-    
+
     INSERT INTO t_lekcja VALUES (
-        t_lekcja_obj(seq_lekcja.NEXTVAL, DATE '2025-12-17', '10:00', 45, 
-                     'Cwiczenia reki prawej', 'Wymaga poprawy techniki', 
+        t_lekcja_obj(seq_lekcja.NEXTVAL, DATE '2025-12-17', '10:00', 45,
+                     'Cwiczenia reki prawej', 'Wymaga poprawy techniki',
                      'odbyta', v_ref_uczen1, v_ref_naucz1, v_ref_kurs1));
-    
+
     EXECUTE IMMEDIATE 'ALTER TRIGGER trg_lekcja_walidacja ENABLE';
-    
+
     COMMIT;
 END;
 /
@@ -3296,51 +3296,51 @@ BEGIN
     SELECT REF(u) INTO v_ref_uczen4 FROM t_uczen u WHERE u.id_ucznia = 4;
     SELECT REF(n) INTO v_ref_naucz1 FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
     SELECT REF(n) INTO v_ref_naucz2 FROM t_nauczyciel n WHERE n.id_nauczyciela = 2;
-    
+
     -- Oceny ucznia 1 (Piotr)
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-10-15', 4, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-10-15', 4,
                     'Dobra postawa przy instrumencie', 'technika', v_ref_uczen1, v_ref_naucz1));
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-11-10', 5, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-11-10', 5,
                     'Bardzo dobra znajomosc gam', 'teoria', v_ref_uczen1, v_ref_naucz1));
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-12-05', 4, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-12-05', 4,
                     'Poprawny sluch muzyczny', 'sluch', v_ref_uczen1, v_ref_naucz1));
-    
+
     -- Oceny ucznia 2 (Katarzyna)
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-09-20', 5, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-09-20', 5,
                     'Swietna interpretacja Chopina', 'interpretacja', v_ref_uczen2, v_ref_naucz1));
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-10-25', 6, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-10-25', 6,
                     'Wybitna technika', 'technika', v_ref_uczen2, v_ref_naucz1));
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-11-30', 5, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-11-30', 5,
                     'Bardzo dobre poczucie rytmu', 'rytm', v_ref_uczen2, v_ref_naucz1));
-    
+
     -- Oceny ucznia 3 (Michal)
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-11-05', 3, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-11-05', 3,
                     'Wymaga poprawy', 'technika', v_ref_uczen3, v_ref_naucz2));
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-12-01', 4, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-12-01', 4,
                     'Postep widoczny', 'teoria', v_ref_uczen3, v_ref_naucz2));
-    
+
     -- Oceny ucznia 4 (Aleksandra)
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-09-15', 5, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-09-15', 5,
                     'Bardzo dobra', 'sluch', v_ref_uczen4, v_ref_naucz2));
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-10-20', 5, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-10-20', 5,
                     'Postepy w interpretacji', 'interpretacja', v_ref_uczen4, v_ref_naucz2));
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-11-25', 6, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-11-25', 6,
                     'Wzorowa technika', 'technika', v_ref_uczen4, v_ref_naucz2));
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-12-10', 5, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-12-10', 5,
                     'Bardzo dobre poczucie rytmu', 'rytm', v_ref_uczen4, v_ref_naucz2));
-    
+
     COMMIT;
 END;
 /
@@ -3577,8 +3577,8 @@ PROMPT ========================================;
 -- ============================================================================
 PROMPT ;
 PROMPT Przypisane role:;
-SELECT grantee, granted_role 
-FROM dba_role_privs 
+SELECT grantee, granted_role
+FROM dba_role_privs
 WHERE grantee IN ('USR_ADMIN', 'USR_NAUCZYCIEL', 'USR_SEKRETARIAT');
 
 
@@ -3607,22 +3607,22 @@ WHERE grantee IN ('USR_ADMIN', 'USR_NAUCZYCIEL', 'USR_SEKRETARIAT');
 \begin{titlepage}
     \centering
     \vspace*{1cm}
-    
+
     {\Large\textbf{Politechnika Łódzka}}\\[0.3cm]
     {\large Wydział Elektrotechniki, Elektroniki, Informatyki i Automatyki}\\[2cm]
-    
+
     {\Huge\textbf{Szkoła Muzyczna}}\\[0.5cm]
     {\Large Obiektowa Baza Danych Oracle}\\[1cm]
-    
+
     {\large Rozproszone i Obiektowe Bazy Danych}\\[3cm]
-    
+
     \begin{tabular}{ll}
         \textbf{Autorzy:} & Igor Typiński (251237) \\
                           & Mateusz Mróz (251190) \\[0.5cm]
         \textbf{Grupa:}   & 5 \\[0.5cm]
         \textbf{Temat:}   & Szkoła muzyczna (z naciskiem na rozwój ucznia)
     \end{tabular}
-    
+
     \vfill
     {\large Łódź, styczeń 2026}
 \end{titlepage}
@@ -3917,6 +3917,3 @@ Role użytkowników & 3 role \\
 
 
 </kontekst>
-
-
-

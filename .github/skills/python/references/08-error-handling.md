@@ -466,7 +466,7 @@ ValueError("this does nothing")  # Zapomniany `raise`!
 ### 6.1 Semantyka bloków
 
 | Blok | Kiedy się wykonuje | Co tu DAĆ |
-|------|--------------------|-----------| 
+|------|--------------------|-----------|
 | `try` | Zawsze | **MINIMALNY** kod który może rzucić target exception |
 | `except X` | Gdy `try` rzucił `X` | Handler na **KONKRETNY** wyjątek |
 | `else` | Gdy `try` **NIE** rzucił | Happy path — KOD NIEZABEZPIECZONY przez except |

@@ -90,22 +90,22 @@ Od strony serwera ORACLE w projekcie RBD należy przewidzieć odpowiedni zakres 
 \begin{titlepage}
     \centering
     \vspace*{1cm}
-    
+
     \Large\textbf{Politechnika Łódzka}\\[0.3cm]
     {\large Wydział Elektrotechniki, Elektroniki, Informatyki i Automatyki}\\[2cm]
-    
+
     {\Huge\textbf{Szkoła Muzyczna I Stopnia}}\\[0.5cm]
     {\Large Obiektowa Baza Danych Oracle}\\[1cm]
-    
+
     {\large Rozproszone i Obiektowe Bazy Danych}\\[3cm]
-    
+
     \begin{tabular}{ll}
         \textbf{Autorzy:} & Igor Typiński (251237) \\
                           & Mateusz Mróz (251190) \\[0.5cm]
         \textbf{Grupa:}   & 5 \\[0.5cm]
         \textbf{Temat:}   & Szkoła muzyczna (z naciskiem na rozwój ucznia)
     \end{tabular}
-    
+
     \vfill
     {\large Łódź, luty 2026}
 \end{titlepage}
@@ -129,17 +129,17 @@ Głównym celem projektu jest stworzenie kompleksowego systemu informatycznego u
 
 \begin{itemize}
     \item \textbf{Zarządzanie danymi uczniów} -- rejestracja nowych uczniów, przechowywanie danych osobowych, automatyczne obliczanie wieku, przypisanie do~grupy (klasy)
-    
+
     \item \textbf{Zarządzanie danymi nauczycieli} -- ewidencja kadry pedagogicznej, każdy nauczyciel uczy jednego przedmiotu
-    
+
     \item \textbf{Planowanie lekcji} -- tworzenie harmonogramu zajęć indywidualnych (1~uczeń) i~grupowych (cała klasa) z~walidacją konfliktów terminów oraz heurystyką sugestii wolnego terminu
-    
+
     \item \textbf{Rezerwacja sal lekcyjnych} -- przydzielanie sal z~odpowiednim wyposażeniem (przechowywane jako VARRAY) do~poszczególnych lekcji
-    
+
     \item \textbf{Ocenianie postępu uczniów} -- wystawianie ocen cząstkowych i~semestralnych z~walidacją uprawnień nauczyciela
-    
+
     \item \textbf{Kontrola reguł biznesowych} -- automatyczna walidacja uczestników lekcji (albo~uczeń albo~grupa), zakresu ocen, konfliktów czasowych, kompetencji nauczycieli
-    
+
     \item \textbf{Generowanie raportów} -- plan dnia, plan ucznia, plan nauczyciela, raport grup, statystyki szkoły
 \end{itemize}
 
@@ -151,47 +151,47 @@ W projekcie przyjęto następujące ograniczenia biznesowe:
 
 \begin{enumerate}
     \item \textbf{Cykl nauczania:} 6~lat -- klasy I-VI szkoły muzycznej I~stopnia
-    
+
     \item \textbf{Godziny pracy szkoły:} 14:00--20:00 -- lekcje mogą być planowane tylko w~tych godzinach
-    
+
     \item \textbf{Dni pracy szkoły:} poniedziałek--piątek -- szkoła nie~prowadzi zajęć w~weekendy
-    
+
     \item \textbf{Czas trwania lekcji:} stały 45~minut dla~wszystkich zajęć
-    
+
     \item \textbf{Siatka godzinowa:} lekcje rozpoczynają się o~pełnych godzinach (14:00, 15:00, 16:00...)
-    
+
     \item \textbf{Jeden instrument na~ucznia:} każdy uczeń uczy się jednego instrumentu głównego
-    
+
     \item \textbf{Jeden przedmiot na~nauczyciela:} każdy nauczyciel uczy jednego przedmiotu
-    
+
     \item \textbf{XOR lekcji:} lekcja jest ALBO~indywidualna (1~uczeń) ALBO~grupowa (klasa) -- nigdy obie opcje jednocześnie
-    
+
     \item \textbf{Maksymalne wyposażenie sali:} 10~elementów (ograniczenie VARRAY)
-    
+
     \item \textbf{Skala ocen:} 1--6 (polska skala szkolna)
-    
+
     \item \textbf{Typy sal:} indywidualna lub~grupowa
-    
+
     \item \textbf{Typy przedmiotów:} indywidualny (instrument) lub~grupowy (kształcenie słuchu, rytmika)
-    
+
     \item \textbf{Brak konfliktów czasowych:} ta sama sala, nauczyciel, uczeń lub~grupa nie~mogą mieć dwóch lekcji w~tym samym czasie
-    
+
     \item \textbf{Walidacja kompetencji:} nauczyciel może prowadzić tylko lekcje z~przedmiotu, który jest do~niego przypisany
-    
+
     \item \textbf{Walidacja typu sali:} lekcje grupowe wymagają sali typu~'grupowa'
-    
+
     \item \textbf{Zgodność typu przedmiotu z~typem lekcji:} przedmiot indywidualny (np.~Fortepian) może być prowadzony tylko jako~lekcja indywidualna, przedmiot grupowy (np.~Kształcenie słuchu) może być prowadzony tylko jako~lekcja grupowa
-    
+
     \item \textbf{Brak limitów godzin:} system nie~narzuca limitów tygodniowych liczby lekcji dla~nauczyciela lub~ucznia (jedynym ograniczeniem jest dostępność czasowa i~brak konfliktów w~planie)
-    
+
     \item \textbf{Synonimiczność instrumentów:} system automatycznie uznaje "Pianino" i~"Fortepian" za~ten sam instrument przy~sprawdzaniu wyposażenia sal i~uprawnień ucznia
-    
+
     \item \textbf{Wyłączność oceniania:} nauczyciel może wystawiać oceny wyłącznie z~przedmiotu, do~którego jest przypisany w~systemie
-    
+
     \item \textbf{Zgodność instrumentu przy~ocenianiu:} dla~przedmiotów indywidualnych nauczyciel może wystawić ocenę tylko uczniowi, którego instrument główny odpowiada ocenianemu przedmiotowi (np.~ocena z~Fortepianu tylko dla~uczniów grających na~Fortepianie)
-    
+
     \item \textbf{Logika średniej ocen:} średnia ocen z~przedmiotu obliczana jest automatycznie z~wyłączeniem ocen semestralnych
-    
+
     \item \textbf{Horyzont planowania:} heurystyka doboru wolnych terminów przeszukuje grafik w~przód na~maksymalnie 7~dni od~podanej daty
 \end{enumerate}
 
@@ -695,7 +695,7 @@ FOR EACH ROW
 BEGIN
     IF (:NEW.ref_uczen IS NULL AND :NEW.ref_grupa IS NULL) OR
        (:NEW.ref_uczen IS NOT NULL AND :NEW.ref_grupa IS NOT NULL) THEN
-        RAISE_APPLICATION_ERROR(-20001, 
+        RAISE_APPLICATION_ERROR(-20001,
             'Lekcja musi miec ALBO ucznia (indywidualna) ALBO grupe (grupowa)');
     END IF;
 END;
@@ -711,7 +711,7 @@ BEFORE INSERT OR UPDATE ON oceny
 FOR EACH ROW
 BEGIN
     IF :NEW.wartosc < 1 OR :NEW.wartosc > 6 THEN
-        RAISE_APPLICATION_ERROR(-20002, 
+        RAISE_APPLICATION_ERROR(-20002,
             'Ocena musi byc w zakresie 1-6. Podano: ' || :NEW.wartosc);
     END IF;
 END;
@@ -822,19 +822,19 @@ Grupowa & Szuka tylko sal typu 'grupowa' z~pojemnością >= liczba uczniów w~gr
 Funkcja przeszukuje kolekcję VARRAY wyposażenia sali:
 
 \begin{verbatim}
-FUNCTION sala_ma_instrument(p_id_sali NUMBER, p_instrument VARCHAR2) 
+FUNCTION sala_ma_instrument(p_id_sali NUMBER, p_instrument VARCHAR2)
 RETURN BOOLEAN IS
     v_wyposazenie t_wyposazenie;
 BEGIN
     SELECT s.wyposazenie INTO v_wyposazenie FROM sale s WHERE s.id = p_id_sali;
     IF v_wyposazenie IS NULL THEN RETURN FALSE; END IF;
-    
+
     FOR i IN 1..v_wyposazenie.COUNT LOOP
         IF UPPER(v_wyposazenie(i)) LIKE '%' || UPPER(p_instrument) || '%' THEN
             RETURN TRUE;
         END IF;
         -- Synonim: Pianino = Fortepian
-        IF UPPER(p_instrument) = 'FORTEPIAN' AND 
+        IF UPPER(p_instrument) = 'FORTEPIAN' AND
            UPPER(v_wyposazenie(i)) LIKE '%PIANINO%' THEN
             RETURN TRUE;
         END IF;

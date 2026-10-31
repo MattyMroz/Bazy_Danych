@@ -22,7 +22,7 @@ Jestem uczniem klasy III szkoły muzycznej. Co mam w tygodniu?
 ### ALE TO JEST SKOMPLIKOWANE...
 
 Dla projektu bazodanowego **UPROŚĆMY**:
-- 1× instrument (zamiast 2×) 
+- 1× instrument (zamiast 2×)
 - 2× zajęcia grupowe
 
 **To jest świadome uproszczenie - zapiszemy je w założeniach.**

@@ -36,7 +36,7 @@ Import danych
 Napisz skrypt, który
 Wczytuje dane z plików JSON
 Importuje dane do bazy danych
-Przekształca je do formatu zgodnego ze strukturą relacyjną 
+Przekształca je do formatu zgodnego ze strukturą relacyjną
 Efekty pracy wysyłamy do WIKAMP'a (opisane w elemencie Zakres projektu)
 Schemat bazy danych w formie diagramu (np. ERD)
 Skrypt SQL tworzący strukturę bazy

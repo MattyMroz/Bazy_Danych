@@ -78,7 +78,7 @@ GRANT create proc to u21;
 EXEC sp_helprotect 'CREATE PROCEDURE', 'u21', null, s --dla konkretnej bazy danych
 GO
 -- III. Użytkownik bazy Northwind u11 bez praw
-  --uprawnienia systemowe dla wszystkich user'ów w danej bazie 
+  --uprawnienia systemowe dla wszystkich user'ów w danej bazie
 EXEC sp_helprotect NULL, NULL, null, s
 GO
 --------------------------------------------------------------------------------
@@ -105,9 +105,9 @@ EXEC sp_helprotect customer1, null, null, 'o'
 EXEC sp_helprotect NULL, null, null, 's'
 GO
 CREATE PROC u21.customer_proc WITH EXECUTE AS caller
-AS 
-	BEGIN 
-	SELECT * FROM u31.customer1; 
+AS
+	BEGIN
+	SELECT * FROM u31.customer1;
 	END;
 GO
 EXEC u21.customer_proc; --u2 potrafi wykonać tą procedurę
@@ -126,10 +126,10 @@ revert
 --Modyfikujemy jako u21 procedurę, aby była wywoływana z prawami właściciela
 EXECUTE AS LOGIN='u21';
 GO
-ALTER PROC u21.customer_proc WITH EXECUTE AS owner  
-AS 
-	BEGIN 
-	SELECT * FROM u31.customer1; 
+ALTER PROC u21.customer_proc WITH EXECUTE AS owner
+AS
+	BEGIN
+	SELECT * FROM u31.customer1;
 	END;
 GO
 REVERT;
@@ -148,10 +148,10 @@ revert
 --wracamy z procedurą jako wykonywana z prawami wywołującego
 EXECUTE AS LOGIN='u21';
 GO
-ALTER PROC u21.customer_proc WITH EXECUTE AS caller  
-AS 
-	BEGIN 
-	SELECT * FROM u31.customer1; 
+ALTER PROC u21.customer_proc WITH EXECUTE AS caller
+AS
+	BEGIN
+	SELECT * FROM u31.customer1;
 	END;
 GO
 REVERT;
@@ -168,9 +168,9 @@ REVERT;
 -- jako sa
 GO
 CREATE PROC dbo.customer_proc WITH EXECUTE AS caller --obojętnie
-AS 
-	BEGIN 
-	SELECT * FROM dbo.Customers; 
+AS
+	BEGIN
+	SELECT * FROM dbo.Customers;
 	END;
 GO
 GRANT EXEC ON dbo.customer_proc TO u11;
@@ -197,8 +197,8 @@ SELECT * FROM dbo.View_1    --Ok (obiekty w tym samym schematacie)
 SELECT * FROM u31.View_1    --brakuje uprawnień (obiekty w różnych schematach)
 REVERT;
 
--- Co zrobić aby u31.view_1 wykonał się poprawnie 
--- (dodać uprawnienie SELECT do tabeli dbo.customers dla u11) 
+-- Co zrobić aby u31.view_1 wykonał się poprawnie
+-- (dodać uprawnienie SELECT do tabeli dbo.customers dla u11)
 GO
 
 
@@ -206,7 +206,7 @@ GO
 -- Uwaga na niebezpieczny kod (np. polecenie delete products) --
 ----------------------------------------------------------------
 
-create PROCEDURE a1 
+create PROCEDURE a1
 	@p1 varchar(50)
 AS
 	BEGIN
@@ -253,7 +253,7 @@ REVERT;
 
 -- 7. Wypisujemy rolę R2 z roli DENYDATAREADER i wracamy do poprzeniego stanu z pkt.4;
 
--- 8. Jako u31 dodajemy uprawnienie SELECT dla tabeli ORDERS dla uzytkownika u21, także z prawami WITH GRANT OPTION 
+-- 8. Jako u31 dodajemy uprawnienie SELECT dla tabeli ORDERS dla uzytkownika u21, także z prawami WITH GRANT OPTION
 	-- nie działa mimo, że jesteśmy zapisani do roli R2, to musimy przypisać bezpośrednio dane uprawnienia jako sa
 GRANT SELECT ON northwind.dbo.Orders TO u31 WITH GRANT OPTION  --jako sa
 EXECUTE AS LOGIN='u31';
@@ -273,7 +273,7 @@ REVERT;
 --Jeśli jako user31 chcielibyśmy wyłączyć CASCADE OPTION to polecenie wygląda następująco
 REVOKE SELECT ON northwind.dbo.Orders TO u21 CASCADE AS [u31]
 
--- 10. Jako 'sa' zabieramy prawo GRANT OPTION i sprawdzamy 
+-- 10. Jako 'sa' zabieramy prawo GRANT OPTION i sprawdzamy
 -- czy 'u21' i 'u11' mają dalej uprawnienia przypisane przez uzytkownika 'u31'.
 REVOKE GRANT OPTION FOR SELECT ON [dbo].[Orders] TO [u31] CASCADE AS [dbo] -- cofamy tylko opcję GRANT OPTION (musi być cascade)
 --tylko u31 wykona instrukcję select * from orders
@@ -282,7 +282,7 @@ REVOKE SELECT ON northwind.dbo.Orders TO u31 CASCADE AS [dbo] -- cofamy uprawnie
 ----------------------------------------------------------------------------------------------------------------------------------
 
 
--- Przykładowe polecenia do wykorzystania w powyższych przykładach 
+-- Przykładowe polecenia do wykorzystania w powyższych przykładach
 GRANT SELECT ON northwind.dbo.Orders TO u31 WITH GRANT OPTION AS dbo
 
 EXECUTE AS LOGIN='u31';
@@ -299,4 +299,3 @@ REVERT;
 EXECUTE AS LOGIN='u11';
 SELECT * FROM Orders
 REVERT;
-

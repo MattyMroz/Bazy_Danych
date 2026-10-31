@@ -1,4 +1,4 @@
-﻿# 07 — Class & Protocol Design
+# 07 — Class & Protocol Design
 
 > **Cel:** Kompletne reguły projektowania klas, Protocol, ABC, composition i decyzji OOP w Pythonie — kiedy klasa jest uzasadniona, a kiedy to over-engineering.
 > **Scope:** Uniwersalny — Python ≥3.10, `from __future__ import annotations`, ruff 120 chars, mypy strict, pydantic.

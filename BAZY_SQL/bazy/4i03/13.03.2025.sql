@@ -33,7 +33,7 @@ select * from dane1
 -- zwroc uwage co sie stanie kiedy wykonam ten insert kilkukrotnie
 -- chia³by wyswietlic 4 wiersz danych
 
---mam dane nie uniklane 
+--mam dane nie uniklane
 -- musze dodac unikalnosc
 --np przez dodanie kolumny numerycznej
 
@@ -67,7 +67,7 @@ insert into dane1(id) values
 
 select * from dane1
 
--- nie pomoglo zatem dodajmy kolumne w tabeli 
+-- nie pomoglo zatem dodajmy kolumne w tabeli
 
 create table dane2
 (id int,
@@ -104,7 +104,7 @@ where id='4'
 
 --drop
 alter table dane1
-drop column id 
+drop column id
 
 drop table dane1
 
@@ -124,7 +124,7 @@ use baza
 
 alter table pracownicy add wzrost int
 
-select * from pracownicy 
+select * from pracownicy
 
 alter table pracownicy add wzrost1 numeric(3,2)
 
@@ -143,4 +143,3 @@ select * from pracownicy
 
 alter table pracownicy add aktualny2 varchar(3)
 update pracownicy set aktualny2='tak'
-

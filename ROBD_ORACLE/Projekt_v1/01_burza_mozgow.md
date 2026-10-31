@@ -85,7 +85,7 @@ Wariant A, ale:
 
 ### Lista założeń logicznych:
 
-1. **Uczeń może uczyć się wielu instrumentów** 
+1. **Uczeń może uczyć się wielu instrumentów**
    - Jeden uczeń → wiele kursów (różne instrumenty)
    - Realizacja: wiele rekordów T_LEKCJA z REF do tego samego ucznia
 
@@ -209,7 +209,7 @@ ROBD_ORACLE/Projekt/
 
 ## ❓ Pytania do rozstrzygnięcia
 
-1. Czy używamy VARRAY czy NESTED TABLE? 
+1. Czy używamy VARRAY czy NESTED TABLE?
    - **Propozycja:** VARRAY (prostsze)
 
 2. Ile metod w typach obiektowych?

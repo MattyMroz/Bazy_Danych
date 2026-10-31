@@ -69,7 +69,7 @@ BEGIN
     DELETE FROM szkola_muzyczna.t_instrument WHERE id_instrumentu = v_id;
     DBMS_OUTPUT.PUT_LINE('[OK] DELETE t_instrument');
     COMMIT;
-EXCEPTION WHEN OTHERS THEN 
+EXCEPTION WHEN OTHERS THEN
     DBMS_OUTPUT.PUT_LINE('[FAIL] INSERT/UPDATE/DELETE: ' || SQLERRM);
     ROLLBACK;
 END;
@@ -140,7 +140,7 @@ BEGIN
     UPDATE szkola_muzyczna.t_uczen SET email = 'upd@test.pl' WHERE id_ucznia = v_id;
     DBMS_OUTPUT.PUT_LINE('[OK] UPDATE t_uczen');
     ROLLBACK;
-EXCEPTION WHEN OTHERS THEN 
+EXCEPTION WHEN OTHERS THEN
     DBMS_OUTPUT.PUT_LINE('[FAIL] INSERT/UPDATE t_uczen: ' || SQLERRM);
     ROLLBACK;
 END;
@@ -153,8 +153,8 @@ BEGIN
     EXECUTE IMMEDIATE 'DELETE FROM szkola_muzyczna.t_uczen WHERE id_ucznia = 999999';
     DBMS_OUTPUT.PUT_LINE('[FAIL] DELETE t_uczen - powinno byc zabronione!');
     ROLLBACK;
-EXCEPTION 
-    WHEN OTHERS THEN 
+EXCEPTION
+    WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('[OK] DELETE t_uczen zabronione: ' || SQLERRM);
 END;
 /
@@ -162,13 +162,13 @@ END;
 -- INSERT na t_ocena (ZABRONIONE - oczekiwany blad ORA-01031)
 BEGIN
     EXECUTE IMMEDIATE '
-        INSERT INTO szkola_muzyczna.t_ocena 
+        INSERT INTO szkola_muzyczna.t_ocena
         SELECT szkola_muzyczna.t_ocena_obj(999, SYSDATE, 5, ''technika'', ''Test'', REF(u), REF(n))
         FROM szkola_muzyczna.t_uczen u, szkola_muzyczna.t_nauczyciel n WHERE ROWNUM = 1';
     DBMS_OUTPUT.PUT_LINE('[FAIL] INSERT t_ocena - powinno byc zabronione!');
     ROLLBACK;
-EXCEPTION 
-    WHEN OTHERS THEN 
+EXCEPTION
+    WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('[OK] INSERT t_ocena zabronione: ' || SQLERRM);
 END;
 /
@@ -235,7 +235,7 @@ END;
 DECLARE v_id NUMBER;
 BEGIN
     SELECT szkola_muzyczna.seq_ocena.NEXTVAL INTO v_id FROM DUAL;
-    INSERT INTO szkola_muzyczna.t_ocena 
+    INSERT INTO szkola_muzyczna.t_ocena
     SELECT szkola_muzyczna.t_ocena_obj(v_id, SYSDATE, 5, 'technika', 'Test', REF(u), REF(n))
     FROM szkola_muzyczna.t_uczen u, szkola_muzyczna.t_nauczyciel n WHERE ROWNUM = 1;
     DBMS_OUTPUT.PUT_LINE('[OK] INSERT t_ocena');
@@ -251,8 +251,8 @@ BEGIN
             999, ''Test'', ''Test'', SYSDATE, ''test@test.pl'', SYSDATE))';
     DBMS_OUTPUT.PUT_LINE('[FAIL] INSERT t_uczen - powinno byc zabronione!');
     ROLLBACK;
-EXCEPTION 
-    WHEN OTHERS THEN 
+EXCEPTION
+    WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('[OK] INSERT t_uczen zabronione: ' || SQLERRM);
 END;
 /
@@ -262,8 +262,8 @@ BEGIN
     EXECUTE IMMEDIATE 'DELETE FROM szkola_muzyczna.t_lekcja WHERE id_lekcji = 999999';
     DBMS_OUTPUT.PUT_LINE('[FAIL] DELETE t_lekcja - powinno byc zabronione!');
     ROLLBACK;
-EXCEPTION 
-    WHEN OTHERS THEN 
+EXCEPTION
+    WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('[OK] DELETE t_lekcja zabronione: ' || SQLERRM);
 END;
 /
@@ -273,8 +273,8 @@ BEGIN
     EXECUTE IMMEDIATE 'DELETE FROM szkola_muzyczna.t_ocena WHERE id_oceny = 999999';
     DBMS_OUTPUT.PUT_LINE('[FAIL] DELETE t_ocena - powinno byc zabronione!');
     ROLLBACK;
-EXCEPTION 
-    WHEN OTHERS THEN 
+EXCEPTION
+    WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('[OK] DELETE t_ocena zabronione: ' || SQLERRM);
 END;
 /

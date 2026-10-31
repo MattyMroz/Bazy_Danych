@@ -9,7 +9,7 @@
 -- CZYSZCZENIE (opcjonalne)
 -- ============================================================================
 BEGIN
-    FOR rec IN (SELECT username FROM dba_users 
+    FOR rec IN (SELECT username FROM dba_users
                 WHERE username IN ('USR_ADMIN','USR_SEKRETARIAT','USR_NAUCZYCIEL'))
     LOOP
         EXECUTE IMMEDIATE 'DROP USER ' || rec.username || ' CASCADE';
@@ -18,7 +18,7 @@ END;
 /
 
 BEGIN
-    FOR rec IN (SELECT role FROM dba_roles 
+    FOR rec IN (SELECT role FROM dba_roles
                 WHERE role IN ('ROLA_ADMIN','ROLA_SEKRETARIAT','ROLA_NAUCZYCIEL'))
     LOOP
         EXECUTE IMMEDIATE 'DROP ROLE ' || rec.role;
@@ -112,17 +112,17 @@ GRANT rola_nauczyciel TO usr_nauczyciel;
 -- ============================================================================
 PROMPT
 PROMPT === ROLE ===
-SELECT role FROM dba_roles 
+SELECT role FROM dba_roles
 WHERE role IN ('ROLA_ADMIN','ROLA_SEKRETARIAT','ROLA_NAUCZYCIEL');
 
 PROMPT
 PROMPT === UZYTKOWNICY ===
-SELECT username, created FROM dba_users 
+SELECT username, created FROM dba_users
 WHERE username IN ('USR_ADMIN','USR_SEKRETARIAT','USR_NAUCZYCIEL');
 
 PROMPT
 PROMPT === UPRAWNIENIA ADMIN ===
-SELECT table_name, privilege FROM dba_tab_privs 
+SELECT table_name, privilege FROM dba_tab_privs
 WHERE grantee = 'ROLA_ADMIN' ORDER BY table_name;
 
 PROMPT

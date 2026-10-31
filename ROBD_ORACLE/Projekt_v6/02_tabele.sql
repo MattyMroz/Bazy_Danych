@@ -188,6 +188,6 @@ SELECT 'Tabele i sekwencje utworzone pomyslnie!' AS status FROM DUAL;
 -- Podsumowanie struktury
 SELECT table_name, num_rows
 FROM user_tables
-WHERE table_name IN ('INSTRUMENTY', 'PRZEDMIOTY', 'NAUCZYCIELE', 'GRUPY', 
+WHERE table_name IN ('INSTRUMENTY', 'PRZEDMIOTY', 'NAUCZYCIELE', 'GRUPY',
                      'SALE', 'UCZNIOWIE', 'LEKCJE', 'OCENY')
 ORDER BY table_name;

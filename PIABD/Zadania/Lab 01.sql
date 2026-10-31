@@ -5,44 +5,44 @@
 
 
 -- Wszystkie ustawienia szukamy w narzędziu SSMS - SQL Server Management Studio
--- Jeśli jest możliwość generujemy kod bezpośrednio z SSMS. 
+-- Jeśli jest możliwość generujemy kod bezpośrednio z SSMS.
 
 
 
 --------------------------------------------------------------------
 -- I. Konfiguracja na poziomie instancji (polecenie sp_configure) --
 --------------------------------------------------------------------
-sp_configure   
--- lub przeglądanie opcji za pomocą obiektu sys.configurations 
+sp_configure
+-- lub przeglądanie opcji za pomocą obiektu sys.configurations
 select * from sys.configurations
 
 --Aby zobaczyć wszystkie ustawienia to należy włączenia opcję 'show advanced options'
-EXEC sys.sp_configure 'show advanced options', 1  
+EXEC sys.sp_configure 'show advanced options', 1
 GO
 RECONFIGURE WITH OVERRIDE
 GO
 
---01. Sprawdzić możliwość wykonania polecenia xp_cmdshell 
+--01. Sprawdzić możliwość wykonania polecenia xp_cmdshell
 --włączyć tą opcję i wykonać polecenie:  dir c:\
 
 
 
---02. Ustawienie języka standardowego przy zalogowaniu się do bazy danych 
+--02. Ustawienie języka standardowego przy zalogowaniu się do bazy danych
 --za pomocą SSMS dla danej instancji SQL Server|Properties|Advanced (tylko do przećwiczenia)
 
--- Ustawiamy aktualny język na język Polski. 
--- Przy tworzeniu loginu SQL Server nie podając konkretnego języka ustwiony jest on na dany język 
+-- Ustawiamy aktualny język na język Polski.
+-- Przy tworzeniu loginu SQL Server nie podając konkretnego języka ustwiony jest on na dany język
 -- określony jako default
 
-EXEC sys.sp_configure 'default language', '14'   
+EXEC sys.sp_configure 'default language', '14'
 GO
 RECONFIGURE WITH OVERRIDE
 GO
 
---03. Włączenie wyzwalaczy zagnieżdzonych 'nested triggers' jeden wyzwalacz potrafi wykonać 
-   -- instrukcję, która wyzwoli inny wyzwalacz. 
-   -- Na poziomie bazy danych mamy opcję Recursive Triggers Enabled, 
-   -- która może być włączona lub wyłączona) 
+--03. Włączenie wyzwalaczy zagnieżdzonych 'nested triggers' jeden wyzwalacz potrafi wykonać
+   -- instrukcję, która wyzwoli inny wyzwalacz.
+   -- Na poziomie bazy danych mamy opcję Recursive Triggers Enabled,
+   -- która może być włączona lub wyłączona)
    -- (sprawdzić definiując przykładową strukturę z tabelami i wyzwalaczami dla wszystkich 4 kombinacji i opisać wnioski w punktach)
    -- https://learn.microsoft.com/en-us/sql/relational-databases/triggers/create-nested-triggers?view=sql-server-ver16
 
@@ -51,16 +51,16 @@ GO
 
 
 --04. Powyższy kod należy zmodyfikować, aby wyzwalacze nie zawierały kursora i składni IF UPDATE.
-   -- Ustawiamy nested triggers na ON oraz Recursive Triggers Enabled także na ON. 
-   -- Czy trzeba wykorzystać CURSOR, czy można inaczej tą część kodu napisać - napisać bez kursora i sprawdzić popraność działania. 
-   -- Czy potrzebna jest instrukcja 'IF UPDATE (mgr)' czy będzie się działo bez tej instrukcji. 
+   -- Ustawiamy nested triggers na ON oraz Recursive Triggers Enabled także na ON.
+   -- Czy trzeba wykorzystać CURSOR, czy można inaczej tą część kodu napisać - napisać bez kursora i sprawdzić popraność działania.
+   -- Czy potrzebna jest instrukcja 'IF UPDATE (mgr)' czy będzie się działo bez tej instrukcji.
 
 
 
 
 
 --05. Ustawienie default connections option (podajemy wartości jako wartości konkretnych bitów)
-	--Pamiętajmy iż SSMS wykorzystuje swoje ustawienia dla połaczeń. 
+	--Pamiętajmy iż SSMS wykorzystuje swoje ustawienia dla połaczeń.
 	--Przykładowo chcemy ustawić:
 		--implicit transactions (1 bit) 2
 		--quoted identifier (8 bit) 256
@@ -99,15 +99,15 @@ ALTER DATABASE [Northwind] SET  READ_WRITE WITH NO_WAIT
 --------------------------------------------------------------------
 -- III. Konfiguracja na poziomie sesji użytkownika (polecenie SET) --
 --------------------------------------------------------------------
---07. Poleceniem DBCC USEROPTIONS sprawdzić ustawienia połaczenia. Następnie ustawić poleceniem SET LANGUAGE POLISH język Polski 
-   -- i sprawdzić ustawienia jak zmieniły się ustawienia DATEFIRST i DATEFORMAT. 
-   -- Zmienić polecenim SET każdy z tych parametrów i napisać zapytanie, które wykorzystuje te ustawienia 
+--07. Poleceniem DBCC USEROPTIONS sprawdzić ustawienia połaczenia. Następnie ustawić poleceniem SET LANGUAGE POLISH język Polski
+   -- i sprawdzić ustawienia jak zmieniły się ustawienia DATEFIRST i DATEFORMAT.
+   -- Zmienić polecenim SET każdy z tych parametrów i napisać zapytanie, które wykorzystuje te ustawienia
    -- np. SELECT DATEPART(WEEKDAY, '10/03/2024'), gdzie data jest w formacie miesiąc/dzień/rok.
 
 
 
 --08. Sprawdzić działanie, każdego z ustawień
-SET IMPLICIT_TRANSACTIONS ON | OFF  -- wyłącza transakcje zatwierdzone automatycznie 
+SET IMPLICIT_TRANSACTIONS ON | OFF  -- wyłącza transakcje zatwierdzone automatycznie
 SET QUOTED_IDENTIFIER ON | OFF      -- podwójne cudzysłowy
 SET NOCOUNT ON | OFF                -- po wykonaniu zapytania nie ma informacji o liczbie zwracanych rekordów
 
@@ -169,5 +169,3 @@ begin tran
 	select * from x;
 rollback tran;
 --------------------------------------------------------------------------------------
-
-

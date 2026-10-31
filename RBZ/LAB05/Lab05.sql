@@ -1,4 +1,4 @@
-﻿-- =============================================================================
+-- =============================================================================
 -- LAB 05 â€” Rozproszone Bazy Danych (RBZ)
 -- Praca GRUPOWA: 2 osoby, 2 komputery
 -- =============================================================================
@@ -56,10 +56,10 @@ GO
 
 -- =============================================================================
 -- ZADANIE 3: Utworzenie loginĂłw i uĹĽytkownikĂłw
--- INSTRUKCJA: 
+-- INSTRUKCJA:
 --   Login LOKALNY:  RBDg10L   (hasĹ‚o: 123456RBD) â€” dla Ciebie, do pracy lokalnej
 --   Login ZDALNY:   zRBDg10R  (hasĹ‚o: 123456RBD) â€” dla kolegi, ktĂłry Ĺ‚Ä…czy siÄ™ DO CIEBIE
---   
+--
 --   Na WB-20 (Ty):  tworzysz OBA loginy
 --   Na WB-18 (kolega): tworzy OBA loginy u siebie (lustrzane)
 -- =============================================================================
@@ -96,7 +96,7 @@ GO
 -- INSTRUKCJA:
 --   Na WB-20 definiujesz linked server z-01 â†’ wskazujÄ…cy na WB-18 (kolega)
 --   Mapujesz: TwĂłj login RBDg10L â†’ login zRBDg10R na serwerze kolegi (WB-18)
---   
+--
 --   Kolega robi to samo w lustrzanym ukĹ‚adzie:
 --   jego linked server â†’ WB-20, jego RBDg10L â†’ TwĂłj zRBDg10R
 -- =============================================================================
@@ -169,7 +169,7 @@ GO
 --   Widok zwraca: jakie PRODUKTY (serwer zdalny = WB-18 przez z-01)
 --   znalazĹ‚y siÄ™ na ZAMĂ“WIENIACH (serwer zdalny = WB-18 przez z-01)
 --   zrealizowanych przez KLIENTĂ“W (serwer lokalny = WB-20, baza RBD_g10)
---   
+--
 --   Tworzymy widok w bazie lokalnej RBD_g10 na WB-20
 -- =============================================================================
 
@@ -193,18 +193,18 @@ AS
         od_zdalny.UnitPrice AS CenaJednostkowa,
         od_zdalny.Quantity  AS Ilosc,
         od_zdalny.UnitPrice * od_zdalny.Quantity AS Wartosc
-    FROM 
+    FROM
         -- Klienci z serwera LOKALNEGO (WB-20)
         RBD_g10.dbo.Customers AS k
-    INNER JOIN 
+    INNER JOIN
         -- ZamĂłwienia z serwera ZDALNEGO (WB-18 przez z-01)
         [z-01].RBD_g10.dbo.Orders AS o_zdalny
         ON k.CustomerID = o_zdalny.CustomerID
-    INNER JOIN 
+    INNER JOIN
         -- SzczegĂłĹ‚y zamĂłwieĹ„ z serwera ZDALNEGO
         [z-01].RBD_g10.dbo.[Order Details] AS od_zdalny
         ON o_zdalny.OrderID = od_zdalny.OrderID
-    INNER JOIN 
+    INNER JOIN
         -- Produkty z serwera ZDALNEGO
         [z-01].RBD_g10.dbo.Products AS p_zdalny
         ON od_zdalny.ProductID = p_zdalny.ProductID;
@@ -216,11 +216,11 @@ ORDER BY NazwaKlienta, NrZamowienia;
 GO
 
 -- Zapytanie do widoku â€” przykĹ‚ad z filtrem
-SELECT 
-    NazwaKlienta, 
-    NrZamowienia, 
-    NazwaProduktu, 
-    Ilosc, 
+SELECT
+    NazwaKlienta,
+    NrZamowienia,
+    NazwaProduktu,
+    Ilosc,
     Wartosc
 FROM dbo.vw_ProduktyZamowieniaKlienci
 WHERE NazwaKlienta LIKE 'A%'
@@ -249,17 +249,17 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    SELECT 
+    SELECT
         YEAR(o.OrderDate) AS Rok,
         SUM(od.UnitPrice * od.Quantity) AS SumarycznaWartosc
-    FROM 
+    FROM
         [z-01].RBD_g10.dbo.Orders AS o
-    INNER JOIN 
+    INNER JOIN
         [z-01].RBD_g10.dbo.[Order Details] AS od
         ON o.OrderID = od.OrderID
-    WHERE 
+    WHERE
         YEAR(o.OrderDate) = @Rok
-    GROUP BY 
+    GROUP BY
         YEAR(o.OrderDate);
 END;
 GO
@@ -301,7 +301,7 @@ GO
 
 -- =============================================================================
 -- ZADANIE 9: Wstawianie krotek na serwer zdalny do tabeli Products (bez MS DTC)
--- INSTRUKCJA: 
+-- INSTRUKCJA:
 --   Wstawiamy dane do tabeli Products na WB-18 (przez linked server z-01)
 --   Aby INSERT dziaĹ‚aĹ‚ bez MS DTC, wyĹ‚Ä…czamy remote proc transaction promotion
 --   UĹĽywamy czteroczĹ‚onowego identyfikatora: z-01.RBD_g10.dbo.Products
@@ -315,20 +315,20 @@ EXEC sp_serveroption 'z-01', 'remote proc transaction promotion', 'false';
 GO
 
 -- Wstawienie testowych krotek do Products na serwerze kolegi (WB-18)
-INSERT INTO [z-01].RBD_g10.dbo.Products 
+INSERT INTO [z-01].RBD_g10.dbo.Products
     (ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued)
-VALUES 
+VALUES
     ('TestProdukt_LAB05_A', 1, 1, '10 boxes', 25.00, 100, 0, 10, 0);
 GO
 
-INSERT INTO [z-01].RBD_g10.dbo.Products 
+INSERT INTO [z-01].RBD_g10.dbo.Products
     (ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued)
-VALUES 
+VALUES
     ('TestProdukt_LAB05_B', 2, 2, '20 bags', 15.50, 50, 0, 5, 0);
 GO
 
 -- Weryfikacja â€” sprawdzenie czy krotki pojawiĹ‚y siÄ™ u kolegi
-SELECT ProductID, ProductName, UnitPrice 
+SELECT ProductID, ProductName, UnitPrice
 FROM [z-01].RBD_g10.dbo.Products
 WHERE ProductName LIKE 'TestProdukt_LAB05%';
 GO
@@ -346,7 +346,7 @@ WHERE ProductName LIKE 'TestProdukt_LAB05%';
 GO
 
 -- Weryfikacja â€” powinno zwrĂłciÄ‡ 0 wierszy
-SELECT ProductID, ProductName 
+SELECT ProductID, ProductName
 FROM [z-01].RBD_g10.dbo.Products
 WHERE ProductName LIKE 'TestProdukt_LAB05%';
 GO
@@ -361,38 +361,38 @@ GO
 -- =============================================================================
 
 -- 11a) INSERT przez OPENQUERY
-INSERT INTO OPENQUERY([z-01], 
-    'SELECT ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued 
+INSERT INTO OPENQUERY([z-01],
+    'SELECT ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued
      FROM RBD_g10.dbo.Products')
-VALUES 
+VALUES
     ('TestProdukt_OQ_A', 1, 1, '10 boxes', 25.00, 100, 0, 10, 0);
 GO
 
-INSERT INTO OPENQUERY([z-01], 
-    'SELECT ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued 
+INSERT INTO OPENQUERY([z-01],
+    'SELECT ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued
      FROM RBD_g10.dbo.Products')
-VALUES 
+VALUES
     ('TestProdukt_OQ_B', 2, 2, '20 bags', 15.50, 50, 0, 5, 0);
 GO
 
 -- Weryfikacja INSERT przez OPENQUERY
-SELECT * FROM OPENQUERY([z-01], 
-    'SELECT ProductID, ProductName, UnitPrice 
-     FROM RBD_g10.dbo.Products 
+SELECT * FROM OPENQUERY([z-01],
+    'SELECT ProductID, ProductName, UnitPrice
+     FROM RBD_g10.dbo.Products
      WHERE ProductName LIKE ''TestProdukt_OQ%''');
 GO
 
 -- 11b) DELETE przez OPENQUERY
-DELETE FROM OPENQUERY([z-01], 
-    'SELECT ProductID, ProductName 
-     FROM RBD_g10.dbo.Products 
+DELETE FROM OPENQUERY([z-01],
+    'SELECT ProductID, ProductName
+     FROM RBD_g10.dbo.Products
      WHERE ProductName LIKE ''TestProdukt_OQ%''');
 GO
 
 -- Weryfikacja DELETE â€” powinno zwrĂłciÄ‡ 0 wierszy
-SELECT * FROM OPENQUERY([z-01], 
-    'SELECT ProductID, ProductName 
-     FROM RBD_g10.dbo.Products 
+SELECT * FROM OPENQUERY([z-01],
+    'SELECT ProductID, ProductName
+     FROM RBD_g10.dbo.Products
      WHERE ProductName LIKE ''TestProdukt_OQ%''');
 GO
 
@@ -411,7 +411,7 @@ GO
 -- PoĹ‚Ä…czenie jako PD251190 do PD25
 
 -- Kopiowanie tabeli EMPLOYEES z schematu NORTHWIND
-CREATE TABLE EMPLOYEES AS 
+CREATE TABLE EMPLOYEES AS
 SELECT * FROM NORTHWIND.EMPLOYEES;
 
 -- Nadanie uprawnieĹ„ koledze (zamieĹ„ PD25XXXX na faktyczny login partnera z grupy!)
@@ -470,9 +470,9 @@ GO
 
 -- Test INSERT â€” wstawianie do tabeli kolegi (wymaga GRANTu z pkt 12)
 /*
-INSERT INTO OraclePD25..PD25XXXX.EMPLOYEES 
+INSERT INTO OraclePD25..PD25XXXX.EMPLOYEES
     (EmployeeID, LastName, FirstName, Title)
-VALUES 
+VALUES
     (999, 'Testowy', 'Pracownik', 'Lab05 Test');
 GO
 

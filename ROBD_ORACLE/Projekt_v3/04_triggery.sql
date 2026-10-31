@@ -50,10 +50,10 @@ DECLARE
 BEGIN
     SELECT DEREF(:NEW.ref_uczen) INTO v_uczen FROM DUAL;
     IF v_uczen IS NOT NULL AND v_uczen.czy_dziecko() = 'T' THEN
-        v_godz_start := TO_NUMBER(SUBSTR(:NEW.godzina_start, 1, 2)) * 60 + 
+        v_godz_start := TO_NUMBER(SUBSTR(:NEW.godzina_start, 1, 2)) * 60 +
                         TO_NUMBER(SUBSTR(:NEW.godzina_start, 4, 2));
         v_godz_end := v_godz_start + :NEW.czas_trwania;
-        
+
         IF v_godz_start < 840 OR v_godz_end > 1140 THEN -- 14:00 - 19:00
             RAISE_APPLICATION_ERROR(-20103, 'Dzieci moga miec lekcje tylko 14:00-19:00.');
         END IF;
@@ -71,7 +71,7 @@ FOR EACH ROW
 DECLARE
     v_cnt NUMBER;
 BEGIN
-    SELECT COUNT(*) INTO v_cnt FROM t_lekcja l 
+    SELECT COUNT(*) INTO v_cnt FROM t_lekcja l
     WHERE DEREF(l.ref_nauczyciel).id_nauczyciela = :OLD.id_nauczyciela;
     IF v_cnt > 0 THEN
         RAISE_APPLICATION_ERROR(-20109, 'Nie mozna usunac nauczyciela z historia lekcji.');

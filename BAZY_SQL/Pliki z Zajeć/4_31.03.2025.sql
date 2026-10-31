@@ -9,7 +9,7 @@ select * from dzialy
 select * from pracownicy
 
 
-select nazwa,nazwisko,imie 
+select nazwa,nazwisko,imie
 from dzialy join pracownicy
 on dzialy.dzialID=pracownicy.dzialID
 
@@ -22,7 +22,7 @@ CREATE TABLE pracownicy
 	imie varchar(50),
 	wiek int,
 	dzialID int FOREIGN KEY REFERENCES dzialy (dzialID)
-) 
+)
 
 
 -- dodaj zarobki
@@ -30,16 +30,16 @@ CREATE TABLE pracownicy
 select nazwa,nazwisko,imie,brutto
 from dzialy join pracownicy
 on dzialy.dzialID=pracownicy.dzialID
-join zarobki 
+join zarobki
 on zarobki.pracID=pracownicy.pracID
 
--- do zastanowienia 
+-- do zastanowienia
 
 
 select nazwa,nazwisko,imie,brutto
 from dzialy join pracownicy
 on dzialy.dzialID=pracownicy.dzialID
-join zarobki 
+join zarobki
 on zarobki.zarID=pracownicy.pracID
 
 -- wyswetl wszystkich pracowniakow majacych w nazwisku litere j
@@ -56,7 +56,7 @@ where nazwisko like '%j%'
 select * from pracownicy
 where lower(nazwisko) like '%j%'
 
---wyswetl pracowniakow o okrerslonym wieku w osobnej 
+--wyswetl pracowniakow o okrerslonym wieku w osobnej
 --kolumnie jesli wiek jest okreslny nastepujaco
 --wiek<25  'mlody'
 --wiek<45  'sredni'
@@ -81,7 +81,7 @@ from pracownicy
 --Constraints typu check
 
 /*
-Do tabeli pracownicy dodaj kolumn  filia, kt ra ma zawiera  
+Do tabeli pracownicy dodaj kolumn  filia, kt ra ma zawiera
 do 20 znak w i na   na ni  ograniczenie pozwalaj ce wpisywa  jedynie
 nazwy miasta Krak w, Warszawa,   d  oraz Katowice. Nazwij to ograniczenie CK_MIASTO.
 */
@@ -92,8 +92,8 @@ alter table pracownicy add constraint CK_MIASTO check
 (filia in ('Krakow','Warszawa','Lodz','Katowice'));
 
 
-insert into pracownicy(filia) values('jasio') 
-insert into pracownicy(filia) values('lodz') 
+insert into pracownicy(filia) values('jasio')
+insert into pracownicy(filia) values('lodz')
 
 alter table pracownicy
 drop constraint CK_MIASTO
@@ -103,14 +103,14 @@ select * from pracownicy
 /*
 Stw rz kolumn  zadanie_1 w tabeli pracownicy, kt ra ma zawiera  10 znak w
 i na   na ni  ograniczenia pozwalaj ce wpisywa  jedynie
-wyrazy kt re maj  od 2 do 6 lub od 8 do 10 znak w. 
+wyrazy kt re maj  od 2 do 6 lub od 8 do 10 znak w.
 Nazwij to ograniczenie CK_ZADANIE1.
 */
 
 
 
 ALTER TABLE pracownicy
-ADD zadanie_1 varchar(10) CONSTRAINT CK_ZADANIE1 CHECK 
+ADD zadanie_1 varchar(10) CONSTRAINT CK_ZADANIE1 CHECK
 ( (len(zadanie_1) between 2 and 6) OR (len(zadanie_1) between 8 and 10) )
 
 insert into pracownicy(zadanie_1) values('a') --1
@@ -129,10 +129,10 @@ wyrazy kt re zawieraj  na przemian 3 litery i 3 cyfry. Nazwij to ograniczenie CK
 Przyk ad wartosci a4f5d9. */
 
 
-alter table pracownicy 
+alter table pracownicy
 add mix varchar(6)
 
 select * from pracownicy
 
-alter table pracownicy 
+alter table pracownicy
 add constraint CK_MIX check(mix like '[a-z][0-9][a-z][0-9][a-z][0-9]')

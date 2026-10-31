@@ -40,8 +40,8 @@ CREATE TABLE t_instrument OF t_instrument_obj (
     id_instrumentu  PRIMARY KEY,
     nazwa           NOT NULL,
     kategoria       NOT NULL,
-    
-    CONSTRAINT chk_instrument_kat 
+
+    CONSTRAINT chk_instrument_kat
         CHECK (kategoria IN ('dete', 'strunowe', 'perkusyjne', 'klawiszowe'))
 );
 
@@ -55,7 +55,7 @@ CREATE TABLE t_sala OF t_sala_obj (
     pojemnosc       NOT NULL,
     ma_fortepian    NOT NULL,
     ma_perkusje     NOT NULL,
-    
+
     CONSTRAINT chk_sala_poj CHECK (pojemnosc BETWEEN 1 AND 20),
     CONSTRAINT chk_sala_fort CHECK (ma_fortepian IN ('T', 'N')),
     CONSTRAINT chk_sala_perk CHECK (ma_perkusje IN ('T', 'N'))
@@ -71,7 +71,7 @@ CREATE TABLE t_nauczyciel OF t_nauczyciel_obj (
     nazwisko            NOT NULL,
     email               UNIQUE NOT NULL,
     data_zatrudnienia   NOT NULL,
-    
+
     CONSTRAINT chk_naucz_email CHECK (email LIKE '%@%')
 );
 
@@ -87,7 +87,7 @@ CREATE TABLE t_uczen OF t_uczen_obj (
     data_urodzenia  NOT NULL,
     email           UNIQUE,
     data_zapisu     NOT NULL,
-    
+
     CONSTRAINT chk_uczen_email CHECK (email IS NULL OR email LIKE '%@%')
 );
 
@@ -100,7 +100,7 @@ CREATE TABLE t_kurs OF t_kurs_obj (
     nazwa           NOT NULL,
     poziom          NOT NULL,
     cena_za_lekcje  NOT NULL,
-    
+
     CONSTRAINT chk_kurs_poz CHECK (poziom IN ('poczatkujacy', 'sredni', 'zaawansowany')),
     CONSTRAINT chk_kurs_cena CHECK (cena_za_lekcje > 0),
     CONSTRAINT fk_kurs_instr ref_instrument SCOPE IS t_instrument
@@ -123,12 +123,12 @@ CREATE TABLE t_lekcja OF t_lekcja_obj (
     godzina_start   NOT NULL,
     czas_trwania    NOT NULL,
     status          NOT NULL,
-    
+
     CONSTRAINT chk_lek_czas CHECK (czas_trwania IN (30, 45, 60, 90)),
     CONSTRAINT chk_lek_status CHECK (status IN ('zaplanowana', 'odbyta', 'odwolana')),
     CONSTRAINT chk_lek_godz CHECK (REGEXP_LIKE(godzina_start, '^[0-2][0-9]:[0-5][0-9]$')),
     CONSTRAINT chk_lek_godz_zakres CHECK (godzina_start >= '08:00' AND godzina_start <= '20:00'),
-    
+
     CONSTRAINT fk_lek_uczen ref_uczen SCOPE IS t_uczen,
     CONSTRAINT fk_lek_naucz ref_nauczyciel SCOPE IS t_nauczyciel,
     CONSTRAINT fk_lek_kurs ref_kurs SCOPE IS t_kurs,
@@ -144,10 +144,10 @@ CREATE TABLE t_ocena_postepu OF t_ocena_obj (
     data_oceny      NOT NULL,
     ocena           NOT NULL,
     obszar          NOT NULL,
-    
+
     CONSTRAINT chk_ocena_zak CHECK (ocena BETWEEN 1 AND 6),
     CONSTRAINT chk_ocena_obs CHECK (obszar IN ('technika', 'teoria', 'sluch', 'rytm', 'interpretacja', 'ogolna')),
-    
+
     CONSTRAINT fk_ocena_uczen ref_uczen SCOPE IS t_uczen,
     CONSTRAINT fk_ocena_naucz ref_nauczyciel SCOPE IS t_nauczyciel
 );

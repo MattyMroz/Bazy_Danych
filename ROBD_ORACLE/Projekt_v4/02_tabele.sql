@@ -40,7 +40,7 @@ CREATE TABLE t_instrument OF t_instrument_obj (
     nazwa           NOT NULL,
     kategoria       NOT NULL,
 
-    CONSTRAINT chk_instrument_kat 
+    CONSTRAINT chk_instrument_kat
         CHECK (kategoria IN ('dete', 'strunowe', 'perkusyjne', 'klawiszowe'))
 );
 

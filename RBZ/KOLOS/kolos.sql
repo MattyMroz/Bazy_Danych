@@ -697,7 +697,7 @@ GO
 
 -- Zadania:
 -- Jaki klient (ORACLE) zrealizował jakie zamówienia (SQLSERVER lokalny) na którym są jakie produkty ACCESS)
--- obsłużone przez jakiego pracownika (SQL Server: WA-03) 
+-- obsłużone przez jakiego pracownika (SQL Server: WA-03)
 
 -- Najpierw zwykle zapytanie lokalne
 SELECT
@@ -1124,18 +1124,18 @@ GO
 -- następnie napisać zapytanie jakie mamy produkty na serwerze Access:
 
 -- Napisać zapytanie:
--- jaki klient (serwer: ORACLE) zrealizował jakie zamówienia (serwer: WA-09) na 
+-- jaki klient (serwer: ORACLE) zrealizował jakie zamówienia (serwer: WA-09) na
 -- których są jakie produkty (serwer: Access)
 -- dostarczone przez jakiego dostawcę (serwer lokalny)
 
 
 -- Zapytanie:
--- Podać z serwera ORACLE: jakie produkty miały wartość sumarycznej sprzedaży (suma 
--- sprzedaży z poszczególnych zamówień względem nazwy produktu) w 
+-- Podać z serwera ORACLE: jakie produkty miały wartość sumarycznej sprzedaży (suma
+-- sprzedaży z poszczególnych zamówień względem nazwy produktu) w
 -- poszczególnych miesiącach roku 1998 i 1997.
 
 -- Następnie:
--- dla tak przygotowanego zapytania tworzymy na jego podstawie tabelę: tab1, 
+-- dla tak przygotowanego zapytania tworzymy na jego podstawie tabelę: tab1,
 -- która zostanie wypełniona danymi.
 -- UWAGA: w tabeli tej ustawić typ DATETIME dla dat poszczególnych miesięcy tego zapytania.
 
@@ -1306,7 +1306,7 @@ GO
 -- Zadanie 1:
 
 -- jaki klient (ORACLE) zrealizował jakie zamówienia (SQLSERVER lokalny) na którym są jakie produkty ACCESS)
--- obsłużone przez jakiego pracownika (SQL Server: WA-03) 
+-- obsłużone przez jakiego pracownika (SQL Server: WA-03)
 
 -- Zadanie 2:
 --  Zapoznać się z ustanawianiem serwera połączonego oraz wykonać następujące kroki:
@@ -1336,21 +1336,21 @@ GO
 
 -- Zadanie: (własna realizacja)
 ----------------------------
--- Napisać zapytanie 
--- jaki klient (serwer: ORACLE) zrealizował jakie zamówienia (serwer: WA-09) na 
+-- Napisać zapytanie
+-- jaki klient (serwer: ORACLE) zrealizował jakie zamówienia (serwer: WA-09) na
 -- których są jaki produkty (serwer: Access)
 -- dostarczone przez jakiego dostawcę (serwer lokalny)
 
 
 
 -- Zapytanie:
--- Podać z serwera ORACLE: jakie produkty miały wartość sumarycznej sprzedaży ( suma 
--- sprzedaży  z poszczególnych zamówień w względem nazwy produktu) w 
+-- Podać z serwera ORACLE: jakie produkty miały wartość sumarycznej sprzedaży ( suma
+-- sprzedaży  z poszczególnych zamówień w względem nazwy produktu) w
 -- poszczególnych miesiącach roku 1998 i 1997.
 
 ---Następnie -------------------------------------
--- dla tak przygotowanego zapytania - tworzymy na jego podstawie tabelę: tab1, 
--- która zostanie wypełniona danymi 
+-- dla tak przygotowanego zapytania - tworzymy na jego podstawie tabelę: tab1,
+-- która zostanie wypełniona danymi
 --- UWAGA w tabeli tej ustawić typ DATETIME dla dat poszczególnych miesięcy tego zapytania
 
 
@@ -1376,7 +1376,7 @@ GO
 
 -- Zadanie 1:
 -- Jaki klient (ORACLE) zrealizował jakie zamówienia (SQLSERVER lokalny) na którym są jakie produkty ACCESS)
--- obsłużone przez jakiego pracownika (SQL Server: WA-03) 
+-- obsłużone przez jakiego pracownika (SQL Server: WA-03)
 
 -- Zadanie 1 - najpierw zwykle zapytanie lokalne
 SELECT
@@ -1685,22 +1685,22 @@ GO
 
 --------------------------- Zadania:---------
 -- Pracujemy w grupach 2 osobowych na dwóch instancjach znajdujących się na osobnych komputerach lub
---  w przypadku pracy samodzielnej symulujemy pracę środowiska rozproszonego na jednej instancji 
+--  w przypadku pracy samodzielnej symulujemy pracę środowiska rozproszonego na jednej instancji
 -- serwera SQLServer z wykorzystaniem dwóch baz danych
 ---------------------------------------
 
 -- 1. Zdefiniować nową bazę danych RBD_g10 (przy pracy samodzielnej dodatkową bazę RBD_g10d)
 -- 2. W założonej nowej bazie --> utworzyć na podstawie bazy NorthWind 3 tabele:  Customers, Orders, [order details], Products
 -- 3. Utworzyć loginy (oraz użytkowników w nowej bazie):
-	-- login (oraz użytkownik)  lokalny: RBDg10L  z hasłem 123456RBD 
-	-- login (oraz użytkownik) do pracy zdalnej: zRBDg10R z hasłem 123456RBD 
--- 4. Zdefiniować serwer połączony: z-0X. Następnie dla tak utworzonego serwera zdalnego wykorzystując loginy 
--- z pkt. 3 delegować uprawnienia loginu/użytkownika  lokalnego RBDg10L  na uprawnienia loginu/użytkownika RBDg10R 
--- 5. Nadać niezbędne prawa obiektowe do czytania oraz zapisu danych na serwerze lokalnym i serwerze zdalnym 
+	-- login (oraz użytkownik)  lokalny: RBDg10L  z hasłem 123456RBD
+	-- login (oraz użytkownik) do pracy zdalnej: zRBDg10R z hasłem 123456RBD
+-- 4. Zdefiniować serwer połączony: z-0X. Następnie dla tak utworzonego serwera zdalnego wykorzystując loginy
+-- z pkt. 3 delegować uprawnienia loginu/użytkownika  lokalnego RBDg10L  na uprawnienia loginu/użytkownika RBDg10R
+-- 5. Nadać niezbędne prawa obiektowe do czytania oraz zapisu danych na serwerze lokalnym i serwerze zdalnym
 -- określonym użytkownikom zdefiniowanym po stronie bazy danych.
--- 6. Zdefiniowany widok który zwróci informację: Jakie produkty (serwer zdalny) znalazły się na danych zamówieniach (serwer zdalny) 
+-- 6. Zdefiniowany widok który zwróci informację: Jakie produkty (serwer zdalny) znalazły się na danych zamówieniach (serwer zdalny)
 -- zrealizowanych przez danych użytkowników (serwer lokalny)?. Następnie napisać zapytanie do tak powołanego widoku, które pobierze dane
--- 7. Opracować procedurę przechowywaną, która dla parametru wejściowego zwróci informację jaka jest sumaryczna 
+-- 7. Opracować procedurę przechowywaną, która dla parametru wejściowego zwróci informację jaka jest sumaryczna
 -- wartość sprzedaży (serwer zdalny) w danym roku podawanym jako parametr wejściowy.
 -- 8. Nadać odpowiednie uprawnienia do procedury, które pozwolą na zdalne jej wywoływanie.
 -- 9. Przetestować możliwość wstawiania krotek na serwer zdalny do tabeli Products (ale bez użycia koordynatora MS DTC).
@@ -1708,9 +1708,9 @@ GO
 -- wykorzystanego na serwerze lokalnym
 -- 11. Punkt 9 i 10 zrealizować również przez wykorzystanie funkcji OPENQUERY z którą to funkcją należy zapoznać się w dokumentacji Microsoft.
 -- 12. Pracując w grupach dwuosobowych należy następnie zdefiniować w systemie ORACLE tabelę EMPLOYEES (kopiując ją instrukcją ze schematu NORTHWIND)
--- oraz nadać określone uprawnienia obiektowe do tej tabeli do loginu ORACLE współpracującej osobie w grupie. 
--- 13. Dla zdefiniowanego użytkownika lokalnego (SQL Server) zdefiniować serwer ORACLE oraz dokonać delegacji uprawnień tego loginu do własnego 
--- loginu serwera ORACLE. Następnie przetestować możliwość wstawiania danych do tabeli znajdującej się w schemacie użytkownika współpracującej 
+-- oraz nadać określone uprawnienia obiektowe do tej tabeli do loginu ORACLE współpracującej osobie w grupie.
+-- 13. Dla zdefiniowanego użytkownika lokalnego (SQL Server) zdefiniować serwer ORACLE oraz dokonać delegacji uprawnień tego loginu do własnego
+-- loginu serwera ORACLE. Następnie przetestować możliwość wstawiania danych do tabeli znajdującej się w schemacie użytkownika współpracującej
 -- osoby w grupie. W razie potrzeby zredefiniować określone uprawnienia obiektowe.
 
 
@@ -2052,26 +2052,26 @@ Zadanie 1.
 Zapoznaj się z dokumentacją środowiska SQLServer w temacie dotyczącym korzystania z koordynatora transakcji rozproszonych oraz przeprowadź jego instalację jeżeli nie jest on zainstalowany.
 
 Cel:
--- Celem przeprowadzenia transakcji rozproszonej między systemem SQL Server a systemem ORACLE należy wykorzystać 
+-- Celem przeprowadzenia transakcji rozproszonej między systemem SQL Server a systemem ORACLE należy wykorzystać
 -- Koordynatora transakcji rozproszonych Microsoft (MS DTC)
 -- W przypadku braku tego koordynatora należy go doinstalować. Szczegóły opisane są w dokumentacji technicznej Microsoft.
--- MS DTC - powinien być zainstalowany razem z instalacją produktu SQL Server tzn. na każdym komputerze uczestniczącym w koordynowaniu transakcji rozproszonych. 
+-- MS DTC - powinien być zainstalowany razem z instalacją produktu SQL Server tzn. na każdym komputerze uczestniczącym w koordynowaniu transakcji rozproszonych.
 
 --- Transakcja rozproszona:
 -----------------------------------------------
--- Transakcja rozproszona obejmuje dwie lub więcej baz danych. 
--- Transakcję między SQL Server i innymi źródłami danych koordynuje menedżer transakcji: DTC. 
--- Każde wystąpienie silnika bazy danych (SQL Server) może działać jako menedżer zasobów. Po skonfigurowaniu 
--- Transakcja z dwiema lub więcej bazami danych w jednym wystąpieniu transakcją rozproszoną. 
--- To instancja i DTC zarządza wewnętrznie transakcją rozproszoną. Użytkownik widzi ją jak transakcja lokalną. 
--- SQL Server od 2017 (14.x) promuje wszystkie transakcje między bazami danych do DTC, tzn. gdy bazy danych są w grupie dostępności skonfigurowanej 
+-- Transakcja rozproszona obejmuje dwie lub więcej baz danych.
+-- Transakcję między SQL Server i innymi źródłami danych koordynuje menedżer transakcji: DTC.
+-- Każde wystąpienie silnika bazy danych (SQL Server) może działać jako menedżer zasobów. Po skonfigurowaniu
+-- Transakcja z dwiema lub więcej bazami danych w jednym wystąpieniu transakcją rozproszoną.
+-- To instancja i DTC zarządza wewnętrznie transakcją rozproszoną. Użytkownik widzi ją jak transakcja lokalną.
+-- SQL Server od 2017 (14.x) promuje wszystkie transakcje między bazami danych do DTC, tzn. gdy bazy danych są w grupie dostępności skonfigurowanej
 -- z DTC_SUPPORT = PER_DB- nawet w ramach pojedynczej instancji SQL Server.
 
--- Od strony aplikacji SQL Management Studio - transakcja rozproszona jest zarządzana podobnie jak transakcja lokalna. 
--- Pod koniec transakcji aplikacja żąda zatwierdzenia lub 
--- wycofania transakcji. Menedżer transakcji musi zarządzać rozproszonym zatwierdzeniem w taki sposób, aby zminimalizować ryzyko, że awaria sieci 
--- może spowodować, że niektóre usługi menedżerów zasobów z powodzeniem dokonają zatwierdzenia, a inni wycofają transakcję. 
--- Osiąga się to poprzez zarządzanie procesem zatwierdzania w dwóch fazach (faza przygotowania i faza zatwierdzenia), która jest znana 
+-- Od strony aplikacji SQL Management Studio - transakcja rozproszona jest zarządzana podobnie jak transakcja lokalna.
+-- Pod koniec transakcji aplikacja żąda zatwierdzenia lub
+-- wycofania transakcji. Menedżer transakcji musi zarządzać rozproszonym zatwierdzeniem w taki sposób, aby zminimalizować ryzyko, że awaria sieci
+-- może spowodować, że niektóre usługi menedżerów zasobów z powodzeniem dokonają zatwierdzenia, a inni wycofają transakcję.
+-- Osiąga się to poprzez zarządzanie procesem zatwierdzania w dwóch fazach (faza przygotowania i faza zatwierdzenia), która jest znana
 -- jako zatwierdzanie dwufazowe (two-phase commit).:
 
 
@@ -2080,23 +2080,23 @@ Cel:
 
 -- Faza przygotowawcza:
 -------------------------------
--- Gdy menedżer transakcji otrzyma żądanie zatwierdzenia, wysyła polecenie przygotowania do wszystkich menedżerów zasobów zaangażowanych w transakcję. -- Następnie każdy menedżer zasobów robi wszystko, aby transakcja była trwała, a wszystkie bufory zawierające obrazy dziennika dla transakcji są -- składowane na dysk. Gdy każdy menedżer zasobów zakończy fazę przygotowania, zwraca informację: (sukces lub porażkę) przygotowania do 
+-- Gdy menedżer transakcji otrzyma żądanie zatwierdzenia, wysyła polecenie przygotowania do wszystkich menedżerów zasobów zaangażowanych w transakcję. -- Następnie każdy menedżer zasobów robi wszystko, aby transakcja była trwała, a wszystkie bufory zawierające obrazy dziennika dla transakcji są -- składowane na dysk. Gdy każdy menedżer zasobów zakończy fazę przygotowania, zwraca informację: (sukces lub porażkę) przygotowania do
 -- menedżera transakcji (MS DTC).
 
 
 -- Faza zatwierdzania:
 ---------------------------
--- Jeśli menedżer transakcji otrzyma pomyślne przygotowania od wszystkich menedżerów zasobów, wysyła polecenia zatwierdzenia do każdego 
+-- Jeśli menedżer transakcji otrzyma pomyślne przygotowania od wszystkich menedżerów zasobów, wysyła polecenia zatwierdzenia do każdego
 -- menedżera zasobów. Menedżerowie zasobów mogą następnie dokończyć zatwierdzenie. Jeśli wszyscy menedżerowie zasobów zgłoszą pomyślne zatwierdzenie,
--- menedżer transakcji następnie wysyła powiadomienie o powodzeniu do aplikacji. Jeśli dowolny menedżer zasobów zgłosił błąd w przygotowaniu, 
+-- menedżer transakcji następnie wysyła powiadomienie o powodzeniu do aplikacji. Jeśli dowolny menedżer zasobów zgłosił błąd w przygotowaniu,
 -- to menedżer transakcji wysyła polecenie wycofania do każdego menedżera zasobów i wskazuje niepowodzenie zatwierdzenia do aplikacji.
 
 
 -- Krok A:
 -- dokonać odpowiedniej konfiguracji MSDTC
  --------------------------
--- Korzystanie z transakcji XA jest domyślnie wyłączone, aby zapobiec potencjalnemu ryzyku bezpieczeństwa, które powstaje, gdy określona -- przez użytkownika biblioteka DLL, której DTC używa do komunikowania się z menedżerem transakcji partnera XA, jest ładowana bezpośrednio 
--- do procesu DTC. Ta sytuacja może narazić bazy danych menedżera zasobów na poważne uszkodzenie danych. 
+-- Korzystanie z transakcji XA jest domyślnie wyłączone, aby zapobiec potencjalnemu ryzyku bezpieczeństwa, które powstaje, gdy określona -- przez użytkownika biblioteka DLL, której DTC używa do komunikowania się z menedżerem transakcji partnera XA, jest ładowana bezpośrednio
+-- do procesu DTC. Ta sytuacja może narazić bazy danych menedżera zasobów na poważne uszkodzenie danych.
 -- Może również powodować ataki typu „odmowa usługi”. Aby umożliwić koordynację i przepływ transakcji XA, musisz włączyć transakcje XA.
 
 
@@ -2105,11 +2105,11 @@ Cel:
 ---------------
 -- Przeprowadź konfigurację MSDTC i włącz obsługę przeprowadzenia transakcji rozproszonych z wykorzystaniem MSDTC.
 -- Aby włączyć transakcje XA - najpierw upewnij się, że żadne transakcje nie są w toku.
--- 
+--
 -----------------------------
     -- 1. Otwórz przystawkę Usługi składowe:
 
-          --kliknij przycisk Start . 
+          --kliknij przycisk Start .
           -----W polu wyszukiwania wpisz: dcomcnfg , a następnie naciśnij klawisz ENTER.
 
     -- 2. W drzewie: Katalog główny konsoli -  rozwiń: Usługi składowe -- dalej: komputery -- dalej Mój komputer
@@ -2127,8 +2127,8 @@ Cel:
 ----------
 -- Zadanie 3:
 ---------------
--- Oprócz włączania transakcji XA przeprowadź konfigurację dostępu DTC przez zaporę Firewall, (np. zapora systemu Windows). 
--- 
+-- Oprócz włączania transakcji XA przeprowadź konfigurację dostępu DTC przez zaporę Firewall, (np. zapora systemu Windows).
+--
 -----------------------------
 
 
@@ -2185,7 +2185,7 @@ imie varchar(25) not null);
 -----------
 -- Zadanie 7:
 ----------------
---  Zapoznaj się z dokumentacja środowiska SQLServer oraz opcją sesji: XACT_ABORT. Odpowiedz na pytanie czym ta 
+--  Zapoznaj się z dokumentacja środowiska SQLServer oraz opcją sesji: XACT_ABORT. Odpowiedz na pytanie czym ta
 --  opcja jest i do czego jest ona wykorzystywana
 
 
@@ -2216,7 +2216,7 @@ COMMIT TRANSACTION
 
 
 -- Zadanie 8:
--- Opracować procedurę składowaną, która wprowadzi rekordy na serwer ORACLE oraz taką samą procedurę, która wprowadzi 
+-- Opracować procedurę składowaną, która wprowadzi rekordy na serwer ORACLE oraz taką samą procedurę, która wprowadzi
 -- rekordy do tabeli Northwind (SQL Server)
 -- Następnie napisać transakcję rozproszoną z wykorzystaniem tej procedury
 
@@ -2406,4 +2406,3 @@ GO
 SELECT *
 FROM OPENQUERY(ORACLE_PDB, 'SELECT INDEKS, NAZWISKO, IMIE FROM KOLEDZY WHERE INDEKS IN (61001, 62001)');
 GO
-

@@ -7,12 +7,12 @@ beeline10000	-->	http://212.51.216.241:<portNo6>
 
 UWAGA!!!!
 
-Podłączenie do maszyny wirtualnej (dostęp z IMSI - wszystkie grupy): 
+Podłączenie do maszyny wirtualnej (dostęp z IMSI - wszystkie grupy):
 ------------------------------------------------------
 http://192.168.102.X:Port oryginalny
 np.. http://192.168.102.223:1080
 
-Podłączenie do maszyny wirtualnej (dostęp poza IMSI - wszystkie grupy): 
+Podłączenie do maszyny wirtualnej (dostęp poza IMSI - wszystkie grupy):
 ------------------------------------------------------------
 http://212.51.216.241:port przekierowany
 np. http://212.51.216.241:51101
@@ -33,7 +33,7 @@ BigData1102	10.168.7.6	245843+251136
 BigData1103	10.168.7.7
 BigData1104	10.168.7.8
 
-	
+
 
 
 --------------------
@@ -71,9 +71,9 @@ BigData1301	10.168.7.13	251151+251119
 BigData1302	10.168.7.14	251163+251170
 BigData1303	10.168.7.15	251250+245854
 BigData1304	10.168.7.16	251219+251154
-	
 
-	
+
+
 
 
 --------------------
@@ -93,5 +93,3 @@ BigData1301	13		51221	51222	51223	51224	51225	51226	51227	51228	10.168.7.13
 BigData1302	14		51231	51232	51233	51234	51235	51236	51237	51238	10.168.7.14
 BigData1303	15		51241	51242	51243	51244	51245	51246	51247	51248	10.168.7.15
 BigData1304	16		51251	51252	51253	51254	51255	51256	51257	51258	10.168.7.16
-
-

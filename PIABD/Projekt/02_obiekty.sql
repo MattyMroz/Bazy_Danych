@@ -37,9 +37,9 @@ BEGIN
     END
     ELSE
     BEGIN
-        INSERT INTO crunchbase.Company (mongo_id, name, permalink, category_code, 
+        INSERT INTO crunchbase.Company (mongo_id, name, permalink, category_code,
                                         description, number_of_employees, founded_year)
-        VALUES (@mongo_id, @name, @permalink, @category_code, 
+        VALUES (@mongo_id, @name, @permalink, @category_code,
                 @description, @number_of_employees, @founded_year);
 
         PRINT 'Firma dodana: ' + @name;

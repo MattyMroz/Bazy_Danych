@@ -1,4 +1,4 @@
-﻿----------------------------------------------------
+----------------------------------------------------
 -- Kopie bezpieczeństwa i przywracanie baz danych --
 ----------------------------------------------------
 use master
@@ -18,7 +18,7 @@ GO
 USE MASTER
 GO
 
--- Przygotowanie urządzenia do backupu o nazwie b3, b3_log i b3_log1 (nie musimy tworzyć osobnych plików, 
+-- Przygotowanie urządzenia do backupu o nazwie b3, b3_log i b3_log1 (nie musimy tworzyć osobnych plików,
 -- ale łatwiej będzie pokazać sposoby backupu i przywracania)
 -- (uwaga na ścieżki podane w skrypcie bo mogą nie odpowiadać ścieżką w instalacji lokalnej)
 USE [master]
@@ -56,7 +56,7 @@ select * from test3.dbo.cat
 -----------------------------
 -- Scenariusz 1 -------------
 -----------------------------
--- do urządzenia b3_log dokładamy kolejne wersje backup log i czyścimy dziennik bazy (bez opcji NO_TRUNCATE) 
+-- do urządzenia b3_log dokładamy kolejne wersje backup log i czyścimy dziennik bazy (bez opcji NO_TRUNCATE)
 -- dokładamy zamiast do b3 do nowego urządzenia b3_log (pierwsze polecenie Backup Log jest z opcją INIT aby wyczyścić poprzednią zawartość pliku bak jeśli istniał)
 INSERT INTO test3.dbo.cat (categoryname) values ('Tran 1');
 BACKUP LOG [test3] TO [b3_log] WITH NOFORMAT, INIT,  NAME = N'Tran 1', SKIP, NOREWIND, NOUNLOAD,   STATS = 5
@@ -66,7 +66,7 @@ BACKUP LOG [test3] TO [b3_log] WITH NOFORMAT, NOINIT,  NAME = N'Tran 2', SKIP, N
 --
 INSERT INTO test3.dbo.cat (categoryname) values ('Tran 3');
 BACKUP LOG [test3] TO [b3_log] WITH NOFORMAT, NOINIT,  NAME = N'Tran 3', SKIP, NOREWIND, NOUNLOAD,  STATS = 5
-	
+
 -- Przywracamy całość (nikt nie może pracować na danej bazie lub przechodzimy z tryb pracy SINGLE_USER lub RESTRICTED_USER)
 -- ALTER DATABASE [test3] SET SINGLE_USER WITH ROLLBACK IMMEDIATE
 -- ALTER DATABASE [test3] SET MULTI_USER
@@ -133,16 +133,16 @@ RESTORE LOG [test3] FROM  DISK = N'C:\Program Files\Microsoft SQL Server\MSSQL16
 select * from test3.dbo.cat --sprawdzamy co odzyskaliśmy
 
 ------------------------------------------------------------------------------------------------------------------------------
-/* 
+/*
  Opis opcji:
  opcja NORECOVERY - baza w tym stanie po tym backupie przechodzi w stan Restoring (dodałem nadpisywanie pliku backupu - INIT,SKIP) - można świadomie przywrócić poleceniem --RESTORE DATABASE [test3] with RECOVERY
- opcja NO_TRUNCUTE powoduje nie wycięcie dziennika transakcji (możemy robić kilka kopii i będą one poprawne i z aktualnymi danymi) - bez tej opcji dziennik jest wycinany i ponowne BACKUP LOG i przywracanie z wykorzystaniem tego pliku jest w innym miejscu niż cały backup 
+ opcja NO_TRUNCUTE powoduje nie wycięcie dziennika transakcji (możemy robić kilka kopii i będą one poprawne i z aktualnymi danymi) - bez tej opcji dziennik jest wycinany i ponowne BACKUP LOG i przywracanie z wykorzystaniem tego pliku jest w innym miejscu niż cały backup
  BACKUP LOG [test3] TO  [b3_log] WITH NOFORMAT, INIT,  NAME = N'test3_Log_tail', NOSKIP, NOREWIND, NOUNLOAD,  NORECOVERY,  STATS = 5
  bez opcji NORECOVERY - baza w tym stanie po tym backupie może być normalnie używana (i może zmienić się stan bazy (chyba że damy opcję SINGLE_USER i sami nic nie zmienimy
  BACKUP LOG [test3] TO  [b3_log] WITH NOFORMAT, INIT,  NAME = N'test3_Log_tail', SKIP, NOREWIND, NOUNLOAD, STATS = 5
 
  NORECOVERY
- Tworzy kopię zapasową końca dziennika i pozostawia bazę danych w stanie PRZYWRACANIA. 
+ Tworzy kopię zapasową końca dziennika i pozostawia bazę danych w stanie PRZYWRACANIA.
  NORECOVERY przydaje się w przypadku przełączania awaryjnego do dodatkowej bazy danych lub podczas zapisywania końca dziennika przed operacją PRZYWRACANIA.
  Aby wykonać najlepszą kopię zapasową dziennika, która pomija obcinanie dziennika, a następnie atomowo wprowadza bazę danych do stanu PRZYWRACANIE, użyj razem opcji NO_TRUNCATE i NORECOVERY.
 
@@ -159,84 +159,84 @@ select * from test3.dbo.cat --sprawdzamy co odzyskaliśmy
 ---------------------------------------------
 RESTORE DATABASE [test3] FROM  [b3] WITH  FILE = 3,  NORECOVERY,  NOUNLOAD,   REPLACE,  STATS = 5
 -- Uwaga
--- RESTORE DATABASE [test3] FROM  [b3] WITH  FILE = 4,  RECOVERY,  NOUNLOAD,   REPLACE,  STATS = 5 
+-- RESTORE DATABASE [test3] FROM  [b3] WITH  FILE = 4,  RECOVERY,  NOUNLOAD,   REPLACE,  STATS = 5
 -- tutaj kopia różnicowa do tego backupu nie może być wykorzystana
 RESTORE DATABASE [test3] WITH RECOVERY
 
 -- Zadania do wykonania
 
--- I. Tworzymy dla bazy danych TEST4 następujące typy kopie bezpieczeństwa w kolejności na urządzeniu o nazwie b4 
--- W kolejnosci wykonujemy backup typu: 
+-- I. Tworzymy dla bazy danych TEST4 następujące typy kopie bezpieczeństwa w kolejności na urządzeniu o nazwie b4
+-- W kolejnosci wykonujemy backup typu:
 -- backup pełny o nazwie w opisie FULL (przy tym backupie ustawiamy opcję INIT aby skasować wszystko co było wcześniej w danym urządzeniu)
--- backup różnicowy o nazwie w opisie DIF1 
--- backup różnicowy o nazwie w opisie DIF2 
--- backup dziennika transakcji o nazwie w opisie LOG1 
--- backup dziennika transakcji o nazwie w opisie LOG2 
--- backup różnicowy o nazwie w opisie DIF3 
--- backup dziennika transakcji o nazwie w opisie LOG3 
+-- backup różnicowy o nazwie w opisie DIF1
+-- backup różnicowy o nazwie w opisie DIF2
+-- backup dziennika transakcji o nazwie w opisie LOG1
+-- backup dziennika transakcji o nazwie w opisie LOG2
+-- backup różnicowy o nazwie w opisie DIF3
+-- backup dziennika transakcji o nazwie w opisie LOG3
 -- backup dziennika transakcji o nazwie w opisie LOG4
 -----------------------------------------------------
 CREATE DATABASE [TEST4]
  CONTAINMENT = NONE
- ON  PRIMARY 
+ ON  PRIMARY
 ( NAME = N'TEST4', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\DATA\TEST4.mdf' , SIZE = 8192KB , FILEGROWTH = 65536KB )
- LOG ON 
+ LOG ON
 ( NAME = N'TEST4_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\DATA\TEST4_log.ldf' , SIZE = 8192KB , FILEGROWTH = 65536KB )
  WITH LEDGER = OFF
 GO
 ALTER DATABASE [TEST4] SET COMPATIBILITY_LEVEL = 170
 GO
-ALTER DATABASE [TEST4] SET ANSI_NULL_DEFAULT OFF 
+ALTER DATABASE [TEST4] SET ANSI_NULL_DEFAULT OFF
 GO
-ALTER DATABASE [TEST4] SET ANSI_NULLS OFF 
+ALTER DATABASE [TEST4] SET ANSI_NULLS OFF
 GO
-ALTER DATABASE [TEST4] SET ANSI_PADDING OFF 
+ALTER DATABASE [TEST4] SET ANSI_PADDING OFF
 GO
-ALTER DATABASE [TEST4] SET ANSI_WARNINGS OFF 
+ALTER DATABASE [TEST4] SET ANSI_WARNINGS OFF
 GO
-ALTER DATABASE [TEST4] SET ARITHABORT OFF 
+ALTER DATABASE [TEST4] SET ARITHABORT OFF
 GO
-ALTER DATABASE [TEST4] SET AUTO_CLOSE OFF 
+ALTER DATABASE [TEST4] SET AUTO_CLOSE OFF
 GO
-ALTER DATABASE [TEST4] SET AUTO_SHRINK OFF 
+ALTER DATABASE [TEST4] SET AUTO_SHRINK OFF
 GO
 ALTER DATABASE [TEST4] SET AUTO_CREATE_STATISTICS ON(INCREMENTAL = OFF)
 GO
-ALTER DATABASE [TEST4] SET AUTO_UPDATE_STATISTICS ON 
+ALTER DATABASE [TEST4] SET AUTO_UPDATE_STATISTICS ON
 GO
-ALTER DATABASE [TEST4] SET CURSOR_CLOSE_ON_COMMIT OFF 
+ALTER DATABASE [TEST4] SET CURSOR_CLOSE_ON_COMMIT OFF
 GO
-ALTER DATABASE [TEST4] SET CURSOR_DEFAULT  GLOBAL 
+ALTER DATABASE [TEST4] SET CURSOR_DEFAULT  GLOBAL
 GO
-ALTER DATABASE [TEST4] SET CONCAT_NULL_YIELDS_NULL OFF 
+ALTER DATABASE [TEST4] SET CONCAT_NULL_YIELDS_NULL OFF
 GO
-ALTER DATABASE [TEST4] SET NUMERIC_ROUNDABORT OFF 
+ALTER DATABASE [TEST4] SET NUMERIC_ROUNDABORT OFF
 GO
-ALTER DATABASE [TEST4] SET QUOTED_IDENTIFIER OFF 
+ALTER DATABASE [TEST4] SET QUOTED_IDENTIFIER OFF
 GO
-ALTER DATABASE [TEST4] SET RECURSIVE_TRIGGERS OFF 
+ALTER DATABASE [TEST4] SET RECURSIVE_TRIGGERS OFF
 GO
-ALTER DATABASE [TEST4] SET  DISABLE_BROKER 
+ALTER DATABASE [TEST4] SET  DISABLE_BROKER
 GO
-ALTER DATABASE [TEST4] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+ALTER DATABASE [TEST4] SET AUTO_UPDATE_STATISTICS_ASYNC OFF
 GO
-ALTER DATABASE [TEST4] SET DATE_CORRELATION_OPTIMIZATION OFF 
+ALTER DATABASE [TEST4] SET DATE_CORRELATION_OPTIMIZATION OFF
 GO
-ALTER DATABASE [TEST4] SET PARAMETERIZATION SIMPLE 
+ALTER DATABASE [TEST4] SET PARAMETERIZATION SIMPLE
 GO
-ALTER DATABASE [TEST4] SET READ_COMMITTED_SNAPSHOT OFF 
+ALTER DATABASE [TEST4] SET READ_COMMITTED_SNAPSHOT OFF
 GO
-ALTER DATABASE [TEST4] SET  READ_WRITE 
+ALTER DATABASE [TEST4] SET  READ_WRITE
 GO
-ALTER DATABASE [TEST4] SET RECOVERY SIMPLE 
+ALTER DATABASE [TEST4] SET RECOVERY SIMPLE
 GO
-ALTER DATABASE [TEST4] SET  MULTI_USER 
+ALTER DATABASE [TEST4] SET  MULTI_USER
 GO
-ALTER DATABASE [TEST4] SET PAGE_VERIFY CHECKSUM  
+ALTER DATABASE [TEST4] SET PAGE_VERIFY CHECKSUM
 GO
-ALTER DATABASE [TEST4] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+ALTER DATABASE [TEST4] SET TARGET_RECOVERY_TIME = 60 SECONDS
 GO
-ALTER DATABASE [TEST4] SET DELAYED_DURABILITY = DISABLED 
+ALTER DATABASE [TEST4] SET DELAYED_DURABILITY = DISABLED
 GO
 USE [TEST4]
 GO
@@ -299,80 +299,80 @@ GO
 
 
 
--- 5. Korzystając z Tail_log czyli w scenariuszu, gdzie odtwarzamy wszystkie możliwe dane 
+-- 5. Korzystając z Tail_log czyli w scenariuszu, gdzie odtwarzamy wszystkie możliwe dane
 
 -- 6. Przywracamy bazę z czasu wykonania backupu FULL pod nową nazwą TEST4_NEW
 USE [master]
 RESTORE DATABASE [TEST4_NEW] FROM  DISK = N'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\Backup\TEST4.bak' WITH  FILE = 1,  MOVE N'TEST4' TO N'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\DATA\TEST4_NEW.mdf',  MOVE N'TEST4_log' TO N'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\DATA\TEST4_NEW_log.ldf',  NOUNLOAD,  STATS = 5
-	
+
 GO
 
 ---------------------------------------------------------------------------------------
 
--- 7. Utwórz bazę danych TEST5 z trzema grupami plików (g1,g2,g3). 
+-- 7. Utwórz bazę danych TEST5 z trzema grupami plików (g1,g2,g3).
 -- Następnie utwórz kopię bazy danych z wszystkich grup plików jako jeden backup (w tym samym czasie)
 
 CREATE DATABASE [TEST5]
  CONTAINMENT = NONE
- ON  PRIMARY 
+ ON  PRIMARY
 ( NAME = N'TEST5', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\DATA\TEST5.mdf' , SIZE = 8192KB , FILEGROWTH = 65536KB )
- LOG ON 
+ LOG ON
 ( NAME = N'TEST5_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\DATA\TEST5_log.ldf' , SIZE = 8192KB , FILEGROWTH = 65536KB )
  WITH LEDGER = OFF
 GO
 ALTER DATABASE [TEST5] SET COMPATIBILITY_LEVEL = 170
 GO
-ALTER DATABASE [TEST5] SET ANSI_NULL_DEFAULT OFF 
+ALTER DATABASE [TEST5] SET ANSI_NULL_DEFAULT OFF
 GO
-ALTER DATABASE [TEST5] SET ANSI_NULLS OFF 
+ALTER DATABASE [TEST5] SET ANSI_NULLS OFF
 GO
-ALTER DATABASE [TEST5] SET ANSI_PADDING OFF 
+ALTER DATABASE [TEST5] SET ANSI_PADDING OFF
 GO
-ALTER DATABASE [TEST5] SET ANSI_WARNINGS OFF 
+ALTER DATABASE [TEST5] SET ANSI_WARNINGS OFF
 GO
-ALTER DATABASE [TEST5] SET ARITHABORT OFF 
+ALTER DATABASE [TEST5] SET ARITHABORT OFF
 GO
-ALTER DATABASE [TEST5] SET AUTO_CLOSE OFF 
+ALTER DATABASE [TEST5] SET AUTO_CLOSE OFF
 GO
-ALTER DATABASE [TEST5] SET AUTO_SHRINK OFF 
+ALTER DATABASE [TEST5] SET AUTO_SHRINK OFF
 GO
 ALTER DATABASE [TEST5] SET AUTO_CREATE_STATISTICS ON(INCREMENTAL = OFF)
 GO
-ALTER DATABASE [TEST5] SET AUTO_UPDATE_STATISTICS ON 
+ALTER DATABASE [TEST5] SET AUTO_UPDATE_STATISTICS ON
 GO
-ALTER DATABASE [TEST5] SET CURSOR_CLOSE_ON_COMMIT OFF 
+ALTER DATABASE [TEST5] SET CURSOR_CLOSE_ON_COMMIT OFF
 GO
-ALTER DATABASE [TEST5] SET CURSOR_DEFAULT  GLOBAL 
+ALTER DATABASE [TEST5] SET CURSOR_DEFAULT  GLOBAL
 GO
-ALTER DATABASE [TEST5] SET CONCAT_NULL_YIELDS_NULL OFF 
+ALTER DATABASE [TEST5] SET CONCAT_NULL_YIELDS_NULL OFF
 GO
-ALTER DATABASE [TEST5] SET NUMERIC_ROUNDABORT OFF 
+ALTER DATABASE [TEST5] SET NUMERIC_ROUNDABORT OFF
 GO
-ALTER DATABASE [TEST5] SET QUOTED_IDENTIFIER OFF 
+ALTER DATABASE [TEST5] SET QUOTED_IDENTIFIER OFF
 GO
-ALTER DATABASE [TEST5] SET RECURSIVE_TRIGGERS OFF 
+ALTER DATABASE [TEST5] SET RECURSIVE_TRIGGERS OFF
 GO
-ALTER DATABASE [TEST5] SET  DISABLE_BROKER 
+ALTER DATABASE [TEST5] SET  DISABLE_BROKER
 GO
-ALTER DATABASE [TEST5] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+ALTER DATABASE [TEST5] SET AUTO_UPDATE_STATISTICS_ASYNC OFF
 GO
-ALTER DATABASE [TEST5] SET DATE_CORRELATION_OPTIMIZATION OFF 
+ALTER DATABASE [TEST5] SET DATE_CORRELATION_OPTIMIZATION OFF
 GO
-ALTER DATABASE [TEST5] SET PARAMETERIZATION SIMPLE 
+ALTER DATABASE [TEST5] SET PARAMETERIZATION SIMPLE
 GO
-ALTER DATABASE [TEST5] SET READ_COMMITTED_SNAPSHOT OFF 
+ALTER DATABASE [TEST5] SET READ_COMMITTED_SNAPSHOT OFF
 GO
-ALTER DATABASE [TEST5] SET  READ_WRITE 
+ALTER DATABASE [TEST5] SET  READ_WRITE
 GO
-ALTER DATABASE [TEST5] SET RECOVERY SIMPLE 
+ALTER DATABASE [TEST5] SET RECOVERY SIMPLE
 GO
-ALTER DATABASE [TEST5] SET  MULTI_USER 
+ALTER DATABASE [TEST5] SET  MULTI_USER
 GO
-ALTER DATABASE [TEST5] SET PAGE_VERIFY CHECKSUM  
+ALTER DATABASE [TEST5] SET PAGE_VERIFY CHECKSUM
 GO
-ALTER DATABASE [TEST5] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+ALTER DATABASE [TEST5] SET TARGET_RECOVERY_TIME = 60 SECONDS
 GO
-ALTER DATABASE [TEST5] SET DELAYED_DURABILITY = DISABLED 
+ALTER DATABASE [TEST5] SET DELAYED_DURABILITY = DISABLED
 GO
 USE [TEST5]
 GO
@@ -408,20 +408,20 @@ GO
 -- ...
 
 -- Przywróc daną bazę danę pod nową nazwą TEST5_2.
-	
+
 
 -- 9. Wykonaj pełną kopię zapasową bazy AdventureWorks2019(22) (lub AdventureWorksLT2019(22)).
--- Wykonaj kopię rożnicową 5 razy.  Sprawdzamy nagłówek backupu (RESTORE HEADERONLY): 
+-- Wykonaj kopię rożnicową 5 razy.  Sprawdzamy nagłówek backupu (RESTORE HEADERONLY):
 -- Kasujemy historię backupów EXEC msdb.dbo.sp_delete_database_backuphistory @database_name = 'AdventureWorksLT2019'
 -- Skasuj tą bazę i przywróc ponownie pod tą samą nazwą z pozycji 4 backupu (full + trzeci różnicowy).
 
 
--- 10. Zdefiniuj urządzenia lub zestaw plików backupów do tworzenia backupu równolegle na całym zestawie 
+-- 10. Zdefiniuj urządzenia lub zestaw plików backupów do tworzenia backupu równolegle na całym zestawie
 -- (zestaw trzech plików lub urządzeń). Następnie przetestuj integralność kopii zapasowych (RESTORE VERIFYONLY)
 USE master;
 GO
-BACKUP DATABASE [north] 
-TO  
+BACKUP DATABASE [north]
+TO
     DISK = N'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\Backup\NW_Striped_1.bak',
     DISK = N'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\Backup\NW_Striped_2.bak',
     DISK = N'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\Backup\NW_Striped_3.bak'
@@ -429,8 +429,8 @@ WITH FORMAT, INIT, NAME = N'Northwind-StripedBackup', STATS = 10;
 GO
 
 -- Test integralności (musi mieć dostęp do wszystkich 3 części na raz!)
-RESTORE VERIFYONLY 
-FROM 
+RESTORE VERIFYONLY
+FROM
     DISK = N'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\Backup\NW_Striped_1.bak',
     DISK = N'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\Backup\NW_Striped_2.bak',
     DISK = N'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\Backup\NW_Striped_3.bak';
@@ -445,29 +445,29 @@ GO
 USE master;
 GO
 DECLARE @startTime DATETIME = GETDATE();
-BACKUP DATABASE [Northwind] 
-TO DISK = N'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\Backup\NW_NoCompression.bak' 
+BACKUP DATABASE [Northwind]
+TO DISK = N'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\Backup\NW_NoCompression.bak'
 WITH INIT, NO_COMPRESSION;
 PRINT 'Czas bez kompresji: ' + CONVERT(varchar, GETDATE() - @startTime, 114);
 GO
 
 DECLARE @startTime DATETIME = GETDATE();
-BACKUP DATABASE [Northwind] 
-TO DISK = N'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\Backup\NW_Compression.bak' 
+BACKUP DATABASE [Northwind]
+TO DISK = N'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\Backup\NW_Compression.bak'
 WITH INIT, COMPRESSION;
 PRINT 'Czas z kompresją: ' + CONVERT(varchar, GETDATE() - @startTime, 114);
 GO
 
-SELECT 
-    physical_device_name, 
-    backup_size/1024/1024 AS [Size_MB], 
+SELECT
+    physical_device_name,
+    backup_size/1024/1024 AS [Size_MB],
     compressed_backup_size/1024/1024 AS [Compressed_Size_MB]
-FROM msdb.dbo.backupset b 
+FROM msdb.dbo.backupset b
 JOIN msdb.dbo.backupmediafamily m ON b.media_set_id = m.media_set_id
-WHERE database_name = 'Northwind' 
+WHERE database_name = 'Northwind'
 ORDER BY backup_finish_date DESC;
 
--- 12. Przywracanie usuniętej tabeli z wcześniej wykonanego backupu, która zawierała tą tabele. 
+-- 12. Przywracanie usuniętej tabeli z wcześniej wykonanego backupu, która zawierała tą tabele.
 -- Po usunięciu  wybranej tabeli z bazy danych, przywróć tą tabelę do danej struktury.
 
 BACKUP DATABASE [Northwind] TO DISK = N'C:\Temp\NW_Full.bak' WITH INIT;
@@ -479,7 +479,7 @@ GO
 
 -- Krok 3: Przywracamy backup jako nową bazę "Northwind_Rescue"
 USE [master];
-RESTORE DATABASE [Northwind_Rescue] 
+RESTORE DATABASE [Northwind_Rescue]
 FROM DISK = N'C:\Temp\NW_Full.bak'
 WITH MOVE 'Northwind' TO 'C:\Temp\nw_rescue.mdf',
      MOVE 'Northwind_log' TO 'C:\Temp\nw_rescue.ldf';
@@ -498,7 +498,7 @@ GO
 
 -- 13. Testowanie integralności kopii zapasowych:
 -- Zweryfikuj wszystkie pliki kopii zapasowych dla wybranej bazy danych.
-RESTORE VERIFYONLY 
+RESTORE VERIFYONLY
 FROM DISK = N'C:\Temp\NW_Full.bak';
 GO
 
@@ -510,42 +510,42 @@ DECLARE @path VARCHAR(256)
 DECLARE @fileName VARCHAR(256)
 DECLARE @fileDate VARCHAR(20)
 
-SET @path = 'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\Backup\' 
+SET @path = 'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\Backup\'
 
-DECLARE db_cursor CURSOR FOR  
-SELECT name 
-FROM master.dbo.sysdatabases 
+DECLARE db_cursor CURSOR FOR
+SELECT name
+FROM master.dbo.sysdatabases
 WHERE name NOT IN ('master','model','msdb','tempdb')
 
-OPEN db_cursor   
-FETCH NEXT FROM db_cursor INTO @name   
+OPEN db_cursor
+FETCH NEXT FROM db_cursor INTO @name
 
-WHILE @@FETCH_STATUS = 0   
-BEGIN   
+WHILE @@FETCH_STATUS = 0
+BEGIN
        SET @fileName = @path + 'AllDBs_Backup.bak'  -- Zapisujemy wszystko do jednego pliku (append)
-       
+
        BACKUP DATABASE @name TO DISK = @fileName WITH NOINIT, NAME = @name;
 
-       FETCH NEXT FROM db_cursor INTO @name   
-END   
+       FETCH NEXT FROM db_cursor INTO @name
+END
 
-CLOSE db_cursor   
+CLOSE db_cursor
 DEALLOCATE db_cursor
 
--- 15. Zdefiniuj bazę danych TEST6 z dwoma grupami plików PRIMARY i gr_INDEKS oraz tabelę test, która dane przechowuje w grupie PRIMATY, 
--- a dowolny indeks NONCLUSTRED na tej tabeli jest przechowywany w grupie gr_INDEKS. 
+-- 15. Zdefiniuj bazę danych TEST6 z dwoma grupami plików PRIMARY i gr_INDEKS oraz tabelę test, która dane przechowuje w grupie PRIMATY,
+-- a dowolny indeks NONCLUSTRED na tej tabeli jest przechowywany w grupie gr_INDEKS.
 -- Wykonaj backup bazy danych osobno grupy plików PRIMARY i za chwilę grupy plików gr_INDEKS.
--- Jaki jest tutaj problem? 
+-- Jaki jest tutaj problem?
 
 USE master;
 GO
 CREATE DATABASE [TEST6]
  CONTAINMENT = NONE
- ON  PRIMARY 
-( NAME = N'TEST6', FILENAME = N'C:\Temp\TEST6.mdf' ), 
- FILEGROUP [gr_INDEKS] 
+ ON  PRIMARY
+( NAME = N'TEST6', FILENAME = N'C:\Temp\TEST6.mdf' ),
+ FILEGROUP [gr_INDEKS]
 ( NAME = N'TEST6_Idx', FILENAME = N'C:\Temp\TEST6_Idx.ndf' )
- LOG ON 
+ LOG ON
 ( NAME = N'TEST6_log', FILENAME = N'C:\Temp\TEST6_log.ldf' );
 GO
 
@@ -557,11 +557,11 @@ INSERT INTO dbo.TestTable VALUES (1, 'Test');
 CREATE NONCLUSTERED INDEX [IX_TestTable_Dane] ON dbo.TestTable(Dane) ON [gr_INDEKS];
 GO
 
-BACKUP DATABASE [TEST6] FILEGROUP = 'PRIMARY' 
+BACKUP DATABASE [TEST6] FILEGROUP = 'PRIMARY'
 TO DISK = 'C:\Temp\TEST6_Pri.bak' WITH INIT;
 GO
 WAITFOR DELAY '00:00:05';
-BACKUP DATABASE [TEST6] FILEGROUP = 'gr_INDEKS' 
+BACKUP DATABASE [TEST6] FILEGROUP = 'gr_INDEKS'
 TO DISK = 'C:\Temp\TEST6_Idx.bak' WITH INIT;
 GO
 
@@ -577,11 +577,11 @@ GO
 EXEC sp_addumpdevice 'disk', 'MODEL_DEV', 'C:\Temp\MODEL_DEV.bak';
 GO
 
-BACKUP DATABASE [model] 
-TO MODEL_DEV 
-WITH FORMAT, 
-     MEDIANAME = 'MODEL', 
-     NAME = 'Backup1', 
+BACKUP DATABASE [model]
+TO MODEL_DEV
+WITH FORMAT,
+     MEDIANAME = 'MODEL',
+     NAME = 'Backup1',
      RETAINDAYS = 30;
 GO
 
@@ -594,7 +594,7 @@ GO
 
 
 
--- 17. Wykonaj Export Data-Tier Application dowolnej bazy i następnie przywróć ją pod nazwą EDTA 
+-- 17. Wykonaj Export Data-Tier Application dowolnej bazy i następnie przywróć ją pod nazwą EDTA
 -- i sprawdź co zawiera (nie jest to narzędzie o nazwie backup)
 -- (nie generujemy skryptu do tego zadania)
 

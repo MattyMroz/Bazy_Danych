@@ -328,7 +328,7 @@ Nie jest używana nigdzie. Można usunąć.
 
 **Dla projektu zaliczeniowego:** Zostaw jak jest, ale dodaj komentarz w dokumentacji:
 
-> "System zawiera rozszerzoną funkcjonalność heurystycznego planowania lekcji, 
+> "System zawiera rozszerzoną funkcjonalność heurystycznego planowania lekcji,
 > która wykracza poza minimalne wymagania projektu i stanowi wartość dodaną."
 
 To zamienia "nadmiarowy kod" w "feature" 😉

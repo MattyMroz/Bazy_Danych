@@ -40,7 +40,7 @@ WHERE ename LIKE 'S_I%';
 
 -- Zadanie 6: Zarobki z prowizją od początku roku
 -- Roczne zarobki = (pensja * 12) + (prowizja * 12)
-SELECT 
+SELECT
   ename,
   sal,
   comm,
@@ -68,9 +68,9 @@ FROM dual;
 
 -- Zadanie 11: Ile dni pozostało do Twoich urodzin?
 -- Obsługa przypadku: urodziny już były w tym roku vs jeszcze będą
-SELECT 
-  CASE 
-    WHEN TO_DATE(TO_CHAR(SYSDATE, 'YYYY') || '-01-15', 'YYYY-MM-DD') >= SYSDATE 
+SELECT
+  CASE
+    WHEN TO_DATE(TO_CHAR(SYSDATE, 'YYYY') || '-01-15', 'YYYY-MM-DD') >= SYSDATE
     THEN TO_DATE(TO_CHAR(SYSDATE, 'YYYY') || '-01-15', 'YYYY-MM-DD') - SYSDATE
     ELSE TO_DATE(TO_CHAR(SYSDATE + 365, 'YYYY') || '-01-15', 'YYYY-MM-DD') - SYSDATE
   END AS dni_do_urodzin
@@ -84,10 +84,10 @@ FROM dual;
 -- ---------------------------------------------------------------------------
 -- Pytanie 1: CASE dla kategoryzacji pensji
 -- ---------------------------------------------------------------------------
-SELECT 
+SELECT
   ename,
   sal,
-  CASE 
+  CASE
     WHEN sal < 1000 THEN 'Niska pensja'
     WHEN sal BETWEEN 1000 AND 2000 THEN 'Średnia pensja'
     WHEN sal > 2000 THEN 'Wysoka pensja'
@@ -129,12 +129,12 @@ FROM emp;
 
 -- NULL na początku
 SELECT ename, comm
-FROM emp 
+FROM emp
 ORDER BY comm NULLS FIRST;
 
 -- NULL na końcu (domyślnie dla ASC)
 SELECT ename, comm
-FROM emp 
+FROM emp
 ORDER BY comm NULLS LAST;
 
 
@@ -143,8 +143,8 @@ ORDER BY comm NULLS LAST;
 -- ---------------------------------------------------------------------------
 
 -- Nazwa użytkownika i jego ID
-SELECT 
-  USER AS nazwa_uzytkownika, 
+SELECT
+  USER AS nazwa_uzytkownika,
   UID AS id_uzytkownika
 FROM dual;
 
@@ -162,7 +162,7 @@ SELECT TO_DATE('01-30-2017', 'MM-DD-YYYY') AS data_z_tekstu
 FROM dual;
 
 -- Użycie podczas INSERT (przykład)
--- INSERT INTO emp (empno, ename, hiredate) 
+-- INSERT INTO emp (empno, ename, hiredate)
 -- VALUES (9999, 'TEST', TO_DATE('01-30-2017', 'MM-DD-YYYY'));
 
 
@@ -171,7 +171,7 @@ FROM dual;
 -- ---------------------------------------------------------------------------
 
 -- Różnica między dwiema datami w dniach, godzinach, minutach, sekundach
-SELECT 
+SELECT
   SYSDATE - TO_DATE('2024-01-01', 'YYYY-MM-DD') AS roznica_dni,
   (SYSDATE - TO_DATE('2024-01-01', 'YYYY-MM-DD')) * 24 AS roznica_godzin,
   (SYSDATE - TO_DATE('2024-01-01', 'YYYY-MM-DD')) * 24 * 60 AS roznica_minut
@@ -183,7 +183,7 @@ FROM dual;
 -- ---------------------------------------------------------------------------
 
 -- Pełne miesiące między najwcześniejszym a najpóźniejszym zatrudnieniem
-SELECT 
+SELECT
   MIN(hiredate) AS pierwsze_zatrudnienie,
   MAX(hiredate) AS ostatnie_zatrudnienie,
   TRUNC(MONTHS_BETWEEN(MAX(hiredate), MIN(hiredate))) AS pelne_miesiace
@@ -195,7 +195,7 @@ FROM emp;
 -- ---------------------------------------------------------------------------
 
 -- Ostatni dzień bieżącego miesiąca
-SELECT 
+SELECT
   SYSDATE AS dzisiaj,
   LAST_DAY(SYSDATE) AS ostatni_dzien_miesiaca
 FROM dual;
@@ -206,7 +206,7 @@ FROM dual;
 -- ---------------------------------------------------------------------------
 
 -- Liczba dni w lutym 2020 (rok przestępny = 29 dni)
-SELECT 
+SELECT
   TO_CHAR(LAST_DAY(TO_DATE('2020-02-01', 'YYYY-MM-DD')), 'DD') AS dni_w_lutym_2020
 FROM dual;
 
@@ -219,7 +219,7 @@ FROM dual;
 ALTER SESSION SET NLS_LANGUAGE = 'POLISH';
 
 -- Dzień tygodnia Sylwestra w bieżącym roku
-SELECT 
+SELECT
   TO_CHAR(TO_DATE('31-12-' || TO_CHAR(SYSDATE, 'YYYY'), 'DD-MM-YYYY'), 'DAY') AS dzien_sylwestra,
   TO_CHAR(TO_DATE('31-12-' || TO_CHAR(SYSDATE, 'YYYY'), 'DD-MM-YYYY'), 'Day') AS dzien_sylwestra_kapitalizacja
 FROM dual;
@@ -233,7 +233,7 @@ FROM dual;
 -- ---------------------------------------------------------------------------
 
 -- Dodanie 3 miesięcy (uwzględnia różną liczbę dni w miesiącach)
-SELECT 
+SELECT
   SYSDATE AS dzisiaj,
   ADD_MONTHS(SYSDATE, 3) AS data_plus_3_miesiace
 FROM dual;
@@ -244,7 +244,7 @@ FROM dual;
 -- ---------------------------------------------------------------------------
 
 -- Operacje arytmetyczne na datach
-SELECT 
+SELECT
   SYSDATE AS dzisiaj,
   SYSDATE + 3 - (1/24) AS data_zmieniona
 FROM dual;
@@ -255,7 +255,7 @@ FROM dual;
 -- ---------------------------------------------------------------------------
 
 -- Średni zarobek: ROUND, TRUNC, TO_CHAR
-SELECT 
+SELECT
   ROUND(AVG(sal), 2) AS srednia_round,
   TRUNC(AVG(sal), 2) AS srednia_trunc,
   TO_CHAR(AVG(sal), '9999.99') AS srednia_formatted,
@@ -289,7 +289,7 @@ WHERE d.dname = 'ACCOUNTING';
 -- ---------------------------------------------------------------------------
 
 -- Wariant A: ROLLUP - subtotale hierarchiczne
-SELECT 
+SELECT
   TO_CHAR(hiredate, 'YYYY') AS rok,
   TO_CHAR(hiredate, 'MM') AS miesiac,
   COUNT(*) AS liczba_zatrudnien
@@ -298,7 +298,7 @@ GROUP BY ROLLUP(TO_CHAR(hiredate, 'YYYY'), TO_CHAR(hiredate, 'MM'))
 ORDER BY rok, miesiac;
 
 -- Wariant B: CUBE - wszystkie możliwe kombinacje agregacji
-SELECT 
+SELECT
   TO_CHAR(hiredate, 'YYYY') AS rok,
   TO_CHAR(hiredate, 'MM') AS miesiac,
   COUNT(*) AS liczba_zatrudnien
@@ -308,14 +308,14 @@ ORDER BY rok, miesiac;
 
 -- Wariant C: Ręczna agregacja z UNION ALL (pokazuje co robi ROLLUP)
 SELECT TO_CHAR(hiredate, 'YYYY') AS rok, TO_CHAR(hiredate, 'MM') AS miesiac, COUNT(*) AS liczba
-FROM emp 
+FROM emp
 GROUP BY TO_CHAR(hiredate, 'YYYY'), TO_CHAR(hiredate, 'MM')
 UNION ALL
-SELECT TO_CHAR(hiredate, 'YYYY'), NULL, COUNT(*) 
-FROM emp 
+SELECT TO_CHAR(hiredate, 'YYYY'), NULL, COUNT(*)
+FROM emp
 GROUP BY TO_CHAR(hiredate, 'YYYY')
 UNION ALL
-SELECT NULL, NULL, COUNT(*) 
+SELECT NULL, NULL, COUNT(*)
 FROM emp
 ORDER BY rok, miesiac;
 
@@ -346,7 +346,7 @@ SELECT job FROM emp WHERE deptno = 20;
 -- ---------------------------------------------------------------------------
 
 -- Pivot danych: lata w wierszach, miesiące w kolumnach
-SELECT 
+SELECT
   TO_CHAR(hiredate, 'YYYY') AS rok,
   COUNT(DECODE(TO_CHAR(hiredate, 'MM'), '01', 1)) AS STY,
   COUNT(DECODE(TO_CHAR(hiredate, 'MM'), '02', 1)) AS LUT,
@@ -367,14 +367,14 @@ ORDER BY rok;
 -- Alternatywa: użycie PIVOT (Oracle 11g+)
 SELECT *
 FROM (
-  SELECT 
+  SELECT
     TO_CHAR(hiredate, 'YYYY') AS rok,
     TO_CHAR(hiredate, 'MM') AS miesiac
   FROM emp
 )
 PIVOT (
   COUNT(*)
-  FOR miesiac IN ('01' AS STY, '02' AS LUT, '03' AS MAR, '04' AS KWI, 
+  FOR miesiac IN ('01' AS STY, '02' AS LUT, '03' AS MAR, '04' AS KWI,
                   '05' AS MAJ, '06' AS CZE, '07' AS LIP, '08' AS SIE,
                   '09' AS WRZ, '10' AS PAZ, '11' AS LIS, '12' AS GRU)
 )
@@ -386,7 +386,7 @@ ORDER BY rok;
 -- ---------------------------------------------------------------------------
 
 -- NATURAL JOIN - automatycznie łączy po kolumnach o tej samej nazwie (deptno)
-SELECT 
+SELECT
   d.dname,
   ROUND(AVG(e.sal), 2) AS srednia_pensja
 FROM emp e
@@ -399,7 +399,7 @@ GROUP BY d.dname;
 -- ---------------------------------------------------------------------------
 
 -- Max zarobki na stanowiskach, wykluczając CLERK
-SELECT 
+SELECT
   job,
   MAX(sal) AS max_sal
 FROM emp
@@ -413,7 +413,7 @@ ORDER BY max_sal DESC;
 -- ---------------------------------------------------------------------------
 
 -- Min pensje w podziale na departament i stanowisko
-SELECT 
+SELECT
   d.dname,
   e.job,
   MIN(e.sal) AS min_sal
@@ -428,7 +428,7 @@ ORDER BY d.dname, e.job;
 -- ---------------------------------------------------------------------------
 
 -- Średnie zarobki w każdym departamencie
-SELECT 
+SELECT
   d.dname,
   ROUND(AVG(e.sal), 2) AS srednia_pensja
 FROM emp e
@@ -442,7 +442,7 @@ ORDER BY srednia_pensja DESC;
 -- ---------------------------------------------------------------------------
 
 -- Grupy zawodowe z maksymalną pensją > 2000
-SELECT 
+SELECT
   job,
   ROUND(AVG(sal), 2) AS srednia,
   MAX(sal) AS maksymalna
@@ -457,7 +457,7 @@ ORDER BY srednia DESC;
 -- ---------------------------------------------------------------------------
 
 -- Rozpiętość pensji w każdym departamencie
-SELECT 
+SELECT
   d.dname,
   MIN(e.sal) AS min_pensja,
   MAX(e.sal) AS max_pensja,
@@ -473,7 +473,7 @@ ORDER BY roznica_pensji DESC;
 -- ---------------------------------------------------------------------------
 
 -- Self-join: porównanie pensji pracownik vs jego manager
-SELECT 
+SELECT
   e.ename AS pracownik,
   e.sal AS pensja_pracownika,
   m.ename AS kierownik,
@@ -504,9 +504,9 @@ WHERE ROWNUM <= 3;
 -- ---------------------------------------------------------------------------
 
 -- Wyświetlenie pensji pracownika wraz z maksymalną pensją w firmie
-SELECT 
-  ename, 
-  sal, 
+SELECT
+  ename,
+  sal,
   (SELECT MAX(sal) FROM emp) AS max_salary,
   sal - (SELECT MAX(sal) FROM emp) AS roznica_od_max
 FROM emp;
@@ -556,7 +556,7 @@ ORDER BY ename;
 -- ---------------------------------------------------------------------------
 
 -- Przygotowanie danych (INSERT z polskimi znakami)
-INSERT INTO emp (empno, ename, deptno, sal, hiredate, job) 
+INSERT INTO emp (empno, ename, deptno, sal, hiredate, job)
 VALUES (101, 'Łukasiński', 10, 2850, TO_DATE('01-30-2014', 'MM-DD-YYYY'), 'ANALYST');
 COMMIT;
 
@@ -564,8 +564,8 @@ COMMIT;
 SELECT e.ename, e.sal, e.deptno
 FROM emp e
 WHERE e.sal IN (
-  SELECT MAX(sal) 
-  FROM emp 
+  SELECT MAX(sal)
+  FROM emp
   GROUP BY deptno
 )
 ORDER BY e.deptno;
@@ -574,8 +574,8 @@ ORDER BY e.deptno;
 SELECT e.ename, e.sal, e.deptno
 FROM emp e
 WHERE e.sal = (
-  SELECT MAX(sal) 
-  FROM emp e2 
+  SELECT MAX(sal)
+  FROM emp e2
   WHERE e2.deptno = e.deptno
 )
 ORDER BY e.deptno;
@@ -583,9 +583,9 @@ ORDER BY e.deptno;
 -- Wariant C: Analytic function (najbardziej wydajne)
 SELECT ename, sal, deptno
 FROM (
-  SELECT 
-    ename, 
-    sal, 
+  SELECT
+    ename,
+    sal,
     deptno,
     RANK() OVER (PARTITION BY deptno ORDER BY sal DESC) AS rn
   FROM emp
@@ -633,14 +633,14 @@ ORDER BY sal;
 -- ---------------------------------------------------------------------------
 
 -- Zawody z wyższą średnią pensją niż MANAGER
-SELECT 
-  job, 
+SELECT
+  job,
   ROUND(AVG(sal), 2) AS srednia
 FROM emp
 GROUP BY job
 HAVING AVG(sal) > (
-  SELECT AVG(sal) 
-  FROM emp 
+  SELECT AVG(sal)
+  FROM emp
   WHERE job = 'MANAGER'
 )
 ORDER BY srednia DESC;
@@ -651,14 +651,14 @@ ORDER BY srednia DESC;
 -- ---------------------------------------------------------------------------
 
 -- Stanowisko o najniższej średniej (podzapytanie w HAVING)
-SELECT 
-  job, 
+SELECT
+  job,
   ROUND(AVG(sal), 2) AS srednia
 FROM emp
 GROUP BY job
 HAVING AVG(sal) = (
-  SELECT MIN(AVG(sal)) 
-  FROM emp 
+  SELECT MIN(AVG(sal))
+  FROM emp
   GROUP BY job
 );
 
@@ -668,15 +668,15 @@ HAVING AVG(sal) = (
 -- ---------------------------------------------------------------------------
 
 -- Podzapytanie skorelowane: średnia liczona osobno dla każdego zawodu
-SELECT 
-  e.ename, 
-  e.job, 
+SELECT
+  e.ename,
+  e.job,
   e.sal,
   (SELECT ROUND(AVG(sal), 2) FROM emp e2 WHERE e2.job = e.job) AS srednia_w_zawodzie
 FROM emp e
 WHERE e.sal < (
-  SELECT AVG(sal) 
-  FROM emp e2 
+  SELECT AVG(sal)
+  FROM emp e2
   WHERE e2.job = e.job
 )
 ORDER BY e.job, e.sal;
@@ -687,20 +687,20 @@ ORDER BY e.job, e.sal;
 -- ---------------------------------------------------------------------------
 
 -- EXISTS: sprawdza czy podzapytanie zwraca jakiekolwiek wiersze
-SELECT 
-  m.ename AS manager, 
+SELECT
+  m.ename AS manager,
   m.job,
   m.empno
 FROM emp m
 WHERE EXISTS (
-  SELECT 1 
-  FROM emp e 
+  SELECT 1
+  FROM emp e
   WHERE e.mgr = m.empno
 )
 ORDER BY m.ename;
 
 -- Alternatywa: DISTINCT + JOIN (mniej wydajne)
-SELECT DISTINCT 
+SELECT DISTINCT
   m.ename AS manager,
   m.job
 FROM emp e
@@ -716,8 +716,8 @@ ORDER BY m.ename;
 SELECT d.dname, d.deptno
 FROM dept d
 WHERE NOT EXISTS (
-  SELECT 1 
-  FROM emp e 
+  SELECT 1
+  FROM emp e
   WHERE e.deptno = d.deptno
 );
 
@@ -731,8 +731,8 @@ WHERE e.empno IS NULL;
 SELECT dname, deptno
 FROM dept
 WHERE deptno NOT IN (
-  SELECT DISTINCT deptno 
-  FROM emp 
+  SELECT DISTINCT deptno
+  FROM emp
   WHERE deptno IS NOT NULL
 );
 
@@ -745,7 +745,7 @@ WHERE deptno NOT IN (
 -- PRZYKŁAD: Running Total (bieżąca suma) z analytic functions
 -- ---------------------------------------------------------------------------
 
-SELECT 
+SELECT
   ename,
   hiredate,
   sal,
@@ -758,7 +758,7 @@ ORDER BY hiredate;
 -- PRZYKŁAD: Ranking pracowników wg pensji (ROW_NUMBER, RANK, DENSE_RANK)
 -- ---------------------------------------------------------------------------
 
-SELECT 
+SELECT
   ename,
   sal,
   ROW_NUMBER() OVER (ORDER BY sal DESC) AS row_num,
@@ -774,7 +774,7 @@ ORDER BY sal DESC;
 
 SELECT *
 FROM (
-  SELECT 
+  SELECT
     e.ename,
     e.sal,
     d.dname,
@@ -791,7 +791,7 @@ ORDER BY dname, rn;
 -- ---------------------------------------------------------------------------
 
 -- Struktura drzewiasta: pracownicy i ich managerowie
-SELECT 
+SELECT
   LEVEL AS poziom,
   LPAD(' ', (LEVEL - 1) * 2) || ename AS pracownik_hierarchia,
   job,
@@ -830,7 +830,7 @@ WHERE rnum >= 6;
 -- PRZYKŁAD: CTE (WITH clause) dla czytelności
 -- ---------------------------------------------------------------------------
 
-WITH 
+WITH
   dept_avg AS (
     SELECT deptno, AVG(sal) AS avg_sal
     FROM emp
@@ -841,7 +841,7 @@ WITH
     FROM emp e
     WHERE e.sal > (SELECT AVG(sal) FROM emp)
   )
-SELECT 
+SELECT
   h.ename,
   h.sal,
   d.avg_sal,

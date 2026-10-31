@@ -19,7 +19,7 @@ GROUP BY Nazwisko*/
 /*SELECT Nazwisko, SUM(Brutto) AS Razem, Ile
 FROM Osoby JOIN Zarobki
 ON Osoby.IdOsoby=Zarobki.IdOsoby
-JOIN 
+JOIN
 (SELECT IdOsoby, COUNT(IdNagrody) AS Ile
 FROM Nagrody GROUP BY IdOsoby
 ) AS LIczbaNagrod
@@ -32,13 +32,13 @@ FROM Osoby JOIN
 FROM Zarobki GROUP BY IdOsoby
 ) AS SumaWyplat
 ON Osoby.IdOsoby=SumaWyplat.IdOsoby
-JOIN 
+JOIN
 (SELECT IdOsoby, COUNT(IdNagrody) AS Ile
 FROM Nagrody GROUP BY IdOsoby
 ) AS LIczbaNagrod
 ON Osoby.IdOsoby=LIczbaNagrod.IdOsoby*/
 
-WITH 
+WITH
 SumaWyplat AS
 (SELECT IdOsoby, SUM(Brutto) AS Razem
 FROM Zarobki GROUP BY IdOsoby

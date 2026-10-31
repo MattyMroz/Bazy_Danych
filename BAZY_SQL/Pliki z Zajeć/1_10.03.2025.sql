@@ -18,7 +18,7 @@ select * from dane
 insert into dane values('jasio','kotek',34) -- zbyt mala ilosc miejsac (blad logiczny)
 
 -- musze stworzyc table od nowa
-create table dane1 --zwroc uwage na nazwe 
+create table dane1 --zwroc uwage na nazwe
 (imie varchar(20), -- definicja ilosci
 nazwisko varchar(20),
 wiek int
@@ -28,23 +28,23 @@ insert into dane1 values('jasio','kotek',34)
 
 select * from dane1
 
--- zwroc co sie stanie kiedy dodam dane kilkukrotnie 
+-- zwroc co sie stanie kiedy dodam dane kilkukrotnie
 
 --co sie stanie kiedy chce zwrocic wiesz czwarty
 
 select imie,nazwisko from dane1
 
--- nie moge tego uczynic gdyz dane tekstowe ktre posiadam w tabeli nie sa unikalne 
--- redunadancja danych nie jest bledem 
+-- nie moge tego uczynic gdyz dane tekstowe ktre posiadam w tabeli nie sa unikalne
+-- redunadancja danych nie jest bledem
 
---rowaiazanie dodaj kolumne ktora bedzie unikalna 
+--rowaiazanie dodaj kolumne ktora bedzie unikalna
 -- zazwyczaj taka kolumna jest typu numerycznego
 
 alter table dane1
 add id int
 
 select * from dane1
--- co sie stanie kiedy zmienie kolejnosc lub ilosc 
+-- co sie stanie kiedy zmienie kolejnosc lub ilosc
 insert into dane values('kotek',34)
 insert into dane values(34,'kotek',34)
 insert into dane values('jasio','34',34)
@@ -63,7 +63,7 @@ select * from dane1
 
 create table dane2
 (id int,
-imie varchar(20), 
+imie varchar(20),
 nazwisko varchar(20),
 wiek int
 )
@@ -79,7 +79,7 @@ select id,imie,nazwisko from dane2
 
 create table dane3
 (id int identity(1,1),
-imie varchar(20), 
+imie varchar(20),
 nazwisko varchar(20),
 wiek int
 )

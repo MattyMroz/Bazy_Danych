@@ -1,9 +1,9 @@
-﻿---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
 -- Wszystkie polecenia szukamy w narzędziu SSMS - SQL Server Management Studio --
 -- Jeśli jest możliwość generujemy kod bezpośrednio z SSMS. ---------------------
 ---------------------------------------------------------------------------------
 
--- Proszę zwrócić uwagę na polecenia, gdzie znajduje się ścieżka dostępu, 
+-- Proszę zwrócić uwagę na polecenia, gdzie znajduje się ścieżka dostępu,
 -- każdy może mieć inną i mogą pojawić się błędy w tym miejscu
 -- Można ścieżkę sprawdzić poleceniem i wstawić wynik w odpowiednie miejsce
 -- lub zdefiniować skrypt, który zrobi to za nas:
@@ -15,10 +15,10 @@ FROM master.dbo.sysaltfiles WHERE dbid = 1 AND fileid = 1
 ---------------------------------------
 
 -- Tworzymy bazę danych TEST.
--- Definiujemy nową grupę plików dane_hist, w której dołączamy dwa pliki hist01 oraz hist02, 
+-- Definiujemy nową grupę plików dane_hist, w której dołączamy dwa pliki hist01 oraz hist02,
 -- po 100MB każdy z rozrostem bazy danych o 50MB
--- Plik dziennika transakcji ustawiamy na wzrost wartości o 50MB 
--- (baza w trybie Recovery model jako FULL)  
+-- Plik dziennika transakcji ustawiamy na wzrost wartości o 50MB
+-- (baza w trybie Recovery model jako FULL)
 
 USE master
 GO
@@ -38,8 +38,8 @@ GO
 ALTER DATABASE [test] MODIFY FILE ( NAME = N'test_log', MAXSIZE = UNLIMITED, FILEGROWTH = 51200KB )
 GO
 
--- wypełniamy tabelę przykładowymi danymi (nie jest to generator) 
--- Może to potrwać kilka minut 
+-- wypełniamy tabelę przykładowymi danymi (nie jest to generator)
+-- Może to potrwać kilka minut
 -- (baza orientacyjnie będzie miała 716 MB z czego 358 MB dane i 358 MB dziennik transakcji)
 -- Po zakończeniu transakcji w SSMS stajemy na bazie TEST i pod prawym przycikiem myszy wybieramy
 -- Reports | Standard Reports | Disk Usage w celu graficznej reprezentacji wykorzystania dysku
@@ -71,7 +71,7 @@ GO
 	--GO 19
 
 -- Sprawdzenie liczby wstawionych rekordów
-SELECT count(*) FROM dbo.x;   
+SELECT count(*) FROM dbo.x;
 GO
 -- sprawdzamy zawartość plików
 USE TEST
@@ -103,7 +103,7 @@ GO
 -- 4. Ustawić bazę w trybie OFFline a następnie przywrócić do normalnej pracy
 
 
--- 5. Przeanalizować bazy AdventureWorks i  AdvantureWorksLT (AdventureWorksDW to hurtownia bazy danych)  
+-- 5. Przeanalizować bazy AdventureWorks i  AdvantureWorksLT (AdventureWorksDW to hurtownia bazy danych)
 -- Należy pamiętać aby ustawić użytkownika sa jako właściciela całej bazy danych (nie musi to być ustawione)
 
 
@@ -111,7 +111,7 @@ GO
 -- Callation --
 ---------------
 -- Sprawdzić czy widać znaki polskie i kiedy?
-CREATE DATABASE TEST1 COLLATE ARABIC_CI_AS;	
+CREATE DATABASE TEST1 COLLATE ARABIC_CI_AS;
 GO
 USE TEST1;
 GO
@@ -139,17 +139,17 @@ CREATE TABLE dbo.TestCharacter
   CSData varchar(10) COLLATE French_CS_AS	-- case sensitive
 );
 GO
-INSERT INTO TestCharacter (Data,DataPL,CIData,CSData) 
+INSERT INTO TestCharacter (Data,DataPL,CIData,CSData)
 	VALUES (N'Łódź',N'ŁÓDŹ',N'русский',N'passé');
-INSERT INTO TestCharacter (Data,DataPL,CIData,CSData) 
+INSERT INTO TestCharacter (Data,DataPL,CIData,CSData)
 	VALUES (N'русский',N'русский',N'русский',N'русский');
-	--Mimo ustawienia dla bazy danych i dla konkretnych kolumn możemy 
+	--Mimo ustawienia dla bazy danych i dla konkretnych kolumn możemy
 	--w zapytaniu odnieść się do odpowiedniego sposobu porównywania i sortowania danych.
 select * from TestCharacter order by CSData collate Polish_CS_AS;
 	--Poleceniami poniżej można skopiować inne znaki jak polskie
 	SET LANGUAGE RUSSIAN
 	SET LANGUAGE French
-	SET LANGUAGE POLISH 
+	SET LANGUAGE POLISH
 
 --Przykłady do wykonania różnego COLLATION z rozróżnieniem małych i dużych znaków
 GO
@@ -161,28 +161,28 @@ CREATE TABLE dbo.TestCharacter1
   CSData varchar(10) COLLATE POLISH_CS_AS	-- case sensitive
 );
 GO
-INSERT INTO dbo.TestCharacter1 (CIData,CSData) VALUES ('Test Data','Test Data');			
-INSERT INTO dbo.TestCharacter1 (CIData,CSData) VALUES (N'Łódź',N'Łódź');	
+INSERT INTO dbo.TestCharacter1 (CIData,CSData) VALUES ('Test Data','Test Data');
+INSERT INTO dbo.TestCharacter1 (CIData,CSData) VALUES (N'Łódź',N'Łódź');
 GO
 SELECT * FROM TestCharacter1
 
 -- Zapytanie do kolumny Case InSensitive
-SELECT * FROM dbo.TestCharacter1 
+SELECT * FROM dbo.TestCharacter1
 	WHERE CIData = 'test data'; -- wszystkie małe litery w klauzuli WHERE
 
 -- Zapytanie do kolumny Case Sensitive
-SELECT * FROM dbo.TestCharacter1 
+SELECT * FROM dbo.TestCharacter1
 	WHERE CSData = 'test data'; -- brak zwracanych rekordów!
 
 -- Zapytania z rozróżnianiem wielkości liter
 SELECT * FROM dbo.TestCharacter1
-	WHERE CSData = 'test data' COLLATE Polish_CI_AS;	
+	WHERE CSData = 'test data' COLLATE Polish_CI_AS;
 
 -- Wymuszenie porównywania bez względu na wielkość liter mimo porównywania kolumny z ustawieniem CS
--- Wykonać zapytanie, które porównuje dwie kolumny, które mają różne ustawienia COLLATE. 
+-- Wykonać zapytanie, które porównuje dwie kolumny, które mają różne ustawienia COLLATE.
 -- Nie powiedzie się to, ponieważ konfliktu collation nie można rozwiązać.
 
-SELECT * FROM dbo.TestCharacter1	
+SELECT * FROM dbo.TestCharacter1
 	WHERE CIData = CSData;
 -- Msg 468, Level 16, State 9, Line 170
 -- Cannot resolve the collation conflict between "Polish_CS_AS" and "Polish_CI_AS" in the equal to operation.
@@ -196,7 +196,7 @@ SELECT * FROM dbo.TestCharacter1
 WHERE CIData = CSData COLLATE Polish_CI_AS;
 
 -- Dodajemy sortowanie w danym języku
-SELECT * FROM dbo.TestCharacter1 
+SELECT * FROM dbo.TestCharacter1
 	where CSData = 'test Data' COLLATE Polish_CS_AS
 	order by CIData collate Polish_CI_AS;
 
@@ -291,51 +291,51 @@ GO
 
 
 -- Dodanie pliku do test1fg
-ALTER DATABASE [TEST] 
-ADD FILE ( 
-    NAME = N'test1_data', 
-    FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\test1_data.ndf' , 
-    SIZE = 102400KB , 
-    FILEGROWTH = 51200KB 
+ALTER DATABASE [TEST]
+ADD FILE (
+    NAME = N'test1_data',
+    FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\test1_data.ndf' ,
+    SIZE = 102400KB ,
+    FILEGROWTH = 51200KB
 ) TO FILEGROUP [test1fg]
 GO
 
 -- Dodanie pliku do test2fg
-ALTER DATABASE [TEST] 
-ADD FILE ( 
-    NAME = N'test2_data', 
-    FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\test2_data.ndf' , 
-    SIZE = 102400KB , 
-    FILEGROWTH = 51200KB 
+ALTER DATABASE [TEST]
+ADD FILE (
+    NAME = N'test2_data',
+    FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\test2_data.ndf' ,
+    SIZE = 102400KB ,
+    FILEGROWTH = 51200KB
 ) TO FILEGROUP [test2fg]
 GO
 
 -- Dodanie pliku do test3fg
-ALTER DATABASE [TEST] 
-ADD FILE ( 
-    NAME = N'test3_data', 
-    FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\test3_data.ndf' , 
-    SIZE = 102400KB , 
-    FILEGROWTH = 51200KB 
+ALTER DATABASE [TEST]
+ADD FILE (
+    NAME = N'test3_data',
+    FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\test3_data.ndf' ,
+    SIZE = 102400KB ,
+    FILEGROWTH = 51200KB
 ) TO FILEGROUP [test3fg]
 GO
 
 -- Dodanie pliku do test4fg
-ALTER DATABASE [TEST] 
-ADD FILE ( 
-    NAME = N'test4_data', 
-    FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\test4_data.ndf' , 
-    SIZE = 102400KB , 
-    FILEGROWTH = 51200KB 
+ALTER DATABASE [TEST]
+ADD FILE (
+    NAME = N'test4_data',
+    FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\test4_data.ndf' ,
+    SIZE = 102400KB ,
+    FILEGROWTH = 51200KB
 ) TO FILEGROUP [test4fg]
 GO
 
 -- Weryfikacja, czy pliki zostały dodane
 USE TEST
 GO
-SELECT 
-    name, 
-    type_desc, 
+SELECT
+    name,
+    type_desc,
     file_group_name = (SELECT name FROM sys.filegroups WHERE data_space_id = f.data_space_id)
 FROM sys.database_files f
 WHERE f.data_space_id IN (SELECT data_space_id FROM sys.filegroups WHERE name IN ('test1fg', 'test2fg', 'test3fg', 'test4fg'));
@@ -354,12 +354,12 @@ GO 1000
 ALTER DATABASE TEST ADD FILEGROUP test5fg;
 GO
 
-ALTER DATABASE [TEST] 
-ADD FILE ( 
-    NAME = N'test5_data', 
-    FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\test5_data.ndf' , 
-    SIZE = 102400KB , 
-    FILEGROWTH = 51200KB 
+ALTER DATABASE [TEST]
+ADD FILE (
+    NAME = N'test5_data',
+    FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\test5_data.ndf' ,
+    SIZE = 102400KB ,
+    FILEGROWTH = 51200KB
 ) TO FILEGROUP [test5fg]
 GO
 
@@ -368,9 +368,9 @@ NEXT USED test5fg;
 
 /* składnia polecenia funkcji partycjonującej
 ALTER PARTITION FUNCTION partition_function_name()
-{ 
+{
     SPLIT RANGE ( boundary_value )
-  | MERGE RANGE ( boundary_value ) 
+  | MERGE RANGE ( boundary_value )
 } [ ; ]
 */
 
@@ -378,13 +378,13 @@ ALTER PARTITION FUNCTION myRangePF1()
 SPLIT RANGE (500);
 GO
 
--- 10.Połącz grupy partycji MERGE wyrzucając wartość 1 
+-- 10.Połącz grupy partycji MERGE wyrzucając wartość 1
 ALTER PARTITION FUNCTION myRangePF1()
 MERGE RANGE (1);
 
 
 -- 11.Zdefiniowac tabelę z typem binarnym FILESTRAM i wstawić tam kilka plików ze zdjęciami
--- można wykorzystać przykłady z wykładu 
+-- można wykorzystać przykłady z wykładu
 -- open row set
 
 USE TEST
@@ -407,7 +407,7 @@ GO
 
 
 INSERT INTO dbo.FilestreamTable (FileName, FileData)
-SELECT 
+SELECT
     'zdjecie1.jpg',
 FROM OPENROWSET(BULK N'C:\Temp\FilestreamTest\zdjecie1.jpg', SINGLE_BLOB) AS FileData;
 GO
@@ -415,8 +415,6 @@ GO
 
 
 
--- 12.Zdefiniować tabelę z polem z typem date lub datetime, gdzie funkcja partycjonująca będzie związana z pełnymi latami od początku stycznia do końca grudnia 
+-- 12.Zdefiniować tabelę z polem z typem date lub datetime, gdzie funkcja partycjonująca będzie związana z pełnymi latami od początku stycznia do końca grudnia
 -- (granice w funkcji partycji to lata 2022,2023,2024)
 -- Wstawić przykładowe dane i sprawdzić dla danej bazy wykorzystanie dysku przez partycje - Raports | Standard Reports | Disk Usage by Partition
-
-

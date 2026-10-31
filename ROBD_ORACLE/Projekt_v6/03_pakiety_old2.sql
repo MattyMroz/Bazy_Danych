@@ -412,7 +412,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_OSOBY AS
         IF p_instrumenty IS NOT NULL AND p_instrumenty.COUNT > 0 THEN
             FOR i IN 1..p_instrumenty.COUNT LOOP
                 IF NOT PKG_SLOWNIKI.czy_instrument_istnieje(p_instrumenty(i)) THEN
-                    RAISE_APPLICATION_ERROR(-20030, 
+                    RAISE_APPLICATION_ERROR(-20030,
                         'Instrument "' || p_instrumenty(i) || '" nie istnieje w slowniku.');
                 END IF;
             END LOOP;
@@ -693,7 +693,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_OSOBY AS
 
         IF v_instrumenty IS NULL OR v_instrumenty.COUNT = 0 THEN
             OPEN v_cursor FOR
-                SELECT NULL AS id_ucznia, NULL AS imie, NULL AS nazwisko, 
+                SELECT NULL AS id_ucznia, NULL AS imie, NULL AS nazwisko,
                        NULL AS instrument, NULL AS grupa, NULL AS klasa
                 FROM DUAL WHERE 1=0;
             RETURN v_cursor;
@@ -908,7 +908,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
 
         IF v_koniec_min > 21 * 60 THEN
             RAISE_APPLICATION_ERROR(-20107,
-                'Lekcja nie moze konczyc sie pozniej niz o 21:00. Zakonczenie: ' || 
+                'Lekcja nie moze konczyc sie pozniej niz o 21:00. Zakonczenie: ' ||
                 LPAD(TRUNC(v_koniec_min/60), 2, '0') || ':' || LPAD(MOD(v_koniec_min, 60), 2, '0'));
         END IF;
     END;
@@ -917,7 +917,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
         v_dzien NUMBER;
     BEGIN
         v_dzien := TO_NUMBER(TO_CHAR(p_data, 'D'));
-        
+
         -- W zaleznosci od NLS_TERRITORY dzien moze byc rozny
         -- Sprawdzamy nazwe dnia
         IF TO_CHAR(p_data, 'DY', 'NLS_DATE_LANGUAGE=ENGLISH') IN ('SAT', 'SUN') THEN
@@ -1035,7 +1035,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
         v_przedmiot_nazwa VARCHAR2(100);
     BEGIN
         v_wymagane := PKG_SLOWNIKI.get_wymagane_wyposazenie(p_id_przedmiotu);
-        
+
         IF v_wymagane IS NULL OR v_wymagane.COUNT = 0 THEN
             RETURN; -- Brak wymagan
         END IF;
@@ -1127,9 +1127,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
         v_instrument_ucznia := PKG_OSOBY.get_instrument_ucznia(p_id_ucznia);
 
         IF UPPER(v_instrument_ucznia) != UPPER(p_przedmiot_nazwa) THEN
-            SELECT imie, nazwisko INTO v_imie, v_nazwisko 
+            SELECT imie, nazwisko INTO v_imie, v_nazwisko
             FROM UCZNIOWIE WHERE id_ucznia = p_id_ucznia;
-            
+
             RAISE_APPLICATION_ERROR(-20110,
                 'Uczen ' || v_imie || ' ' || v_nazwisko ||
                 ' gra na instrumencie ' || v_instrument_ucznia ||
@@ -1193,7 +1193,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
 
         -- INSERT
         INSERT INTO LEKCJE (
-            id_lekcji, ref_przedmiot, ref_nauczyciel, ref_sala, 
+            id_lekcji, ref_przedmiot, ref_nauczyciel, ref_sala,
             ref_uczen, ref_grupa, data_lekcji, godzina_start,
             czas_trwania_min, typ_lekcji, status, komisja
         ) VALUES (
@@ -1210,9 +1210,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
             'zaplanowana',
             NULL
         );
-        
+
         COMMIT;
-        DBMS_OUTPUT.PUT_LINE('Dodano lekcje indywidualna: ' || p_przedmiot || ' dla ' || 
+        DBMS_OUTPUT.PUT_LINE('Dodano lekcje indywidualna: ' || p_przedmiot || ' dla ' ||
                              p_uczen_imie || ' ' || p_uczen_nazwisko);
     END;
 
@@ -1261,7 +1261,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
 
         -- INSERT
         INSERT INTO LEKCJE (
-            id_lekcji, ref_przedmiot, ref_nauczyciel, ref_sala, 
+            id_lekcji, ref_przedmiot, ref_nauczyciel, ref_sala,
             ref_uczen, ref_grupa, data_lekcji, godzina_start,
             czas_trwania_min, typ_lekcji, status, komisja
         ) VALUES (
@@ -1278,7 +1278,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
             'zaplanowana',
             NULL
         );
-        
+
         COMMIT;
         DBMS_OUTPUT.PUT_LINE('Dodano lekcje grupowa: ' || p_przedmiot || ' dla grupy ' || p_grupa_kod);
     END;
@@ -1346,7 +1346,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
 
         -- INSERT
         INSERT INTO LEKCJE (
-            id_lekcji, ref_przedmiot, ref_nauczyciel, ref_sala, 
+            id_lekcji, ref_przedmiot, ref_nauczyciel, ref_sala,
             ref_uczen, ref_grupa, data_lekcji, godzina_start,
             czas_trwania_min, typ_lekcji, status, komisja
         ) VALUES (
@@ -1363,7 +1363,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
             'zaplanowana',
             T_KOMISJA(v_id_naucz1, v_id_naucz2)
         );
-        
+
         COMMIT;
         DBMS_OUTPUT.PUT_LINE('Dodano egzamin dla: ' || p_uczen_imie || ' ' || p_uczen_nazwisko);
     END;
@@ -1411,7 +1411,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
             FROM LEKCJE l
             WHERE (
                 (l.ref_uczen IS NOT NULL AND DEREF(l.ref_uczen).id_ucznia = v_id_ucznia)
-                OR 
+                OR
                 (l.ref_grupa IS NOT NULL AND UPPER(DEREF(l.ref_grupa).kod) = UPPER(v_kod_grupy))
             )
             AND l.data_lekcji BETWEEN p_data_od AND p_data_do
@@ -1431,10 +1431,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
                    l.czas_trwania_min,
                    DEREF(l.ref_przedmiot).nazwa AS przedmiot,
                    DEREF(l.ref_nauczyciel).nazwisko AS nauczyciel,
-                   CASE 
-                       WHEN l.ref_uczen IS NOT NULL THEN 
+                   CASE
+                       WHEN l.ref_uczen IS NOT NULL THEN
                            DEREF(l.ref_uczen).imie || ' ' || DEREF(l.ref_uczen).nazwisko
-                       ELSE 
+                       ELSE
                            DEREF(l.ref_grupa).kod
                    END AS kto,
                    l.typ_lekcji,
@@ -1460,10 +1460,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
                    l.czas_trwania_min,
                    DEREF(l.ref_przedmiot).nazwa AS przedmiot,
                    DEREF(l.ref_sala).numer AS sala,
-                   CASE 
-                       WHEN l.ref_uczen IS NOT NULL THEN 
+                   CASE
+                       WHEN l.ref_uczen IS NOT NULL THEN
                            DEREF(l.ref_uczen).imie || ' ' || DEREF(l.ref_uczen).nazwisko
-                       ELSE 
+                       ELSE
                            DEREF(l.ref_grupa).kod
                    END AS kto,
                    l.typ_lekcji,
@@ -1541,7 +1541,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
             FROM LEKCJE l
             WHERE l.typ_lekcji = 'egzamin'
             AND (
-                l.komisja(1) = v_id_nauczyciela 
+                l.komisja(1) = v_id_nauczyciela
                 OR l.komisja(2) = v_id_nauczyciela
             )
             ORDER BY l.data_lekcji;
@@ -1612,7 +1612,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_OCENY AS
     BEGIN
         -- Walidacja oceny
         IF p_wartosc < 1 OR p_wartosc > 6 THEN
-            RAISE_APPLICATION_ERROR(-20105, 
+            RAISE_APPLICATION_ERROR(-20105,
                 'Ocena musi byc w zakresie 1-6. Podano: ' || p_wartosc);
         END IF;
 
@@ -1650,7 +1650,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_OCENY AS
         v_ref_przedmiot REF T_PRZEDMIOT;
     BEGIN
         IF p_wartosc < 1 OR p_wartosc > 6 THEN
-            RAISE_APPLICATION_ERROR(-20105, 
+            RAISE_APPLICATION_ERROR(-20105,
                 'Ocena musi byc w zakresie 1-6. Podano: ' || p_wartosc);
         END IF;
 
@@ -1810,7 +1810,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_RAPORTY AS
         FOR r IN (
             SELECT s.numer, s.typ, COUNT(l.id_lekcji) AS liczba
             FROM SALE s
-            LEFT JOIN LEKCJE l ON DEREF(l.ref_sala).id_sali = s.id_sali 
+            LEFT JOIN LEKCJE l ON DEREF(l.ref_sala).id_sali = s.id_sali
                               AND l.data_lekcji = p_data
                               AND l.status != 'odwolana'
             GROUP BY s.numer, s.typ

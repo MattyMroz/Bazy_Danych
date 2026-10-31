@@ -33,4 +33,3 @@ SET @ile=dbo.IleWDzialeF(10)
 PRINT @ile
 GO
 SELECT Nazwa, dbo.IleWDzialeF(IdDzialu) FROM Dzialy
-

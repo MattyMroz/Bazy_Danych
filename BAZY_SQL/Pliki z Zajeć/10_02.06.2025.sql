@@ -29,12 +29,12 @@ execute procedura_z_parameterm 15,1.2;
 exec procedura_z_parameterm 15, 2.3;
 
 
---usuwanie procedury 
+--usuwanie procedury
 drop proc procedura_z_parameterm
 -------------------------------------------------------------
---Procedura wybieraj ca nazwiska pracownik w kt rych  rednie zarobki s  najwy sze 
+--Procedura wybieraj ca nazwiska pracownik w kt rych  rednie zarobki s  najwy sze
 --lub r wne parametru wejsciowemu
---Albo (Procedura wybieraj ca pracownik w kt rych  rednie zarobki s  najwy sze 
+--Albo (Procedura wybieraj ca pracownik w kt rych  rednie zarobki s  najwy sze
 --lub najni sze) (zak adamy unikatowo   nazwisk pracownikow)
 
 
@@ -43,7 +43,7 @@ drop proc procedura_z_parameterm
 		@wej_srd money
 	as
 	begin
-		select nazwisko, avg(brutto) sred from 
+		select nazwisko, avg(brutto) sred from
 
 		pracownicy p join zarobki z on z.pracid = p.pracid
 		group by p.nazwisko
@@ -60,7 +60,7 @@ drop proc procedura_z_parameterm
 			join zarobki z on z.pracid= p.pracid
 			group by p.nazwisko
 			having avg(brutto)= @wej_srd;
-	
+
 	end;
 	go
 	exec procedura 5600.0000;
@@ -69,7 +69,7 @@ drop proc procedura_z_parameterm
 --Procedura zwraca pracownik w kt rych nazwisko like @filtr_nazw i imie like @filtr_imie
 --procedura z domyslnym parametrem
 
-alter proc procedura 
+alter proc procedura
 	@filtr_nazw varchar(5),
 	@filtr_imie varchar(5)='%'
 as
@@ -84,7 +84,7 @@ exec procedura 'K%'
 
 
 
-alter proc procedura 
+alter proc procedura
 	@filtr_imie varchar(5)='%',
 	@filtr_nazw varchar(5)
 as
@@ -104,9 +104,9 @@ exec procedura @filtr_nazw='J%'
 ---------------------------------------------------------
 --cialo procedury z deklaracjami
 
-alter proc procedura 	
+alter proc procedura
 as
-begin 
+begin
 
 	declare @nazw varchar(50) --ustawnienie na dana wartosc
 	set @nazw='puste'
@@ -121,10 +121,10 @@ exec procedura
 -- sterowanie przep ywem
 
 
-alter proc procedura 
+alter proc procedura
 	@ilosc integer
 as
-begin 
+begin
 
 	declare @nazw varchar(50) --ustawnienie na dana wartosc
 	set @nazw='puste'
@@ -132,17 +132,17 @@ begin
 	-- ostatni rekord podstawia
 	select @nazw =  nazwisko from pracownicy order by nazwisko ;
 	print @nazw
-	
+
 	if len(@nazw)>10
 	print 'Wieksza'
 	else print 'Mniejsza'
-	
+
 	declare @i integer
 	set @i = 0
 	while @i < @ilosc
-	begin 
+	begin
 	   print 'Przebieg nr '+@i --cast funkcja konwertujaca typ
-	   set @i = @i+1 
+	   set @i = @i+1
 	end
 end
 exec procedura 5;
@@ -150,22 +150,22 @@ exec procedura 5;
 --------------------------------------------
 --Procedura nie zwraca warto ci ale mo emy napisa  procedur  z parametrem wyj ciowym
 
-create procedure suma 
+create procedure suma
 	@a integer,
 	@b integer,
 	@wiek integer OUTPUT
-as 
+as
 begin
 	set @wiek = @a+@b
 end
 --Anonimowa procedura
 --konwersja typ w
 declare @wynik integer
-exec suma 1,5,@wynik output 
+exec suma 1,5,@wynik output
 print 'Suma warot ci wynosi: ' + convert(varchar, @wynik)
 -----------------------------------------------------------
 
---Utw rz procedur  kt ra bedzie oblicza a  redni  trzech podanych na wej ciu 
+--Utw rz procedur  kt ra bedzie oblicza a  redni  trzech podanych na wej ciu
 --cyfr oraz
 --ograniczy mo liwosc wpisania blednie danych
 
@@ -178,14 +178,12 @@ as
 begin
 	if @m1 is null or @m2 is null or @m3 is null
 		print 'podaj poprawne wartosci'
-	else 
+	else
 	set @wynik =(@m1+@m2+@m3)/3
-	print 'Wynik: '+convert(varchar, @wynik)  
+	print 'Wynik: '+convert(varchar, @wynik)
 end
 go
 -------------------------------------------
 declare @wyn float
 exec oblicz1 1,2,3,@wyn output
-print 'Srednia z wprowadzonych warto ci wynosi : '+ convert(varchar, @wyn)  
-
-
+print 'Srednia z wprowadzonych warto ci wynosi : '+ convert(varchar, @wyn)

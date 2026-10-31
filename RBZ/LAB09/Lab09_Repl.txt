@@ -18,8 +18,8 @@ https://learn.microsoft.com/en-us/sql/tools/configuration-manager/sql-server-con
 --b. -- baza docelowa: TestDB
 --c. -- baza dystrybutora: distributions
 
--- W pierwszej kolejności założyć na dysku c:\ 
-	--> katalog: RBD_Repl a w nim: 
+-- W pierwszej kolejności założyć na dysku c:\
+	--> katalog: RBD_Repl a w nim:
 		--> podfolder: logs
 		--> podfolder: bazaDystr
 
@@ -31,7 +31,7 @@ https://learn.microsoft.com/en-us/sql/tools/configuration-manager/sql-server-con
 
 -- Zadanie 2.
 -- Pracujemy w grupach 3 osobowych z trzema instancjami.
--- Zdefiniować replikację transakcyjną w środowisku rozproszonym między trzema serwerami. 
+-- Zdefiniować replikację transakcyjną w środowisku rozproszonym między trzema serwerami.
 -- Dystrybutor, publikator i subskrybent powinni być zdefiniowani na osobnych maszynach. W tym celu założyć (lub wykorzystać) we własnym środowisku odpowiednie loginy domenowe.
 
 
@@ -42,7 +42,7 @@ https://learn.microsoft.com/en-us/sql/tools/configuration-manager/sql-server-con
 -- Serwer2: --> ma być dystrybutorem,
 -- Serwer3: --> ma być subskrybentem,
 
---- W celu dokonania replikacji założyć na dystrybutorze katalog: replData --> do którego nadać minimalne wymagane uprawnienia pozwalające na udostępnianie danych 
+--- W celu dokonania replikacji założyć na dystrybutorze katalog: replData --> do którego nadać minimalne wymagane uprawnienia pozwalające na udostępnianie danych
 -- z wykorzystaniem tych trzech użytkowników domenowych. Pamiętajmy, że katalog powinien zostać udostępniony domenowo.
 
 -- Następnie skonfigurować dystrybutora, publikatora i subskrybenta.
@@ -55,14 +55,14 @@ https://learn.microsoft.com/en-us/sql/tools/configuration-manager/sql-server-con
 ------------------------------- Dodatek:-----------------------
 --- Usuwanie dystrybutora:
 
---- Usuwanie dystrybutora: 
+--- Usuwanie dystrybutora:
 
 USE master;
 GO
 DECLARE @spid INT;
 
 DECLARE kill_cursor CURSOR FOR
-SELECT session_id 
+SELECT session_id
 FROM sys.dm_exec_sessions
 WHERE database_id = DB_ID('distribution');
 

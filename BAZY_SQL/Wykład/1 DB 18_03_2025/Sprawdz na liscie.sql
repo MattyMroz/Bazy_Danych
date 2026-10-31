@@ -4,7 +4,7 @@ WHERE Nazwisko IN (SELECT Nazwisko FROM ttt)*/
 
 /*SELECT Nazwisko, Imie, RokUrodz
 FROM Osoby
-WHERE Nazwisko + Imie + CAST(RokUrodz AS varchar(4)) IN 
+WHERE Nazwisko + Imie + CAST(RokUrodz AS varchar(4)) IN
 (SELECT Nazwisko + Imie + CAST(RokUrodz AS varchar(4)) FROM ttt)*/
 
 /*SELECT Osoby.Nazwisko, Osoby.Imie, Osoby.RokUrodz,

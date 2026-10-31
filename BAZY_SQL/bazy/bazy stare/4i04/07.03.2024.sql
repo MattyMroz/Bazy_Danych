@@ -66,12 +66,12 @@ select * from dane1
 
 truncate table dane1
 
-use baza 
+use baza
 
-alter table pracownicy 
+alter table pracownicy
 add dousuniecia2 int default 1
 
-select * from pracownicy 
+select * from pracownicy
 
 insert into pracownicy(nazwisko,imie,wiek,dzialid) values('Kowalski','Jan',50,2);
 
@@ -79,7 +79,7 @@ insert into pracownicy(dousuniecia2) values(2);
 
 insert into pracownicy(dousuniecia2) values(1);
 
-alter table pracownicy 
+alter table pracownicy
 add wzrost int
 
 insert into pracownicy(wzrost) values(192);
@@ -88,7 +88,7 @@ select * from pracownicy
 
 insert into pracownicy(wzrost) values(1.92);
 
-alter table pracownicy 
+alter table pracownicy
 add wzrost2 decimal(3,2)
 
 update pracownicy set wzrost2=1.70 where pracid<5
@@ -97,10 +97,10 @@ update pracownicy set wzrost2=1.80 where pracid>5
 
 select * from pracownicy
 
-alter table pracownicy 
+alter table pracownicy
 drop column aktualny2
 
-alter table pracownicy 
+alter table pracownicy
 add aktualny2 varchar(10)
 
 update pracownicy set  aktualny2='tak'

@@ -88,5 +88,3 @@ GROUP BY IdDzialu) AS xxx
 ON Dzialy.IdDzialu=xxx.IdDzialu
 GROUP BY Nazwa, Nazwisko, SrD
 HAVING AVG(Brutto) > SrD
-
-

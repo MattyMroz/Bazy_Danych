@@ -2,7 +2,7 @@
 -- Zadanie 1:
 
 -- jaki klient (ORACLE) zrealizował jakie zamówienia (SQLSERVER lokalny) na którym są jakie produkty ACCESS)
--- obsłużone przez jakiego pracownika (SQL Server: WA-03) 
+-- obsłużone przez jakiego pracownika (SQL Server: WA-03)
 
 -- Zadanie 2:
 --  Zapoznać się z ustanawianiem serwera połączonego oraz wykonać następujące kroki:
@@ -39,7 +39,7 @@ GO
 
 -- Zadanie 1:
 -- Jaki klient (ORACLE) zrealizował jakie zamówienia (SQLSERVER lokalny) na którym są jakie produkty ACCESS)
--- obsłużone przez jakiego pracownika (SQL Server: WA-03) 
+-- obsłużone przez jakiego pracownika (SQL Server: WA-03)
 
 -- Zadanie 1 - najpierw zwykle zapytanie lokalne
 SELECT

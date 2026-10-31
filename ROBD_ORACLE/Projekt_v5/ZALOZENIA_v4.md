@@ -590,7 +590,7 @@ OCENY ── REF ──→ UCZNIOWIE
 
 ## Scenariusze testowe:
 
-1. **Dodaj nowego ucznia do klasy 2A** 
+1. **Dodaj nowego ucznia do klasy 2A**
    → System przypisuje go do grupy, znajduje 2 sloty na instrument
 
 2. **Pokaż plan tygodnia ucznia Jana Kowalskiego**

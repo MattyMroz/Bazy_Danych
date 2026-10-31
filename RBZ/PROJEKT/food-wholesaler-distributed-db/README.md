@@ -16,12 +16,12 @@ Autorzy: Mateusz Mróz (251190), Maciej Górka (251143)
 
 ## 1. Wprowadzenie
 
-Niniejszy dokument opisuje **projekt rozproszonej bazy danych** przygotowany w ramach przedmiotu **Rozproszone Bazy Danych**, pokrywającego poniższe zagadnienia: 
-- ustanowienie serwerów połączonych, 
-- zapytań ad hoc, 
-- transakcji rozproszonych z koordynatorem MS DTC (Microsoft Distributed Transaction Coordinator), 
-- replikacji, 
-- łączy bazodanowych Oracle (database links), 
+Niniejszy dokument opisuje **projekt rozproszonej bazy danych** przygotowany w ramach przedmiotu **Rozproszone Bazy Danych**, pokrywającego poniższe zagadnienia:
+- ustanowienie serwerów połączonych,
+- zapytań ad hoc,
+- transakcji rozproszonych z koordynatorem MS DTC (Microsoft Distributed Transaction Coordinator),
+- replikacji,
+- łączy bazodanowych Oracle (database links),
 - niemodyfikowalnych widoków rozproszonych z wyzwalaczami INSTEAD OF
 - pakietów PL/SQL.  
 
@@ -177,7 +177,7 @@ flowchart TD
     V_ZAM -->|"[13] UNION ALL (LNK_ARCHIWUM)"| ZAM_A
     V_ZAM -->|"[13] UNION ALL"| ZAM
     SPR_U -->|"[14] Odczyt pełnych danych"| V_ZAM
-    
+
     %% INSTEAD OF Trigger Flow
     V_ZAM -.->|"[15] INSTEAD OF trigger"| TRG[trg_v_zamowienia_io]
     TRG -->|< 24 mies.| ZAM
@@ -440,16 +440,16 @@ erDiagram
 
 ## 4.8 Scenariusze użycia
 
-**Złożenie nowego zamówienia.** 
+**Złożenie nowego zamówienia.**
 Klient telefonuje do działu sprzedaży. Operator wywołuje procedurę `PKG_SPRZEDAZ.sp_zarejestruj_zamowienie` (status `NOWE`) i wielokrotnie `sp_dodaj_pozycje`. Każda pozycja czerpie aktualną cenę i stawkę VAT z `SPRZEDAZ.PRODUKT_CACHE` (zsynchronizowanej z centrali) i **zamraża** je w wierszu `POZYCJA_ZAMOWIENIA`.  
 
-**Zatwierdzenie zamówienia (FEFO + DTC).** 
+**Zatwierdzenie zamówienia (FEFO + DTC).**
 Po skompletowaniu zamówienia operator wywołuje w centrali procedurę `dbo.sp_zatwierdz_zamowienie_dtc`. Procedura otwiera **transakcję rozproszoną** koordynowaną przez MS DTC, w jej ramach uruchamia `dbo.sp_rezerwuj_fefo` (rezerwacja partii w `HurtowniaMagazyn` przez `SRV_MAGAZYN` w kolejności daty przydatności), a następnie przez `SRV_ORACLE` zmienia status zamówienia na `ZATWIERDZONE`. Obie operacje zatwierdzają się razem albo wycofują razem.
 
 **Synchronizacja katalogu.**  
 Pracownik centrali dodaje nowy produkt do tabeli `HurtowniaCentrala.dbo.PRODUKT`. **Replikacja transakcyjna** w ciągu sekund propaguje go do `HurtowniaMagazyn.dbo.PRODUKT` (tryb tylko do odczytu po stronie magazynu). Cyklicznie uruchamiana procedura `dbo.sp_push_produkty_to_oracle` synchronizuje również `SPRZEDAZ.PRODUKT_CACHE` w Oracle przez `SRV_ORACLE`.
 
-**Raport sprzedaży z danymi historycznymi.** 
+**Raport sprzedaży z danymi historycznymi.**
 Dział raportowania wybiera dane z `SPRZEDAZ.V_ZAMOWIENIA_PELNE`. Widok rozproszony łączy zamówienia bieżące z lokalnej tabeli `ZAMOWIENIE` z zamówieniami archiwalnymi pobranymi przez publiczny **database link** `LNK_ARCHIWUM`. Widok jest oznaczony `WITH READ ONLY` (modyfikacja archiwum przez widok jest zablokowana, a próba wywołania wyzwala `INSTEAD OF` zwracający błąd).
 
 ## 5. Realizacja mechanizmów rozproszonych
@@ -545,8 +545,8 @@ W bazie Oracle utworzono trzy niezależne schematy: `SPRZEDAZ`, `ARCHIWUM` oraz 
 * `rola_archiwum_ro` – nadaje uprawnienia wyłącznie do odczytu tabel archiwum w schemacie `ARCHIWUM`.
 * `rola_finanse` – nadaje pełne uprawnienia do faktur i płatności w schemacie `FINANSE`.
 
-Role te zostały przypisane odpowiednim użytkownikom: 
-* `SPRZEDAZ_USER` - posiada rolę do sprzedaży oraz rolę do odczytu archiwum, co pozwala mu na łączenie danych bieżących z historycznymi. Nie ma on jednak żadnego dostępu do danych finansowych. 
+Role te zostały przypisane odpowiednim użytkownikom:
+* `SPRZEDAZ_USER` - posiada rolę do sprzedaży oraz rolę do odczytu archiwum, co pozwala mu na łączenie danych bieżących z historycznymi. Nie ma on jednak żadnego dostępu do danych finansowych.
 * `FINANSE_USER` - posiada rolę dającą dostęp do danych finansowych.
 
 ### 5.9 Database links - publiczny i prywatny

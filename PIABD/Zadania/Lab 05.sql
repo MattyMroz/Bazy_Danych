@@ -1,4 +1,4 @@
-﻿----------------------------------------------------
+----------------------------------------------------
 -- Kopie bezpieczeństwa i przywracanie baz danych --
 ----------------------------------------------------
 use master
@@ -18,7 +18,7 @@ GO
 USE MASTER
 GO
 
--- Przygotowanie urządzenia do backupu o nazwie b3, b3_log i b3_log1 (nie musimy tworzyć osobnych plików, 
+-- Przygotowanie urządzenia do backupu o nazwie b3, b3_log i b3_log1 (nie musimy tworzyć osobnych plików,
 -- ale łatwiej będzie pokazać sposoby backupu i przywracania)
 -- (uwaga na ścieżki podane w skrypcie bo mogą nie odpowiadać ścieżką w instalacji lokalnej)
 USE [master]
@@ -56,7 +56,7 @@ select * from test3.dbo.cat
 -----------------------------
 -- Scenariusz 1 -------------
 -----------------------------
--- do urządzenia b3_log dokładamy kolejne wersje backup log i czyścimy dziennik bazy (bez opcji NO_TRUNCATE) 
+-- do urządzenia b3_log dokładamy kolejne wersje backup log i czyścimy dziennik bazy (bez opcji NO_TRUNCATE)
 -- dokładamy zamiast do b3 do nowego urządzenia b3_log (pierwsze polecenie Backup Log jest z opcją INIT aby wyczyścić poprzednią zawartość pliku bak jeśli istniał)
 INSERT INTO test3.dbo.cat (categoryname) values ('Tran 1');
 BACKUP LOG [test3] TO [b3_log] WITH NOFORMAT, INIT,  NAME = N'Tran 1', SKIP, NOREWIND, NOUNLOAD,   STATS = 5
@@ -66,7 +66,7 @@ BACKUP LOG [test3] TO [b3_log] WITH NOFORMAT, NOINIT,  NAME = N'Tran 2', SKIP, N
 --
 INSERT INTO test3.dbo.cat (categoryname) values ('Tran 3');
 BACKUP LOG [test3] TO [b3_log] WITH NOFORMAT, NOINIT,  NAME = N'Tran 3', SKIP, NOREWIND, NOUNLOAD,  STATS = 5
-	
+
 -- Przywracamy całość (nikt nie może pracować na danej bazie lub przechodzimy z tryb pracy SINGLE_USER lub RESTRICTED_USER)
 -- ALTER DATABASE [test3] SET SINGLE_USER WITH ROLLBACK IMMEDIATE
 -- ALTER DATABASE [test3] SET MULTI_USER
@@ -133,16 +133,16 @@ RESTORE LOG [test3] FROM  DISK = N'C:\Program Files\Microsoft SQL Server\MSSQL16
 select * from test3.dbo.cat --sprawdzamy co odzyskaliśmy
 
 ------------------------------------------------------------------------------------------------------------------------------
-/* 
+/*
  Opis opcji:
  opcja NORECOVERY - baza w tym stanie po tym backupie przechodzi w stan Restoring (dodałem nadpisywanie pliku backupu - INIT,SKIP) - można świadomie przywrócić poleceniem --RESTORE DATABASE [test3] with RECOVERY
- opcja NO_TRUNCUTE powoduje nie wycięcie dziennika transakcji (możemy robić kilka kopii i będą one poprawne i z aktualnymi danymi) - bez tej opcji dziennik jest wycinany i ponowne BACKUP LOG i przywracanie z wykorzystaniem tego pliku jest w innym miejscu niż cały backup 
+ opcja NO_TRUNCUTE powoduje nie wycięcie dziennika transakcji (możemy robić kilka kopii i będą one poprawne i z aktualnymi danymi) - bez tej opcji dziennik jest wycinany i ponowne BACKUP LOG i przywracanie z wykorzystaniem tego pliku jest w innym miejscu niż cały backup
  BACKUP LOG [test3] TO  [b3_log] WITH NOFORMAT, INIT,  NAME = N'test3_Log_tail', NOSKIP, NOREWIND, NOUNLOAD,  NORECOVERY,  STATS = 5
  bez opcji NORECOVERY - baza w tym stanie po tym backupie może być normalnie używana (i może zmienić się stan bazy (chyba że damy opcję SINGLE_USER i sami nic nie zmienimy
  BACKUP LOG [test3] TO  [b3_log] WITH NOFORMAT, INIT,  NAME = N'test3_Log_tail', SKIP, NOREWIND, NOUNLOAD, STATS = 5
 
  NORECOVERY
- Tworzy kopię zapasową końca dziennika i pozostawia bazę danych w stanie PRZYWRACANIA. 
+ Tworzy kopię zapasową końca dziennika i pozostawia bazę danych w stanie PRZYWRACANIA.
  NORECOVERY przydaje się w przypadku przełączania awaryjnego do dodatkowej bazy danych lub podczas zapisywania końca dziennika przed operacją PRZYWRACANIA.
  Aby wykonać najlepszą kopię zapasową dziennika, która pomija obcinanie dziennika, a następnie atomowo wprowadza bazę danych do stanu PRZYWRACANIE, użyj razem opcji NO_TRUNCATE i NORECOVERY.
 
@@ -159,21 +159,21 @@ select * from test3.dbo.cat --sprawdzamy co odzyskaliśmy
 ---------------------------------------------
 RESTORE DATABASE [test3] FROM  [b3] WITH  FILE = 3,  NORECOVERY,  NOUNLOAD,   REPLACE,  STATS = 5
 -- Uwaga
--- RESTORE DATABASE [test3] FROM  [b3] WITH  FILE = 4,  RECOVERY,  NOUNLOAD,   REPLACE,  STATS = 5 
+-- RESTORE DATABASE [test3] FROM  [b3] WITH  FILE = 4,  RECOVERY,  NOUNLOAD,   REPLACE,  STATS = 5
 -- tutaj kopia różnicowa do tego backupu nie może być wykorzystana
 RESTORE DATABASE [test3] WITH RECOVERY
 
 -- Zadania do wykonania
 
--- I. Tworzymy dla bazy danych TEST4 następujące typy kopie bezpieczeństwa w kolejności na urządzeniu o nazwie b4 
--- W kolejnosci wykonujemy backup typu: 
+-- I. Tworzymy dla bazy danych TEST4 następujące typy kopie bezpieczeństwa w kolejności na urządzeniu o nazwie b4
+-- W kolejnosci wykonujemy backup typu:
 -- backup pełny o nazwie w opisie FULL (przy tym backupie ustawiamy opcję INIT aby skasować wszystko co było wcześniej w danym urządzeniu)
--- backup różnicowy o nazwie w opisie DIF1 
--- backup różnicowy o nazwie w opisie DIF2 
--- backup dziennika transakcji o nazwie w opisie LOG1 
--- backup dziennika transakcji o nazwie w opisie LOG2 
--- backup różnicowy o nazwie w opisie DIF3 
--- backup dziennika transakcji o nazwie w opisie LOG3 
+-- backup różnicowy o nazwie w opisie DIF1
+-- backup różnicowy o nazwie w opisie DIF2
+-- backup dziennika transakcji o nazwie w opisie LOG1
+-- backup dziennika transakcji o nazwie w opisie LOG2
+-- backup różnicowy o nazwie w opisie DIF3
+-- backup dziennika transakcji o nazwie w opisie LOG3
 -- backup dziennika transakcji o nazwie w opisie LOG4
 -----------------------------------------------------
 -- Przywracamy bazę danych do pracy w danym czasie
@@ -185,39 +185,39 @@ RESTORE DATABASE [test3] WITH RECOVERY
 
 -- 4. FULL + DIF3 + LOG3/LOG4 (wybrać dowolny czas między LOG3 a LOG4
 
--- 5. Korzystając z Tail_log czyli w scenariuszu, gdzie odtwarzamy wszystkie możliwe dane 
+-- 5. Korzystając z Tail_log czyli w scenariuszu, gdzie odtwarzamy wszystkie możliwe dane
 
 -- 6. Przywracamy bazę z czasu wykonania backupu FULL pod nową nazwą TEST4_NEW
 
 ---------------------------------------------------------------------------------------
 
--- 7. Utwórz bazę danych TEST5 z trzema grupami plików (g1,g2,g3). 
+-- 7. Utwórz bazę danych TEST5 z trzema grupami plików (g1,g2,g3).
 -- Następnie utwórz kopię bazy danych z wszystkich grup plików jako jeden backup (w tym samym czasie)
 -- Przywróć daną bazę danę pod nową nazwą TEST5_1.
 -- 8. Utwórz kopię bazy danych TEST5 w grup plików jako trzy osobne backupy w różnym czasie (backup filegroup (files))
 -- Przywróc daną bazę danę pod nową nazwą TEST5_2.
 -- 9. Wykonaj pełną kopię zapasową bazy AdventureWorks2019(22) (lub AdventureWorksLT2019(22)).
--- Wykonaj kopię rożnicową 5 razy.  Sprawdzamy nagłówek backupu (RESTORE HEADERONLY): 
+-- Wykonaj kopię rożnicową 5 razy.  Sprawdzamy nagłówek backupu (RESTORE HEADERONLY):
 -- Kasujemy historię backupów EXEC msdb.dbo.sp_delete_database_backuphistory @database_name = 'AdventureWorksLT2019'
 -- Skasuj tą bazę i przywróc ponownie pod tą samą nazwą z pozycji 4 backupu (full + trzeci różnicowy).
--- 10. Zdefiniuj urządzenia lub zestaw plików backupów do tworzenia backupu równolegle na całym zestawie 
+-- 10. Zdefiniuj urządzenia lub zestaw plików backupów do tworzenia backupu równolegle na całym zestawie
 -- (zestaw trzech plików lub urządzeń). Następnie przetestuj integralność kopii zapasowych (RESTORE VERIFYONLY)
 -- 11. Porównanie wydajności z i bez kompresji:
 -- Przetestuj szybkość tworzenia i przywracania kopii zapasowej z włączoną i wyłączoną kompresją (AdventureWorksDW2019(22).
 -- Podaj czas tworzenia backupu, odtwarzanie z backupu oraz wielkość backupu (z i bez kompresji)
--- 12. Przywracanie usuniętej tabeli z wcześniej wykonanego backupu, która zawierała tą tabele. 
+-- 12. Przywracanie usuniętej tabeli z wcześniej wykonanego backupu, która zawierała tą tabele.
 -- Po usunięciu  wybranej tabeli z bazy danych, przywróć tą tabelę do danej struktury.
 -- 13. Testowanie integralności kopii zapasowych:
 -- Zweryfikuj wszystkie pliki kopii zapasowych dla wybranej bazy danych.
 -- 14. Utworzenie kopii zapasowych wszystkich baz danych na serwerze za wyjątkiem systemowych w jednym urządzeniu (kod T-SQL)
--- 15. Zdefiniuj bazę danych TEST6 z dwoma grupami plików PRIMARY i gr_INDEKS oraz tabelę test, która dane przechowuje w grupie PRIMATY, 
--- a dowolny indeks NONCLUSTRED na tej tabeli jest przechowywany w grupie gr_INDEKS. 
+-- 15. Zdefiniuj bazę danych TEST6 z dwoma grupami plików PRIMARY i gr_INDEKS oraz tabelę test, która dane przechowuje w grupie PRIMATY,
+-- a dowolny indeks NONCLUSTRED na tej tabeli jest przechowywany w grupie gr_INDEKS.
 -- Wykonaj backup bazy danych osobno grupy plików PRIMARY i za chwilę grupy plików gr_INDEKS.
--- Jaki jest tutaj problem? 
+-- Jaki jest tutaj problem?
 -- 16. Wykonaj backup bazy danych model na urządzeniu o nazwie MODEL i ustaw jej ważność na 30 dni oraz MEDIANAME = 'MODEL'
 -- Spróbuj wykonać na tym urządzeniu backup bazy danych z opcją nadpisywania backupu (i opcją NOSKIP).
 -- Spróbuj wykonać na tym urządzeniu backup bazy danych z opcją dodawania backupu i podaniem niepoprawnego Media set name (MEDIANAME = 'MODEL1').
 -- Spróbuj wykonać na tym urządzeniu backup bazy danych z opcją dodawania backupu i podaniem poprawnego Media set name (MEDIANAME = 'MODEL').
--- 17. Wykonaj Export Data-Tier Application dowolnej bazy i następnie przywróć ją pod nazwą EDTA 
+-- 17. Wykonaj Export Data-Tier Application dowolnej bazy i następnie przywróć ją pod nazwą EDTA
 -- i sprawdź co zawiera (nie jest to narzędzie o nazwie backup)
 -- (nie generujemy skryptu do tego zadania)

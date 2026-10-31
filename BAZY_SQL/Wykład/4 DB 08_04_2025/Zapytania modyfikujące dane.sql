@@ -10,7 +10,7 @@ WHERE 1=2
 INSERT INTO Nowa (Nazwisko, Imie) VALUES ('Nowak', 'Pawe³')
 INSERT INTO Nowa (Nazwisko, Imie) VALUES ('Lis', 2001)*/
 
-/*INSERT INTO Nowa 
+/*INSERT INTO Nowa
 SELECT Nazwisko, Imie, RokUrodz FROM Osoby
 WHERE RokUrodz>2000*/
 
@@ -25,17 +25,17 @@ WHERE RokUrodz IS NOT NULL*/
 
 TRUNCATE TABLE Nowa*/
 
-INSERT INTO Nowa (Nazwisko, Imie) VALUES 
+INSERT INTO Nowa (Nazwisko, Imie) VALUES
 		('Nowak', 'Pawe³'),
 		('Kowalik', 'Piotr'),
 		('Janik', 'Karol')
 
-INSERT INTO Nowa (Nazwisko, Imie) VALUES 
+INSERT INTO Nowa (Nazwisko, Imie) VALUES
 		('Nowak', 2000),
 		('Kowalik', 2001),
 		('Janik', 2002)
 
-INSERT INTO Nowa (Nazwisko, Imie) VALUES 
+INSERT INTO Nowa (Nazwisko, Imie) VALUES
 		('Nowak', 2000),
 		('Kowalik', 'Jan'),
 		('Janik', 2002)

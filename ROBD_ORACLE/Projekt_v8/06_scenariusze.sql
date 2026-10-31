@@ -105,7 +105,7 @@ PRZYKŁAD: EXEC pkg_osoby.lista_uczniow_grupy(4);
 -- PKG_LEKCJE - Zarządzanie lekcjami (z walidacją konfliktów)
 -- ============================================================================
 /*
-PROCEDURA: pkg_lekcje.dodaj_lekcje_indywidualna(p_id_przedmiotu, p_id_nauczyciela, 
+PROCEDURA: pkg_lekcje.dodaj_lekcje_indywidualna(p_id_przedmiotu, p_id_nauczyciela,
                                                 p_id_sali, p_id_ucznia, p_data, p_godz)
 OPIS: Dodaje lekcję indywidualną (1 nauczyciel + 1 uczeń)
 PARAMETRY:
@@ -128,7 +128,7 @@ BŁĘDY:
   -20012: Instrument ucznia nie pasuje do przedmiotu
   -20018: Lekcja zaplanowana na weekend
 
-PROCEDURA: pkg_lekcje.dodaj_lekcje_grupowa(p_id_przedmiotu, p_id_nauczyciela, 
+PROCEDURA: pkg_lekcje.dodaj_lekcje_grupowa(p_id_przedmiotu, p_id_nauczyciela,
                                            p_id_sali, p_id_grupy, p_data, p_godz)
 OPIS: Dodaje lekcję grupową (1 nauczyciel + cała grupa)
 PARAMETRY:
@@ -251,7 +251,7 @@ EXEC pkg_osoby.lista_nauczycieli;
 -- SCENARIUSZ 2: SEKRETARIAT TWORZY NOWĄ GRUPĘ I ZAPISUJE UCZNIÓW
 -- ============================================================================
 -- Kontekst: Nowy rok szkolny - sekretariat tworzy klasę 4A i zapisuje do niej
---           uczniów. Jeden uczeń gra na Flecie (nowy przedmiot), drugi na 
+--           uczniów. Jeden uczeń gra na Flecie (nowy przedmiot), drugi na
 --           Fortepianie (istniejący przedmiot).
 -- ============================================================================
 
@@ -283,7 +283,7 @@ EXEC pkg_raporty.raport_grup;
 -- ============================================================================
 -- SCENARIUSZ 3: PLANOWANIE LEKCJI GRUPOWYCH
 -- ============================================================================
--- Kontekst: Sekretariat planuje zajęcia grupowe z Kształcenia słuchu dla 
+-- Kontekst: Sekretariat planuje zajęcia grupowe z Kształcenia słuchu dla
 --           nowej grupy 4A. Zajęcia prowadzi nauczyciel ID=4 (Piotr Lewandowski)
 --           w sali grupowej ID=3 (sala 103).
 -- ============================================================================
@@ -586,7 +586,7 @@ ORDER BY s.id;
 -- ============================================================================
 
 -- 10.1 Nauczyciele z przedmiotami (DEREF na REF do przedmiotu)
-SELECT n.id, 
+SELECT n.id,
        n.pelne_nazwisko() AS nauczyciel,
        DEREF(n.ref_przedmiot).nazwa AS przedmiot,
        DEREF(n.ref_przedmiot).typ AS typ_przedmiotu
@@ -609,7 +609,7 @@ SELECT l.id,
        DEREF(l.ref_przedmiot).nazwa AS przedmiot,
        DEREF(l.ref_nauczyciel).pelne_nazwisko() AS nauczyciel,
        DEREF(l.ref_sala).numer AS sala,
-       CASE 
+       CASE
            WHEN l.ref_uczen IS NOT NULL THEN DEREF(l.ref_uczen).pelne_nazwisko()
            ELSE 'grupa ' || DEREF(l.ref_grupa).symbol
        END AS kto
@@ -626,19 +626,19 @@ FETCH FIRST 10 ROWS ONLY;
 -- ============================================================================
 
 -- 11.1 Metody typu T_UCZEN
-SELECT u.pelne_nazwisko() AS pelne_nazwisko, 
-       u.wiek() AS wiek_lat, 
+SELECT u.pelne_nazwisko() AS pelne_nazwisko,
+       u.wiek() AS wiek_lat,
        u.instrument
-FROM uczniowie u 
+FROM uczniowie u
 WHERE ROWNUM <= 5;
 
 -- 11.2 Metody typu T_NAUCZYCIEL
-SELECT n.pelne_nazwisko() AS nauczyciel, 
+SELECT n.pelne_nazwisko() AS nauczyciel,
        n.staz_lat() AS staz_pracy
 FROM nauczyciele n;
 
 -- 11.3 Metody typu T_PRZEDMIOT
-SELECT p.nazwa, 
+SELECT p.nazwa,
        p.typ,
        p.czy_grupowy() AS jest_grupowy
 FROM przedmioty p;

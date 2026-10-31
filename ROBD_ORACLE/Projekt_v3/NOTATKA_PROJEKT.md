@@ -304,7 +304,7 @@
 **P: Jak działają triggery konfliktów?**
 > W COMPOUND TRIGGER:
 > 1. BEFORE EACH ROW: Pobieramy dane nowej lekcji do kolekcji PL/SQL
-> 2. AFTER STATEMENT: Dla każdej lekcji konwertujemy godzinę HH:MM na minuty, 
+> 2. AFTER STATEMENT: Dla każdej lekcji konwertujemy godzinę HH:MM na minuty,
 >    obliczamy przedział [start, end] i sprawdzamy czy nakłada się z istniejącymi.
 
 **P: Dlaczego nie można uruchomić 07_uzytkownicy.sql?**

@@ -25,11 +25,3 @@ GROUP BY IdDzialu
 ON Dzialy.IdDzialu=xxx.IdDzialu
 GROUP BY Nazwa, Nazwisko, SrDzial
 HAVING AVG(Brutto) > SrDzial
-
-
-
-
-
-
-
-

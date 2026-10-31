@@ -21,7 +21,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('========================================================');
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 1: DODAWANIE DANYCH PODSTAWOWYCH');
     DBMS_OUTPUT.PUT_LINE('========================================================');
-    
+
     -- Test 1.1: Sprawdzenie instrumentow
     BEGIN
         FOR r IN (SELECT COUNT(*) AS cnt FROM t_instrument) LOOP
@@ -34,7 +34,7 @@ BEGIN
             END IF;
         END LOOP;
     END;
-    
+
     -- Test 1.2: Sprawdzenie sal
     BEGIN
         FOR r IN (SELECT COUNT(*) AS cnt FROM t_sala) LOOP
@@ -47,7 +47,7 @@ BEGIN
             END IF;
         END LOOP;
     END;
-    
+
     -- Test 1.3: Sprawdzenie nauczycieli
     BEGIN
         FOR r IN (SELECT COUNT(*) AS cnt FROM t_nauczyciel) LOOP
@@ -60,7 +60,7 @@ BEGIN
             END IF;
         END LOOP;
     END;
-    
+
     -- Test 1.4: Sprawdzenie uczniow
     BEGIN
         FOR r IN (SELECT COUNT(*) AS cnt FROM t_uczen) LOOP
@@ -73,7 +73,7 @@ BEGIN
             END IF;
         END LOOP;
     END;
-    
+
     -- Test 1.5: Sprawdzenie kursow
     BEGIN
         FOR r IN (SELECT COUNT(*) AS cnt FROM t_kurs) LOOP
@@ -86,7 +86,7 @@ BEGIN
             END IF;
         END LOOP;
     END;
-    
+
     DBMS_OUTPUT.PUT_LINE('--------------------------------------------------------');
     DBMS_OUTPUT.PUT_LINE('Scenariusz 1: OK=' || v_test_ok || ' FAIL=' || v_test_fail);
 END;
@@ -105,11 +105,11 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('========================================================');
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 2: WALIDACJA WIEKU UCZNIA');
     DBMS_OUTPUT.PUT_LINE('========================================================');
-    
+
     -- Test 2.1: Proba dodania 3-latka (powinno FAIL)
     BEGIN
         INSERT INTO t_uczen VALUES (
-            t_uczen_obj(seq_uczen.NEXTVAL, 'Maluch', 'TestowyMaly', 
+            t_uczen_obj(seq_uczen.NEXTVAL, 'Maluch', 'TestowyMaly',
                        ADD_MONTHS(SYSDATE, -36), NULL, SYSDATE)
         );
         DBMS_OUTPUT.PUT_LINE('[FAIL] Test 2.1: Dodano 3-latka (blad triggera!)');
@@ -125,11 +125,11 @@ BEGIN
                 v_test_fail := v_test_fail + 1;
             END IF;
     END;
-    
+
     -- Test 2.2: Proba dodania 4-latka (powinno FAIL)
     BEGIN
         INSERT INTO t_uczen VALUES (
-            t_uczen_obj(seq_uczen.NEXTVAL, 'Maluch', 'Testowy4', 
+            t_uczen_obj(seq_uczen.NEXTVAL, 'Maluch', 'Testowy4',
                        ADD_MONTHS(SYSDATE, -48), NULL, SYSDATE)
         );
         DBMS_OUTPUT.PUT_LINE('[FAIL] Test 2.2: Dodano 4-latka (blad triggera!)');
@@ -145,11 +145,11 @@ BEGIN
                 v_test_fail := v_test_fail + 1;
             END IF;
     END;
-    
+
     -- Test 2.3: Dodanie 5-latka (powinno OK)
     BEGIN
         INSERT INTO t_uczen VALUES (
-            t_uczen_obj(seq_uczen.NEXTVAL, 'Pieciolatek', 'Testowy5', 
+            t_uczen_obj(seq_uczen.NEXTVAL, 'Pieciolatek', 'Testowy5',
                        ADD_MONTHS(SYSDATE, -60), NULL, SYSDATE)
         );
         DBMS_OUTPUT.PUT_LINE('[OK] Test 2.3: 5-latek dodany poprawnie');
@@ -160,11 +160,11 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] Test 2.3: Nie mozna dodac 5-latka - ' || SQLERRM);
             v_test_fail := v_test_fail + 1;
     END;
-    
+
     -- Test 2.4: Dodanie 10-latka (powinno OK)
     BEGIN
         INSERT INTO t_uczen VALUES (
-            t_uczen_obj(seq_uczen.NEXTVAL, 'Dziesieciolatek', 'Testowy10', 
+            t_uczen_obj(seq_uczen.NEXTVAL, 'Dziesieciolatek', 'Testowy10',
                        ADD_MONTHS(SYSDATE, -120), NULL, SYSDATE)
         );
         DBMS_OUTPUT.PUT_LINE('[OK] Test 2.4: 10-latek dodany poprawnie');
@@ -175,7 +175,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] Test 2.4: Nie mozna dodac 10-latka');
             v_test_fail := v_test_fail + 1;
     END;
-    
+
     DBMS_OUTPUT.PUT_LINE('--------------------------------------------------------');
     DBMS_OUTPUT.PUT_LINE('Scenariusz 2: OK=' || v_test_ok || ' FAIL=' || v_test_fail);
 END;
@@ -201,18 +201,18 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('========================================================');
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 3: WALIDACJA DNI ROBOCZYCH');
     DBMS_OUTPUT.PUT_LINE('========================================================');
-    
+
     -- Oblicz daty testowe
     v_sobota := NEXT_DAY(SYSDATE, 'SATURDAY');
     v_niedziela := NEXT_DAY(SYSDATE, 'SUNDAY');
     v_poniedzialek := NEXT_DAY(SYSDATE, 'MONDAY');
-    
+
     -- Pobranie referencji (dorosly uczen bez ograniczen godzinowych)
     SELECT REF(u) INTO v_ref_uczen FROM t_uczen u WHERE u.id_ucznia = 7;
     SELECT REF(n) INTO v_ref_naucz FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
     SELECT REF(k) INTO v_ref_kurs FROM t_kurs k WHERE k.id_kursu = 1;
     SELECT REF(s) INTO v_ref_sala FROM t_sala s WHERE s.id_sali = 1;
-    
+
     -- Test 3.1: Lekcja w sobote (powinno FAIL)
     BEGIN
         INSERT INTO t_lekcja VALUES (
@@ -225,7 +225,7 @@ BEGIN
     EXCEPTION
         WHEN OTHERS THEN
             IF SQLCODE = -20102 THEN
-                DBMS_OUTPUT.PUT_LINE('[OK] Test 3.1: Sobota odrzucona - ' || 
+                DBMS_OUTPUT.PUT_LINE('[OK] Test 3.1: Sobota odrzucona - ' ||
                                     TO_CHAR(v_sobota, 'YYYY-MM-DD'));
                 v_test_ok := v_test_ok + 1;
             ELSE
@@ -233,7 +233,7 @@ BEGIN
                 v_test_fail := v_test_fail + 1;
             END IF;
     END;
-    
+
     -- Test 3.2: Lekcja w niedziele (powinno FAIL)
     BEGIN
         INSERT INTO t_lekcja VALUES (
@@ -246,7 +246,7 @@ BEGIN
     EXCEPTION
         WHEN OTHERS THEN
             IF SQLCODE = -20102 THEN
-                DBMS_OUTPUT.PUT_LINE('[OK] Test 3.2: Niedziela odrzucona - ' || 
+                DBMS_OUTPUT.PUT_LINE('[OK] Test 3.2: Niedziela odrzucona - ' ||
                                     TO_CHAR(v_niedziela, 'YYYY-MM-DD'));
                 v_test_ok := v_test_ok + 1;
             ELSE
@@ -254,14 +254,14 @@ BEGIN
                 v_test_fail := v_test_fail + 1;
             END IF;
     END;
-    
+
     -- Test 3.3: Lekcja w poniedzialek (powinno OK)
     BEGIN
         INSERT INTO t_lekcja VALUES (
             t_lekcja_obj(seq_lekcja.NEXTVAL, v_poniedzialek, '09:00', 45, 'zaplanowana',
                         v_ref_uczen, v_ref_naucz, v_ref_kurs, v_ref_sala)
         );
-        DBMS_OUTPUT.PUT_LINE('[OK] Test 3.3: Poniedzialek akceptowany - ' || 
+        DBMS_OUTPUT.PUT_LINE('[OK] Test 3.3: Poniedzialek akceptowany - ' ||
                             TO_CHAR(v_poniedzialek, 'YYYY-MM-DD'));
         v_test_ok := v_test_ok + 1;
         ROLLBACK;
@@ -270,7 +270,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] Test 3.3: Blad w poniedzialek - ' || SQLERRM);
             v_test_fail := v_test_fail + 1;
     END;
-    
+
     DBMS_OUTPUT.PUT_LINE('--------------------------------------------------------');
     DBMS_OUTPUT.PUT_LINE('Scenariusz 3: OK=' || v_test_ok || ' FAIL=' || v_test_fail);
 END;
@@ -295,16 +295,16 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('========================================================');
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 4: GODZINY LEKCJI DLA DZIECI');
     DBMS_OUTPUT.PUT_LINE('========================================================');
-    
+
     v_data := NEXT_DAY(SYSDATE, 'WEDNESDAY');
-    
+
     -- Dziecko (uczen 1 - Kacper, 9 lat) i dorosly (uczen 7)
     SELECT REF(u) INTO v_ref_dziecko FROM t_uczen u WHERE u.id_ucznia = 1;
     SELECT REF(u) INTO v_ref_dorosly FROM t_uczen u WHERE u.id_ucznia = 7;
     SELECT REF(n) INTO v_ref_naucz FROM t_nauczyciel n WHERE n.id_nauczyciela = 2;
     SELECT REF(k) INTO v_ref_kurs FROM t_kurs k WHERE k.id_kursu = 4;
     SELECT REF(s) INTO v_ref_sala FROM t_sala s WHERE s.id_sali = 3;
-    
+
     -- Test 4.1: Dziecko o 08:00 (powinno FAIL)
     BEGIN
         INSERT INTO t_lekcja VALUES (
@@ -324,7 +324,7 @@ BEGIN
                 v_test_fail := v_test_fail + 1;
             END IF;
     END;
-    
+
     -- Test 4.2: Dziecko o 13:00 (powinno FAIL)
     BEGIN
         INSERT INTO t_lekcja VALUES (
@@ -344,7 +344,7 @@ BEGIN
                 v_test_fail := v_test_fail + 1;
             END IF;
     END;
-    
+
     -- Test 4.3: Dziecko o 14:00 (powinno OK)
     BEGIN
         INSERT INTO t_lekcja VALUES (
@@ -359,7 +359,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] Test 4.3: Dziecko o 14:00 odrzucone - ' || SQLERRM);
             v_test_fail := v_test_fail + 1;
     END;
-    
+
     -- Test 4.4: Dziecko o 18:15 z 45 min (konczy 19:00 - OK)
     BEGIN
         INSERT INTO t_lekcja VALUES (
@@ -374,7 +374,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] Test 4.4: Dziecko 18:15-19:00 odrzucone - ' || SQLERRM);
             v_test_fail := v_test_fail + 1;
     END;
-    
+
     -- Test 4.5: Dziecko o 18:30 z 45 min (konczy 19:15 - FAIL)
     BEGIN
         INSERT INTO t_lekcja VALUES (
@@ -394,7 +394,7 @@ BEGIN
                 v_test_fail := v_test_fail + 1;
             END IF;
     END;
-    
+
     -- Test 4.6: Dorosly o 08:00 (powinno OK)
     BEGIN
         INSERT INTO t_lekcja VALUES (
@@ -409,7 +409,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] Test 4.6: Dorosly o 08:00 odrzucony - ' || SQLERRM);
             v_test_fail := v_test_fail + 1;
     END;
-    
+
     DBMS_OUTPUT.PUT_LINE('--------------------------------------------------------');
     DBMS_OUTPUT.PUT_LINE('Scenariusz 4: OK=' || v_test_ok || ' FAIL=' || v_test_fail);
 END;
@@ -438,9 +438,9 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('========================================================');
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 5: LIMIT GODZIN NAUCZYCIELA (max 6h)');
     DBMS_OUTPUT.PUT_LINE('========================================================');
-    
+
     v_data := NEXT_DAY(SYSDATE + 7, 'TUESDAY');  -- Nastepny wtorek
-    
+
     -- Pobranie referencji (dorosli uczniowie)
     SELECT REF(u) INTO v_ref_uczen1 FROM t_uczen u WHERE u.id_ucznia = 5;
     SELECT REF(u) INTO v_ref_uczen2 FROM t_uczen u WHERE u.id_ucznia = 6;
@@ -451,7 +451,7 @@ BEGIN
     SELECT REF(k) INTO v_ref_kurs FROM t_kurs k WHERE k.id_kursu = 8;  -- Flet
     SELECT REF(s) INTO v_ref_sala1 FROM t_sala s WHERE s.id_sali = 3;
     SELECT REF(s) INTO v_ref_sala2 FROM t_sala s WHERE s.id_sali = 4;
-    
+
     -- Dodaj 6 lekcji po 60 min = 360 min (limit)
     BEGIN
         -- Lekcja 1: 08:00-09:00 (60 min, suma: 60)
@@ -484,10 +484,10 @@ BEGIN
             t_lekcja_obj(seq_lekcja.NEXTVAL, v_data, '14:00', 60, 'zaplanowana',
                         v_ref_uczen5, v_ref_naucz, v_ref_kurs, v_ref_sala2)
         );
-        
+
         DBMS_OUTPUT.PUT_LINE('[OK] Test 5.1: 6h lekcji (360 min) - akceptowane');
         v_test_ok := v_test_ok + 1;
-        
+
         -- Test 5.2: Proba dodania 7. lekcji (powinno FAIL)
         BEGIN
             INSERT INTO t_lekcja VALUES (
@@ -506,7 +506,7 @@ BEGIN
                     v_test_fail := v_test_fail + 1;
                 END IF;
         END;
-        
+
         ROLLBACK;
     EXCEPTION
         WHEN OTHERS THEN
@@ -514,7 +514,7 @@ BEGIN
             v_test_fail := v_test_fail + 1;
             ROLLBACK;
     END;
-    
+
     DBMS_OUTPUT.PUT_LINE('--------------------------------------------------------');
     DBMS_OUTPUT.PUT_LINE('Scenariusz 5: OK=' || v_test_ok || ' FAIL=' || v_test_fail);
 END;
@@ -542,9 +542,9 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('========================================================');
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 6: LIMIT LEKCJI UCZNIA (max 2/dzien)');
     DBMS_OUTPUT.PUT_LINE('========================================================');
-    
+
     v_data := NEXT_DAY(SYSDATE + 14, 'FRIDAY');
-    
+
     SELECT REF(u) INTO v_ref_uczen FROM t_uczen u WHERE u.id_ucznia = 7;  -- Dorosly
     SELECT REF(n) INTO v_ref_naucz1 FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
     SELECT REF(n) INTO v_ref_naucz2 FROM t_nauczyciel n WHERE n.id_nauczyciela = 2;
@@ -553,7 +553,7 @@ BEGIN
     SELECT REF(k) INTO v_ref_kurs2 FROM t_kurs k WHERE k.id_kursu = 4;
     SELECT REF(s) INTO v_ref_sala1 FROM t_sala s WHERE s.id_sali = 1;
     SELECT REF(s) INTO v_ref_sala2 FROM t_sala s WHERE s.id_sali = 3;
-    
+
     BEGIN
         -- Lekcja 1
         INSERT INTO t_lekcja VALUES (
@@ -562,7 +562,7 @@ BEGIN
         );
         DBMS_OUTPUT.PUT_LINE('[OK] Test 6.1: 1. lekcja ucznia dodana');
         v_test_ok := v_test_ok + 1;
-        
+
         -- Lekcja 2
         INSERT INTO t_lekcja VALUES (
             t_lekcja_obj(seq_lekcja.NEXTVAL, v_data, '11:00', 45, 'zaplanowana',
@@ -570,7 +570,7 @@ BEGIN
         );
         DBMS_OUTPUT.PUT_LINE('[OK] Test 6.2: 2. lekcja ucznia dodana');
         v_test_ok := v_test_ok + 1;
-        
+
         -- Proba dodania 3. lekcji (FAIL)
         BEGIN
             INSERT INTO t_lekcja VALUES (
@@ -589,7 +589,7 @@ BEGIN
                     v_test_fail := v_test_fail + 1;
                 END IF;
         END;
-        
+
         ROLLBACK;
     EXCEPTION
         WHEN OTHERS THEN
@@ -597,7 +597,7 @@ BEGIN
             v_test_fail := v_test_fail + 1;
             ROLLBACK;
     END;
-    
+
     DBMS_OUTPUT.PUT_LINE('--------------------------------------------------------');
     DBMS_OUTPUT.PUT_LINE('Scenariusz 6: OK=' || v_test_ok || ' FAIL=' || v_test_fail);
 END;
@@ -623,16 +623,16 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('========================================================');
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 7: KONFLIKTY SAL I NAUCZYCIELI');
     DBMS_OUTPUT.PUT_LINE('========================================================');
-    
+
     v_data := NEXT_DAY(SYSDATE + 21, 'THURSDAY');
-    
+
     SELECT REF(u) INTO v_ref_uczen1 FROM t_uczen u WHERE u.id_ucznia = 7;
     SELECT REF(u) INTO v_ref_uczen2 FROM t_uczen u WHERE u.id_ucznia = 8;
     SELECT REF(n) INTO v_ref_naucz1 FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
     SELECT REF(n) INTO v_ref_naucz2 FROM t_nauczyciel n WHERE n.id_nauczyciela = 2;
     SELECT REF(k) INTO v_ref_kurs FROM t_kurs k WHERE k.id_kursu = 1;
     SELECT REF(s) INTO v_ref_sala FROM t_sala s WHERE s.id_sali = 1;
-    
+
     BEGIN
         -- Lekcja bazowa: 10:00-10:45, Sala 1, Nauczyciel 1, Uczen 1
         INSERT INTO t_lekcja VALUES (
@@ -640,7 +640,7 @@ BEGIN
                         v_ref_uczen1, v_ref_naucz1, v_ref_kurs, v_ref_sala)
         );
         DBMS_OUTPUT.PUT_LINE('[INFO] Lekcja bazowa: 10:00-10:45, Sala A1, Naucz.1, Uczen 1');
-        
+
         -- Test 7.1: Konflikt sali (ta sama sala, nakladajacy sie czas)
         BEGIN
             INSERT INTO t_lekcja VALUES (
@@ -659,7 +659,7 @@ BEGIN
                     v_test_fail := v_test_fail + 1;
                 END IF;
         END;
-        
+
         -- Test 7.2: Konflikt nauczyciela (ten sam nauczyciel, nakladajacy sie czas, inna sala)
         DECLARE
             v_ref_sala2 REF t_sala_obj;
@@ -681,7 +681,7 @@ BEGIN
                     v_test_fail := v_test_fail + 1;
                 END IF;
         END;
-        
+
         -- Test 7.3: Konflikt ucznia (ten sam uczen, nakladajacy sie czas)
         DECLARE
             v_ref_sala2 REF t_sala_obj;
@@ -703,7 +703,7 @@ BEGIN
                     v_test_fail := v_test_fail + 1;
                 END IF;
         END;
-        
+
         ROLLBACK;
     EXCEPTION
         WHEN OTHERS THEN
@@ -711,7 +711,7 @@ BEGIN
             v_test_fail := v_test_fail + 1;
             ROLLBACK;
     END;
-    
+
     DBMS_OUTPUT.PUT_LINE('--------------------------------------------------------');
     DBMS_OUTPUT.PUT_LINE('Scenariusz 7: OK=' || v_test_ok || ' FAIL=' || v_test_fail);
 END;
@@ -730,7 +730,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('========================================================');
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 8: BLOKADA USUWANIA');
     DBMS_OUTPUT.PUT_LINE('========================================================');
-    
+
     -- Test 8.1: Proba usuniecia nauczyciela z lekcjami
     BEGIN
         DELETE FROM t_nauczyciel WHERE id_nauczyciela = 1;
@@ -747,7 +747,7 @@ BEGIN
                 v_test_ok := v_test_ok + 1;  -- FK tez chroni dane
             END IF;
     END;
-    
+
     -- Test 8.2: Proba usuniecia ucznia z lekcjami
     BEGIN
         DELETE FROM t_uczen WHERE id_ucznia = 1;
@@ -764,7 +764,7 @@ BEGIN
                 v_test_ok := v_test_ok + 1;
             END IF;
     END;
-    
+
     DBMS_OUTPUT.PUT_LINE('--------------------------------------------------------');
     DBMS_OUTPUT.PUT_LINE('Scenariusz 8: OK=' || v_test_ok || ' FAIL=' || v_test_fail);
 END;
@@ -783,7 +783,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('========================================================');
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 9: PAKIETY - OPERACJE');
     DBMS_OUTPUT.PUT_LINE('========================================================');
-    
+
     -- Test 9.1: pkg_uczen.lista
     BEGIN
         pkg_uczen.lista;
@@ -794,7 +794,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] Test 9.1: pkg_uczen.lista - ' || SQLERRM);
             v_test_fail := v_test_fail + 1;
     END;
-    
+
     -- Test 9.2: pkg_uczen.lista_dzieci
     BEGIN
         pkg_uczen.lista_dzieci;
@@ -805,7 +805,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] Test 9.2: pkg_uczen.lista_dzieci - ' || SQLERRM);
             v_test_fail := v_test_fail + 1;
     END;
-    
+
     -- Test 9.3: pkg_uczen.info
     BEGIN
         pkg_uczen.info(1);
@@ -816,7 +816,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] Test 9.3: pkg_uczen.info - ' || SQLERRM);
             v_test_fail := v_test_fail + 1;
     END;
-    
+
     -- Test 9.4: pkg_lekcja.plan_dnia
     BEGIN
         pkg_lekcja.plan_dnia(NEXT_DAY(SYSDATE, 'MONDAY'));
@@ -827,7 +827,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] Test 9.4: pkg_lekcja.plan_dnia - ' || SQLERRM);
             v_test_fail := v_test_fail + 1;
     END;
-    
+
     -- Test 9.5: pkg_ocena.historia_ucznia
     BEGIN
         pkg_ocena.historia_ucznia(1);
@@ -838,7 +838,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] Test 9.5: pkg_ocena.historia_ucznia - ' || SQLERRM);
             v_test_fail := v_test_fail + 1;
     END;
-    
+
     DBMS_OUTPUT.PUT_LINE('--------------------------------------------------------');
     DBMS_OUTPUT.PUT_LINE('Scenariusz 9: OK=' || v_test_ok || ' FAIL=' || v_test_fail);
 END;
@@ -860,7 +860,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('========================================================');
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 10: METODY OBIEKTOW');
     DBMS_OUTPUT.PUT_LINE('========================================================');
-    
+
     -- Test 10.1: t_uczen_obj.wiek()
     BEGIN
         SELECT VALUE(u) INTO v_uczen FROM t_uczen u WHERE u.id_ucznia = 1;
@@ -871,7 +871,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] Test 10.1: uczen.wiek() - ' || SQLERRM);
             v_test_fail := v_test_fail + 1;
     END;
-    
+
     -- Test 10.2: t_uczen_obj.czy_dziecko()
     BEGIN
         SELECT VALUE(u) INTO v_uczen FROM t_uczen u WHERE u.id_ucznia = 1;
@@ -882,7 +882,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] Test 10.2: uczen.czy_dziecko() - ' || SQLERRM);
             v_test_fail := v_test_fail + 1;
     END;
-    
+
     -- Test 10.3: t_nauczyciel_obj.lata_stazu()
     BEGIN
         SELECT VALUE(n) INTO v_naucz FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
@@ -893,11 +893,11 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] Test 10.3: nauczyciel.lata_stazu() - ' || SQLERRM);
             v_test_fail := v_test_fail + 1;
     END;
-    
+
     -- Test 10.4: t_nauczyciel_obj.liczba_instrumentow()
     BEGIN
         SELECT VALUE(n) INTO v_naucz FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
-        DBMS_OUTPUT.PUT_LINE('[OK] Test 10.4: nauczyciel.liczba_instrumentow() = ' || 
+        DBMS_OUTPUT.PUT_LINE('[OK] Test 10.4: nauczyciel.liczba_instrumentow() = ' ||
                             v_naucz.liczba_instrumentow());
         v_test_ok := v_test_ok + 1;
     EXCEPTION
@@ -905,7 +905,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] Test 10.4: nauczyciel.liczba_instrumentow() - ' || SQLERRM);
             v_test_fail := v_test_fail + 1;
     END;
-    
+
     -- Test 10.5: t_sala_obj.opis_pelny()
     BEGIN
         SELECT VALUE(s) INTO v_sala FROM t_sala s WHERE s.id_sali = 1;
@@ -916,7 +916,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] Test 10.5: sala.opis_pelny() - ' || SQLERRM);
             v_test_fail := v_test_fail + 1;
     END;
-    
+
     DBMS_OUTPUT.PUT_LINE('--------------------------------------------------------');
     DBMS_OUTPUT.PUT_LINE('Scenariusz 10: OK=' || v_test_ok || ' FAIL=' || v_test_fail);
 END;

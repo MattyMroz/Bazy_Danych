@@ -149,7 +149,7 @@ BEFORE INSERT OR UPDATE ON OCENY
 FOR EACH ROW
 DECLARE
 BEGIN
-    IF :NEW.obszar IS NOT NULL AND 
+    IF :NEW.obszar IS NOT NULL AND
        :NEW.obszar NOT IN ('technika', 'interpretacja', 'postepy', 'teoria', 'sluch', 'ogolna') THEN
         RAISE_APPLICATION_ERROR(-20125,
             'Obszar oceny musi byc jednym z: technika, interpretacja, postepy, teoria, sluch, ogolna');
@@ -166,7 +166,7 @@ BEFORE INSERT OR UPDATE ON OCENY
 FOR EACH ROW
 DECLARE
 BEGIN
-    IF :NEW.czy_semestralna IS NOT NULL AND 
+    IF :NEW.czy_semestralna IS NOT NULL AND
        :NEW.czy_semestralna NOT IN ('T', 'N') THEN
         RAISE_APPLICATION_ERROR(-20126,
             'Flaga czy_semestralna musi byc "T" lub "N"');
@@ -180,6 +180,6 @@ END;
 
 SELECT 'Triggery utworzone pomyslnie!' AS status FROM DUAL;
 
-SELECT trigger_name, table_name, status 
-FROM user_triggers 
+SELECT trigger_name, table_name, status
+FROM user_triggers
 ORDER BY table_name, trigger_name;

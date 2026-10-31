@@ -16,7 +16,7 @@ https://www.oracle.com/database/technologies/databaseappdev-vm.html
 
 https://github.com/oracle/docker-images
 
- 
+
 
 Będziemy pracować na użytkowniku HR oraz SCOTT (jeśli nie ma go w systemie to w dokumentacji na stronie Oracle jest informacja jak zainstalować przykładową bazę danych
 
@@ -32,7 +32,7 @@ najlepiej już z dołączonym JDK.
 
  Istnieją również rozszerzenia do innych środowisk:
 
- --> CS Studio Code 
+ --> CS Studio Code
 
 
 https://marketplace.visualstudio.com/items?itemName=Oracle.sql-developer

@@ -23,7 +23,7 @@ SET SERVEROUTPUT ON;
 -- ============================================================================
 
 BEGIN
-    FOR rec IN (SELECT username FROM dba_users 
+    FOR rec IN (SELECT username FROM dba_users
                 WHERE username IN ('ADMIN_SZKOLY', 'NAUCZYCIEL_JAN', 'SEKRETARIAT_ANNA')) LOOP
         EXECUTE IMMEDIATE 'DROP USER ' || rec.username || ' CASCADE';
         DBMS_OUTPUT.PUT_LINE('Usunieto uzytkownika: ' || rec.username);
@@ -34,7 +34,7 @@ END;
 /
 
 BEGIN
-    FOR rec IN (SELECT role FROM dba_roles 
+    FOR rec IN (SELECT role FROM dba_roles
                 WHERE role IN ('ROLA_ADMIN_SZKOLY', 'ROLA_NAUCZYCIEL', 'ROLA_SEKRETARIAT')) LOOP
         EXECUTE IMMEDIATE 'DROP ROLE ' || rec.role;
         DBMS_OUTPUT.PUT_LINE('Usunieto role: ' || rec.role);

@@ -6,7 +6,7 @@ Następnie zweryfikować, czy jest to najstarszy film stosując do tego framewor
 
 UWAGA!!!
 -------
-W środowisku Spark do operowania na dacie wykorzystać funkcję: 
+W środowisku Spark do operowania na dacie wykorzystać funkcję:
 ToUnixTime(ToDate(<atrybut>,'dd-MMM'-yyyy')) AS relDate
 
 2. Podać najgorzej oceniany film (z największą liczbą ocen wynoszących poniżej <2)
@@ -19,5 +19,3 @@ Przeanalizować pozostałe pliki archiwum ml100k, następnie wykorzystując fram
 6. Podać które gatunki filmów były najczęściej oglądane przez osoby danych grup zawodowych (wykonywanych zawodów)?
 7. Osoby których grup zawodowych dawały najwyższe oceny jakim gatunkom filmów?
 8. Zastanów się - czy istnieje związek między samymi ocenami, ocenianymi gatunkami filmów, wykonywam zawodem a płcią?
-
-

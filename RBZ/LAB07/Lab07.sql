@@ -103,7 +103,7 @@ USING '(DESCRIPTION=
   )
 )';
 
-SELECT * FROM dual@pdv1.PD25.IMSI.PL.PL;    
+SELECT * FROM dual@pdv1.PD25.IMSI.PL.PL;
 SELECT * FROM dept@pdv1;
 
 
@@ -164,5 +164,3 @@ VALUES ('NOWY_ZDALNY', 'ZDA');
 SELECT * FROM department;
 SELECT * FROM dept;
 SELECT * FROM dept@pdv1;
-
-

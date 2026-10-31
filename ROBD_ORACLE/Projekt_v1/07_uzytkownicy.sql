@@ -203,6 +203,6 @@ PROMPT ========================================;
 -- ============================================================================
 PROMPT ;
 PROMPT Przypisane role:;
-SELECT grantee, granted_role 
-FROM dba_role_privs 
+SELECT grantee, granted_role
+FROM dba_role_privs
 WHERE grantee IN ('USR_ADMIN', 'USR_NAUCZYCIEL', 'USR_SEKRETARIAT');

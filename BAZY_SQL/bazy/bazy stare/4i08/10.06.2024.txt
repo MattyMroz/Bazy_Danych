@@ -1,16 +1,16 @@
---Dodaj funkcję fun_kol, która zwróci tekstową nazwę 
+--Dodaj funkcję fun_kol, która zwróci tekstową nazwę
 --dnia tygodnia  powstałą
---z daty powstałej z dodania X dni 
---(gdzie X to drugi parametr) 
+--z daty powstałej z dodania X dni
+--(gdzie X to drugi parametr)
 --do daty podanej w pierwszym parametrze.
---W przypadku ustawienia null w parametrze 
---X dodaj 10 dni. 
+--W przypadku ustawienia null w parametrze
+--X dodaj 10 dni.
 --Przykładowy wynik wywołania funkcji:
 --'Otrzymany dzień to: Sunday'
 
 
 create function fun_kol (@date datetime,
- @interwal int) 
+ @interwal int)
 returns varchar(50)
 as
 begin
@@ -18,15 +18,15 @@ declare @wynik as datetime
 if @interwal is null
 begin
 set @wynik = dateadd(day,10,@date)
-return 'Otrzymany dzień to: '+cast(DATENAME 
+return 'Otrzymany dzień to: '+cast(DATENAME
 (weekday,@wynik)
 as char)
 end
 else
 begin
 set @wynik = dateadd(day,@interwal,@date)
-return 'Otrzymany dzień to: '+cast(DATENAME 
-(weekday,@wynik) 
+return 'Otrzymany dzień to: '+cast(DATENAME
+(weekday,@wynik)
 as char)
 end
 return 'blad'
@@ -74,12 +74,12 @@ execute procedura_z_parameterm 15,1.2;
 exec procedura_z_parameterm 15, 2.3;
 
 
---usuwanie procedury 
+--usuwanie procedury
 drop proc procedura_z_parameterm
 -------------------------------------------------------------
---Procedura wybierająca nazwiska pracowników których średnie zarobki są najwyższe 
+--Procedura wybierająca nazwiska pracowników których średnie zarobki są najwyższe
 --lub równe parametru wejsciowemu
---Albo (Procedura wybierająca pracowników których średnie zarobki są najwyższe 
+--Albo (Procedura wybierająca pracowników których średnie zarobki są najwyższe
 --lub najniższe) (zakładamy unikatowość nazwisk pracownikow)
 
 
@@ -88,7 +88,7 @@ drop proc procedura_z_parameterm
 		@wej_srd money
 	as
 	begin
-		select nazwisko, avg(brutto) sred from 
+		select nazwisko, avg(brutto) sred from
 
 		pracownicy p join zarobki z on z.pracid = p.pracid
 		group by p.nazwisko
@@ -105,7 +105,7 @@ drop proc procedura_z_parameterm
 			join zarobki z on z.pracid= p.pracid
 			group by p.nazwisko
 			having avg(brutto)= @wej_srd;
-	
+
 	end;
 	go
 	exec procedura 5600.0000;
@@ -114,7 +114,7 @@ drop proc procedura_z_parameterm
 --Procedura zwraca pracowników których nazwisko like @filtr_nazw i imie like @filtr_imie
 --procedura z domyslnym parametrem
 
-alter proc procedura 
+alter proc procedura
 	@filtr_nazw varchar(5),
 	@filtr_imie varchar(5)='%'
 as
@@ -129,7 +129,7 @@ exec procedura 'K%'
 
 
 
-alter proc procedura 
+alter proc procedura
 	@filtr_imie varchar(5)='%',
 	@filtr_nazw varchar(5)
 as
@@ -149,9 +149,9 @@ exec procedura @filtr_nazw='J%'
 ---------------------------------------------------------
 --cialo procedury z deklaracjami
 
-alter proc procedura 	
+alter proc procedura
 as
-begin 
+begin
 
 	declare @nazw varchar(50) --ustawnienie na dana wartosc
 	set @nazw='puste'
@@ -166,10 +166,10 @@ exec procedura
 -- sterowanie przepływem
 
 
-alter proc procedura 
+alter proc procedura
 	@ilosc integer
 as
-begin 
+begin
 
 	declare @nazw varchar(50) --ustawnienie na dana wartosc
 	set @nazw='puste'
@@ -177,17 +177,17 @@ begin
 	-- ostatni rekord podstawia
 	select @nazw =  nazwisko from pracownicy order by nazwisko ;
 	print @nazw
-	
+
 	if len(@nazw)>10
 	print 'Wieksza'
 	else print 'Mniejsza'
-	
+
 	declare @i integer
 	set @i = 0
 	while @i < @ilosc
-	begin 
+	begin
 	   print 'Przebieg nr '+@i --cast funkcja konwertujaca typ
-	   set @i = @i+1 
+	   set @i = @i+1
 	end
 end
 exec procedura 5;
@@ -195,22 +195,22 @@ exec procedura 5;
 --------------------------------------------
 --Procedura nie zwraca wartości ale możemy napisać procedurę z parametrem wyjściowym
 
-create procedure suma 
+create procedure suma
 	@a integer,
 	@b integer,
 	@wiek integer OUTPUT
-as 
+as
 begin
 	set @wiek = @a+@b
 end
 --Anonimowa procedura
 --konwersja typów
 declare @wynik integer
-exec suma 1,5,@wynik output 
+exec suma 1,5,@wynik output
 print 'Suma warotści wynosi: ' + convert(varchar, @wynik)
 -----------------------------------------------------------
 
---Utwórz procedurę która bedzie obliczała średnią trzech podanych na wejściu 
+--Utwórz procedurę która bedzie obliczała średnią trzech podanych na wejściu
 --cyfr oraz
 --ograniczy możliwosc wpisania blednie danych
 
@@ -223,23 +223,23 @@ as
 begin
 	if @m1 is null or @m2 is null or @m3 is null
 		print 'podaj poprawne wartosci'
-	else 
+	else
 	set @wynik =(@m1+@m2+@m3)/3
-	print 'Wynik: '+convert(varchar, @wynik)  
+	print 'Wynik: '+convert(varchar, @wynik)
 end
 go
 -------------------------------------------
 declare @wyn float
 exec oblicz1 1,2,3,@wyn output
-print 'Srednia z wprowadzonych wartości wynosi : '+ convert(varchar, @wyn)  
+print 'Srednia z wprowadzonych wartości wynosi : '+ convert(varchar, @wyn)
 
---Napisz procedurę która określi jaki dzien tygodnia stanowi 
+--Napisz procedurę która określi jaki dzien tygodnia stanowi
 --data podana w parametrze wejściowym.
 --W przypadku braku  parametru, zwróci dzien tygodnia aktualnej daty.
 
 ---zwróć adres w posatci
-Piotrkowska 
-123/23 
-m.30 
-90-123 
-Łódź 
+Piotrkowska
+123/23
+m.30
+90-123
+Łódź

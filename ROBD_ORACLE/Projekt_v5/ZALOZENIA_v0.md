@@ -307,7 +307,7 @@ Uczniowie elastyczni - wpasowuję gdzie jest miejsce
 
 ## ❓ PYTANIA DO ROZSTRZYGNIĘCIA
 
-1. **Czy potrzebujemy tabeli WYPOZYCZENIA?** 
+1. **Czy potrzebujemy tabeli WYPOZYCZENIA?**
    - Jeśli tak → 7 tabel
    - Jeśli nie → 6 tabel
 

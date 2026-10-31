@@ -1,4 +1,4 @@
-create database pon_12 
+create database pon_12
 use pon_12
 
 sp_helpdb pon_12
@@ -9,7 +9,7 @@ create table [dane moje]
 
 )
 
-create table dane 
+create table dane
 (imie varchar,
 nazwisko varchar,
 wiek int
@@ -23,7 +23,7 @@ select * from dane
 insert into dane
 values('jasio','kotek',33)
 
-create table dane1 
+create table dane1
 (imie varchar(10),
 nazwisko varchar(20),
 wiek int
