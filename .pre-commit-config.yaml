@@ -1,0 +1,112 @@
+# Git hooks — one file, blocks marked by what the repo tracks.
+#
+# Copy to <project>/.pre-commit-config.yaml, DELETE the blocks and hooks that do
+# not apply (each block header says when it stays), fill in the scopes, then:
+#
+#   git config --local core.autocrlf false     # or mixed-line-ending loops forever
+#   prek install                               # or: uv run pre-commit install
+#   prek run --all-files                       # build environments before first commit
+#
+# DELETE blocks, do not comment them out — prek's check-yaml rejects long runs of
+# comment lines (j178/prek#2501).
+#
+# A vendored subproject with its own .pre-commit-config.yaml runs as a separate
+# prek project. Keep it out: list its directory in a root .prekignore
+# (gitignore syntax), then `prek list --refresh`.
+#
+# After editing, verify no hook is left without files:
+#   prek run --hook-stage manual --all-files
+
+minimum_pre_commit_version: "4.0.0"
+default_install_hook_types: [pre-commit, commit-msg, pre-push]
+default_stages: [pre-commit]
+
+# Generated LaTeX build files, two SQL files saved in a broken encoding and three UTF-16 SQL files that end-of-file-fixer corrupts.
+exclude: |
+  (?x)^(
+    .*\.(aux|log|toc|out|synctex\.gz)|
+    RBZ/LAB01/SQLQuery1\.sql|
+    RBZ/LAB02/SQLQuery2\.sql|
+    BAZY_SQL/Wykład/skrypt\ 3\.sql|
+    PIABD/Teoria/instnwnd\.sql|
+    PIABD/Projekt/251190_Mateusz_Mróz_PIABD_Projekt/SQL\.sql
+  )$
+
+repos:
+# ── CORE — mandatory, every hook here has files in any repo, do not delete ────
+
+  - repo: meta
+    hooks:
+      - id: check-hooks-apply
+        stages: [manual]
+      - id: check-useless-excludes
+        stages: [manual]
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      # Fixes the file, then fails the commit. Run `git add` and commit again.
+      - id: trailing-whitespace
+        # Two trailing spaces are a hard line break in Markdown.
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: fix-byte-order-marker
+      # Refuses only, changes nothing.
+      - id: check-yaml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=1024]
+      - id: check-case-conflict
+      - id: check-illegal-windows-names
+      - id: detect-private-key
+      - id: forbid-submodules
+      - id: destroyed-symlinks
+
+  # Fill in --scopes: keep repo and docs, add one scope per top-level area.
+  # It rejects `Revert "..."`, which git writes itself. After git revert,
+  # rewrite the subject as revert(scope): ... — `revert` is on the type list.
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.4.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args:
+          - --force-scope
+          - --scopes=repo,docs,bazy-sql,bigdata,nowy-folder,piabd,rbz,robd-oracle
+          - feat
+          - fix
+          - chore
+          - docs
+          - refactor
+          - test
+          - perf
+          - style
+          - ci
+          - build
+          - revert
+
+  - repo: https://github.com/MattyMroz/agents
+    rev: hooks-v1.2.0 # or newer: prek autoupdate
+    hooks:
+      # U+FFFD is what a botched encoding leaves behind.
+      - id: no-replacement-char
+      # Commit body: summary + Validation block bound to recorded runs.
+      # Format and the mm-validate workflow: presets/hooks/references/commit-message.md
+      - id: commit-validation
+
+# ── DATA FILES — keep each hook only if the repo tracks that file type ────────
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-json # *.json
+
+# ── PYTHON — delete unless the repo tracks *.py files ─────────────────────────
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-ast
+      - id: debug-statements
