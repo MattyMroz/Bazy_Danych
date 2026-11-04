@@ -35,6 +35,7 @@ repos:
       - id: check-merge-conflict
       - id: check-added-large-files
         args: [--maxkb=1024]
+        exclude: ^BIGDATA/Lab4/winutils\.zip$
         stages: [pre-commit]
       - id: check-case-conflict
       - id: check-illegal-windows-names

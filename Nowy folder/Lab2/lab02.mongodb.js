@@ -1,7 +1,9 @@
+// Mateusz Mróz, 251190 - Lab 02 MongoDB (sprawdzone na MongoDB 9.0, kontener mongodb/mongodb-community-server)
+
 // ! Do pobierania danych wykorzystujemy metodę find()
 // 1.  Utwórz bazę danych o nazwie northwind
 use('northwind');
-db.dropDatabase();
+db.dropDatabase(); // czyści bazę przy ponownym uruchomieniu (createCollection nie nadpisuje istniejących kolekcji)
 
 // 2.  Utwórz kolekcje: customers, orders, departments (bez danych)
 // https://www.mongodb.com/docs/manual/reference/method/db.createCollection/
@@ -263,7 +265,6 @@ db.orders.insertMany([
     }
 ]);
 
-use('northwind');
 db.getCollectionNames();
 
 // 4. Utwórz kolekcję o nazwie lab_test.
@@ -400,6 +401,9 @@ db.departments.updateMany(
     { $set: { status: "A" } },
     { upsert: true }
 );
+// -> w Warszawie są dwa działy (alpha, beta), więc oba dostają status "A" i nic nowego nie powstaje.
+// Gdyby nie było żadnego, upsert utworzyłby dokument z pól filtra i $set:
+//    { _id: ObjectId(...), city: "Warszawa", status: "A" }
 
 db.departments.find({ city: "Warszawa" });
 
@@ -476,6 +480,7 @@ db.orders.find()
 // Politechnika nie pojawi się jeszcze na liście - Mongo tworzy bazę dopiero wtedy,
 // gdy trafi do niej pierwsza kolekcja albo dokument (to robimy w 25.1).
 use('Politechnika');
+db.dropDatabase(); // czyści bazę przy ponownym uruchomieniu (jak northwind w zadaniu 1)
 db.getMongo().getDBNames();
 
 //   25.1 - w danej bazie utwórz kolekcję Students i wstaw dowolne dane związane z danymi studentów
@@ -484,22 +489,232 @@ db.getMongo().getDBNames();
 // (format struktury danych JSON w tym znaczniki ustalić wspólnie na zajęciach)
 // Dana kolekcja ma mieć ograniczoną wielkość kolekcji na 1MB lub 100 dokumentów.
 // Sprawdzić co się dzieje po przekroczeniu 1MB lub 100 dokumentów w kolekcji
+use('Politechnika');
+db.createCollection('Students', {
+    capped: true,
+    size: 1048576, // 1MB w bajtach
+    max: 100
+});
+
+db.Students.insertMany([
+    {
+        firstName: "Michał",
+        lastName: "Wiśniewski",
+        faculty: "Wydział Informatyki",
+        major: "Informatyka",
+        birthYear: 2002,
+        interests: ["bazy danych", "siatkówka", "gry"],
+        emails: {
+            university: "m.wisniewski@student.pl",
+            private: "michal.w02@gmail.com"
+        },
+        createdAt: new Date()
+    },
+    {
+        firstName: "Karolina",
+        lastName: "Lewandowska",
+        faculty: "Wydział Zarządzania",
+        major: "Logistyka",
+        birthYear: 2003,
+        interests: ["fotografia", "podróże"],
+        emails: {
+            university: "k.lewandowska@student.pl",
+            private: "karolina.lew@wp.pl"
+        },
+        createdAt: new Date()
+    }
+]);
+
+db.Students.insertOne({
+    firstName: "Tomasz",
+    lastName: "Zieliński",
+    faculty: "Wydział Informatyki",
+    major: "Informatyka",
+    birthYear: 2001,
+    interests: ["programowanie", "rower"],
+    emails: {
+        university: "t.zielinski@student.pl",
+        private: "tomek.ziel@onet.pl"
+    },
+    createdAt: new Date()
+});
+
+use('Politechnika');
+db.Students.find();
+db.getMongo().getDBNames(); // teraz Politechnika już jest na liście
+
+// Test limitu - robię to na osobnej kolekcji, żeby nie stracić studentów z Students
+// -> po przekroczeniu 100 dokumentów Mongo nie zwraca błędu, tylko usuwa najstarsze
+//    dokumenty. Zostaje 100, a pierwszy to nr 6 (1-5 wyleciały). Przy 1MB działa tak samo.
+use('Politechnika');
+db.createCollection('Students_test', {
+    capped: true,
+    size: 1048576,
+    max: 100
+});
+
+for (let i = 1; i <= 105; i++) {
+    db.Students_test.insertOne({ nr: i });
+}
+
+db.Students_test.countDocuments();
+db.Students_test.find().limit(1);
+
+db.Students_test.drop();
 
 //   25.2 - następnie wykonaj przykładowe polecenia updateMany(), updateOne(), replaceOne()
 // i sprawdź zmodyfikowane odpowiednie dane.
+use('Politechnika');
+db.Students.updateMany(
+    { faculty: "Wydział Informatyki" },
+    { $set: { semester: 5 } }
+);
+
+db.Students.updateOne(
+    { lastName: "Lewandowska" },
+    { $set: { major: "Zarządzanie" } }
+);
+
+db.Students.replaceOne(
+    { lastName: "Zieliński" },
+    {
+        firstName: "Tomasz",
+        lastName: "Zieliński",
+        faculty: "Wydział Informatyki",
+        major: "Cyberbezpieczeństwo",
+        birthYear: 2001,
+        interests: ["programowanie"],
+        emails: {
+            university: "t.zielinski@student.pl",
+            private: "tomek.ziel@onet.pl"
+        },
+        createdAt: new Date()
+    }
+);
+
+db.Students.find();
 
 //   25.3 - zmodyfikuj istniejące dane: dodaj nowe pole np. z aktualną datą ($set),
 // wyrzuć pole np. z datą ($unset).
 // https://www.mongodb.com/docs/manual/reference/operator/update/set/
 // https://www.mongodb.com/docs/manual/reference/operator/update/unset/
+use('Politechnika');
+db.Students.updateMany(
+    {},
+    { $set: { updatedAt: new Date() } }
+);
+
+db.Students.find();
+
+db.Students.updateMany(
+    {},
+    { $unset: { updatedAt: "" } }
+);
+
+db.Students.find();
 
 //   25.4 - zmień nazwę dowolnego pola $rename
+use('Politechnika');
+db.Students.updateMany(
+    {},
+    { $rename: { birthYear: "yearOfBirth" } }
+);
+
+db.Students.find();
 
 //   25.5 - opcja polecenia updateOne i innych z opcją {upsert:true}
+// -> nie ma studenta o nazwisku Mazur, więc upsert tworzy nowy dokument
+//    z polami z filtra i z $set
+use('Politechnika');
+db.Students.updateOne(
+    { lastName: "Mazur" },
+    {
+        $set: {
+            firstName: "Paweł",
+            faculty: "Wydział Mechaniczny",
+            createdAt: new Date()
+        }
+    },
+    { upsert: true }
+);
+
+// -> drugi raz Mazur już istnieje, więc tylko go aktualizuje
+db.Students.updateMany(
+    { faculty: "Wydział Mechaniczny" },
+    { $set: { major: "Mechatronika" } },
+    { upsert: true }
+);
+
+db.Students.find();
 
 //   25.6 - następnie wykonaj polecenia deleteMany(), deleteOne() i sprawdź czy skasowano odpowiednie dane.
+use('Politechnika');
+db.Students.deleteOne({ lastName: "Mazur" });
+
+db.Students.find({ lastName: "Mazur" });
+
+db.Students.deleteMany({ faculty: "Wydział Zarządzania" });
+
+db.Students.find({ faculty: "Wydział Zarządzania" });
+
+db.Students.find();
 
 //   25.7 - wstaw przykładowe dane z polem _id wstawianym w poleceniu insertOne().
+use('Politechnika');
+db.Students.insertOne({
+    _id: 1001,
+    firstName: "Anna",
+    lastName: "Kaczmarek",
+    faculty: "Wydział Chemiczny",
+    major: "Biotechnologia",
+    yearOfBirth: 2002,
+    interests: ["taniec"],
+    emails: {
+        university: "a.kaczmarek@student.pl",
+        private: "ania.kacz@gmail.com"
+    },
+    createdAt: new Date()
+});
+
+db.Students.find({ _id: 1001 });
 
 //   25.8 - za pommocą funkcji bulkWrite() wstaw jednym poleceniem dwa nowe dokumenty, jeden z istniejących zmodyfikuj i jeden skasuj.
 // https://www.mongodb.com/docs/manual/reference/method/db.collection.bulkWrite/
+use('Politechnika');
+db.Students.bulkWrite([
+    {
+        insertOne: {
+            document: {
+                _id: 1002,
+                firstName: "Piotr",
+                lastName: "Nowicki",
+                faculty: "Wydział Elektryczny",
+                createdAt: new Date()
+            }
+        }
+    },
+    {
+        insertOne: {
+            document: {
+                _id: 1003,
+                firstName: "Julia",
+                lastName: "Wójcik",
+                faculty: "Wydział Architektury",
+                createdAt: new Date()
+            }
+        }
+    },
+    {
+        updateOne: {
+            filter: { _id: 1001 },
+            update: { $set: { major: "Chemia" } }
+        }
+    },
+    {
+        deleteOne: {
+            filter: { lastName: "Zieliński" }
+        }
+    }
+]);
+
+db.Students.find();

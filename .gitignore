@@ -366,6 +366,8 @@ logs/
 !BAZY_SQL/**/*.LDF
 !BAZY_SQL/**/*.png
 !BIGDATA/**/*.png
+!BIGDATA/**/*.csv
+!BIGDATA/**/*.zip
 !PIABD/**/*.png
 !RBZ/**/*.png
 !ROBD_ORACLE/**/*.png
@@ -378,6 +380,8 @@ logs/
 !ROBD_ORACLE/**/*.synctex.gz
 
 # ── Project overrides — ignores that must beat the re-includes above ──────────
+BIGDATA/Lab4/data/
+BIGDATA/Lab4/out/
 # docs/session-logs/
 # public/uploads/
 
