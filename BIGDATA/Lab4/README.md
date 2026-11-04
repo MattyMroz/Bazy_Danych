@@ -5,7 +5,7 @@ Notatka na zajęcia: jak postawić Sparka na komputerze w labie i odpalić rozwi
 - Zadanie: [Lab.4_exercises_EN.pdf](Lab.4_exercises_EN.pdf)
 - Instrukcja instalacji prowadzącego: [Lab_04_PySpark_installation.pdf](Lab_04_PySpark_installation.pdf)
 - Rozwiązanie: [lab4_spark_lokalny.ipynb](lab4_spark_lokalny.ipynb)
-- Do oddania (WIKAMP, termin 19.12.2026): [Lab4_Mroz_Mateusz_251190.zip](Lab4_Mroz_Mateusz_251190.zip) (raport docx, notebook, riskfactor.csv, 2 wykresy)
+- Do oddania (WIKAMP, termin 19.12.2026): [Lab4_Mroz_Mateusz_251190.zip](Lab4_Mroz_Mateusz_251190.zip) (raport docx, notebook, riskfactor.csv)
 
 ## 1. Pobranie repo
 
