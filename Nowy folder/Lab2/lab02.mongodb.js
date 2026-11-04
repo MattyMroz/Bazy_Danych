@@ -1,7 +1,9 @@
+// Mateusz Mróz, 251190 - Lab 02 MongoDB (sprawdzone na MongoDB 9.0, kontener mongodb/mongodb-community-server)
+
 // ! Do pobierania danych wykorzystujemy metodę find()
 // 1.  Utwórz bazę danych o nazwie northwind
 use('northwind');
-db.dropDatabase(); // odkomentuj przy ponownym uruchomieniu (createCollection nie nadpisuje istniejących kolekcji)
+db.dropDatabase(); // czyści bazę przy ponownym uruchomieniu (createCollection nie nadpisuje istniejących kolekcji)
 
 // 2.  Utwórz kolekcje: customers, orders, departments (bez danych) 
 // https://www.mongodb.com/docs/manual/reference/method/db.createCollection/
@@ -399,6 +401,9 @@ db.departments.updateMany(
     { $set: { status: "A" } },
     { upsert: true }
 );
+// -> w Warszawie są dwa działy (alpha, beta), więc oba dostają status "A" i nic nowego nie powstaje.
+// Gdyby nie było żadnego, upsert utworzyłby dokument z pól filtra i $set:
+//    { _id: ObjectId(...), city: "Warszawa", status: "A" }
 
 db.departments.find({ city: "Warszawa" });
 
@@ -475,6 +480,7 @@ db.orders.find()
 // Politechnika nie pojawi się jeszcze na liście - Mongo tworzy bazę dopiero wtedy,
 // gdy trafi do niej pierwsza kolekcja albo dokument (to robimy w 25.1).
 use('Politechnika');
+db.dropDatabase(); // czyści bazę przy ponownym uruchomieniu (jak northwind w zadaniu 1)
 db.getMongo().getDBNames();
 
 //   25.1 - w danej bazie utwórz kolekcję Students i wstaw dowolne dane związane z danymi studentów
