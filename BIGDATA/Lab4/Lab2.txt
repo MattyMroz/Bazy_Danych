@@ -1,0 +1,50 @@
+ATTENTION!!! - change the name of the file hosted on WIKAMP: <210234 Nowak Jan.txt> to the name: surname_name_Album.txt (enter your own data)
+
+Additionally, in the first line put:
+
+Surname and FirstName Album
+---------------------------------------
+
+next...
+Provide the number of the machine on which the problem tasks were solved.
+
+
+
+
+ATTENTION:
+-----------------
+a.) We work on MovieLens data (ml-100k file):
+b.) When creating tables in a given task, provide the DDL (metadata) statement creating this table in this point.
+
+
+
+Using the Apache Spark framework (for the sample dataset (ml-100k.zip movie ratings)):
+
+Then perform the following tasks: (during Lab 3):
+----------------------------------------
+A. - count how many votes were cast (give the number of individual votes cast) for a given rating (for the rating range from 1 to 5)?
+B. - count the number of ratings for each movie?
+C. - What movie was rated the most – (i.e. the movie with the most votes)?
+D. - Which of the movies had the least number of ratings?
+E. - Which (what) movie titles have the highest average rating of all ratings? Additionally, check whether these data are reliable based on numerous ratings of a given film
+F. - Which (what) movie titles have the highest average rating of all ratings for which the number of ratings is greater than 10?
+
+-----------------------------------
+Homework:
+-----------------------------------------
+
+1. What is the oldest movie with the highest average rating (i.e. above 4 stars) and provide the name(s) of the movie(s).
+ATTENTION!!!--In the Hive environment, convert the date so that analysis is possible.
+
+2. What is the worst rated movie (with the most ratings below <2)
+
+Analyze the remaining files of the ml100k data set, then use the Hive framework to answer the questions:
+-------------------------------------------------------------------------------------
+3. What genres of films were watched most often by women and which by men?
+4. What genres of movies watched by women were rated the highest?
+5. Did women (generally) give higher ratings than men or was it the other way?
+6. What genres of films were most often watched by people from specific professions?
+7. People from which professions gave the highest ratings to which genres of films?
+8. Think about it: is there a connection between the ratings themselves, the rated genres of films, profession and gender?
+
+
