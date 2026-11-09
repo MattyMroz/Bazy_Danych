@@ -1,0 +1,32 @@
+// 0. Importujemy jeden duży plik z dokumentami JSON (wcześniej przygotowany z plików pobranych poniżej)
+// Wykorzystujemy dane do MongoDB dużego zbioru danych o dość złożonej strukturze. Dane pobrano z serwisu filmowego IMDb, https://www.imdb.com/interfaces.
+// Dostęp do pliku z sieci lokalnej - podany na zajęciach.
+
+
+
+// Wykonujemy szereg zapytań: 
+// 1. zapytania punktowe, gdzie poszukujemy konkretnego dokumentu (Ew. dokumentów), np. gdy chcemy wyświetlić dane o filmie o podanym tytule,
+
+
+// 2. zdefiniować odpowiedni indeks (indeksy) i powtórzyć powyższe zapytanie. Zaobserwować wzrost szybkości odpowiedzi,
+//   wykorzystać składnię dodając do zapytania w celu zwrócenia czasu wykonania: .explain("executionStats").executionStats.executionTimeMillis;
+
+
+// 3. zapytania agregujące dane (funkcjonalny odpowiednik klauzuli GROUP BY w bazach relacyjnych), 
+//   np. policzenie ile filmów otrzymało wskazany rating, ile mamy filmów wyprodukowanych w kolejnych latach, itp.,
+
+
+// 4. zapytania przedziałowe, np. ile filmów wyprodukowano w podanym zakresie lat. Rozważyć utworzenie stosownych indeksów,
+
+
+// 5. zapytania z operatorami logicznymi, np. filmy powstałe w Polsce w roku 2010 z rankingiem większym niż 5,
+
+
+// 6. zapytania z sortowaniem danych, np. sortowanie wybranej kolekcji filmów po ich tytułach,
+
+
+// 7. zapytania wyświetlające dane statystyczne, np. średni ranking filmów z USA, Polski, Niemiec,
+
+
+// 8. zapytania z sortowanie danych oraz ograniczaniem ilości wyświetlanych dokumentów (metody sort() oraz limit()).
+
