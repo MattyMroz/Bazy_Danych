@@ -1,3 +1,7 @@
+PLIK: entities.7z
+https://tulodz-my.sharepoint.com/:u:/r/personal/251190_edu_p_lodz_pl/_layouts/15/onedrive.aspx?id=%2Fpersonal%2F251190%5Fedu%5Fp%5Flodz%5Fpl%2FDocuments%2Fentities%2E7z&parent=%2Fpersonal%2F251190%5Fedu%5Fp%5Flodz%5Fpl%2FDocuments&share=cQqOB99bCbBJTpGlOvd%5FN05qEgUCV7TttHglCs7iAFf%2DJex5vw
+
+
 // 0. Importujemy jeden duży plik z dokumentami JSON (wcześniej przygotowany z plików pobranych poniżej)
 // Wykorzystujemy dane do MongoDB dużego zbioru danych o dość złożonej strukturze. Dane pobrano z serwisu filmowego IMDb, https://www.imdb.com/interfaces.
 // Dostęp do pliku z sieci lokalnej - podany na zajęciach.
