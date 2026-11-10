@@ -110,4 +110,3 @@ delete.topic.enable=true
 
 Pominiete: krok 10 (temat my-topic juz istnial, wiec drugie --create by sie nie udalo)
            krok 13 (--delete) - nie wykonywany, zeby zostawic temat do dalszych cwiczen.
-
