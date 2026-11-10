@@ -12,7 +12,7 @@ prek run --all-files
 
 - `BAZY_SQL/`: MS SQL Server (T-SQL): wykłady (`Wykład/`), pliki z zajęć, zadania (`DO_ODDANIA/`, `EGZAMIN/`), bazy Northwind jako pliki `.mdf`/`.ldf` (`bazy/`, `Pliki z Zajeć/`).
 - `BIGDATA/`: Big Data: laboratoria z HDFS, Spark i MongoDB (notebooki w `Lab3/`) oraz wykłady.
-- `Nowy folder/`: MongoDB: instalacja (`Lab1/`), lab 2 z kolekcjami Northwind w JSON (`Lab2/northwind/`) i skryptami `*.mongodb.js`, uruchamianie w Dockerze (`docker_mongodb.ps1`).
+- `NoSQL/`: MongoDB: instalacja (`Lab1/`), lab 2 z kolekcjami Northwind w JSON (`Lab2/northwind/`), lab 3 (import, backup, explain, agregacje w `Lab3/`) ze skryptami `*.mongodb.js` i paczkami do oddania (`*.zip`), uruchamianie w Dockerze (`docker_mongodb.ps1`).
 - `PIABD/`: Projektowanie i Administracja Baz Danych: projekt CompanyDB (`Projekt/`, skrypty `01_`-`05_`, raport LaTeX w `Projekt/raport/`), teoria, zadania.
 - `RBZ/`: Rozproszone Bazy Danych: laboratoria, kolokwium (`KOLOS/`), projekt Hurtownia POL-FOOD na Oracle i MS SQL Server (`PROJEKT/food-wholesaler-distributed-db/`).
 - `ROBD_ORACLE/`: obiektowa baza Oracle: laboratoria, kolokwium, kolejne wersje projektu Szkoła Muzyczna jako osobne katalogi `Projekt_v1`-`Projekt_v8` (numerowane skrypty SQL i raport LaTeX).
