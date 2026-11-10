@@ -295,6 +295,10 @@ logs/
 *.MDF
 *.LDF
 
+# Big Data Lab 4: NYC TLC data and Spark output (the notebook downloads and rebuilds them)
+BIGDATA/Lab4/data/
+BIGDATA/Lab4/out/
+
 # ── Re-includes ───────────────────────────────────────────────────────────────
 # Every keeper lives HERE, not next to the rule it escapes — a template pasted
 # into section 8 would otherwise bury negations written above it.
@@ -372,7 +376,7 @@ logs/
 !RBZ/**/*.png
 !ROBD_ORACLE/**/*.png
 !PIABD/**/*.webp
-!Nowy folder/**/*.zip
+!NoSQL/**/*.zip
 !PIABD/**/*.zip
 !PIABD/**/*.log
 !ROBD_ORACLE/**/*.log
