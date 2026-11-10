@@ -54,7 +54,7 @@ repos:
         stages: [commit-msg]
         args:
           - --force-scope
-          - --scopes=repo,docs,bazy-sql,bigdata,nowy-folder,piabd,rbz,robd-oracle
+          - --scopes=repo,docs,bazy-sql,bigdata,nosql,piabd,rbz,robd-oracle
           - feat
           - fix
           - chore
