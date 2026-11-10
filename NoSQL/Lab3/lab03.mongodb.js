@@ -1,45 +1,30 @@
-// Mateusz Mróz 251190
-
 use("airbnb");
 // 1. Pobieramy narzędzie mongoimport i inne (MongoDB Command Line Database Tools) do katalogu c:\data
 // Znajdziemy go tutaj: https://www.mongodb.com/try/download/database-tools
-// -- rozpakowane do c:\data, w srodku mongoimport, mongoexport, mongodump, mongorestore
 
 
 // 2. Importujemy za pomocą polecenia mongoimport przykładowy zestaw danych z katalogu .\sample_airbnb.
 // Baza ma mieć nazwę airbnb
 // (nazwa kolekcji = nazwa pliku bez rozszerzenia) - analizujemy strukturę.
-// -- c:\data\mongoimport --db airbnb --collection listingsAndReviews --file .\sample_airbnb\listingsAndReviews.json
-// 5555 dokumentow, kazdy to oferta: name, property_type, price (Decimal128), beds, amenities (lista),
-// address (zagniezdzony z country), host, reviews (lista dokumentow), review_scores
 use("airbnb");
 db.listingsAndReviews.findOne();
-
 
 // 3. Importujemy za pomocą polecenia mongoimport przykładowy zestaw danych z katalogu .\sample_weather.
 // Baza ma mieć nazwę weather.
 // (nazwa kolekcji = nazwa pliku bez rozszerzenia) - analizujemy strukturę.
-// -- c:\data\mongoimport --db weather --collection data --file .\sample_weatherdata\data.json
-// 10000 dokumentow, pomiary pogody: st (stacja), ts (data), position (GeoJSON), airTemperature, wind, pressure... jako zagniezdzone dokumenty
 use("weather");
 db.data.findOne();
-
 
 // 4. Importujemy za pomocą polecenia mongoimport przykładowy zestaw danych z katalogu .\sample_analytics.
 // Baza ma mieć nazwę analytics.
 // Tym razem wykorzystujemy polecenie mongoimport z kontenera w dockerze i trzeba przesłać *.json do katalogu /data w kontenerze
 // (nazwy kolekcji = nazwy plików bez rozszerzenia) - analizujemy strukturę.
-// -- docker cp .\sample_analytics mongodb:/data/sample_analytics
-// -- docker exec mongodb mongoimport --db analytics --collection accounts --file /data/sample_analytics/accounts.json
-// -- docker exec mongodb mongoimport --db analytics --collection customers --file /data/sample_analytics/customers.json
-// -- docker exec mongodb mongoimport --db analytics --collection transactions --file /data/sample_analytics/transactions.json
-// accounts - konto z limitem i lista produktow, customers - klient z lista kont (accounts) i tier_and_details,
-// transactions - konto z lista transakcji (transactions to tablica dokumentow)
 use("analytics");
 db.accounts.findOne();
+use("analytics");
 db.customers.findOne();
+use("analytics");
 db.transactions.findOne();
-
 
 // 5. Wylistuj istniejące bazy danych (mongosh) i sprawdź ile jest w nich dokumentów.
 // -- use("airbnb")
@@ -47,35 +32,55 @@ db.transactions.findOne();
 // -- db.listingsAndReviews.count() -- deprecated
 // -- db.listingsAndReviews.countDocuments()
 // -- db.listingsAndReviews.estimatedDocumentCount()
-// show dbs
+
 db.getMongo().getDBNames();
+// [
+//   'admin',
+//   'airbnb',
+//   'analytics',
+//   'config',
+//   'local',
+//   'weather'
+// ]
 
 use("airbnb");
-db.listingsAndReviews.countDocuments(); // 5555
+db.listingsAndReviews.countDocuments();
+// 5555
 
 use("weather");
-db.data.countDocuments(); // 10000
+db.data.countDocuments();
+// 10000
 
 use("analytics");
-db.accounts.countDocuments(); // 1746
-db.customers.countDocuments(); // 500
-db.transactions.estimatedDocumentCount(); // 1746
+db.accounts.countDocuments();
+// 1746
+
+use("analytics");
+db.customers.countDocuments();
+// 500
+
+use("analytics");
+db.transactions.estimatedDocumentCount();
+// 1746
 
 // 6. Utwórz kopię zapasową (bezpieczeństwa) swoich zaimportowanych kolekcji używając narzędzia mongodump.
 // Po wykonaniu kopii zapasowej przywróć dane za pomocą narzędzia mongorestore (po uprzednim usunięciu trzech nowo utworzonych baz).
-// -- c:\data\mongodump --db airbnb --out c:\data\backup
-// -- c:\data\mongodump --db weather --out c:\data\backup
-// -- c:\data\mongodump --db analytics --out c:\data\backup
+
+// docker exec mongodb mongodump --db airbnb --out /data/backup
+// docker exec mongodb mongodump --db weather --out /data/backup
+// docker exec mongodb mongodump --db analytics --out /data/backup
+
 use("airbnb");
 db.dropDatabase();
 use("weather");
 db.dropDatabase();
 use("analytics");
 db.dropDatabase();
-// -- c:\data\mongorestore c:\data\backup
-// przywrocilo 19547 dokumentow (5555 + 10000 + 1746 + 500 + 1746), wszystko wrocilo
+// docker exec mongodb mongorestore /data/backup
 use("airbnb");
 db.listingsAndReviews.countDocuments();
+// 5555
+
 
 // 7. Odtwórz bazy z pliku sampledata.archive (wcześniej skasuj trzy nowo utworzone bazy)
 // kopiuj archiwum (PowerShell):
@@ -83,51 +88,61 @@ db.listingsAndReviews.countDocuments();
 // lub pobierz z sieci lokalnej.
 // -- Kopiuj do kontenera: docker cp C:\temp\sampledata.archive mongodb:/data/sampledata.archive
 // -- Rozpakuj z pliku sampledata.archive: docker exec -i mongodb mongorestore --archive=/data/sampledata.archive
+
+// docker exec mongodb mongorestore /data/backup
+
 use("airbnb");
 db.dropDatabase();
 use("weather");
 db.dropDatabase();
 use("analytics");
 db.dropDatabase();
-// po restore jest 425367 dokumentow i bazy sample_airbnb, sample_analytics, sample_geospatial, sample_guides,
-// sample_mflix, sample_restaurants, sample_supplies, sample_training, sample_weatherdata
-db.getMongo().getDBNames();
 
+// docker exec mongodb mongorestore --drop --archive=/data/sampledata.archive
+
+db.getMongo().getDBNames();
+use("sample_airbnb");
+db.listingsAndReviews.countDocuments();
+// 5555
 
 // 8. Wyświetl plan wykonania wybranego zapytania.
 // -- db.listingsAndReviews.find().explain("executionStats")
 // Czy został użyty jakikolwiek indeks (COLLSCAN (pełne skanowanie kolekcji) czy IXSCAN (skanowanie indeksu))?
 // Napisz takie zapytanie, aby MongoDB zdecydował się na indeksu name_1 (np. wybiera element "name" zaczynający się na słowo Resort - wyrażenie regularne).
 use("sample_airbnb");
-db.listingsAndReviews.getIndexes();
 db.listingsAndReviews.find().explain("executionStats");
-// COLLSCAN - bez filtra nie ma po czym uzyc indeksu, przeglada wszystkie 5555 dokumentow
 
+use("sample_airbnb");
 db.listingsAndReviews.find({ name: /^Resort/ }).explain("executionStats");
-// IXSCAN na name_1 - zwraca 5 dokumentow, przejrzal tylko 6 kluczy i 5 dokumentow
 
+use("sample_airbnb");
+db.listingsAndReviews.getIndexes();
+// COLLSCAN bez filtra nie ma po czym użyć indeksu, przegląda wszystkie 5555 dokumentow
 
 // 9. Przeprowadź eksperyment podający szybkość realizacji zapytania
 // db.listingsAndReviews.find().sort({"name":1}) (z indeksem)
 // db.listingsAndReviews.find() (bez indeksu)
 // (np. wykorzystując .explain("executionStats").executionStats.nReturned zwracana jest ilość dokumentów).
 use("sample_airbnb");
-db.listingsAndReviews.find().sort({ "name": 1 }).explain("executionStats").executionStats;
-db.listingsAndReviews.find().explain("executionStats").executionStats;
-db.listingsAndReviews.find().sort({ "name": 1 }).hint({ $natural: 1 }).explain("executionStats").executionStats;
-// oba zwracaja nReturned 5555
-// sort z indeksem: IXSCAN name_1, ok 5 ms - dokumenty od razu wychodza posortowane z indeksu
-// find() bez indeksu: COLLSCAN ok 2 ms - szybciej bo nic nie sortuje, tylko czyta po kolei
-// ten sam sort ale wymuszony bez indeksu (hint $natural): COLLSCAN + SORT w pamieci ok 69 ms - wiec indeks przy sortowaniu daje duzo
+db.listingsAndReviews.find().sort({ name: 1 }).explain("executionStats").executionStats.executionTimeMillis;
+
+use("sample_airbnb");
+db.listingsAndReviews.find().explain("executionStats").executionStats.executionTimeMillis;
+
+use("sample_airbnb");
+db.listingsAndReviews.find().sort({ name: 1 }).explain("executionStats").executionStats.nReturned;
+
+use("sample_airbnb");
+db.listingsAndReviews.find().explain("executionStats").executionStats.nReturned;
 
 
 // 10. Wyeksportuj jedną z kolekcji do pliku CSV a następnie zaimportuj do bazy (korzystamy z mongoexport i monogoimport). Baza sample_airbnb
-// -- c:\data\mongoexport --db sample_airbnb --collection listingsAndReviews --type=csv --fields _id,name,property_type,bedrooms,beds,price,address.country --out c:\data\listings.csv
-// -- c:\data\mongoimport --db sample_airbnb --collection listings_csv --type=csv --headerline --file c:\data\listings.csv
-// przy csv trzeba podac --fields (csv nie zna zagniezdzen ani list), wraca 5555 dokumentow,
-// price wraca jako zwykla liczba a nie Decimal128, address.country znowu robi sie zagniezdzonym dokumentem
+// docker exec mongodb mongoexport --db sample_airbnb --collection listingsAndReviews --type=csv --fields _id,name,property_type,bedrooms,beds --out /data/backup/listings.csv
+// docker exec mongodb mongoimport --db sample_airbnb --collection listings_csv --type=csv --headerline --file /data/backup/listings.csv
 use("sample_airbnb");
 db.listings_csv.countDocuments();
+
+use("sample_airbnb");
 db.listings_csv.findOne();
 
 
@@ -162,8 +177,17 @@ db.listingsAndReviews.aggregate([{ $limit: 1 }]);
 // 13. Podaj 3 dokumenty, ale będzie on zawierać tylko określone pola (name, property_type, bedrooms, beds, address.country) (operator $project)
 use("sample_airbnb");
 db.listingsAndReviews.aggregate([
+  {
+    $project: {
+      _id: 0,
+      name: 1,
+      property_type: 1,
+      bedrooms: 1,
+      beds: 1,
+      "address.country": 1,
+    },
+  },
   { $limit: 3 },
-  { $project: { _id: 0, name: 1, property_type: 1, bedrooms: 1, beds: 1, "address.country": 1 } }
 ]);
 
 // Wynik:
@@ -187,8 +211,8 @@ db.listingsAndReviews.aggregate([
 use("sample_airbnb");
 db.listingsAndReviews.aggregate([
   { $sort: { beds: -1 } },
+  { $project: { _id: 0, name: 1, beds: 1 } },
   { $limit: 3 },
-  { $project: { _id: 0, name: 1, beds: 1 } }
 ]);
 
 // Wynik:
@@ -202,8 +226,8 @@ db.listingsAndReviews.aggregate([
 use("sample_airbnb");
 db.listingsAndReviews.aggregate([
   { $match: { property_type: "House" } },
+  { $project: { _id: 0, name: 1, price: 1 } },
   { $limit: 3 },
-  { $project: { _id: 0, name: 1, price: 1 } }
 ]);
 
 // Wynik:
@@ -218,7 +242,7 @@ db.listingsAndReviews.aggregate([
   { $match: { property_type: "Apartment" } },
   { $sort: { price: 1 } },
   { $limit: 3 },
-  { $project: { _id: 0, name: 1, price: 1, "address.country": 1 } }
+  { $project: { _id: 0, name: 1, price: 1, "address.country": 1 } },
 ]);
 
 // Wynik:
@@ -238,8 +262,15 @@ db.listingsAndReviews.aggregate([
 // 17. Znaleźć 5 dokumentów wraz z nowym polem country, które będzie zawierać wartość z klucza address.country
 use("sample_airbnb");
 db.listingsAndReviews.aggregate([
+  {
+    $project: {
+      _id: 0,
+      name: 1,
+      country: "$address.country",
+      price: 1,
+    },
+  },
   { $limit: 5 },
-  { $project: { _id: 0, name: 1, country: "$address.country", price: 1 } }
 ]);
 
 // Wynik:
@@ -260,7 +291,7 @@ db.listingsAndReviews.aggregate([
 use("sample_airbnb");
 db.listingsAndReviews.aggregate([
   { $match: { "address.country": "Portugal" } },
-  { $count: "totalPortugal" }
+  { $count: "totalPortugal" },
 ]);
 
 // Wynik:
@@ -268,7 +299,9 @@ db.listingsAndReviews.aggregate([
 
 // 19. Ile lokalów jest do wynajęcia w każdym z państw.
 use("sample_airbnb");
-db.listingsAndReviews.aggregate([{ $group: { _id: "$address.country", totalLocal: { $sum: 1 } } }]);
+db.listingsAndReviews.aggregate([
+  { $group: { _id: "$address.country", totalLocal: { $sum: 1 } } },
+]);
 
 // Wynik:
 // [
@@ -285,7 +318,9 @@ db.listingsAndReviews.aggregate([{ $group: { _id: "$address.country", totalLocal
 
 // 20. Ile osób można pomieścić we wszystkich wynajmowanych ofertach w każdym z państw.
 use("sample_airbnb");
-db.listingsAndReviews.aggregate([{ $group: { _id: "$address.country", totalPeople: { $sum: "$accommodates" } } }]);
+db.listingsAndReviews.aggregate([
+  { $group: { _id: "$address.country", totalPeople: { $sum: "$accommodates" } } },
+]);
 
 // Wynik:
 // [
@@ -303,19 +338,34 @@ db.listingsAndReviews.aggregate([{ $group: { _id: "$address.country", totalPeopl
 // 21. Na podstawie powyższej instrukcji zdefiniuj nową kolekcję country, w której nazwa kraju będzie będzie identyfikatorem _id.
 use("sample_airbnb");
 db.listingsAndReviews.aggregate([
-  { $group: { _id: "$address.country", totalPeople: { $sum: "$accommodates" } } },
-  { $out: "country" }
+  {
+    $group: {
+      _id: "$address.country",
+      totalLocal: { $sum: 1 },
+      totalPeople: { $sum: "$accommodates" },
+    },
+  },
+  { $out: "country" },
 ]);
+
+use("sample_airbnb");
+db.country.find();
 
 // Wynik:
 // wykonaj polecenie - db.country.find()
-db.country.find();
 
 // 22. (Baza northwind) Wyświetl 3 dokumenty z kolekcji orders gdzie zamiast customer wstawimy dokument z koleckji customers ($lookup)
 use("northwind");
 db.orders.aggregate([
+  {
+    $lookup: {
+      from: "customers",
+      localField: "customer",
+      foreignField: "_id",
+      as: "customer1",
+    },
+  },
   { $limit: 3 },
-  { $lookup: { from: "customers", localField: "customer", foreignField: "_id", as: "customer1" } }
 ]);
 
 // Wynik:
@@ -343,7 +393,9 @@ db.orders.aggregate([
 
 // 23. Łączna liczba łóżek w całej kolekcji:
 use("sample_airbnb");
-db.listingsAndReviews.aggregate([{ $group: { _id: null, totalBeds: { $sum: "$beds" } } }]);
+db.listingsAndReviews.aggregate([
+  { $group: { _id: null, totalBeds: { $sum: "$beds" } } },
+]);
 
 // Wynik:
 // [ { _id: null, totalBeds: 11480 } ]
@@ -351,16 +403,24 @@ db.listingsAndReviews.aggregate([{ $group: { _id: null, totalBeds: { $sum: "$bed
 // 24. Minimalny i maksymalny czas pobytu:
 use("sample_airbnb");
 db.listingsAndReviews.aggregate([
-  { $group: { _id: null, minNights: { $min: "$minimum_nights" }, maxNights: { $max: "$maximum_nights" } } }
+  {
+    $group: {
+      _id: null,
+      minNights: { $min: "$minimum_nights" },
+      maxNights: { $max: "$maximum_nights" },
+    },
+  },
 ]);
-// minimum_nights i maximum_nights sa stringami wiec min/max porownuje tekstowo ('999' > '1125')
 
 // Wynik:
 // [ { _id: null, minNights: '1', maxNights: '999' } ]
 
 // 25. Ilość recenzji dla każdego obiektu (number_of_reviews):
 use("sample_airbnb");
-db.listingsAndReviews.aggregate([{ $group: { _id: "$_id", totalReviews: { $sum: "$number_of_reviews" } } }]);
+db.listingsAndReviews.aggregate([
+  { $group: { _id: "$_id", totalReviews: { $sum: "$number_of_reviews" } } },
+]);
+
 // Wynik (tylko część wyniku):
 // [
 //   { _id: '27643974', totalReviews: 0 },
@@ -373,7 +433,7 @@ db.listingsAndReviews.aggregate([{ $group: { _id: "$_id", totalReviews: { $sum: 
 use("sample_airbnb");
 db.listingsAndReviews.aggregate([
   { $unwind: "$amenities" },
-  { $group: { _id: null, uniqueAmenities: { $addToSet: "$amenities" } } }
+  { $group: { _id: null, uniqueAmenities: { $addToSet: "$amenities" } } },
 ]);
 
 // Wynik:
@@ -388,7 +448,9 @@ db.listingsAndReviews.aggregate([
 
 // 27. Średnia cena za noc:
 use("sample_airbnb");
-db.listingsAndReviews.aggregate([{ $group: { _id: null, avgPricePerNight: { $avg: "$price" } } }]);
+db.listingsAndReviews.aggregate([
+  { $group: { _id: null, avgPricePerNight: { $avg: "$price" } } },
+]);
 
 // Wynik:
 // [
@@ -403,7 +465,6 @@ use("sample_airbnb");
 db.listingsAndReviews.aggregate([
   { $match: { property_type: /^c/i } },
   { $group: { _id: "$property_type", averagePrice: { $avg: "$price" } } },
-  { $project: { averagePrice: { $round: ["$averagePrice", 2] } } }
 ]);
 
 // Wynik:
@@ -417,8 +478,13 @@ db.listingsAndReviews.aggregate([
 use("sample_airbnb");
 db.listingsAndReviews.aggregate([
   { $match: { property_type: /^c/i } },
-  { $group: { _id: "$property_type", averagePrice: { $avg: "$price" }, country: { $first: "$address.country" } } },
-  { $project: { averagePrice: { $round: ["$averagePrice", 2] }, country: 1 } }
+  {
+    $group: {
+      _id: "$property_type",
+      averagePrice: { $avg: "$price" },
+      country: { $first: "$address.country" },
+    },
+  },
 ]);
 
 // Wynik:
@@ -445,7 +511,14 @@ use("sample_airbnb");
 db.listingsAndReviews.aggregate([
   { $sort: { number_of_reviews: -1 } },
   { $limit: 3 },
-  { $project: { _id: 0, name: 1, number_of_reviews: 1, country: "$address.country" } }
+  {
+    $project: {
+      _id: 0,
+      name: 1,
+      number_of_reviews: 1,
+      country: "$address.country",
+    },
+  },
 ]);
 
 // Wynik:
