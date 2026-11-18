@@ -36,3 +36,5 @@ Całość opisujemy w sprawozdaniu i dokładamy źródła.
 Zaczynamy oddawać 9, 10 zajęciach laboratoryjnych (dwa ostatnie tygodnie zajęć).
 Oddajemy przed końcem rozpoczęcia sesji (luty 2026) lub na niższą ocenę do końca sesji.
 UWAGA - na ocenę bardzo dobrą projekt musi być oddany przed rozpoczęciem sesji.
+
+system klasyfikujący / predykcji trzeba wybrać
