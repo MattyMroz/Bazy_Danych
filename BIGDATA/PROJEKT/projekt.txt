@@ -1,0 +1,38 @@
+Laboratorium - zaliczenie na podstawie wykonania projektu:
+-----------------------------------
+Opis projektu - przedmiot: Big Data:
+----------------
+Interesujące strony z przykładowymi danymi:
+https://archive.ics.uci.edu/ml/datasets.html
+https://www.kaggle.com
+lub: inne
+Projekt Big Data zakończony analizą i przetwarzaniem danych oraz ilustrujący zastosowanie poszczególnych elementów Big Data.
+------------------------------------------------------
+UWAGA: - Projekt musi być opracowany z wykorzystaniem silnika i platformy Apache Spark do przetwarzania danych na dużą skalę (w tym z wykorzystaniem przynajmniej jednej z bibliotek: Spark Streaming i/lub uczenia maszynowego Mllib).
+Zachęcam również do wykorzystania  brokerów Apache Kafla przeznaczonych do rozproszonego przetwarzania strumieni danych oraz z zastosowaniem następujących narzędzi:
+- Google Colab --> platformy hostowana usługa (np. Jupyter Notebook), która nie wymaga żadnej konfiguracji i zapewnia bezpłatny dostęp do zasobów obliczeniowych, w tym procesorów GPU i TPU., Istotne jest również graficzne prezentowanie wyników.
+-  Azure Databricks --> platformy analityki i sztucznej inteligencji oparta na chmurze, zoptymalizowana pod kątem platformy Microsoft Azure, która łączy w sobie możliwości Apache Spark i Delta Lake, zapewniając ujednolicone środowisko współpracy do przetwarzania dużych zbiorów danych, inżynierii danych i uczenia maszynowego,
+Wymagania:
+-----------
+1) Opis "Celu projektu" - założeń projektowych poczynionych przy wyborze tematu,
+a. przyjąć i postawić tezy dla procesu przetwarzania danych w celu uzyskania na ich podstawie informacji i wniosków,
+b. w zależności od stawianych problemów, założyć określone użycie metod statystycznych, eksploracyjnych i innych oraz sposobów wykorzystania do tego podanych narzędzi.
+2) Dobór danych do postawionego celu.
+a. na potrzeby wykonywanego projektu wykonać opis doboru danych do przyjętego tematu, ich natywnej struktury, formatów,
+b. opisać charakter ilościowy i jakościowy danych surowych, ich sposób powstania (dane pierwotne, dane wtórne), dynamikę zmian danych (ciągła rejestracja zdarzeń, rejestracja w interwałach czasowych, rejestracja jednorazowa), źródeł pochodzenia.
+c. opisać proces pozyskiwania danych w postaci strumieni danych (dla odbywających się zdarzeń w czasie rzeczywistym), które są udostępniane za pośrednictwem brokerów Apache Kafka
+3) Ekstrakcja i Analiza danych
+a. omówić:
+- procesy porządkowania, przekształcania i modelowania danych w celu zdobycia użytecznych informacji, wypracowania wniosków,
+- wykorzystywane techniki i narzędzia do znajdowania ukrytych dla człowieka (z uwagi na ograniczone możliwości czasowe) prawidłowości w zgromadzonych danych,
+b. opracować wymagane sktypty konieczne do wykonania zadań ekstrakcji, transformacji i ładowania przetworzonych danych do formatów o zdefioniowanej strukturze z użyciem Apache Spark.
+c. omówić proces uczenia maszynowego na klastrze Apache Spark:
+- proces budowy przykładowego moodelu: np.  systemu klasyfikacyjnego, predykcyjnego lub rekomendacyjnego
+4) Podać uwagi i wnioski końcowe w następstwie przeprowadzonej analizy i w jaki sposób mogą być one użyteczne w procesie wspierania procesu decyzyjnego?
+UWAGA:
+-----------------
+Całość opisujemy w sprawozdaniu i dokładamy źródła.
+--------------------------------------------------------------
+Zaczynamy oddawać 9, 10 zajęciach laboratoryjnych (dwa ostatnie tygodnie zajęć).
+Oddajemy przed końcem rozpoczęcia sesji (luty 2026) lub na niższą ocenę do końca sesji.
+UWAGA - na ocenę bardzo dobrą projekt musi być oddany przed rozpoczęciem sesji.
