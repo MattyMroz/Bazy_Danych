@@ -1,5 +1,5 @@
-PLIK: entities.7z
-https://tulodz-my.sharepoint.com/:u:/r/personal/251190_edu_p_lodz_pl/_layouts/15/onedrive.aspx?id=%2Fpersonal%2F251190%5Fedu%5Fp%5Flodz%5Fpl%2FDocuments%2Fentities%2E7z&parent=%2Fpersonal%2F251190%5Fedu%5Fp%5Flodz%5Fpl%2FDocuments&share=cQqOB99bCbBJTpGlOvd%5FN05qEgUCV7TttHglCs7iAFf%2DJex5vw
+// PLIK: entities.7z
+// https://tulodz-my.sharepoint.com/:u:/r/personal/251190_edu_p_lodz_pl/_layouts/15/onedrive.aspx?id=%2Fpersonal%2F251190%5Fedu%5Fp%5Flodz%5Fpl%2FDocuments%2Fentities%2E7z&parent=%2Fpersonal%2F251190%5Fedu%5Fp%5Flodz%5Fpl%2FDocuments&share=cQqOB99bCbBJTpGlOvd%5FN05qEgUCV7TttHglCs7iAFf%2DJex5vw
 
 
 // 0. Importujemy jeden duży plik z dokumentami JSON (wcześniej przygotowany z plików pobranych poniżej)
@@ -8,7 +8,6 @@ https://tulodz-my.sharepoint.com/:u:/r/personal/251190_edu_p_lodz_pl/_layouts/15
 use("imdb");
 db.movies.countDocuments();
 db.movies.findOne();
-
 
 
 // Wykonujemy szereg zapytań:
@@ -28,14 +27,8 @@ db.movies.find({ title: "The Godfather" }).explain("executionStats").executionSt
 // 3. zapytania agregujące dane (funkcjonalny odpowiednik klauzuli GROUP BY w bazach relacyjnych),
 //   np. policzenie ile filmów otrzymało wskazany rating, ile mamy filmów wyprodukowanych w kolejnych latach, itp.,
 use("imdb");
-db.movies.aggregate([
-  { $group: { _id: "$imdb.rating", ile: { $sum: 1 } } },
-  { $sort: { _id: -1 } }
-]);
-db.movies.aggregate([
-  { $group: { _id: "$year", ile: { $sum: 1 } } },
-  { $sort: { _id: 1 } }
-]);
+db.movies.aggregate([{ $group: { _id: "$imdb.rating", ile: { $sum: 1 } } }, { $sort: { _id: -1 } }]);
+db.movies.aggregate([{ $group: { _id: "$year", ile: { $sum: 1 } } }, { $sort: { _id: 1 } }]);
 
 
 // 4. zapytania przedziałowe, np. ile filmów wyprodukowano w podanym zakresie lat. Rozważyć utworzenie stosownych indeksów,
@@ -46,10 +39,7 @@ db.movies.countDocuments({ year: { $gte: 2000, $lte: 2010 } });
 
 // 5. zapytania z operatorami logicznymi, np. filmy powstałe w Polsce w roku 2010 z rankingiem większym niż 5,
 use("imdb");
-db.movies.find(
-  { $and: [{ countries: "Poland" }, { year: 2010 }, { "imdb.rating": { $gt: 5 } }] },
-  { _id: 0, title: 1, year: 1, "imdb.rating": 1 }
-);
+db.movies.find({ $and: [{ countries: "Poland" }, { year: 2010 }, { "imdb.rating": { $gt: 5 } }] }, { _id: 0, title: 1, year: 1, "imdb.rating": 1 });
 
 
 // 6. zapytania z sortowaniem danych, np. sortowanie wybranej kolekcji filmów po ich tytułach,
@@ -68,6 +58,4 @@ db.movies.aggregate([
 
 // 8. zapytania z sortowanie danych oraz ograniczaniem ilości wyświetlanych dokumentów (metody sort() oraz limit()).
 use("imdb");
-db.movies.find({ "imdb.rating": { $type: "number" } }, { _id: 0, title: 1, "imdb.rating": 1 })
-  .sort({ "imdb.rating": -1 })
-  .limit(10);
+db.movies.find({ "imdb.rating": { $type: "number" } }, { _id: 0, title: 1, "imdb.rating": 1 }).sort({ "imdb.rating": -1 }).limit(10);
