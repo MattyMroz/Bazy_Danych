@@ -1,4 +1,4 @@
-use baza 
+use baza
 
 --wyswietl wszystkich pracownikow w danym dziale
 
@@ -7,12 +7,12 @@ select * from Order Details
 
 select dzialID,nazwa from dzialy
 
-select dzialID,nazwa,imie,nazwisko 
+select dzialID,nazwa,imie,nazwisko
 from dzialy,pracownicy
 
 select * from pracownicy
 
-select dzialy.dzialID,nazwa,imie,nazwisko 
+select dzialy.dzialID,nazwa,imie,nazwisko
 from dzialy,pracownicy
 
 select pracownicy.dzialID,dzialy.dzialID,
@@ -28,14 +28,14 @@ nazwa,imie,nazwisko from dzialy join pracownicy
 on
 pracownicy.dzialID=dzialy.dzialID
 
-select nazwa,imie,nazwisko 
+select nazwa,imie,nazwisko
 from dzialy join pracownicy
 on
 pracownicy.dzialID=dzialy.dzialID
 
 --wyswietl wszystkich pracownikow w danym dziale oraz ich zarobki
 
-select nazwa,imie,nazwisko,zarobki.brutto 
+select nazwa,imie,nazwisko,zarobki.brutto
 from dzialy join pracownicy
 on
 pracownicy.dzialID=dzialy.dzialID
@@ -51,25 +51,25 @@ pracownicy.pracID=zarobki.pracID
 (6)     ORDER BY
 
 
-select imie,nazwisko 
+select imie,nazwisko
 from  pracownicy
 ORDER BY nazwisko
 
-select imie,nazwisko 
+select imie,nazwisko
 from  pracownicy
 ORDER BY imie
 
 
-select imie,nazwisko 
+select imie,nazwisko
 from  pracownicy
 ORDER BY nazwisko asc
 
-select imie,nazwisko 
+select imie,nazwisko
 from  pracownicy
 ORDER BY imie desc
 
 
-select nazwa,imie,nazwisko,z.brutto 
+select nazwa,imie,nazwisko,z.brutto
 from dzialy as d join pracownicy as p
 on
 p.dzialID=d.dzialID
@@ -78,7 +78,7 @@ on
 p.pracID=z.pracID
 
 
-select nazwa,imie,nazwisko,z.brutto 
+select nazwa,imie,nazwisko,z.brutto
 from dzialy as jasio join pracownicy as p
 on
 p.dzialID=jasio.dzialID
@@ -87,7 +87,7 @@ on
 p.pracID=z.pracID
 
 
-select imie,nazwisko 
+select imie,nazwisko
 from  pracownicy
 
 
@@ -128,20 +128,19 @@ end 'jaki wiek?'
 from pracownicy
 
 
-select imie,nazwisko ,wiek from pracownicy where 
+select imie,nazwisko ,wiek from pracownicy where
 wiek in(30,31,32,34,35)
 
 
-select imie,nazwisko ,wiek from pracownicy where 
+select imie,nazwisko ,wiek from pracownicy where
 nazwisko in('nowak',' kowalski')
 
 
 --osoby ktorych zarobki sa wieksze od 3000
 
-select imie,nazwisko  from pracownicy 
+select imie,nazwisko  from pracownicy
 where pracid in
 (
 select distinct pracid from zarobki
 where brutto > 3000
 )
-

@@ -557,7 +557,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
     BEGIN
         v_wymagane := PKG_SLOWNIKI.get_wymagane_wyposazenie(p_id_przedmiotu);
         IF v_wymagane IS NULL OR v_wymagane.COUNT = 0 THEN RETURN; END IF;
-        
+
         v_dostepne := PKG_SLOWNIKI.get_wyposazenie_sali(p_id_sali);
         IF v_dostepne IS NULL OR v_dostepne.COUNT = 0 THEN
             SELECT numer INTO v_sala_numer FROM SALE WHERE id_sali = p_id_sali;
@@ -815,7 +815,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
                 v_max_godzin_dzien := NVL(naucz.max_godzin_dziennie, 6) * 60;
                 v_max_godzin_tydzien := NVL(naucz.max_godzin_tydzien, 30) * 60;
 
-                IF (v_godziny_dzis + p_czas_min) <= v_max_godzin_dzien 
+                IF (v_godziny_dzis + p_czas_min) <= v_max_godzin_dzien
                    AND (v_godziny_tydzien + p_czas_min) <= v_max_godzin_tydzien THEN
                     IF v_lekcje_dzis < v_min_lekcji THEN
                         v_min_lekcji := v_lekcje_dzis;
@@ -826,7 +826,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
         END LOOP;
 
         IF v_nazwisko IS NULL THEN
-            RAISE_APPLICATION_ERROR(-20020, 'Brak dostepnego nauczyciela od instrumentu: ' || p_instrument || 
+            RAISE_APPLICATION_ERROR(-20020, 'Brak dostepnego nauczyciela od instrumentu: ' || p_instrument ||
                 ' w terminie ' || TO_CHAR(p_data, 'YYYY-MM-DD') || ' ' || p_godzina);
         END IF;
 
@@ -919,7 +919,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
         DBMS_OUTPUT.PUT_LINE('Tydzien od: ' || TO_CHAR(p_data_poniedzialek, 'YYYY-MM-DD'));
 
         FOR uczen IN (
-            SELECT u.id_ucznia, u.imie, u.nazwisko, 
+            SELECT u.id_ucznia, u.imie, u.nazwisko,
                    DEREF(u.ref_instrument).nazwa AS instrument,
                    DEREF(u.ref_grupa).klasa AS klasa,
                    DEREF(u.ref_grupa).kod AS grupa

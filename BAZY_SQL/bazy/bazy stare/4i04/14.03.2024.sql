@@ -2,7 +2,7 @@ use baza
 
 CREATE TABLE dzialy(
 	dzialID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	nazwa varchar(50) 
+	nazwa varchar(50)
 )
 
 go
@@ -14,7 +14,7 @@ CREATE TABLE pracownicy
 	imie varchar(50),
 	wiek int,
 	dzialID int FOREIGN KEY REFERENCES dzialy (dzialID)
-) 
+)
 
 go
 
@@ -87,20 +87,20 @@ select dzialID,nazwa,imie,nazwisko from dzialy
 select dzialID,nazwa,imie,nazwisko from dzialy,pracownicy
 
 
-select dzialy.dzialID,nazwa,imie,nazwisko 
+select dzialy.dzialID,nazwa,imie,nazwisko
 from dzialy,pracownicy
 
 select * from pracownicy
 
 select pracownicy.dzialID,
-dzialy.dzialID,nazwa,imie,nazwisko 
+dzialy.dzialID,nazwa,imie,nazwisko
 from dzialy,pracownicy
 where
 dzialy.dzialID=pracownicy.dzialID
 
 
 select pracownicy.dzialID,
-dzialy.dzialID,nazwa,imie,nazwisko 
+dzialy.dzialID,nazwa,imie,nazwisko
 from dzialy join pracownicy
 on
 dzialy.dzialID=pracownicy.dzialID
@@ -114,7 +114,7 @@ dzialy.dzialID,nazwa,imie,nazwisko,zarobki.brutto
 from dzialy join pracownicy
 on
 dzialy.dzialID=pracownicy.dzialID
-join zarobki 
+join zarobki
 on pracownicy.pracID=zarobki.pracID
 
 select p.dzialID,
@@ -135,8 +135,8 @@ join zarobki as z
 on p.pracID=z.pracID
 
 
-select nazwa,imie,nazwisko,z.brutto from 
-dzialy as d join pracownicy as p 
+select nazwa,imie,nazwisko,z.brutto from
+dzialy as d join pracownicy as p
 on d.dzialID=p.dzialID
 join zarobki as z
 on p.pracID=z.pracID

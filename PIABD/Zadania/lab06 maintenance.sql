@@ -3,11 +3,11 @@
 ----------------------------------
 
 
--- Na podstawie pozycji literaturowej Brad’s Sure Guide to SQL Server Maintenance Plans 
--- wykonujemy poniższe zadania (nie zapisujemy w tym pliku skryptów dla zadań (jobs) tylko wykonujemy i sprawdzamy w SSMS) 
+-- Na podstawie pozycji literaturowej Brad’s Sure Guide to SQL Server Maintenance Plans
+-- wykonujemy poniższe zadania (nie zapisujemy w tym pliku skryptów dla zadań (jobs) tylko wykonujemy i sprawdzamy w SSMS)
 -- Wypisujemy tylko przykładowe zapytania tworzące dane zadanie np. backup bazy danych, reorganizacja indeksów (wybrane 2-3 indeksy), wykonane zapytanie, itd.
 
--- 1. Przed utworzeniem planu konserwacji 
+-- 1. Przed utworzeniem planu konserwacji
   -- a. ustawić Database Mail (środowisko testowe Parpercut_SMTP)
   -- b. utwórzyć jednego lub więcej operatorów agentów SQL Server, którzy będą otrzymywać powiadomienia e-mail (np. operator1)
 
@@ -25,6 +25,3 @@
 --11. Back Up Database (Log) - definiujemy plan i sprawdzamy działanie
 --12. Maintenance Plan Designer - definiujemy wybrany plan lub plany za pomocą projektanta i sprawdzamy jego działanie.
 --13. Zadanie uruchamiamy na życzenie i planujemy wykonywanie zadań cyklicznie - Task Scheduling
-
-
-  

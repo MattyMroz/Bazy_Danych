@@ -272,7 +272,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_OSOBY AS
         IF p_instrumenty IS NOT NULL AND p_instrumenty.COUNT > 0 THEN
             FOR i IN 1..p_instrumenty.COUNT LOOP
                 IF NOT PKG_SLOWNIKI.czy_instrument_istnieje(p_instrumenty(i)) THEN
-                    RAISE_APPLICATION_ERROR(-20030, 
+                    RAISE_APPLICATION_ERROR(-20030,
                         'Instrument "' || p_instrumenty(i) || '" nie istnieje w slowniku. ' ||
                         'Dodaj go najpierw przez PKG_SLOWNIKI.dodaj_instrument()');
                 END IF;
@@ -472,7 +472,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_OSOBY AS
         -- Jesli brak instrumentow, zwroc pusty kursor
         IF v_instrumenty IS NULL OR v_instrumenty.COUNT = 0 THEN
             OPEN v_cursor FOR
-                SELECT NULL AS id_ucznia, NULL AS imie, NULL AS nazwisko, 
+                SELECT NULL AS id_ucznia, NULL AS imie, NULL AS nazwisko,
                        NULL AS instrument, NULL AS grupa, NULL AS klasa
                 FROM DUAL WHERE 1=0;
             RETURN v_cursor;
@@ -717,7 +717,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
             (TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
              TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))) < v_koniec_min
             AND
-            v_start_min < (TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+            v_start_min < (TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                            TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania_min)
         );
 
@@ -964,7 +964,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
         v_id_ucznia NUMBER;
         v_kod_grupy VARCHAR2(10);
     BEGIN
-        SELECT u.id_ucznia, DEREF(u.ref_grupa).kod 
+        SELECT u.id_ucznia, DEREF(u.ref_grupa).kod
         INTO v_id_ucznia, v_kod_grupy
         FROM UCZNIOWIE u
         WHERE UPPER(u.nazwisko) = UPPER(p_nazwisko)
@@ -1158,7 +1158,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
                 v_max_godzin_tydzien := NVL(naucz.max_godzin_tydzien, 30) * 60; -- w minutach
 
                 -- Sprawdz limit dzienny I tygodniowy
-                IF (v_godziny_dzis + p_czas_min) <= v_max_godzin_dzien 
+                IF (v_godziny_dzis + p_czas_min) <= v_max_godzin_dzien
                    AND (v_godziny_tydzien + p_czas_min) <= v_max_godzin_tydzien THEN
                     -- Wybierz nauczyciela z najmniejsza liczba lekcji (load balancing)
                     IF v_lekcje_dzis < v_min_lekcji THEN
@@ -1170,8 +1170,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
         END LOOP;
 
         IF v_nazwisko IS NULL THEN
-            RAISE_APPLICATION_ERROR(-20020, 
-                'Brak dostepnego nauczyciela od instrumentu: ' || p_instrument || 
+            RAISE_APPLICATION_ERROR(-20020,
+                'Brak dostepnego nauczyciela od instrumentu: ' || p_instrument ||
                 ' w terminie ' || TO_CHAR(p_data, 'YYYY-MM-DD') || ' ' || p_godzina);
         END IF;
 
@@ -1193,7 +1193,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
         v_start_min  NUMBER := godzina_na_minuty(p_godzina);
     BEGIN
         -- Pobierz instrument ucznia i jego klase
-        SELECT DEREF(u.ref_instrument).nazwa, 
+        SELECT DEREF(u.ref_instrument).nazwa,
                DEREF(u.ref_grupa).klasa
         INTO v_instrument, v_klasa
         FROM UCZNIOWIE u
@@ -1217,7 +1217,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
             SELECT s.numer INTO v_sala
             FROM (
                 SELECT s.numer,
-                       (SELECT COUNT(*) FROM LEKCJE l 
+                       (SELECT COUNT(*) FROM LEKCJE l
                         WHERE DEREF(l.ref_sala).id_sali = s.id_sali
                         AND l.data_lekcji = p_data) AS liczba_lekcji
                 FROM SALE s
@@ -1269,7 +1269,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
         );
 
         DBMS_OUTPUT.PUT_LINE('Przydzielono lekcje: ' || p_uczen_nazwisko || ' ' || p_uczen_imie ||
-                             ' (klasa ' || v_klasa || ', ' || v_czas_lekcji || ' min) -> ' || 
+                             ' (klasa ' || v_klasa || ', ' || v_czas_lekcji || ' min) -> ' ||
                              'nauczyciel: ' || v_nauczyciel || ', sala: ' || v_sala);
     END;
 
@@ -1297,7 +1297,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
         DBMS_OUTPUT.PUT_LINE('Tydzien od: ' || TO_CHAR(p_data_poniedzialek, 'YYYY-MM-DD'));
 
         FOR uczen IN (
-            SELECT u.id_ucznia, u.imie, u.nazwisko, 
+            SELECT u.id_ucznia, u.imie, u.nazwisko,
                    DEREF(u.ref_instrument).nazwa AS instrument,
                    DEREF(u.ref_grupa).klasa AS klasa,
                    DEREF(u.ref_grupa).kod AS grupa
@@ -1416,7 +1416,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
                 v_idx_naucz := MOD(v_idx_naucz, v_nauczyciele_grupowi.COUNT) + 1;
                 v_nauczyciel := v_nauczyciele_grupowi(v_idx_naucz);
 
-                dodaj_lekcje_grupowa('Ksztalcenie sluchu', v_nauczyciel, '201', 
+                dodaj_lekcje_grupowa('Ksztalcenie sluchu', v_nauczyciel, '201',
                                      grupa.kod, v_dzien, '14:00', 45);
                 v_utworzono := v_utworzono + 1;
             EXCEPTION
@@ -1430,7 +1430,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
                 v_idx_naucz := MOD(v_idx_naucz, v_nauczyciele_grupowi.COUNT) + 1;
                 v_nauczyciel := v_nauczyciele_grupowi(v_idx_naucz);
 
-                dodaj_lekcje_grupowa('Rytmika', v_nauczyciel, '202', 
+                dodaj_lekcje_grupowa('Rytmika', v_nauczyciel, '202',
                                      grupa.kod, v_dzien, '15:00', 45);
                 v_utworzono := v_utworzono + 1;
             EXCEPTION
@@ -1444,7 +1444,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
                 v_idx_naucz := MOD(v_idx_naucz, v_nauczyciele_grupowi.COUNT) + 1;
                 v_nauczyciel := v_nauczyciele_grupowi(v_idx_naucz);
 
-                dodaj_lekcje_grupowa('Audycje muzyczne', v_nauczyciel, '201', 
+                dodaj_lekcje_grupowa('Audycje muzyczne', v_nauczyciel, '201',
                                      grupa.kod, v_dzien, '16:00', 45);
                 v_utworzono := v_utworzono + 1;
             EXCEPTION
@@ -1465,7 +1465,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
                     v_nauczyciel := v_nauczyciele_grupowi(v_idx_naucz);
 
                     -- Wtorek = poniedzialek + 1
-                    dodaj_lekcje_grupowa('Chor', v_nauczyciel, '202', 
+                    dodaj_lekcje_grupowa('Chor', v_nauczyciel, '202',
                                          grupa.kod, p_data_poniedzialek + 1, '17:00', 90);
                     v_utworzono := v_utworzono + 1;
                     DBMS_OUTPUT.PUT_LINE('  + Chor dla ' || grupa.kod || ' (wtorek 17:00)');
@@ -1481,7 +1481,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_LEKCJE AS
                     v_nauczyciel := v_nauczyciele_grupowi(v_idx_naucz);
 
                     -- Czwartek = poniedzialek + 3
-                    dodaj_lekcje_grupowa('Orkiestra', v_nauczyciel, '202', 
+                    dodaj_lekcje_grupowa('Orkiestra', v_nauczyciel, '202',
                                          grupa.kod, p_data_poniedzialek + 3, '17:00', 90);
                     v_utworzono := v_utworzono + 1;
                     DBMS_OUTPUT.PUT_LINE('  + Orkiestra dla ' || grupa.kod || ' (czwartek 17:00)');
@@ -1762,7 +1762,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_RAPORTY AS
         FOR r IN (
             SELECT s.numer, s.typ, COUNT(l.id_lekcji) AS liczba
             FROM SALE s
-            LEFT JOIN LEKCJE l ON DEREF(l.ref_sala).id_sali = s.id_sali 
+            LEFT JOIN LEKCJE l ON DEREF(l.ref_sala).id_sali = s.id_sali
                               AND l.data_lekcji = p_data
                               AND l.status != 'odwolana'
             GROUP BY s.numer, s.typ

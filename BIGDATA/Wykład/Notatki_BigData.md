@@ -3584,4 +3584,3 @@ Widać, że `event_time` jest wcześniejszy od `proc_time` o losowe opóźnienie
 18. Okna: **sliding** (window > slide, okna się zazębiają, np. 30 s / 20 s), **tumbling** (window = slide, bez zazębiania, np. 30 s / 30 s), **session** (trwa przez sesję, zamyka się po przerwie bez zdarzeń). Wiersz może należeć do wielu okien.
 19. Producent: `KafkaProducer(bootstrap_servers=[server], value_serializer=lambda x: json.dumps(x).encode("utf-8"), api_version=(2, 7, 0))`, `producer.send("topicBD", value=message)`, domyślny serwer `localhost:9092`.
 20. Konsument w Sparku: `spark.readStream.format("kafka").option("kafka.bootstrap.servers", server).option("subscribe", "topicBD").load()`, potem `writeStream.outputMode("append").format("console").start()` i `awaitTermination(60)`; uruchomienie przez `spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.1`.
-

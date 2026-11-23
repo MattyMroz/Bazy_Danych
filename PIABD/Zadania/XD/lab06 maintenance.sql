@@ -3,15 +3,15 @@
 ----------------------------------
 
 
--- Na podstawie pozycji literaturowej Brad’s Sure Guide to SQL Server Maintenance Plans 
--- wykonujemy poniższe zadania (nie zapisujemy w tym pliku skryptów dla zadań (jobs) tylko wykonujemy i sprawdzamy w SSMS) 
+-- Na podstawie pozycji literaturowej Brad’s Sure Guide to SQL Server Maintenance Plans
+-- wykonujemy poniższe zadania (nie zapisujemy w tym pliku skryptów dla zadań (jobs) tylko wykonujemy i sprawdzamy w SSMS)
 -- Wypisujemy tylko przykładowe zapytania tworzące dane zadanie np. backup bazy danych, reorganizacja indeksów (wybrane 2-3 indeksy), wykonane zapytanie, itd.
 
--- 1. Przed utworzeniem planu konserwacji 
+-- 1. Przed utworzeniem planu konserwacji
   -- a. ustawić Database Mail (środowisko testowe Parpercut_SMTP)
   -- b. utwórzyć jednego lub więcej operatorów agentów SQL Server, którzy będą otrzymywać powiadomienia e-mail (np. operator1)
-EXEC msdb.dbo.sp_add_operator @name=N'operator1', 
-		@enabled=1, 
+EXEC msdb.dbo.sp_add_operator @name=N'operator1',
+		@enabled=1,
 		@email_address=N'operator1@example.com';
 GO
 
@@ -52,20 +52,20 @@ EXEC msdb.dbo.sp_purge_jobhistory @job_name = N'NazwaZadaniaDoWyczyszczenia';
 GO
 
 -- 9. Back Up Database (Full) - definiujemy plan i sprawdzamy działanie
-BACKUP DATABASE [Northwind] 
-TO DISK = N'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\Backup\Northwind.bak' 
+BACKUP DATABASE [Northwind]
+TO DISK = N'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\Backup\Northwind.bak'
 WITH NOFORMAT, INIT, NAME = N'Northwind-Full Database Backup', SKIP, NOREWIND, NOUNLOAD, STATS = 10;
 GO
 
 --10. Back Up Database (Diff) - definiujemy plan i sprawdzamy działanie
-BACKUP DATABASE [Northwind] 
-TO DISK = N'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\Backup\Northwind.bak' 
+BACKUP DATABASE [Northwind]
+TO DISK = N'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\Backup\Northwind.bak'
 WITH DIFFERENTIAL, NOFORMAT, NOINIT, NAME = N'Northwind-Differential Database Backup', SKIP, NOREWIND, NOUNLOAD, STATS = 10;
 GO
 
 --11. Back Up Database (Log) - definiujemy plan i sprawdzamy działanie
-BACKUP LOG [Northwind] 
-TO DISK = N'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\Backup\Northwind.bak' 
+BACKUP LOG [Northwind]
+TO DISK = N'C:\Program Files\Microsoft SQL Server\MSSQL17.SQLEXPRESS\MSSQL\Backup\Northwind.bak'
 WITH NOFORMAT, NOINIT, NAME = N'Northwind-Transaction Log Backup', SKIP, NOREWIND, NOUNLOAD, STATS = 10;
 GO
 

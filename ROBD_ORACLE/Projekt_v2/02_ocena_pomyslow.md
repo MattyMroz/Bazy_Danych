@@ -36,7 +36,7 @@ t_semestr_obj:
   - data_od        DATE
   - data_do        DATE  
   - czy_aktywny    CHAR(1)        -- 'T'/'N' (tylko 1 aktywny!)
-  
+
   METODY:
   - czy_w_trakcie() -> VARCHAR2    -- czy semestr trwa
   - dni_do_konca() -> NUMBER       -- ile dni zostało
@@ -61,7 +61,7 @@ t_sala_obj:
   - ma_fortepian   CHAR(1)        -- 'T'/'N'
   - ma_perkusje    CHAR(1)        -- 'T'/'N'
   - opis           VARCHAR2(200)
-  
+
   METODY:
   - opis_pelny() -> VARCHAR2      -- nazwa + wyposażenie
 ```

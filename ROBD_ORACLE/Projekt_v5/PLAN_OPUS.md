@@ -94,8 +94,8 @@ typ_ucznia VARCHAR2(30) CHECK (typ_ucznia IN (
 ```
 
 **UZASADNIENIE dla prowadzącego:**
-> "Ograniczenie godzinowe nie wynika z wieku, tylko ze statusu edukacyjnego. 
-> 17-latek po maturze może mieć lekcje o 14:00, 
+> "Ograniczenie godzinowe nie wynika z wieku, tylko ze statusu edukacyjnego.
+> 17-latek po maturze może mieć lekcje o 14:00,
 > a 19-latek studiujący dziennie - tylko po 15:00."
 
 ### 2.3 NAUCZYCIELE
@@ -218,7 +218,7 @@ CREATE OR REPLACE TYPE t_semestr_obj AS OBJECT (
     data_start        DATE,
     data_koniec       DATE,
     rok_szkolny       VARCHAR2(9),       -- "2025/2026"
-    
+
     MEMBER FUNCTION liczba_tygodni RETURN NUMBER,
     MEMBER FUNCTION czy_aktywny RETURN CHAR,
     MEMBER FUNCTION opis RETURN VARCHAR2
@@ -232,7 +232,7 @@ CREATE OR REPLACE TYPE t_instrument_obj AS OBJECT (
     nazwa             VARCHAR2(100),
     kategoria         VARCHAR2(50),      -- klawiszowe/strunowe/dete/perkusyjne
     czy_wymaga_akompaniatora CHAR(1),    -- T/N (smyczki = T)
-    
+
     MEMBER FUNCTION opis RETURN VARCHAR2,
     MEMBER FUNCTION czy_smyczkowy RETURN CHAR
 );
@@ -253,7 +253,7 @@ CREATE OR REPLACE TYPE t_sala_obj AS OBJECT (
     pojemnosc         NUMBER,
     wyposazenie       t_lista_sprzetu,
     status            VARCHAR2(20),
-    
+
     MEMBER FUNCTION opis_pelny RETURN VARCHAR2,
     MEMBER FUNCTION czy_ma_sprzet(p_nazwa VARCHAR2) RETURN CHAR,
     MEMBER FUNCTION czy_odpowiednia(p_typ VARCHAR2, p_osob NUMBER) RETURN CHAR
@@ -279,7 +279,7 @@ CREATE OR REPLACE TYPE t_nauczyciel_obj AS OBJECT (
     czy_prowadzi_grupowe CHAR(1),
     czy_akompaniator    CHAR(1),
     status              VARCHAR2(20),
-    
+
     MEMBER FUNCTION pelne_dane RETURN VARCHAR2,
     MEMBER FUNCTION lata_stazu RETURN NUMBER,
     MEMBER FUNCTION liczba_instrumentow RETURN NUMBER,
@@ -303,7 +303,7 @@ CREATE OR REPLACE TYPE t_uczen_obj AS OBJECT (
     status              VARCHAR2(20),
     ref_instrument      REF t_instrument_obj,
     ref_grupa           REF t_grupa_obj,
-    
+
     MEMBER FUNCTION wiek RETURN NUMBER,
     MEMBER FUNCTION pelne_dane RETURN VARCHAR2,
     MEMBER FUNCTION czy_wymaga_popoludnia RETURN CHAR,
@@ -321,7 +321,7 @@ CREATE OR REPLACE TYPE t_grupa_obj AS OBJECT (
     rok_szkolny         VARCHAR2(9),
     max_uczniow         NUMBER,
     status              VARCHAR2(20),
-    
+
     MEMBER FUNCTION opis RETURN VARCHAR2,
     MEMBER FUNCTION liczba_uczniow RETURN NUMBER  -- wymaga zapytania
 );
@@ -339,7 +339,7 @@ CREATE OR REPLACE TYPE t_przedmiot_obj AS OBJECT (
     czy_obowiazkowy     CHAR(1),
     wymagany_sprzet     VARCHAR2(100),
     ref_instrument      REF t_instrument_obj,  -- NULL dla teoretycznych
-    
+
     MEMBER FUNCTION opis RETURN VARCHAR2,
     MEMBER FUNCTION czy_dla_klasy(p_klasa NUMBER) RETURN CHAR
 );
@@ -360,7 +360,7 @@ CREATE OR REPLACE TYPE t_lekcja_obj AS OBJECT (
     ref_sala            REF t_sala_obj,
     ref_uczen           REF t_uczen_obj,       -- NULL dla grupowych
     ref_grupa           REF t_grupa_obj,       -- NULL dla indywidualnych
-    
+
     MEMBER FUNCTION godzina_koniec RETURN VARCHAR2,
     MEMBER FUNCTION czas_txt RETURN VARCHAR2,
     MEMBER FUNCTION czy_grupowa RETURN CHAR,
@@ -382,7 +382,7 @@ CREATE OR REPLACE TYPE t_egzamin_obj AS OBJECT (
     ref_sala            REF t_sala_obj,
     ocena_koncowa       NUMBER(1),
     uwagi               VARCHAR2(500),
-    
+
     MEMBER FUNCTION czy_zdany RETURN CHAR,
     MEMBER FUNCTION ocena_slownie RETURN VARCHAR2
 );
@@ -400,7 +400,7 @@ CREATE OR REPLACE TYPE t_ocena_obj AS OBJECT (
     ref_nauczyciel      REF t_nauczyciel_obj,
     ref_przedmiot       REF t_przedmiot_obj,
     ref_lekcja          REF t_lekcja_obj,     -- może być NULL
-    
+
     MEMBER FUNCTION ocena_slownie RETURN VARCHAR2,
     MEMBER FUNCTION czy_pozytywna RETURN CHAR
 );
@@ -487,8 +487,8 @@ DECLARE
     v_cnt NUMBER;
 BEGIN
     -- ORA-04091! Nie można czytać t_lekcja podczas INSERT do t_lekcja!
-    SELECT COUNT(*) INTO v_cnt 
-    FROM t_lekcja 
+    SELECT COUNT(*) INTO v_cnt
+    FROM t_lekcja
     WHERE ref_sala = :NEW.ref_sala AND data_lekcji = :NEW.data_lekcji;
 END;
 ```
@@ -556,21 +556,21 @@ BEGIN
     IF :NEW.data_urodzenia IS NOT NULL THEN
         v_wiek := TRUNC(MONTHS_BETWEEN(SYSDATE, :NEW.data_urodzenia) / 12);
         IF v_wiek < 6 THEN
-            RAISE_APPLICATION_ERROR(-20001, 
+            RAISE_APPLICATION_ERROR(-20001,
                 'Uczeń musi mieć minimum 6 lat. Wiek: ' || v_wiek);
         END IF;
     END IF;
-    
+
     -- WALIDACJA 2: Typ ucznia
     IF :NEW.typ_ucznia NOT IN (
         'uczacy_sie_w_innej_szkole',
         'ukonczyl_edukacje',
         'tylko_muzyczna'
     ) THEN
-        RAISE_APPLICATION_ERROR(-20002, 
+        RAISE_APPLICATION_ERROR(-20002,
             'Nieprawidłowy typ ucznia: ' || :NEW.typ_ucznia);
     END IF;
-    
+
     -- ... pozostałe walidacje ...
 END;
 /
@@ -598,51 +598,51 @@ NARZĘDZIOWY (1):
 
 ```sql
 CREATE OR REPLACE PACKAGE pkg_lekcja AS
-    
+
     -- ============================================
     -- WALIDACJE (zamiast triggerów - unikamy ORA-04091)
     -- ============================================
-    
+
     FUNCTION czy_sala_wolna(
         p_id_sali       NUMBER,
         p_data          DATE,
         p_godzina       VARCHAR2,
         p_czas_trwania  NUMBER
     ) RETURN CHAR;  -- T/N
-    
+
     FUNCTION czy_nauczyciel_wolny(
         p_id_nauczyciela NUMBER,
         p_data          DATE,
         p_godzina       VARCHAR2,
         p_czas_trwania  NUMBER
     ) RETURN CHAR;
-    
+
     FUNCTION czy_uczen_wolny(
         p_id_ucznia     NUMBER,
         p_data          DATE,
         p_godzina       VARCHAR2,
         p_czas_trwania  NUMBER
     ) RETURN CHAR;
-    
+
     FUNCTION czy_godzina_dozwolona(
         p_id_ucznia     NUMBER,
         p_godzina       VARCHAR2
     ) RETURN CHAR;  -- sprawdza typ_ucznia
-    
+
     FUNCTION ile_godzin_nauczyciel_dzien(
         p_id_nauczyciela NUMBER,
         p_data          DATE
     ) RETURN NUMBER;
-    
+
     FUNCTION ile_lekcji_uczen_dzien(
         p_id_ucznia     NUMBER,
         p_data          DATE
     ) RETURN NUMBER;
-    
+
     -- ============================================
     -- PLANOWANIE
     -- ============================================
-    
+
     PROCEDURE zaplanuj_indywidualna(
         p_id_ucznia     NUMBER,
         p_id_nauczyciela NUMBER,
@@ -653,7 +653,7 @@ CREATE OR REPLACE PACKAGE pkg_lekcja AS
         p_czas_trwania  NUMBER DEFAULT 45,
         p_id_akompaniatora NUMBER DEFAULT NULL
     );
-    
+
     PROCEDURE zaplanuj_grupowa(
         p_id_grupy      NUMBER,
         p_id_nauczyciela NUMBER,
@@ -663,28 +663,28 @@ CREATE OR REPLACE PACKAGE pkg_lekcja AS
         p_godzina       VARCHAR2,
         p_czas_trwania  NUMBER DEFAULT 45
     );
-    
+
     -- ============================================
     -- HEURYSTYKA (Big Rocks First!)
     -- ============================================
-    
+
     PROCEDURE generuj_plan_tygodniowy(
         p_data_poczatku DATE,
         p_nadpisz       CHAR DEFAULT 'N'
     );
-    
+
     -- ============================================
     -- ZARZĄDZANIE
     -- ============================================
-    
+
     PROCEDURE zmien_status(p_id_lekcji NUMBER, p_status VARCHAR2);
     PROCEDURE odwolaj(p_id_lekcji NUMBER);
     PROCEDURE przeloz(p_id_lekcji NUMBER, p_nowa_data DATE, p_nowa_godzina VARCHAR2);
-    
+
     -- ============================================
     -- POMOCNICZE
     -- ============================================
-    
+
     FUNCTION znajdz_wolna_sale(
         p_data          DATE,
         p_godzina       VARCHAR2,
@@ -692,9 +692,9 @@ CREATE OR REPLACE PACKAGE pkg_lekcja AS
         p_wymagany_sprzet VARCHAR2 DEFAULT NULL,
         p_min_pojemnosc NUMBER DEFAULT 1
     ) RETURN NUMBER;
-    
+
     PROCEDURE plan_dnia(p_data DATE DEFAULT SYSDATE);
-    
+
 END pkg_lekcja;
 /
 ```
@@ -705,41 +705,41 @@ END pkg_lekcja;
 PROCEDURE zaplanuj_indywidualna(...) IS
 BEGIN
     -- ======== WALIDACJE (zamiast triggerów!) ========
-    
+
     -- 1. Czy godzina dozwolona dla typu ucznia?
     IF czy_godzina_dozwolona(p_id_ucznia, p_godzina) = 'N' THEN
-        RAISE_APPLICATION_ERROR(-20020, 
+        RAISE_APPLICATION_ERROR(-20020,
             'Uczeń uczący się w innej szkole może mieć lekcje dopiero od 15:00');
     END IF;
-    
+
     -- 2. Czy sala wolna?
     IF czy_sala_wolna(p_id_sali, p_data, p_godzina, p_czas_trwania) = 'N' THEN
         RAISE_APPLICATION_ERROR(-20021, 'Sala zajęta w tym terminie');
     END IF;
-    
+
     -- 3. Czy nauczyciel wolny?
     IF czy_nauczyciel_wolny(p_id_nauczyciela, p_data, p_godzina, p_czas_trwania) = 'N' THEN
         RAISE_APPLICATION_ERROR(-20022, 'Nauczyciel ma inną lekcję w tym czasie');
     END IF;
-    
+
     -- 4. Czy uczeń wolny?
     IF czy_uczen_wolny(p_id_ucznia, p_data, p_godzina, p_czas_trwania) = 'N' THEN
         RAISE_APPLICATION_ERROR(-20023, 'Uczeń ma inną lekcję w tym czasie');
     END IF;
-    
+
     -- 5. Czy limit godzin nauczyciela OK?
     IF ile_godzin_nauczyciel_dzien(p_id_nauczyciela, p_data) + p_czas_trwania/60 > 6 THEN
         RAISE_APPLICATION_ERROR(-20024, 'Nauczyciel przekroczy limit 6h dziennie');
     END IF;
-    
+
     -- 6. Czy limit lekcji ucznia OK?
     IF ile_lekcji_uczen_dzien(p_id_ucznia, p_data) >= 2 THEN
         RAISE_APPLICATION_ERROR(-20025, 'Uczeń ma już 2 lekcje tego dnia');
     END IF;
-    
+
     -- ======== INSERT (po walidacji!) ========
     INSERT INTO t_lekcja VALUES (t_lekcja_obj(...));
-    
+
     DBMS_OUTPUT.PUT_LINE('Zaplanowano lekcję na ' || p_data || ' ' || p_godzina);
 END;
 ```
@@ -793,32 +793,32 @@ PROCEDURE generuj_plan_tygodniowy(p_data_poczatku DATE, p_nadpisz CHAR DEFAULT '
 BEGIN
     -- ============ FAZA 1: GRUPOWE ============
     DBMS_OUTPUT.PUT_LINE('[FAZA 1] Planowanie zajęć grupowych...');
-    
+
     FOR r_grupa IN (
-        SELECT g.id_grupy, g.nazwa, 
+        SELECT g.id_grupy, g.nazwa,
                (SELECT COUNT(*) FROM t_uczen u WHERE u.ref_grupa = REF(g)) AS cnt
         FROM t_grupa g WHERE g.status = 'aktywna'
         ORDER BY cnt DESC  -- większe grupy najpierw
     ) LOOP
         -- Kształcenie słuchu - dla każdej grupy
         planuj_zajecia_grupowe(r_grupa.id_grupy, 'Kształcenie słuchu', v_data_pn);
-        
+
         -- Rytmika - tylko klasy I-II
         IF r_grupa.klasa <= 2 THEN
             planuj_zajecia_grupowe(r_grupa.id_grupy, 'Rytmika', v_data_pn);
         END IF;
     END LOOP;
-    
+
     -- ============ FAZA 2: INDYWIDUALNE PRIORYTETOWE ============
     DBMS_OUTPUT.PUT_LINE('[FAZA 2] Planowanie lekcji priorytetowych...');
-    
+
     FOR r_uczen IN (
         SELECT u.id_ucznia, u.imie, u.nazwisko, u.typ_ucznia,
                DEREF(u.ref_instrument).nazwa AS instrument,
                -- Priorytet: 1 = najtrudniejszy do upchnięcia
-               CASE 
+               CASE
                    WHEN u.typ_ucznia = 'uczacy_sie_w_innej_szkole' THEN 1
-                   ELSE 2 
+                   ELSE 2
                END AS priorytet
         FROM t_uczen u
         WHERE u.status = 'aktywny'
@@ -826,11 +826,11 @@ BEGIN
     ) LOOP
         znajdz_i_zaplanuj_indywidualna(r_uczen.id_ucznia, v_data_pn);
     END LOOP;
-    
+
     -- ============ FAZA 3: RÓWNOWAŻENIE ============
     DBMS_OUTPUT.PUT_LINE('[FAZA 3] Sprawdzanie równomierności...');
     sprawdz_rownomiernosc(v_data_pn);
-    
+
     COMMIT;
 END;
 ```
@@ -849,17 +849,17 @@ FUNCTION znajdz_wolny_slot(
 BEGIN
     -- Pobierz typ ucznia
     SELECT typ_ucznia INTO v_typ_ucznia FROM t_uczen WHERE id_ucznia = p_id_ucznia;
-    
+
     -- Ustal minimalną godzinę
-    v_min_godz := CASE WHEN v_typ_ucznia = 'uczacy_sie_w_innej_szkole' 
+    v_min_godz := CASE WHEN v_typ_ucznia = 'uczacy_sie_w_innej_szkole'
                        THEN '15:00' ELSE '14:00' END;
-    
+
     -- Szukaj w kolejnych dniach
     FOR v_dzien IN 0..4 LOOP  -- Pn-Pt
         FOR v_godzina IN 14..19 LOOP  -- 14:00 - 19:00
             FOR v_minuta IN 0..1 LOOP  -- :00 i :30
                 DECLARE
-                    v_slot VARCHAR2(5) := TO_CHAR(v_godzina, 'FM00') || ':' || 
+                    v_slot VARCHAR2(5) := TO_CHAR(v_godzina, 'FM00') || ':' ||
                                           CASE v_minuta WHEN 0 THEN '00' ELSE '30' END;
                     v_data DATE := p_data_od + v_dzien;
                 BEGIN
@@ -883,7 +883,7 @@ BEGIN
             END LOOP;
         END LOOP;
     END LOOP;
-    
+
     RETURN NULL;  -- nie znaleziono
 END;
 ```
@@ -945,16 +945,16 @@ PROCEDURE krok_lekcja_06_popoludnie_blokada IS
     v_id_ucznia NUMBER;
 BEGIN
     banner('TEST: Blokada lekcji przed 15:00 dla ucznia z innej szkoły');
-    
+
     -- Znajdź ucznia z innej szkoły
     SELECT id_ucznia INTO v_id_ucznia
-    FROM t_uczen 
+    FROM t_uczen
     WHERE typ_ucznia = 'uczacy_sie_w_innej_szkole' AND ROWNUM = 1;
-    
+
     info('Uczeń ID: ' || v_id_ucznia);
     info('Typ: uczacy_sie_w_innej_szkole');
     info('Próba zaplanowania lekcji na 14:00...');
-    
+
     BEGIN
         pkg_lekcja.zaplanuj_indywidualna(
             p_id_ucznia      => v_id_ucznia,
@@ -965,7 +965,7 @@ BEGIN
             p_godzina        => '14:00',
             p_czas_trwania   => 45
         );
-        
+
         blad('NIEPOWODZENIE! Lekcja została dodana, a nie powinna!');
     EXCEPTION
         WHEN OTHERS THEN
@@ -975,7 +975,7 @@ BEGIN
                 blad('Nieoczekiwany błąd: ' || SQLERRM);
             END IF;
     END;
-    
+
     ROLLBACK;
 END;
 ```
@@ -1081,7 +1081,7 @@ CREATE OR REPLACE VIEW v_moje_lekcje AS
 SELECT l.* FROM t_lekcja l
 WHERE DEREF(l.ref_uczen).id_ucznia = get_current_user_id()
    OR l.ref_grupa IN (
-       SELECT u.ref_grupa FROM t_uczen u 
+       SELECT u.ref_grupa FROM t_uczen u
        WHERE u.id_ucznia = get_current_user_id()
    );
 
@@ -1121,12 +1121,12 @@ Aby prezentacja ZAWSZE się udała, dane startowe muszą:
 
 ```
 SŁOWNIKI:
-├── Instrumenty: 10 (fortepian, gitara, skrzypce, flet, klarnet, 
+├── Instrumenty: 10 (fortepian, gitara, skrzypce, flet, klarnet,
 │                    saksofon, perkusja, trąbka, wiolonczela, organy)
-├── Przedmioty: 6 (Instrument główny, Fortepian dodatkowy, 
-│                  Kształcenie słuchu, Rytmika, Zespół kameralny, 
+├── Przedmioty: 6 (Instrument główny, Fortepian dodatkowy,
+│                  Kształcenie słuchu, Rytmika, Zespół kameralny,
 │                  Audycje muzyczne)
-└── Sale: 5 (2 indywidualne z fortepianem, 1 grupowa, 
+└── Sale: 5 (2 indywidualne z fortepianem, 1 grupowa,
              1 wielofunkcyjna, 1 z organami)
 
 ZASOBY:
@@ -1159,35 +1159,35 @@ BEGIN
     INSERT INTO t_instrument VALUES (t_instrument_obj(2, 'Gitara', 'strunowe', 'N'));
     INSERT INTO t_instrument VALUES (t_instrument_obj(3, 'Skrzypce', 'strunowe', 'T')); -- wymaga akomp!
     -- ... 7 więcej ...
-    
+
     -- Sale
-    INSERT INTO t_sala VALUES (t_sala_obj(1, 'A1', 'indywidualna', 2, 
+    INSERT INTO t_sala VALUES (t_sala_obj(1, 'A1', 'indywidualna', 2,
         t_lista_sprzetu('Fortepian Yamaha', 'Pulpit'), 'dostepna'));
-    INSERT INTO t_sala VALUES (t_sala_obj(2, 'A2', 'indywidualna', 2, 
+    INSERT INTO t_sala VALUES (t_sala_obj(2, 'A2', 'indywidualna', 2,
         t_lista_sprzetu('Fortepian Steinway', 'Pulpit'), 'dostepna'));
-    INSERT INTO t_sala VALUES (t_sala_obj(3, 'B1', 'grupowa', 15, 
+    INSERT INTO t_sala VALUES (t_sala_obj(3, 'B1', 'grupowa', 15,
         t_lista_sprzetu('Pianino', 'Tablica', 'Krzesła x15'), 'dostepna'));
     -- ... 2 więcej ...
-    
+
     -- Nauczyciele
     INSERT INTO t_nauczyciel VALUES (t_nauczyciel_obj(1, 'Jan', 'Kowalski', ...));
     -- ... 4 więcej ...
-    
+
     -- Grupy
     INSERT INTO t_grupa VALUES (t_grupa_obj(1, '1A', 1, '2025/2026', 12, 'aktywna'));
     -- ... 3 więcej ...
-    
+
     -- Uczniowie (z różnymi typami!)
-    INSERT INTO t_uczen VALUES (t_uczen_obj(1, 'Kacper', 'Malinowski', 
-        DATE '2015-05-12', NULL, NULL, SYSDATE, 1, 6, 
+    INSERT INTO t_uczen VALUES (t_uczen_obj(1, 'Kacper', 'Malinowski',
+        DATE '2015-05-12', NULL, NULL, SYSDATE, 1, 6,
         'uczacy_sie_w_innej_szkole', 'aktywny', ...));
     -- ... 14 więcej ...
-    
+
     -- Lekcje tła (~60% slotów)
     -- CELOWO ZOSTAWIAMY:
     -- - Wtorek 16:00 Sala A1 - wolne (dla demo konfliktu)
     -- - Środa 15:00 Nauczyciel 1 - wolne (dla demo popołudnia)
-    
+
     COMMIT;
     DBMS_OUTPUT.PUT_LINE('Wygenerowano dane demo z dziurami na prezentację');
 END;
@@ -1203,7 +1203,7 @@ END;
                               ┌──────────────┐
                               │  t_semestr   │
                               └──────────────┘
-                                     
+
 ┌──────────────┐              ┌──────────────┐
 │ t_instrument │◄─────────────│ t_przedmiot  │
 └──────────────┘              └──────────────┘

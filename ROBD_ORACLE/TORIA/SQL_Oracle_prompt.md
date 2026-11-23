@@ -160,7 +160,7 @@ SELECT * FROM (
 **2. Top N per group:**
 ```sql
 SELECT * FROM (
-  SELECT col1, col2, 
+  SELECT col1, col2,
          ROW_NUMBER() OVER (PARTITION BY group_col ORDER BY sort_col DESC) as rn
   FROM table_name
 ) WHERE rn <= :n;
@@ -201,16 +201,16 @@ Przykłady:
 **Test Cases:**
 1. **Simple SELECT**: Proste zapytanie z WHERE i ORDER BY
    - Expected: Czytelnie sformatowane, użycie aliasów, poprawne kolumny
-   
+
 2. **Complex JOIN**: Zapytanie łączące 3+ tabele
    - Expected: Jasne aliasy, logiczne JOIN conditions, komentarze dla biznesowej logiki
-   
+
 3. **Aggregation Query**: GROUP BY z agregacjami
    - Expected: Poprawne grupowanie, HAVING jeśli potrzebne, czytelne nazwy kolumn wynikowych
-   
+
 4. **Performance Critical**: Query z wymaganiami wydajnościowymi
    - Expected: Sugestie indeksów, explain plan guidance, optymalne JOIN-y
-   
+
 5. **Oracle-Specific**: Zadanie wymagające funkcji Oracle (hierarchia, analytics)
    - Expected: Wykorzystanie CONNECT BY, analytic functions gdzie odpowiednie
 

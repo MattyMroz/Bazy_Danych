@@ -6,7 +6,7 @@ use baza
 
 CREATE TABLE dzialy(
 	dzialID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	nazwa varchar(50) 
+	nazwa varchar(50)
 )
 
 go
@@ -18,7 +18,7 @@ CREATE TABLE pracownicy
 	imie varchar(50),
 	wiek int,
 	dzialID int FOREIGN KEY REFERENCES dzialy (dzialID)
-) 
+)
 
 go
 
@@ -83,7 +83,7 @@ insert into zarobki(od,brutto,pracid) values('01/01/06',2500,9);
 insert into zarobki(od,brutto,pracid) values('02/01/06',5550,10);
 insert into zarobki(od,brutto,pracid) values('03/01/06',5600,11);
 
--- wyswetyl wszystkich praciownkow pracujacych w danym dziale 
+-- wyswetyl wszystkich praciownkow pracujacych w danym dziale
 
 --select * from Order Details
 
@@ -100,16 +100,16 @@ select dzialy.dzialID,nazwa,imie,nazwisko from dzialy,pracownicy
 select * from pracownicy
 
 
-select  pracownicy.dzialID,dzialy.dzialID,nazwa,imie,nazwisko 
+select  pracownicy.dzialID,dzialy.dzialID,nazwa,imie,nazwisko
 from dzialy,pracownicy
 
 
-select  pracownicy.dzialID,dzialy.dzialID,nazwa,imie,nazwisko 
+select  pracownicy.dzialID,dzialy.dzialID,nazwa,imie,nazwisko
 from dzialy,pracownicy
 where
 dzialy.dzialID=pracownicy.dzialID
 
-select  pracownicy.dzialID,dzialy.dzialID,nazwa,imie,nazwisko 
+select  pracownicy.dzialID,dzialy.dzialID,nazwa,imie,nazwisko
 from dzialy join pracownicy
 on
 dzialy.dzialID=pracownicy.dzialID
@@ -210,23 +210,23 @@ order by imie desc
 
 
 select nazwisko, imie from pracownicy as p
-where exists (select * from zarobki as z where 
-z.pracid = p.pracid) 
+where exists (select * from zarobki as z where
+z.pracid = p.pracid)
 
-nazwy dzialow do ktorych nie sa przypisani zadni pracownicy 
+nazwy dzialow do ktorych nie sa przypisani zadni pracownicy
 
 select * from dzialy as d
-where  not exists (select * from pracownicy as p 
+where  not exists (select * from pracownicy as p
 where p.dzialid=d.dzialid)
 
 
 -- klazula in
 
-select imie,nazwisko ,wiek from pracownicy where 
+select imie,nazwisko ,wiek from pracownicy where
 wiek in(30,31,32,34,35)
 
 
-select imie,nazwisko ,wiek from pracownicy where 
+select imie,nazwisko ,wiek from pracownicy where
 nazwisko in('nowak',' kowalski')
 
 
@@ -234,10 +234,9 @@ nazwisko in('nowak',' kowalski')
 
 
 
-select imie,nazwisko  from pracownicy 
+select imie,nazwisko  from pracownicy
 where pracid in
 (
 select distinct pracid from zarobki
 where brutto > 3000
 )
-

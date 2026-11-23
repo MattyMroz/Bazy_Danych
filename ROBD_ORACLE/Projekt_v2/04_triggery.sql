@@ -20,7 +20,7 @@ BEGIN
     SET czy_aktywny = 'N'
     WHERE id_semestru != :NEW.id_semestru
       AND czy_aktywny = 'T';
-    
+
     DBMS_OUTPUT.PUT_LINE('[TRG] Semestr "' || :NEW.nazwa || '" ustawiony jako aktywny.');
 END;
 /
@@ -38,20 +38,20 @@ DECLARE
 BEGIN
     -- Walidacja 1: Data lekcji nie moze byc w przeszlosci (tylko dla nowych zaplanowanych)
     IF INSERTING AND :NEW.status = 'zaplanowana' AND :NEW.data_lekcji < v_data_min THEN
-        RAISE_APPLICATION_ERROR(-20010, 
-            'Data lekcji nie moze byc w przeszlosci. Podano: ' || 
+        RAISE_APPLICATION_ERROR(-20010,
+            'Data lekcji nie moze byc w przeszlosci. Podano: ' ||
             TO_CHAR(:NEW.data_lekcji, 'YYYY-MM-DD'));
     END IF;
-    
+
     -- Walidacja 2: Nie mozna zmienic statusu z "odbyta" na "zaplanowana"
     IF UPDATING AND :OLD.status = 'odbyta' AND :NEW.status = 'zaplanowana' THEN
-        RAISE_APPLICATION_ERROR(-20012, 
+        RAISE_APPLICATION_ERROR(-20012,
             'Nie mozna zmienic statusu lekcji z "odbyta" na "zaplanowana".');
     END IF;
-    
+
     -- Walidacja 3: Nie mozna zmienic statusu z "odwolana" na "odbyta"
     IF UPDATING AND :OLD.status = 'odwolana' AND :NEW.status = 'odbyta' THEN
-        RAISE_APPLICATION_ERROR(-20013, 
+        RAISE_APPLICATION_ERROR(-20013,
             'Nie mozna zmienic statusu lekcji z "odwolana" na "odbyta".');
     END IF;
 END;
@@ -74,11 +74,11 @@ BEGIN
                DEREF(:NEW.ref_uczen).imie
         INTO v_wiek_ucznia, v_imie_ucznia
         FROM DUAL;
-        
+
         IF v_wiek_ucznia < 15 THEN
             IF :NEW.godzina_start < '14:00' OR :NEW.godzina_start > '19:00' THEN
-                RAISE_APPLICATION_ERROR(-20020, 
-                    'Uczen ' || v_imie_ucznia || ' ma ' || v_wiek_ucznia || 
+                RAISE_APPLICATION_ERROR(-20020,
+                    'Uczen ' || v_imie_ucznia || ' ma ' || v_wiek_ucznia ||
                     ' lat. Dzieci ponizej 15 lat moga miec lekcje tylko miedzy 14:00 a 19:00. ' ||
                     'Podano godzine: ' || :NEW.godzina_start);
             END IF;
@@ -102,7 +102,7 @@ DECLARE
 BEGIN
     IF :NEW.status = 'zaplanowana' THEN
         v_id_nauczyciela := DEREF(:NEW.ref_nauczyciel).id_nauczyciela;
-        
+
         SELECT NVL(SUM(l.czas_trwania), 0)
         INTO v_suma_minut
         FROM t_lekcja l
@@ -110,9 +110,9 @@ BEGIN
           AND l.data_lekcji = :NEW.data_lekcji
           AND l.status = 'zaplanowana'
           AND l.id_lekcji != NVL(:NEW.id_lekcji, -1);
-        
+
         IF v_suma_minut + :NEW.czas_trwania > v_max_minut THEN
-            RAISE_APPLICATION_ERROR(-20030, 
+            RAISE_APPLICATION_ERROR(-20030,
                 'Nauczyciel ma juz ' || v_suma_minut || ' minut lekcji w dniu ' ||
                 TO_CHAR(:NEW.data_lekcji, 'YYYY-MM-DD') || '. ' ||
                 'Dodanie ' || :NEW.czas_trwania || ' minut przekroczyloby limit ' ||
@@ -137,7 +137,7 @@ DECLARE
 BEGIN
     IF :NEW.status = 'zaplanowana' THEN
         v_id_ucznia := DEREF(:NEW.ref_uczen).id_ucznia;
-        
+
         SELECT COUNT(*)
         INTO v_liczba_lekcji
         FROM t_lekcja l
@@ -145,9 +145,9 @@ BEGIN
           AND l.data_lekcji = :NEW.data_lekcji
           AND l.status = 'zaplanowana'
           AND l.id_lekcji != NVL(:NEW.id_lekcji, -1);
-        
+
         IF v_liczba_lekcji >= v_max_lekcji THEN
-            RAISE_APPLICATION_ERROR(-20031, 
+            RAISE_APPLICATION_ERROR(-20031,
                 'Uczen ma juz ' || v_liczba_lekcji || ' lekcji w dniu ' ||
                 TO_CHAR(:NEW.data_lekcji, 'YYYY-MM-DD') || '. ' ||
                 'Maksymalna liczba lekcji dziennie to ' || v_max_lekcji || '.');
@@ -172,7 +172,7 @@ BEGIN
     IF :NEW.status = 'zaplanowana' AND :NEW.ref_sala IS NOT NULL THEN
         v_id_sali := DEREF(:NEW.ref_sala).id_sali;
         v_nazwa_sali := DEREF(:NEW.ref_sala).nazwa;
-        
+
         SELECT COUNT(*)
         INTO v_konflikt
         FROM t_lekcja l
@@ -181,9 +181,9 @@ BEGIN
           AND l.godzina_start = :NEW.godzina_start
           AND l.status != 'odwolana'
           AND l.id_lekcji != NVL(:NEW.id_lekcji, -1);
-        
+
         IF v_konflikt > 0 THEN
-            RAISE_APPLICATION_ERROR(-20032, 
+            RAISE_APPLICATION_ERROR(-20032,
                 'Sala "' || v_nazwa_sali || '" jest juz zajeta w dniu ' ||
                 TO_CHAR(:NEW.data_lekcji, 'YYYY-MM-DD') || ' o godzinie ' ||
                 :NEW.godzina_start || '.');
@@ -206,7 +206,7 @@ DECLARE
 BEGIN
     IF :NEW.status = 'zaplanowana' THEN
         v_id_nauczyciela := DEREF(:NEW.ref_nauczyciel).id_nauczyciela;
-        
+
         SELECT COUNT(*)
         INTO v_konflikt
         FROM t_lekcja l
@@ -215,9 +215,9 @@ BEGIN
           AND l.godzina_start = :NEW.godzina_start
           AND l.status != 'odwolana'
           AND l.id_lekcji != NVL(:NEW.id_lekcji, -1);
-        
+
         IF v_konflikt > 0 THEN
-            RAISE_APPLICATION_ERROR(-20033, 
+            RAISE_APPLICATION_ERROR(-20033,
                 'Nauczyciel ma juz lekcje w dniu ' ||
                 TO_CHAR(:NEW.data_lekcji, 'YYYY-MM-DD') || ' o godzinie ' ||
                 :NEW.godzina_start || '.');
@@ -240,7 +240,7 @@ DECLARE
 BEGIN
     IF :NEW.status = 'zaplanowana' THEN
         v_id_ucznia := DEREF(:NEW.ref_uczen).id_ucznia;
-        
+
         SELECT COUNT(*)
         INTO v_konflikt
         FROM t_lekcja l
@@ -249,9 +249,9 @@ BEGIN
           AND l.godzina_start = :NEW.godzina_start
           AND l.status != 'odwolana'
           AND l.id_lekcji != NVL(:NEW.id_lekcji, -1);
-        
+
         IF v_konflikt > 0 THEN
-            RAISE_APPLICATION_ERROR(-20034, 
+            RAISE_APPLICATION_ERROR(-20034,
                 'Uczen ma juz lekcje w dniu ' ||
                 TO_CHAR(:NEW.data_lekcji, 'YYYY-MM-DD') || ' o godzinie ' ||
                 :NEW.godzina_start || '.');
@@ -278,21 +278,21 @@ BEGIN
         SELECT COUNT(*) INTO v_jest_aktywny
         FROM t_semestr s
         WHERE s.czy_aktywny = 'T';
-        
+
         IF v_jest_aktywny = 0 THEN
-            RAISE_APPLICATION_ERROR(-20040, 
+            RAISE_APPLICATION_ERROR(-20040,
                 'Brak aktywnego semestru. Nie mozna planowac lekcji.');
         END IF;
-        
+
         SELECT s.data_od, s.data_do, s.nazwa
         INTO v_semestr_data_od, v_semestr_data_do, v_semestr_nazwa
         FROM t_semestr s
         WHERE s.czy_aktywny = 'T';
-        
+
         IF :NEW.data_lekcji < v_semestr_data_od OR :NEW.data_lekcji > v_semestr_data_do THEN
-            RAISE_APPLICATION_ERROR(-20041, 
+            RAISE_APPLICATION_ERROR(-20041,
                 'Data lekcji ' || TO_CHAR(:NEW.data_lekcji, 'YYYY-MM-DD') ||
-                ' jest poza zakresem aktywnego semestru "' || v_semestr_nazwa || 
+                ' jest poza zakresem aktywnego semestru "' || v_semestr_nazwa ||
                 '" (' || TO_CHAR(v_semestr_data_od, 'YYYY-MM-DD') ||
                 ' - ' || TO_CHAR(v_semestr_data_do, 'YYYY-MM-DD') || ').');
         END IF;
@@ -312,9 +312,9 @@ DECLARE
     v_min_wiek CONSTANT NUMBER := 5;
 BEGIN
     v_wiek := TRUNC(MONTHS_BETWEEN(SYSDATE, :NEW.data_urodzenia) / 12);
-    
+
     IF v_wiek < v_min_wiek THEN
-        RAISE_APPLICATION_ERROR(-20001, 
+        RAISE_APPLICATION_ERROR(-20001,
             'Uczen musi miec minimum ' || v_min_wiek || ' lat. ' ||
             'Podany wiek: ' || v_wiek || ' lat.');
     END IF;
@@ -336,10 +336,10 @@ BEGIN
     FROM t_lekcja l
     WHERE DEREF(l.ref_uczen).id_ucznia = :OLD.id_ucznia
       AND l.status = 'zaplanowana';
-    
+
     IF v_aktywne_lekcje > 0 THEN
-        RAISE_APPLICATION_ERROR(-20050, 
-            'Nie mozna usunac ucznia (ID: ' || :OLD.id_ucznia || 
+        RAISE_APPLICATION_ERROR(-20050,
+            'Nie mozna usunac ucznia (ID: ' || :OLD.id_ucznia ||
             ') - ma ' || v_aktywne_lekcje || ' zaplanowanych lekcji. ' ||
             'Najpierw odwolaj lub usun lekcje.');
     END IF;
@@ -361,10 +361,10 @@ BEGIN
     FROM t_lekcja l
     WHERE DEREF(l.ref_nauczyciel).id_nauczyciela = :OLD.id_nauczyciela
       AND l.status = 'zaplanowana';
-    
+
     IF v_aktywne_lekcje > 0 THEN
-        RAISE_APPLICATION_ERROR(-20051, 
-            'Nie mozna usunac nauczyciela (ID: ' || :OLD.id_nauczyciela || 
+        RAISE_APPLICATION_ERROR(-20051,
+            'Nie mozna usunac nauczyciela (ID: ' || :OLD.id_nauczyciela ||
             ') - ma ' || v_aktywne_lekcje || ' zaplanowanych lekcji. ' ||
             'Najpierw odwolaj lub usun lekcje.');
     END IF;
@@ -386,10 +386,10 @@ BEGIN
     FROM t_lekcja l
     WHERE DEREF(l.ref_sala).id_sali = :OLD.id_sali
       AND l.status = 'zaplanowana';
-    
+
     IF v_aktywne_lekcje > 0 THEN
-        RAISE_APPLICATION_ERROR(-20052, 
-            'Nie mozna usunac sali (ID: ' || :OLD.id_sali || 
+        RAISE_APPLICATION_ERROR(-20052,
+            'Nie mozna usunac sali (ID: ' || :OLD.id_sali ||
             ') - ma ' || v_aktywne_lekcje || ' zaplanowanych lekcji. ' ||
             'Najpierw odwolaj lub usun lekcje.');
     END IF;
@@ -407,9 +407,9 @@ BEGIN
     IF :NEW.data_zatrudnienia IS NULL THEN
         :NEW.data_zatrudnienia := SYSDATE;
     END IF;
-    
+
     IF :NEW.data_zatrudnienia > SYSDATE THEN
-        RAISE_APPLICATION_ERROR(-20060, 
+        RAISE_APPLICATION_ERROR(-20060,
             'Data zatrudnienia nie moze byc w przyszlosci.');
     END IF;
 END;
@@ -430,27 +430,27 @@ BEGIN
     IF INSERTING THEN
         v_operacja := 'INSERT';
         v_stara_wartosc := NULL;
-        v_nowa_wartosc := 'ID:' || :NEW.id_oceny || 
-                          ', Ocena:' || :NEW.ocena || 
+        v_nowa_wartosc := 'ID:' || :NEW.id_oceny ||
+                          ', Ocena:' || :NEW.ocena ||
                           ', Obszar:' || :NEW.obszar;
     ELSIF UPDATING THEN
         v_operacja := 'UPDATE';
-        v_stara_wartosc := 'ID:' || :OLD.id_oceny || 
-                           ', Ocena:' || :OLD.ocena || 
+        v_stara_wartosc := 'ID:' || :OLD.id_oceny ||
+                           ', Ocena:' || :OLD.ocena ||
                            ', Obszar:' || :OLD.obszar;
-        v_nowa_wartosc := 'ID:' || :NEW.id_oceny || 
-                          ', Ocena:' || :NEW.ocena || 
+        v_nowa_wartosc := 'ID:' || :NEW.id_oceny ||
+                          ', Ocena:' || :NEW.ocena ||
                           ', Obszar:' || :NEW.obszar;
     ELSIF DELETING THEN
         v_operacja := 'DELETE';
-        v_stara_wartosc := 'ID:' || :OLD.id_oceny || 
-                           ', Ocena:' || :OLD.ocena || 
+        v_stara_wartosc := 'ID:' || :OLD.id_oceny ||
+                           ', Ocena:' || :OLD.ocena ||
                            ', Obszar:' || :OLD.obszar;
         v_nowa_wartosc := NULL;
     END IF;
-    
+
     INSERT INTO t_audit_log (
-        id_logu, nazwa_tabeli, operacja, 
+        id_logu, nazwa_tabeli, operacja,
         stara_wartosc, nowa_wartosc, uzytkownik
     ) VALUES (
         seq_audit_log.NEXTVAL, 'T_OCENA_POSTEPU', v_operacja,
@@ -468,7 +468,7 @@ AFTER UPDATE OF cena_za_lekcje ON t_kurs
 FOR EACH ROW
 BEGIN
     INSERT INTO t_audit_log (
-        id_logu, nazwa_tabeli, operacja, 
+        id_logu, nazwa_tabeli, operacja,
         stara_wartosc, nowa_wartosc, uzytkownik
     ) VALUES (
         seq_audit_log.NEXTVAL, 'T_KURS', 'UPDATE_CENA',
@@ -483,8 +483,8 @@ END;
 -- WIDOK LOGOW AUDYTOWYCH
 -- ============================================================================
 CREATE OR REPLACE VIEW v_audit_ostatnie AS
-SELECT id_logu, nazwa_tabeli, operacja, 
-       stara_wartosc, nowa_wartosc, 
+SELECT id_logu, nazwa_tabeli, operacja,
+       stara_wartosc, nowa_wartosc,
        uzytkownik, data_zmiany
 FROM t_audit_log
 ORDER BY data_zmiany DESC

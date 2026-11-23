@@ -14,6 +14,6 @@ JOIN Zarobki
 ON Osoby.IdOsoby=Zarobki.IdOsoby
 GROUP BY GROUPING SETS
 --CUBE
---ROLLUP 
+--ROLLUP
 (Nazwa, Nazwisko)
 ORDER BY Nazwa, Nazwisko

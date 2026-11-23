@@ -11,19 +11,19 @@ WHERE object_name LIKE '%Transactions%';
 --    https://learn.microsoft.com/en-us/sql/relational-databases/system-dynamic-management-views/sys-dm-tran-active-transactions-transact-sql?view=sql-server-ver17
 SELECT * FROM sys.dm_tran_active_transactions;
 GO
---    - Utwórz Alert (np. High Active Transactions), który automatycznie ostrzega o przekroczeniu ustalonego progu ilości transakcji np. >10 
+--    - Utwórz Alert (np. High Active Transactions), który automatycznie ostrzega o przekroczeniu ustalonego progu ilości transakcji np. >10
 --      (select occurrence_count,* FROM msdb.dbo.sysalerts)
 --    https://learn.microsoft.com/en-us/ssms/agent/alerts
 USE [msdb]
 GO
-EXEC msdb.dbo.sp_add_alert @name=N'High Active Transactions', 
-		@message_id=0, 
-		@severity=0, 
-		@enabled=1, 
-		@delay_between_responses=0, 
-		@include_event_description_in=0, 
-		@category_name=N'[Uncategorized]', 
-		@performance_condition=N'SQLServer:Transactions|Transactions||>|10', 
+EXEC msdb.dbo.sp_add_alert @name=N'High Active Transactions',
+		@message_id=0,
+		@severity=0,
+		@enabled=1,
+		@delay_between_responses=0,
+		@include_event_description_in=0,
+		@category_name=N'[Uncategorized]',
+		@performance_condition=N'SQLServer:Transactions|Transactions||>|10',
 		@job_id=N'00000000-0000-0000-0000-000000000000';
 GO
 
@@ -70,10 +70,10 @@ GO
 
 
 
--- 3. Utwórz mechanizm audytowania operacji tworzenia, usuwania oraz modyfikacji obiektów w bazie danych Northwind (Schema_Object_Change_Group) 
---    za pomocą mechanizmu Database Audit Specification. Audyt powinien rejestrować wszystkie te operacje wykonane na bazie Northwind, 
+-- 3. Utwórz mechanizm audytowania operacji tworzenia, usuwania oraz modyfikacji obiektów w bazie danych Northwind (Schema_Object_Change_Group)
+--    za pomocą mechanizmu Database Audit Specification. Audyt powinien rejestrować wszystkie te operacje wykonane na bazie Northwind,
 --    a wyniki audytu mają być przechowywane w plikach dziennika zdefiniowany na poziomie serwera - SQL Server Audit (Security | Audits) o nazwie Audit-01
---    np. w katalogu C:\TEMP\   
+--    np. w katalogu C:\TEMP\
 --    https://learn.microsoft.com/en-us/sql/relational-databases/security/auditing/sql-server-audit-database-engine?view=sql-server-ver17
 --    https://learn.microsoft.com/en-us/sql/relational-databases/security/auditing/create-a-server-audit-and-server-audit-specification?view=sql-server-ver17
 
@@ -82,7 +82,7 @@ USE [master]
 GO
 
 CREATE SERVER AUDIT [Audit-01]
-TO FILE 
+TO FILE
 (	FILEPATH = N'C:\TEMP\'
 	,MAXSIZE = 0 MB
 	,MAX_ROLLOVER_FILES = 2147483647
@@ -115,7 +115,7 @@ GO
 DROP TABLE dbo.TestAuditTable;
 GO
 
-SELECT event_time, action_id, statement, database_name, object_name 
+SELECT event_time, action_id, statement, database_name, object_name
 FROM sys.fn_get_audit_file('C:\TEMP\Audit-01*', NULL, NULL)
 ORDER BY event_time DESC;
 GO
@@ -124,16 +124,16 @@ GO
 
 
 
--- 4. Utwórz mechanizm wersjonowania danych w tabeli za pomocą temporal table w SQL Server. 
+-- 4. Utwórz mechanizm wersjonowania danych w tabeli za pomocą temporal table w SQL Server.
 --    https://learn.microsoft.com/en-us/sql/relational-databases/tables/temporal-tables?view=sql-server-ver16
---    W bazie danych Northwind stwórz tabelę o nazwie ProductsTemporal w bazie Northwind, która będzie przechowywać dane o produktach 
+--    W bazie danych Northwind stwórz tabelę o nazwie ProductsTemporal w bazie Northwind, która będzie przechowywać dane o produktach
 --    (może być utworzona na podstawie pustej tabeli Products).
 --    Skonfiguruj tabelę jako temporal table, aby SQL Server automatycznie przechowywał historię zmian w danych.
 --    Dodaj, zmodyfikuj i usuń kilka rekordów w tabeli, aby wygenerować dane historyczne (czekamy 2-3 sekundy między operacjami).
 --    Napisz zapytanie, które zwróci:
 --		Wszystkie wersje rekordu dla konkretnego produktu.
 --		Dane z tabeli historycznej dla wybranego zakresu czasu.
---              Aktualne dane.  
+--              Aktualne dane.
 
 USE north;
 GO
@@ -189,9 +189,9 @@ DELETE FROM [dbo].[ProductsTemporal]
 WHERE [ProductID] = 2;
 GO
 
-SELECT * 
-FROM [dbo].[ProductsTemporal] 
-FOR SYSTEM_TIME ALL 
+SELECT *
+FROM [dbo].[ProductsTemporal]
+FOR SYSTEM_TIME ALL
 WHERE [ProductID] = 1
 ORDER BY [ValidFrom];
 GO
@@ -199,12 +199,12 @@ GO
 DECLARE @StartTime DATETIME2 = DATEADD(SECOND, -15, SYSUTCDATETIME());
 DECLARE @EndTime DATETIME2 = SYSUTCDATETIME();
 
-SELECT * 
-FROM [dbo].[ProductsTemporal] 
+SELECT *
+FROM [dbo].[ProductsTemporal]
 FOR SYSTEM_TIME BETWEEN @StartTime AND @EndTime;
 GO
 
-SELECT * 
+SELECT *
 FROM [dbo].[ProductsTemporal];
 GO
 
@@ -213,7 +213,7 @@ GO
 
 -- 5. Dynamiczne maskowanie danych
 --    https://learn.microsoft.com/en-us/sql/relational-databases/security/dynamic-data-masking?view=sql-server-ver16
---    Wykonać i przeanalizować przykład podany w dokumentacji. 
+--    Wykonać i przeanalizować przykład podany w dokumentacji.
 --    Wyłączyć maskowanie dla jednej z kolumn i sprawdzić działanie.
 --    Następnie zdefiniować ponownie to maskowanie i sprawdzić działanie.
 
@@ -296,10 +296,10 @@ IF EXISTS (SELECT * FROM sys.messages WHERE message_id = 50007)
     EXEC sp_dropmessage 50007;
 GO
 
-EXEC sp_addmessage 
-    @msgnum = 50007, 
-    @severity = 16, 
-    @msgtext = N'To jest mój testowy błąd krytyczny użytkownika! (ID: 50007)', 
+EXEC sp_addmessage
+    @msgnum = 50007,
+    @severity = 16,
+    @msgtext = N'To jest mój testowy błąd krytyczny użytkownika! (ID: 50007)',
     @with_log = 'TRUE',
     @replace = 'replace';
 GO
@@ -308,7 +308,7 @@ RAISERROR(50007, 16, 1) WITH LOG;
 GO
 
 
-EXEC xp_readerrorlog 0, 1, N'50007'; 
+EXEC xp_readerrorlog 0, 1, N'50007';
 GO
 
 -- EXEC sp_dropmessage 50007;
@@ -318,19 +318,19 @@ GO
 --    https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/querying-the-sql-server-system-catalog-faq?view=sql-server-ver16#_FAQ7
 
 --    Jak znaleźć wszystkie tabele, które nie mają indeksu w bazie master?
---    USE master;  
---    GO  
---    SELECT SCHEMA_NAME(schema_id) AS schema_name, name AS table_name FROM sys.tables   
---    WHERE OBJECTPROPERTY(object_id,'IsIndexed') = 0  ORDER BY schema_name, table_name;  
+--    USE master;
+--    GO
+--    SELECT SCHEMA_NAME(schema_id) AS schema_name, name AS table_name FROM sys.tables
+--    WHERE OBJECTPROPERTY(object_id,'IsIndexed') = 0  ORDER BY schema_name, table_name;
 --    GO
 
---   Czy można zdefiniowac Policy, która sprawdzi to samo co powyższe zapytanie? Jeśli tak to zdefiniuj taką politykę.  
-USE [master];  
-GO  
-SELECT SCHEMA_NAME(schema_id) AS schema_name, name AS table_name 
-FROM sys.tables   
-WHERE OBJECTPROPERTY(object_id,'IsIndexed') = 0  
-ORDER BY schema_name, table_name;  
+--   Czy można zdefiniowac Policy, która sprawdzi to samo co powyższe zapytanie? Jeśli tak to zdefiniuj taką politykę.
+USE [master];
+GO
+SELECT SCHEMA_NAME(schema_id) AS schema_name, name AS table_name
+FROM sys.tables
+WHERE OBJECTPROPERTY(object_id,'IsIndexed') = 0
+ORDER BY schema_name, table_name;
 GO
 
 Declare @condition_id int
@@ -372,5 +372,3 @@ Select @policy_id
 
 
 GO
-
-

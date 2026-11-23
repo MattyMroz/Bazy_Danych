@@ -24,22 +24,22 @@
 \begin{titlepage}
     \centering
     \vspace*{1cm}
-    
+
     \Large\textbf{Politechnika Łódzka}\\[0.3cm]
     {\large Wydział Elektrotechniki, Elektroniki, Informatyki i Automatyki}\\[2cm]
-    
+
     {\Huge\textbf{Szkoła Muzyczna}}\\[0.5cm]
     {\Large Obiektowa Baza Danych Oracle}\\[1cm]
-    
+
     {\large Rozproszone i Obiektowe Bazy Danych}\\[3cm]
-    
+
     \begin{tabular}{ll}
         \textbf{Autorzy:} & Igor Typinski (251237) \\
                           & Mateusz Mroz (251190) \\[0.5cm]
         \textbf{Grupa:}   & 5 \\[0.5cm]
         \textbf{Temat:}   & Szkoła muzyczna (z naciskiem na rozwój ucznia)
     \end{tabular}
-    
+
     \vfill
     {\large Łódź, styczeń 2026}
 \end{titlepage}
@@ -63,17 +63,17 @@ Głównym celem projektu jest stworzenie kompleksowego systemu informatycznego u
 
 \begin{itemize}
     \item \textbf{Zarządzanie danymi uczniów} -- rejestracja nowych uczniów, przechowywanie danych osobowych, automatyczne obliczanie wieku i statusu (dziecko/dorosły)
-    
+
     \item \textbf{Zarządzanie danymi nauczycieli} -- ewidencja kadry pedagogicznej wraz z listą instrumentów, których mogą uczyć (przechowywana jako kolekcja VARRAY)
-    
+
     \item \textbf{Planowanie lekcji} -- tworzenie harmonogramu zajęć z uwzględnieniem dostępności sal, nauczycieli oraz ograniczeń czasowych dla dzieci
-    
+
     \item \textbf{Rezerwacja sal lekcyjnych} -- przydzielanie sal z odpowiednim wyposażeniem (fortepian, perkusja) do poszczególnych lekcji
-    
+
     \item \textbf{Ocenianie postępu uczniów} -- wystawianie ocen w różnych obszarach muzycznych (technika, teoria, słuch, rytm, interpretacja)
-    
+
     \item \textbf{Kontrola reguł biznesowych} -- automatyczna walidacja limitów obciążenia nauczycieli, liczby lekcji uczniów, konfliktów czasowych
-    
+
     \item \textbf{Generowanie raportów} -- plan dnia, obciążenie nauczycieli, historia ocen, raporty postępu uczniów
 \end{itemize}
 
@@ -85,35 +85,35 @@ W projekcie przyjęto następujące ograniczenia biznesowe:
 
 \begin{enumerate}
     \item \textbf{Minimalny wiek ucznia:} 5 lat -- młodsze dzieci nie są przyjmowane do szkoły
-    
+
     \item \textbf{Definicja dziecka:} uczeń poniżej 15 lat -- podlega dodatkowym ograniczeniom godzinowym
-    
+
     \item \textbf{Godziny lekcji dla dzieci:} tylko 14:00--19:00 -- po zakończeniu zajęć w szkole ogólnokształcącej
-    
+
     \item \textbf{Dni pracy szkoły:} poniedziałek--piątek -- szkoła nie prowadzi zajęć w weekendy
-    
+
     \item \textbf{Godziny pracy szkoły:} 08:00--20:00 -- lekcje mogą być planowane tylko w tych godzinach
-    
+
     \item \textbf{Maksymalna liczba instrumentów nauczyciela:} 5 -- ograniczenie kolekcji VARRAY
-    
+
     \item \textbf{Maksymalne obciążenie nauczyciela:} 6 godzin (360 minut) dziennie
-    
+
     \item \textbf{Maksymalna liczba lekcji ucznia:} 2 lekcje dziennie
-    
+
     \item \textbf{Czas trwania lekcji:} 30, 45, 60 lub 90 minut
-    
+
     \item \textbf{Skala ocen:} 1--6 (polska skala szkolna)
-    
+
     \item \textbf{Obszary oceny:} technika, teoria, słuch, rytm, interpretacja, ogólna
-    
+
     \item \textbf{Poziomy kursów:} początkujący, średni, zaawansowany
-    
+
     \item \textbf{Statusy lekcji:} zaplanowana, odbyta, odwołana
-    
+
     \item \textbf{Kategorie instrumentów:} dęte, strunowe, perkusyjne, klawiszowe
-    
+
     \item \textbf{Brak konfliktów czasowych:} ta sama sala, nauczyciel lub uczeń nie mogą mieć dwóch lekcji w tym samym czasie
-    
+
     \item \textbf{Ochrona danych:} nie można usunąć nauczyciela lub ucznia z zaplanowanymi lekcjami
 \end{enumerate}
 

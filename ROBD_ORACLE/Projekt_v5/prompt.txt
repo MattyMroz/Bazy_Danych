@@ -422,7 +422,7 @@ CREATE TABLE t_instrument OF t_instrument_obj (
     nazwa           NOT NULL,
     kategoria       NOT NULL,
 
-    CONSTRAINT chk_instrument_kat 
+    CONSTRAINT chk_instrument_kat
         CHECK (kategoria IN ('dete', 'strunowe', 'perkusyjne', 'klawiszowe'))
 );
 
@@ -617,30 +617,30 @@ CREATE OR REPLACE PACKAGE BODY pkg_uczen AS
             )
         );
 
-        DBMS_OUTPUT.PUT_LINE('Dodano ucznia: ' || p_imie || ' ' || p_nazwisko || 
+        DBMS_OUTPUT.PUT_LINE('Dodano ucznia: ' || p_imie || ' ' || p_nazwisko ||
                             ' (wiek: ' || v_wiek || ' lat)');
     END dodaj;
 
     PROCEDURE lista IS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== LISTA UCZNIOW ===');
-        DBMS_OUTPUT.PUT_LINE(RPAD('ID', 5) || RPAD('Imie', 15) || 
+        DBMS_OUTPUT.PUT_LINE(RPAD('ID', 5) || RPAD('Imie', 15) ||
                             RPAD('Nazwisko', 20) || RPAD('Wiek', 6) || 'Status');
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 60, '-'));
 
         -- Uzycie VALUE(u) do pobrania obiektu i wywolania metod
         FOR r IN (
-            SELECT u.id_ucznia, u.imie, u.nazwisko, 
+            SELECT u.id_ucznia, u.imie, u.nazwisko,
                    VALUE(u).wiek() AS wiek,
-                   CASE WHEN VALUE(u).czy_dziecko() = 'T' 
+                   CASE WHEN VALUE(u).czy_dziecko() = 'T'
                         THEN 'dziecko' ELSE 'dorosly' END AS status
             FROM t_uczen u
             ORDER BY u.nazwisko, u.imie
         ) LOOP
             DBMS_OUTPUT.PUT_LINE(
-                RPAD(r.id_ucznia, 5) || 
-                RPAD(r.imie, 15) || 
-                RPAD(r.nazwisko, 20) || 
+                RPAD(r.id_ucznia, 5) ||
+                RPAD(r.imie, 15) ||
+                RPAD(r.nazwisko, 20) ||
                 RPAD(r.wiek, 6) ||
                 r.status
             );
@@ -655,14 +655,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_uczen AS
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 50, '-'));
 
         FOR r IN (
-            SELECT u.id_ucznia, u.imie, u.nazwisko, 
+            SELECT u.id_ucznia, u.imie, u.nazwisko,
                    VALUE(u).wiek() AS wiek
             FROM t_uczen u
             WHERE VALUE(u).czy_dziecko() = 'T'
             ORDER BY VALUE(u).wiek(), u.nazwisko
         ) LOOP
             DBMS_OUTPUT.PUT_LINE(
-                r.id_ucznia || '. ' || r.imie || ' ' || r.nazwisko || 
+                r.id_ucznia || '. ' || r.imie || ' ' || r.nazwisko ||
                 ' (lat ' || r.wiek || ')'
             );
             v_count := v_count + 1;
@@ -693,8 +693,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_uczen AS
         DBMS_OUTPUT.PUT_LINE('Nazwisko:     ' || v_uczen.nazwisko);
         DBMS_OUTPUT.PUT_LINE('Data ur.:     ' || TO_CHAR(v_uczen.data_urodzenia, 'YYYY-MM-DD'));
         DBMS_OUTPUT.PUT_LINE('Wiek:         ' || v_uczen.wiek() || ' lat');
-        DBMS_OUTPUT.PUT_LINE('Status:       ' || CASE WHEN v_uczen.czy_dziecko() = 'T' 
-                                                       THEN 'dziecko (14:00-19:00)' 
+        DBMS_OUTPUT.PUT_LINE('Status:       ' || CASE WHEN v_uczen.czy_dziecko() = 'T'
+                                                       THEN 'dziecko (14:00-19:00)'
                                                        ELSE 'dorosly' END);
         DBMS_OUTPUT.PUT_LINE('Email:        ' || NVL(v_uczen.email, 'brak'));
         DBMS_OUTPUT.PUT_LINE('Data zapisu:  ' || TO_CHAR(v_uczen.data_zapisu, 'YYYY-MM-DD'));
@@ -791,7 +791,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         v_instrument_kursu VARCHAR2(100);
     BEGIN
         -- Przelicz godzine startu na minuty od polnocy
-        v_godz_start_new := TO_NUMBER(SUBSTR(p_godzina, 1, 2)) * 60 + 
+        v_godz_start_new := TO_NUMBER(SUBSTR(p_godzina, 1, 2)) * 60 +
                            TO_NUMBER(SUBSTR(p_godzina, 4, 2));
         v_godz_end_new := v_godz_start_new + p_czas_trwania;
 
@@ -800,18 +800,18 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         -- Nauczyciel musi miec instrument kursu w swoim VARRAY
         -- =================================================================
         SELECT i.nazwa INTO v_instrument_kursu
-        FROM t_kurs k 
+        FROM t_kurs k
         JOIN t_instrument i ON DEREF(k.ref_instrument).id_instrumentu = i.id_instrumentu
         WHERE k.id_kursu = p_id_kursu;
 
         -- Porownanie z uzyciem UPPER dla bezpieczenstwa
         SELECT COUNT(*) INTO v_cnt
         FROM t_nauczyciel n, TABLE(n.instrumenty) t
-        WHERE n.id_nauczyciela = p_id_nauczyciela 
+        WHERE n.id_nauczyciela = p_id_nauczyciela
           AND UPPER(t.COLUMN_VALUE) = UPPER(v_instrument_kursu);
 
         IF v_cnt = 0 THEN
-            RAISE_APPLICATION_ERROR(-20030, 
+            RAISE_APPLICATION_ERROR(-20030,
                 'Nauczyciel nie uczy gry na: ' || v_instrument_kursu);
         END IF;
 
@@ -825,8 +825,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
           AND l.status IN ('zaplanowana', 'odbyta');
 
         IF v_suma_minut + p_czas_trwania > 360 THEN
-            RAISE_APPLICATION_ERROR(-20104, 
-                'Nauczyciel przekroczy limit 6h dziennie (obecnie: ' || 
+            RAISE_APPLICATION_ERROR(-20104,
+                'Nauczyciel przekroczy limit 6h dziennie (obecnie: ' ||
                 v_suma_minut || ' min).');
         END IF;
 
@@ -840,7 +840,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
           AND l.status IN ('zaplanowana', 'odbyta');
 
         IF v_cnt >= 2 THEN
-            RAISE_APPLICATION_ERROR(-20105, 
+            RAISE_APPLICATION_ERROR(-20105,
                 'Uczen ma juz 2 lekcje tego dnia - limit wyczerpany.');
         END IF;
 
@@ -854,26 +854,26 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
           AND l.status IN ('zaplanowana', 'odbyta')
           AND (
               -- Nowa lekcja zaczyna sie w trakcie istniejacej
-              (v_godz_start_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+              (v_godz_start_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                    TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))
-               AND v_godz_start_new < TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+               AND v_godz_start_new < TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                        TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania)
               OR
               -- Nowa lekcja konczy sie w trakcie istniejacej
-              (v_godz_end_new > TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+              (v_godz_end_new > TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                 TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))
-               AND v_godz_end_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+               AND v_godz_end_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                       TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania)
               OR
               -- Nowa lekcja obejmuje cala istniejaca
-              (v_godz_start_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+              (v_godz_start_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                     TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))
-               AND v_godz_end_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+               AND v_godz_end_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                       TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania)
           );
 
         IF v_cnt > 0 THEN
-            RAISE_APPLICATION_ERROR(-20106, 
+            RAISE_APPLICATION_ERROR(-20106,
                 'Konflikt sali - termin jest juz zajety.');
         END IF;
 
@@ -886,24 +886,24 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
           AND TRUNC(l.data_lekcji) = TRUNC(p_data)
           AND l.status IN ('zaplanowana', 'odbyta')
           AND (
-              (v_godz_start_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+              (v_godz_start_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                    TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))
-               AND v_godz_start_new < TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+               AND v_godz_start_new < TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                        TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania)
               OR
-              (v_godz_end_new > TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+              (v_godz_end_new > TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                 TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))
-               AND v_godz_end_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+               AND v_godz_end_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                       TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania)
               OR
-              (v_godz_start_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+              (v_godz_start_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                     TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))
-               AND v_godz_end_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+               AND v_godz_end_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                       TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania)
           );
 
         IF v_cnt > 0 THEN
-            RAISE_APPLICATION_ERROR(-20107, 
+            RAISE_APPLICATION_ERROR(-20107,
                 'Nauczyciel ma juz lekcje w tym czasie.');
         END IF;
 
@@ -916,24 +916,24 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
           AND TRUNC(l.data_lekcji) = TRUNC(p_data)
           AND l.status IN ('zaplanowana', 'odbyta')
           AND (
-              (v_godz_start_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+              (v_godz_start_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                    TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))
-               AND v_godz_start_new < TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+               AND v_godz_start_new < TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                        TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania)
               OR
-              (v_godz_end_new > TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+              (v_godz_end_new > TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                 TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))
-               AND v_godz_end_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+               AND v_godz_end_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                       TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania)
               OR
-              (v_godz_start_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+              (v_godz_start_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                     TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))
-               AND v_godz_end_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+               AND v_godz_end_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                       TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania)
           );
 
         IF v_cnt > 0 THEN
-            RAISE_APPLICATION_ERROR(-20108, 
+            RAISE_APPLICATION_ERROR(-20108,
                 'Uczen ma juz lekcje w tym czasie.');
         END IF;
 
@@ -961,13 +961,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
             )
         );
 
-        DBMS_OUTPUT.PUT_LINE('Zaplanowano lekcje ID=' || v_id || 
-                            ' na ' || TO_CHAR(p_data, 'YYYY-MM-DD') || 
+        DBMS_OUTPUT.PUT_LINE('Zaplanowano lekcje ID=' || v_id ||
+                            ' na ' || TO_CHAR(p_data, 'YYYY-MM-DD') ||
                             ' godz. ' || p_godzina);
 
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
-            RAISE_APPLICATION_ERROR(-20010, 
+            RAISE_APPLICATION_ERROR(-20010,
                 'Nie znaleziono podanego ucznia, nauczyciela, kursu lub sali');
     END zaplanuj;
 
@@ -978,7 +978,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         WHERE id_lekcji = p_id_lekcji AND status = 'zaplanowana';
 
         IF SQL%ROWCOUNT = 0 THEN
-            RAISE_APPLICATION_ERROR(-20011, 
+            RAISE_APPLICATION_ERROR(-20011,
                 'Nie mozna oznaczyc - lekcja nie istnieje lub nie jest zaplanowana');
         END IF;
 
@@ -992,7 +992,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         WHERE id_lekcji = p_id_lekcji AND status = 'zaplanowana';
 
         IF SQL%ROWCOUNT = 0 THEN
-            RAISE_APPLICATION_ERROR(-20012, 
+            RAISE_APPLICATION_ERROR(-20012,
                 'Nie mozna odwolac - lekcja nie istnieje lub nie jest zaplanowana');
         END IF;
 
@@ -1002,7 +1002,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
     PROCEDURE plan_dnia(p_data DATE DEFAULT SYSDATE) IS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== PLAN DNIA: ' || TO_CHAR(p_data, 'YYYY-MM-DD (DY)') || ' ===');
-        DBMS_OUTPUT.PUT_LINE(RPAD('Godz', 8) || RPAD('Sala', 10) || 
+        DBMS_OUTPUT.PUT_LINE(RPAD('Godz', 8) || RPAD('Sala', 10) ||
                             RPAD('Uczen', 20) || RPAD('Nauczyciel', 20) || 'Status');
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 75, '-'));
 
@@ -1034,9 +1034,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         FROM t_nauczyciel n
         WHERE n.id_nauczyciela = p_id_nauczyciela;
 
-        DBMS_OUTPUT.PUT_LINE('=== PLAN: ' || v_naucz.imie || ' ' || v_naucz.nazwisko || 
+        DBMS_OUTPUT.PUT_LINE('=== PLAN: ' || v_naucz.imie || ' ' || v_naucz.nazwisko ||
                             ' (' || TO_CHAR(p_data, 'YYYY-MM-DD') || ') ===');
-        DBMS_OUTPUT.PUT_LINE(RPAD('Godz', 8) || RPAD('Czas', 6) || 
+        DBMS_OUTPUT.PUT_LINE(RPAD('Godz', 8) || RPAD('Czas', 6) ||
                             RPAD('Sala', 10) || RPAD('Uczen', 25) || 'Kurs');
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 70, '-'));
 
@@ -1072,7 +1072,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 50, '-'));
 
         FOR r IN (
-            SELECT 
+            SELECT
                 DEREF(l.ref_nauczyciel).imie || ' ' || DEREF(l.ref_nauczyciel).nazwisko AS naucz,
                 COUNT(*) AS lekcji,
                 SUM(l.czas_trwania) AS minuty
@@ -1083,10 +1083,10 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
             ORDER BY minuty DESC
         ) LOOP
             DBMS_OUTPUT.PUT_LINE(
-                RPAD(r.naucz, 30) || 
-                r.lekcji || ' lekcji, ' || 
+                RPAD(r.naucz, 30) ||
+                r.lekcji || ' lekcji, ' ||
                 r.minuty || ' min ' ||
-                CASE WHEN r.minuty > 360 THEN '[!!! PRZEKROCZONO]' 
+                CASE WHEN r.minuty > 360 THEN '[!!! PRZEKROCZONO]'
                      WHEN r.minuty >= 300 THEN '[blisko limitu]'
                      ELSE '' END
             );
@@ -1158,7 +1158,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
         SELECT VALUE(u) INTO v_uczen FROM t_uczen u WHERE u.id_ucznia = p_id_ucznia;
 
         DBMS_OUTPUT.PUT_LINE('=== HISTORIA OCEN: ' || v_uczen.imie || ' ' || v_uczen.nazwisko || ' ===');
-        DBMS_OUTPUT.PUT_LINE(RPAD('Data', 12) || RPAD('Obszar', 15) || 
+        DBMS_OUTPUT.PUT_LINE(RPAD('Data', 12) || RPAD('Obszar', 15) ||
                             RPAD('Ocena', 7) || 'Komentarz');
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 60, '-'));
 
@@ -1193,7 +1193,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
 
         -- Srednie ocen w poszczegolnych obszarach
         FOR r IN (
-            SELECT o.obszar, 
+            SELECT o.obszar,
                    ROUND(AVG(o.ocena), 2) AS srednia,
                    COUNT(*) AS liczba_ocen
             FROM t_ocena o
@@ -1298,7 +1298,7 @@ BEGIN
     -- Sprawdz tylko dla dzieci
     IF v_uczen IS NOT NULL AND v_uczen.czy_dziecko() = 'T' THEN
         -- Przelicz godziny na minuty
-        v_godz_start := TO_NUMBER(SUBSTR(:NEW.godzina_start, 1, 2)) * 60 + 
+        v_godz_start := TO_NUMBER(SUBSTR(:NEW.godzina_start, 1, 2)) * 60 +
                         TO_NUMBER(SUBSTR(:NEW.godzina_start, 4, 2));
         v_godz_end := v_godz_start + :NEW.czas_trwania;
 
@@ -1322,7 +1322,7 @@ BEGIN
     -- Sprawdz czy po DELETE powstaly osierocone referencje
     SELECT COUNT(*) INTO v_cnt FROM t_lekcja WHERE ref_nauczyciel IS DANGLING;
     IF v_cnt > 0 THEN
-        RAISE_APPLICATION_ERROR(-20109, 
+        RAISE_APPLICATION_ERROR(-20109,
             'Nie mozna usunac nauczyciela z historia lekcji.');
     END IF;
 END;
@@ -1340,7 +1340,7 @@ DECLARE
 BEGIN
     SELECT COUNT(*) INTO v_cnt FROM t_lekcja WHERE ref_uczen IS DANGLING;
     IF v_cnt > 0 THEN
-        RAISE_APPLICATION_ERROR(-20110, 
+        RAISE_APPLICATION_ERROR(-20110,
             'Nie mozna usunac ucznia z historia lekcji.');
     END IF;
 END;
@@ -1357,7 +1357,7 @@ DECLARE
 BEGIN
     SELECT COUNT(*) INTO v_cnt FROM t_lekcja WHERE ref_sala IS DANGLING;
     IF v_cnt > 0 THEN
-        RAISE_APPLICATION_ERROR(-20111, 
+        RAISE_APPLICATION_ERROR(-20111,
             'Nie mozna usunac sali z historia lekcji.');
     END IF;
 END;
@@ -1374,7 +1374,7 @@ DECLARE
 BEGIN
     SELECT COUNT(*) INTO v_cnt FROM t_lekcja WHERE ref_kurs IS DANGLING;
     IF v_cnt > 0 THEN
-        RAISE_APPLICATION_ERROR(-20112, 
+        RAISE_APPLICATION_ERROR(-20112,
             'Nie mozna usunac kursu z historia lekcji.');
     END IF;
 END;
@@ -1570,7 +1570,7 @@ BEGIN
     SELECT REF(i) INTO v_ref_flet FROM t_instrument i WHERE i.nazwa = 'Flet';
     SELECT REF(i) INTO v_ref_perkusja FROM t_instrument i WHERE i.nazwa = 'Perkusja';
     SELECT REF(i) INTO v_ref_saksofon FROM t_instrument i WHERE i.nazwa = 'Saksofon';
-    
+
     -- Kursy fortepianowe (3 poziomy)
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Fortepian - podstawy', 'poczatkujacy', 80, v_ref_fortepian)
@@ -1581,7 +1581,7 @@ BEGIN
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Fortepian - zaawansowany', 'zaawansowany', 120, v_ref_fortepian)
     );
-    
+
     -- Kursy gitarowe
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Gitara klasyczna - podstawy', 'poczatkujacy', 70, v_ref_gitara_kl)
@@ -1589,7 +1589,7 @@ BEGIN
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Gitara elektryczna - rock', 'sredni', 90, v_ref_gitara_el)
     );
-    
+
     -- Kursy smyczkowe
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Skrzypce - podstawy', 'poczatkujacy', 85, v_ref_skrzypce)
@@ -1597,7 +1597,7 @@ BEGIN
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Skrzypce - sredni', 'sredni', 105, v_ref_skrzypce)
     );
-    
+
     -- Kursy dete
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Flet - podstawy', 'poczatkujacy', 75, v_ref_flet)
@@ -1605,12 +1605,12 @@ BEGIN
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Saksofon - jazz', 'zaawansowany', 110, v_ref_saksofon)
     );
-    
+
     -- Kurs perkusyjny
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Perkusja - podstawy', 'poczatkujacy', 80, v_ref_perkusja)
     );
-    
+
     COMMIT;
 END;
 /
@@ -1645,7 +1645,7 @@ BEGIN
     SELECT id_sali INTO v_id_sala1 FROM t_sala WHERE nazwa = 'Sala A1' AND ROWNUM = 1;
     SELECT id_sali INTO v_id_sala2 FROM t_sala WHERE nazwa = 'Sala A2' AND ROWNUM = 1;
     SELECT id_sali INTO v_id_sala3 FROM t_sala WHERE nazwa = 'Sala B1' AND ROWNUM = 1;
-    
+
     -- Lekcja 1: dziecko (Kacper) o 14:00 - dozwolona godzina dla dzieci
     pkg_lekcja.zaplanuj(
         p_id_ucznia     => v_id_kacper,
@@ -1656,7 +1656,7 @@ BEGIN
         p_godzina       => '14:00',
         p_czas_trwania  => 45
     );
-    
+
     -- Lekcja 2: mlodziez (Adam) o 10:00
     pkg_lekcja.zaplanuj(
         p_id_ucznia     => v_id_adam,
@@ -1667,7 +1667,7 @@ BEGIN
         p_godzina       => '10:00',
         p_czas_trwania  => 45
     );
-    
+
     -- Lekcja 3: dorosly (Michal) o 08:00
     pkg_lekcja.zaplanuj(
         p_id_ucznia     => v_id_michal,
@@ -1678,7 +1678,7 @@ BEGIN
         p_godzina       => '08:00',
         p_czas_trwania  => 60
     );
-    
+
     COMMIT;
     DBMS_OUTPUT.PUT_LINE('Dodano 3 przykladowe lekcje na: ' || TO_CHAR(v_data, 'YYYY-MM-DD'));
 END;
@@ -1697,7 +1697,7 @@ BEGIN
     SELECT REF(u) INTO v_ref_uczen_adam FROM t_uczen u WHERE u.nazwisko = 'Szymanski' AND ROWNUM = 1;
     SELECT REF(n) INTO v_ref_naucz_jan FROM t_nauczyciel n WHERE n.nazwisko = 'Kowalski' AND ROWNUM = 1;
     SELECT REF(n) INTO v_ref_naucz_anna FROM t_nauczyciel n WHERE n.nazwisko = 'Nowak' AND ROWNUM = 1;
-    
+
     -- Oceny dla ucznia Kacper Malinowski
     INSERT INTO t_ocena VALUES (
         t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 30, 4, 'technika', 'Dobra postawa', v_ref_uczen_kacper, v_ref_naucz_jan)
@@ -1708,7 +1708,7 @@ BEGIN
     INSERT INTO t_ocena VALUES (
         t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 7, 4, 'teoria', NULL, v_ref_uczen_kacper, v_ref_naucz_jan)
     );
-    
+
     -- Oceny dla ucznia Adam Szymanski
     INSERT INTO t_ocena VALUES (
         t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 20, 3, 'technika', 'Do poprawy chwyty', v_ref_uczen_adam, v_ref_naucz_anna)
@@ -1719,7 +1719,7 @@ BEGIN
     INSERT INTO t_ocena VALUES (
         t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 5, 5, 'interpretacja', 'Bardzo dobra ekspresja', v_ref_uczen_adam, v_ref_naucz_anna)
     );
-    
+
     COMMIT;
     DBMS_OUTPUT.PUT_LINE('Dodano 6 przykladowych ocen');
 END;
@@ -1759,7 +1759,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('========================================================');
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 1: SPRAWDZENIE DANYCH PODSTAWOWYCH');
     DBMS_OUTPUT.PUT_LINE('========================================================');
-    
+
     -- Instrumenty
     FOR r IN (SELECT COUNT(*) AS cnt FROM t_instrument) LOOP
         IF r.cnt >= 10 THEN
@@ -1770,7 +1770,7 @@ BEGIN
             v_fail := v_fail + 1;
         END IF;
     END LOOP;
-    
+
     -- Sale
     FOR r IN (SELECT COUNT(*) AS cnt FROM t_sala) LOOP
         IF r.cnt >= 5 THEN
@@ -1781,7 +1781,7 @@ BEGIN
             v_fail := v_fail + 1;
         END IF;
     END LOOP;
-    
+
     -- Nauczyciele
     FOR r IN (SELECT COUNT(*) AS cnt FROM t_nauczyciel) LOOP
         IF r.cnt >= 5 THEN
@@ -1792,7 +1792,7 @@ BEGIN
             v_fail := v_fail + 1;
         END IF;
     END LOOP;
-    
+
     -- Uczniowie
     FOR r IN (SELECT COUNT(*) AS cnt FROM t_uczen) LOOP
         IF r.cnt >= 10 THEN
@@ -1803,7 +1803,7 @@ BEGIN
             v_fail := v_fail + 1;
         END IF;
     END LOOP;
-    
+
     -- Kursy
     FOR r IN (SELECT COUNT(*) AS cnt FROM t_kurs) LOOP
         IF r.cnt >= 10 THEN
@@ -1814,7 +1814,7 @@ BEGIN
             v_fail := v_fail + 1;
         END IF;
     END LOOP;
-    
+
     DBMS_OUTPUT.PUT_LINE('Scenariusz 1: OK=' || v_ok || ' FAIL=' || v_fail);
 END;
 /
@@ -1830,11 +1830,11 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('========================================================');
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 2: WALIDACJA WIEKU UCZNIA (min. 5 lat)');
     DBMS_OUTPUT.PUT_LINE('========================================================');
-    
+
     -- Test 2.1: 3-latek (FAIL)
     BEGIN
         INSERT INTO t_uczen VALUES (
-            t_uczen_obj(seq_uczen.NEXTVAL, 'Test', 'Trzylatek', 
+            t_uczen_obj(seq_uczen.NEXTVAL, 'Test', 'Trzylatek',
                        ADD_MONTHS(SYSDATE, -36), NULL, SYSDATE)
         );
         DBMS_OUTPUT.PUT_LINE('[FAIL] 2.1: Dodano 3-latka!');
@@ -1850,11 +1850,11 @@ BEGIN
                 v_fail := v_fail + 1;
             END IF;
     END;
-    
+
     -- Test 2.2: 5-latek (OK)
     BEGIN
         INSERT INTO t_uczen VALUES (
-            t_uczen_obj(seq_uczen.NEXTVAL, 'Test', 'Pieciolatek', 
+            t_uczen_obj(seq_uczen.NEXTVAL, 'Test', 'Pieciolatek',
                        ADD_MONTHS(SYSDATE, -60), NULL, SYSDATE)
         );
         DBMS_OUTPUT.PUT_LINE('[OK] 2.2: 5-latek dodany');
@@ -1865,7 +1865,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] 2.2: Nie mozna dodac 5-latka');
             v_fail := v_fail + 1;
     END;
-    
+
     DBMS_OUTPUT.PUT_LINE('Scenariusz 2: OK=' || v_ok || ' FAIL=' || v_fail);
 END;
 /
@@ -1883,12 +1883,12 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('========================================================');
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 3: WALIDACJA DNI ROBOCZYCH');
     DBMS_OUTPUT.PUT_LINE('========================================================');
-    
+
     -- Sobota nastepnego tygodnia (niezalezne od jezyka)
     v_sobota := TRUNC(SYSDATE, 'IW') + 7 + 5;
     -- Poniedzialek nastepnego tygodnia
     v_poniedzialek := TRUNC(SYSDATE, 'IW') + 7;
-    
+
     -- Test 3.1: Lekcja w sobote przez zaplanuj (FAIL)
     BEGIN
         pkg_lekcja.zaplanuj(7, 1, 1, 1, v_sobota, '10:00', 45);
@@ -1905,7 +1905,7 @@ BEGIN
                 v_ok := v_ok + 1;
             END IF;
     END;
-    
+
     -- Test 3.2: Lekcja w poniedzialek (OK)
     BEGIN
         pkg_lekcja.zaplanuj(8, 1, 1, 2, v_poniedzialek, '09:00', 45);
@@ -1917,7 +1917,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] 3.2: ' || SQLERRM);
             v_fail := v_fail + 1;
     END;
-    
+
     DBMS_OUTPUT.PUT_LINE('Scenariusz 3: OK=' || v_ok || ' FAIL=' || v_fail);
 END;
 /
@@ -1934,10 +1934,10 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('========================================================');
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 4: GODZINY DLA DZIECI (14:00-19:00)');
     DBMS_OUTPUT.PUT_LINE('========================================================');
-    
+
     -- Sroda nastepnego tygodnia (niezalezne od jezyka)
     v_data := TRUNC(SYSDATE, 'IW') + 7 + 2;
-    
+
     -- Test 4.1: Dziecko o 08:00 (FAIL)
     BEGIN
         pkg_lekcja.zaplanuj(1, 1, 1, 2, v_data, '08:00', 45);
@@ -1954,7 +1954,7 @@ BEGIN
                 v_ok := v_ok + 1;
             END IF;
     END;
-    
+
     -- Test 4.2: Dziecko o 15:00 (OK)
     BEGIN
         pkg_lekcja.zaplanuj(2, 1, 1, 2, v_data, '15:00', 45);
@@ -1966,7 +1966,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] 4.2: ' || SQLERRM);
             v_fail := v_fail + 1;
     END;
-    
+
     -- Test 4.3: Dorosly o 08:00 (OK)
     BEGIN
         pkg_lekcja.zaplanuj(7, 1, 1, 2, v_data, '08:00', 45);
@@ -1978,7 +1978,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] 4.3: ' || SQLERRM);
             v_fail := v_fail + 1;
     END;
-    
+
     DBMS_OUTPUT.PUT_LINE('Scenariusz 4: OK=' || v_ok || ' FAIL=' || v_fail);
 END;
 /
@@ -1996,10 +1996,10 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('========================================================');
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 5: LIMIT NAUCZYCIELA (max 6h)');
     DBMS_OUTPUT.PUT_LINE('========================================================');
-    
+
     -- Wtorek za 2 tygodnie (niezalezne od jezyka)
     v_data := TRUNC(SYSDATE, 'IW') + 14 + 1;
-    
+
     BEGIN
         -- Dodaj 6 lekcji po 60 min = 360 min (Nauczyciel 3 - Flet)
         pkg_lekcja.zaplanuj(5, 3, 8, 3, v_data, '08:00', 60);
@@ -2008,10 +2008,10 @@ BEGIN
         pkg_lekcja.zaplanuj(8, 3, 8, 3, v_data, '11:00', 60);
         pkg_lekcja.zaplanuj(9, 3, 8, 4, v_data, '13:00', 60);
         pkg_lekcja.zaplanuj(10, 3, 8, 4, v_data, '14:00', 60);
-        
+
         DBMS_OUTPUT.PUT_LINE('[OK] 5.1: 6h lekcji (360 min) dodane');
         v_ok := v_ok + 1;
-        
+
         -- Test 5.2: Proba dodania 7. lekcji (FAIL - przekroczenie limitu)
         BEGIN
             pkg_lekcja.zaplanuj(5, 3, 8, 4, v_data, '15:00', 30);
@@ -2027,7 +2027,7 @@ BEGIN
                     v_fail := v_fail + 1;
                 END IF;
         END;
-        
+
         ROLLBACK;
     EXCEPTION
         WHEN OTHERS THEN
@@ -2035,7 +2035,7 @@ BEGIN
             v_fail := v_fail + 1;
             ROLLBACK;
     END;
-    
+
     DBMS_OUTPUT.PUT_LINE('Scenariusz 5: OK=' || v_ok || ' FAIL=' || v_fail);
 END;
 /
@@ -2053,21 +2053,21 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('========================================================');
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 6: LIMIT UCZNIA (max 2 lekcje/dzien)');
     DBMS_OUTPUT.PUT_LINE('========================================================');
-    
+
     -- Piatek za 3 tygodnie (niezalezne od jezyka)
     v_data := TRUNC(SYSDATE, 'IW') + 21 + 4;
-    
+
     BEGIN
         -- Lekcja 1: Uczen 7, Nauczyciel 1, Kurs 1 (Fortepian)
         pkg_lekcja.zaplanuj(7, 1, 1, 1, v_data, '09:00', 45);
         DBMS_OUTPUT.PUT_LINE('[OK] 6.1: 1. lekcja ucznia dodana');
         v_ok := v_ok + 1;
-        
+
         -- Lekcja 2: Uczen 7, Nauczyciel 2, Kurs 4 (Gitara klasyczna)
         pkg_lekcja.zaplanuj(7, 2, 4, 3, v_data, '11:00', 45);
         DBMS_OUTPUT.PUT_LINE('[OK] 6.2: 2. lekcja ucznia dodana');
         v_ok := v_ok + 1;
-        
+
         -- Proba 3. lekcji (FAIL)
         BEGIN
             pkg_lekcja.zaplanuj(7, 3, 8, 4, v_data, '14:00', 45);
@@ -2083,7 +2083,7 @@ BEGIN
                     v_fail := v_fail + 1;
                 END IF;
         END;
-        
+
         ROLLBACK;
     EXCEPTION
         WHEN OTHERS THEN
@@ -2091,7 +2091,7 @@ BEGIN
             v_fail := v_fail + 1;
             ROLLBACK;
     END;
-    
+
     DBMS_OUTPUT.PUT_LINE('Scenariusz 6: OK=' || v_ok || ' FAIL=' || v_fail);
 END;
 /
@@ -2109,15 +2109,15 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('========================================================');
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 7: KONFLIKTY');
     DBMS_OUTPUT.PUT_LINE('========================================================');
-    
+
     -- Czwartek za 4 tygodnie (niezalezne od jezyka)
     v_data := TRUNC(SYSDATE, 'IW') + 28 + 3;
-    
+
     BEGIN
         -- Lekcja bazowa: 10:00-10:45, Sala 1, Nauczyciel 1, Uczen 7
         pkg_lekcja.zaplanuj(7, 1, 1, 1, v_data, '10:00', 45);
         DBMS_OUTPUT.PUT_LINE('[INFO] Lekcja bazowa: 10:00-10:45, Sala A1, Naucz.1, Uczen 7');
-        
+
         -- Test 7.1: Konflikt sali (ta sama sala, nakladajacy sie czas)
         BEGIN
             pkg_lekcja.zaplanuj(8, 2, 4, 1, v_data, '10:30', 45);
@@ -2133,7 +2133,7 @@ BEGIN
                     v_fail := v_fail + 1;
                 END IF;
         END;
-        
+
         -- Test 7.2: Konflikt nauczyciela (ten sam nauczyciel, inna sala)
         BEGIN
             pkg_lekcja.zaplanuj(8, 1, 1, 2, v_data, '10:15', 45);
@@ -2149,7 +2149,7 @@ BEGIN
                     v_fail := v_fail + 1;
                 END IF;
         END;
-        
+
         -- Test 7.3: Konflikt ucznia (ten sam uczen, inny nauczyciel i sala)
         BEGIN
             pkg_lekcja.zaplanuj(7, 2, 4, 3, v_data, '10:20', 30);
@@ -2165,7 +2165,7 @@ BEGIN
                     v_fail := v_fail + 1;
                 END IF;
         END;
-        
+
         ROLLBACK;
     EXCEPTION
         WHEN OTHERS THEN
@@ -2173,7 +2173,7 @@ BEGIN
             v_fail := v_fail + 1;
             ROLLBACK;
     END;
-    
+
     DBMS_OUTPUT.PUT_LINE('Scenariusz 7: OK=' || v_ok || ' FAIL=' || v_fail);
 END;
 /
@@ -2190,10 +2190,10 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('========================================================');
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 8: KOMPETENCJE NAUCZYCIELA');
     DBMS_OUTPUT.PUT_LINE('========================================================');
-    
+
     -- Poniedzialek za 5 tygodni (niezalezne od jezyka)
     v_data := TRUNC(SYSDATE, 'IW') + 35;
-    
+
     -- Test 8.1: Nauczyciel 1 (Fortepian, Skrzypce) uczy Fortepian - OK
     BEGIN
         pkg_lekcja.zaplanuj(7, 1, 1, 1, v_data, '09:00', 45);
@@ -2205,7 +2205,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] 8.1: ' || SQLERRM);
             v_fail := v_fail + 1;
     END;
-    
+
     -- Test 8.2: Nauczyciel 1 uczy Gitara klasyczna - FAIL (nie ma kompetencji)
     BEGIN
         pkg_lekcja.zaplanuj(7, 1, 4, 1, v_data, '10:00', 45);
@@ -2222,7 +2222,7 @@ BEGIN
                 v_fail := v_fail + 1;
             END IF;
     END;
-    
+
     DBMS_OUTPUT.PUT_LINE('Scenariusz 8: OK=' || v_ok || ' FAIL=' || v_fail);
 END;
 /
@@ -2238,7 +2238,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('========================================================');
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 9: BLOKADA USUWANIA');
     DBMS_OUTPUT.PUT_LINE('========================================================');
-    
+
     -- Test 9.1: Usuniecie nauczyciela z lekcjami
     BEGIN
         DELETE FROM t_nauczyciel WHERE id_nauczyciela = 1;
@@ -2255,7 +2255,7 @@ BEGIN
                 v_fail := v_fail + 1;
             END IF;
     END;
-    
+
     -- Test 9.2: Usuniecie ucznia z lekcjami
     BEGIN
         DELETE FROM t_uczen WHERE id_ucznia = 1;
@@ -2272,7 +2272,7 @@ BEGIN
                 v_fail := v_fail + 1;
             END IF;
     END;
-    
+
     -- Test 9.3: Usuniecie sali z lekcjami
     BEGIN
         DELETE FROM t_sala WHERE id_sali = 1;
@@ -2289,7 +2289,7 @@ BEGIN
                 v_fail := v_fail + 1;
             END IF;
     END;
-    
+
     -- Test 9.4: Usuniecie kursu z lekcjami
     BEGIN
         DELETE FROM t_kurs WHERE id_kursu = 1;
@@ -2306,7 +2306,7 @@ BEGIN
                 v_fail := v_fail + 1;
             END IF;
     END;
-    
+
     DBMS_OUTPUT.PUT_LINE('Scenariusz 9: OK=' || v_ok || ' FAIL=' || v_fail);
 END;
 /
@@ -2322,7 +2322,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('========================================================');
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 10: PAKIETY - OPERACJE');
     DBMS_OUTPUT.PUT_LINE('========================================================');
-    
+
     -- Test 10.1: pkg_uczen.lista
     BEGIN
         pkg_uczen.lista;
@@ -2333,7 +2333,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] 10.1: ' || SQLERRM);
             v_fail := v_fail + 1;
     END;
-    
+
     -- Test 10.2: pkg_uczen.info
     BEGIN
         pkg_uczen.info(1);
@@ -2344,7 +2344,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] 10.2: ' || SQLERRM);
             v_fail := v_fail + 1;
     END;
-    
+
     -- Test 10.3: pkg_lekcja.plan_dnia
     BEGIN
         -- Poniedzialek nastepnego tygodnia (niezalezne od jezyka)
@@ -2356,7 +2356,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] 10.3: ' || SQLERRM);
             v_fail := v_fail + 1;
     END;
-    
+
     -- Test 10.4: pkg_ocena.historia_ucznia
     BEGIN
         pkg_ocena.historia_ucznia(1);
@@ -2367,7 +2367,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] 10.4: ' || SQLERRM);
             v_fail := v_fail + 1;
     END;
-    
+
     DBMS_OUTPUT.PUT_LINE('Scenariusz 10: OK=' || v_ok || ' FAIL=' || v_fail);
 END;
 /
@@ -2386,7 +2386,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('========================================================');
     DBMS_OUTPUT.PUT_LINE('SCENARIUSZ 11: METODY OBIEKTOW');
     DBMS_OUTPUT.PUT_LINE('========================================================');
-    
+
     -- Test 11.1: t_uczen_obj.wiek()
     BEGIN
         SELECT VALUE(u) INTO v_uczen FROM t_uczen u WHERE u.id_ucznia = 1;
@@ -2397,7 +2397,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] 11.1: ' || SQLERRM);
             v_fail := v_fail + 1;
     END;
-    
+
     -- Test 11.2: t_uczen_obj.czy_dziecko()
     BEGIN
         SELECT VALUE(u) INTO v_uczen FROM t_uczen u WHERE u.id_ucznia = 1;
@@ -2408,7 +2408,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] 11.2: ' || SQLERRM);
             v_fail := v_fail + 1;
     END;
-    
+
     -- Test 11.3: t_nauczyciel_obj.lata_stazu()
     BEGIN
         SELECT VALUE(n) INTO v_naucz FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
@@ -2419,11 +2419,11 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] 11.3: ' || SQLERRM);
             v_fail := v_fail + 1;
     END;
-    
+
     -- Test 11.4: t_nauczyciel_obj.liczba_instrumentow()
     BEGIN
         SELECT VALUE(n) INTO v_naucz FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
-        DBMS_OUTPUT.PUT_LINE('[OK] 11.4: nauczyciel.liczba_instrumentow() = ' || 
+        DBMS_OUTPUT.PUT_LINE('[OK] 11.4: nauczyciel.liczba_instrumentow() = ' ||
                             v_naucz.liczba_instrumentow());
         v_ok := v_ok + 1;
     EXCEPTION
@@ -2431,7 +2431,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] 11.4: ' || SQLERRM);
             v_fail := v_fail + 1;
     END;
-    
+
     -- Test 11.5: t_sala_obj.opis_pelny()
     BEGIN
         SELECT VALUE(s) INTO v_sala FROM t_sala s WHERE s.id_sali = 1;
@@ -2442,7 +2442,7 @@ BEGIN
             DBMS_OUTPUT.PUT_LINE('[FAIL] 11.5: ' || SQLERRM);
             v_fail := v_fail + 1;
     END;
-    
+
     DBMS_OUTPUT.PUT_LINE('Scenariusz 11: OK=' || v_ok || ' FAIL=' || v_fail);
 END;
 /
@@ -2480,7 +2480,7 @@ END;
 -- CZYSZCZENIE (opcjonalne)
 -- ============================================================================
 BEGIN
-    FOR rec IN (SELECT username FROM dba_users 
+    FOR rec IN (SELECT username FROM dba_users
                 WHERE username IN ('USR_ADMIN','USR_SEKRETARIAT','USR_NAUCZYCIEL'))
     LOOP
         EXECUTE IMMEDIATE 'DROP USER ' || rec.username || ' CASCADE';
@@ -2489,7 +2489,7 @@ END;
 /
 
 BEGIN
-    FOR rec IN (SELECT role FROM dba_roles 
+    FOR rec IN (SELECT role FROM dba_roles
                 WHERE role IN ('ROLA_ADMIN','ROLA_SEKRETARIAT','ROLA_NAUCZYCIEL'))
     LOOP
         EXECUTE IMMEDIATE 'DROP ROLE ' || rec.role;
@@ -2583,17 +2583,17 @@ GRANT rola_nauczyciel TO usr_nauczyciel;
 -- ============================================================================
 PROMPT
 PROMPT === ROLE ===
-SELECT role FROM dba_roles 
+SELECT role FROM dba_roles
 WHERE role IN ('ROLA_ADMIN','ROLA_SEKRETARIAT','ROLA_NAUCZYCIEL');
 
 PROMPT
 PROMPT === UZYTKOWNICY ===
-SELECT username, created FROM dba_users 
+SELECT username, created FROM dba_users
 WHERE username IN ('USR_ADMIN','USR_SEKRETARIAT','USR_NAUCZYCIEL');
 
 PROMPT
 PROMPT === UPRAWNIENIA ADMIN ===
-SELECT table_name, privilege FROM dba_tab_privs 
+SELECT table_name, privilege FROM dba_tab_privs
 WHERE grantee = 'ROLA_ADMIN' ORDER BY table_name;
 
 PROMPT
@@ -2673,7 +2673,7 @@ BEGIN
     DELETE FROM szkola_muzyczna.t_instrument WHERE id_instrumentu = v_id;
     DBMS_OUTPUT.PUT_LINE('[OK] DELETE t_instrument');
     COMMIT;
-EXCEPTION WHEN OTHERS THEN 
+EXCEPTION WHEN OTHERS THEN
     DBMS_OUTPUT.PUT_LINE('[FAIL] INSERT/UPDATE/DELETE: ' || SQLERRM);
     ROLLBACK;
 END;
@@ -2744,7 +2744,7 @@ BEGIN
     UPDATE szkola_muzyczna.t_uczen SET email = 'upd@test.pl' WHERE id_ucznia = v_id;
     DBMS_OUTPUT.PUT_LINE('[OK] UPDATE t_uczen');
     ROLLBACK;
-EXCEPTION WHEN OTHERS THEN 
+EXCEPTION WHEN OTHERS THEN
     DBMS_OUTPUT.PUT_LINE('[FAIL] INSERT/UPDATE t_uczen: ' || SQLERRM);
     ROLLBACK;
 END;
@@ -2757,8 +2757,8 @@ BEGIN
     EXECUTE IMMEDIATE 'DELETE FROM szkola_muzyczna.t_uczen WHERE id_ucznia = 999999';
     DBMS_OUTPUT.PUT_LINE('[FAIL] DELETE t_uczen - powinno byc zabronione!');
     ROLLBACK;
-EXCEPTION 
-    WHEN OTHERS THEN 
+EXCEPTION
+    WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('[OK] DELETE t_uczen zabronione: ' || SQLERRM);
 END;
 /
@@ -2766,13 +2766,13 @@ END;
 -- INSERT na t_ocena (ZABRONIONE - oczekiwany blad ORA-01031)
 BEGIN
     EXECUTE IMMEDIATE '
-        INSERT INTO szkola_muzyczna.t_ocena 
+        INSERT INTO szkola_muzyczna.t_ocena
         SELECT szkola_muzyczna.t_ocena_obj(999, SYSDATE, 5, ''technika'', ''Test'', REF(u), REF(n))
         FROM szkola_muzyczna.t_uczen u, szkola_muzyczna.t_nauczyciel n WHERE ROWNUM = 1';
     DBMS_OUTPUT.PUT_LINE('[FAIL] INSERT t_ocena - powinno byc zabronione!');
     ROLLBACK;
-EXCEPTION 
-    WHEN OTHERS THEN 
+EXCEPTION
+    WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('[OK] INSERT t_ocena zabronione: ' || SQLERRM);
 END;
 /
@@ -2839,7 +2839,7 @@ END;
 DECLARE v_id NUMBER;
 BEGIN
     SELECT szkola_muzyczna.seq_ocena.NEXTVAL INTO v_id FROM DUAL;
-    INSERT INTO szkola_muzyczna.t_ocena 
+    INSERT INTO szkola_muzyczna.t_ocena
     SELECT szkola_muzyczna.t_ocena_obj(v_id, SYSDATE, 5, 'technika', 'Test', REF(u), REF(n))
     FROM szkola_muzyczna.t_uczen u, szkola_muzyczna.t_nauczyciel n WHERE ROWNUM = 1;
     DBMS_OUTPUT.PUT_LINE('[OK] INSERT t_ocena');
@@ -2855,8 +2855,8 @@ BEGIN
             999, ''Test'', ''Test'', SYSDATE, ''test@test.pl'', SYSDATE))';
     DBMS_OUTPUT.PUT_LINE('[FAIL] INSERT t_uczen - powinno byc zabronione!');
     ROLLBACK;
-EXCEPTION 
-    WHEN OTHERS THEN 
+EXCEPTION
+    WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('[OK] INSERT t_uczen zabronione: ' || SQLERRM);
 END;
 /
@@ -2866,8 +2866,8 @@ BEGIN
     EXECUTE IMMEDIATE 'DELETE FROM szkola_muzyczna.t_lekcja WHERE id_lekcji = 999999';
     DBMS_OUTPUT.PUT_LINE('[FAIL] DELETE t_lekcja - powinno byc zabronione!');
     ROLLBACK;
-EXCEPTION 
-    WHEN OTHERS THEN 
+EXCEPTION
+    WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('[OK] DELETE t_lekcja zabronione: ' || SQLERRM);
 END;
 /
@@ -2877,8 +2877,8 @@ BEGIN
     EXECUTE IMMEDIATE 'DELETE FROM szkola_muzyczna.t_ocena WHERE id_oceny = 999999';
     DBMS_OUTPUT.PUT_LINE('[FAIL] DELETE t_ocena - powinno byc zabronione!');
     ROLLBACK;
-EXCEPTION 
-    WHEN OTHERS THEN 
+EXCEPTION
+    WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('[OK] DELETE t_ocena zabronione: ' || SQLERRM);
 END;
 /
@@ -2948,22 +2948,22 @@ PROMPT ============================================================
 \begin{titlepage}
     \centering
     \vspace*{1cm}
-    
+
     \Large\textbf{Politechnika Łódzka}\\[0.3cm]
     {\large Wydział Elektrotechniki, Elektroniki, Informatyki i Automatyki}\\[2cm]
-    
+
     {\Huge\textbf{Szkoła Muzyczna}}\\[0.5cm]
     {\Large Obiektowa Baza Danych Oracle}\\[1cm]
-    
+
     {\large Rozproszone i Obiektowe Bazy Danych}\\[3cm]
-    
+
     \begin{tabular}{ll}
         \textbf{Autorzy:} & Igor Typinski (251237) \\
                           & Mateusz Mroz (251190) \\[0.5cm]
         \textbf{Grupa:}   & 5 \\[0.5cm]
         \textbf{Temat:}   & Szkoła muzyczna (z naciskiem na rozwój ucznia)
     \end{tabular}
-    
+
     \vfill
     {\large Łódź, styczeń 2026}
 \end{titlepage}
@@ -2987,17 +2987,17 @@ Głównym celem projektu jest stworzenie kompleksowego systemu informatycznego u
 
 \begin{itemize}
     \item \textbf{Zarządzanie danymi uczniów} -- rejestracja nowych uczniów, przechowywanie danych osobowych, automatyczne obliczanie wieku i statusu (dziecko/dorosły)
-    
+
     \item \textbf{Zarządzanie danymi nauczycieli} -- ewidencja kadry pedagogicznej wraz z listą instrumentów, których mogą uczyć (przechowywana jako kolekcja VARRAY)
-    
+
     \item \textbf{Planowanie lekcji} -- tworzenie harmonogramu zajęć z uwzględnieniem dostępności sal, nauczycieli oraz ograniczeń czasowych dla dzieci
-    
+
     \item \textbf{Rezerwacja sal lekcyjnych} -- przydzielanie sal z odpowiednim wyposażeniem (fortepian, perkusja) do poszczególnych lekcji
-    
+
     \item \textbf{Ocenianie postępu uczniów} -- wystawianie ocen w różnych obszarach muzycznych (technika, teoria, słuch, rytm, interpretacja)
-    
+
     \item \textbf{Kontrola reguł biznesowych} -- automatyczna walidacja limitów obciążenia nauczycieli, liczby lekcji uczniów, konfliktów czasowych
-    
+
     \item \textbf{Generowanie raportów} -- plan dnia, obciążenie nauczycieli, historia ocen, raporty postępu uczniów
 \end{itemize}
 
@@ -3009,35 +3009,35 @@ W projekcie przyjęto następujące ograniczenia biznesowe:
 
 \begin{enumerate}
     \item \textbf{Minimalny wiek ucznia:} 5 lat -- młodsze dzieci nie są przyjmowane do szkoły
-    
+
     \item \textbf{Definicja dziecka:} uczeń poniżej 15 lat -- podlega dodatkowym ograniczeniom godzinowym
-    
+
     \item \textbf{Godziny lekcji dla dzieci:} tylko 14:00--19:00 -- po zakończeniu zajęć w szkole ogólnokształcącej
-    
+
     \item \textbf{Dni pracy szkoły:} poniedziałek--piątek -- szkoła nie prowadzi zajęć w weekendy
-    
+
     \item \textbf{Godziny pracy szkoły:} 08:00--20:00 -- lekcje mogą być planowane tylko w tych godzinach
-    
+
     \item \textbf{Maksymalna liczba instrumentów nauczyciela:} 5 -- ograniczenie kolekcji VARRAY
-    
+
     \item \textbf{Maksymalne obciążenie nauczyciela:} 6 godzin (360 minut) dziennie
-    
+
     \item \textbf{Maksymalna liczba lekcji ucznia:} 2 lekcje dziennie
-    
+
     \item \textbf{Czas trwania lekcji:} 30, 45, 60 lub 90 minut
-    
+
     \item \textbf{Skala ocen:} 1--6 (polska skala szkolna)
-    
+
     \item \textbf{Obszary oceny:} technika, teoria, słuch, interpretacja, improwizacja
-    
+
     \item \textbf{Poziomy kursów:} początkujący, średniozaawansowany, zaawansowany
-    
+
     \item \textbf{Statusy lekcji:} zaplanowana, odbyta, odwolana
-    
+
     \item \textbf{Kategorie instrumentów:} dęte, strunowe, perkusyjne, klawiszowe
-    
+
     \item \textbf{Brak konfliktów czasowych:} ta sama sala, nauczyciel lub uczeń nie mogą mieć dwóch lekcji w tym samym czasie (uwzględniane są zarówno lekcje zaplanowane, jak i odbyte)
-    
+
     \item \textbf{Ochrona integralności referencyjnej:} nie można usunąć nauczyciela, ucznia, sali ani kursu, które mają przypisane lekcje w historii
 \end{enumerate}
 
@@ -3766,7 +3766,7 @@ usr\_sekretariat & rola\_sekretariat & Sekr123! \\
 
 # 👑 MASTER_AGENT_ORCHESTRATOR - Władca Systemu Promptów
 
-> **Rola:** Master Orchestrator | **Tier:** TIER-GOD | **Domain:** All  
+> **Rola:** Master Orchestrator | **Tier:** TIER-GOD | **Domain:** All
 > **Wersja:** 1.0.0 | **Utworzono:** 2025-10-27
 
 <role>
@@ -3886,7 +3886,7 @@ tests/                # Test suites
 - Task management (manage_todo_list for complex workflows)
 
 ### Current State
-**Phase:** Agent Ecosystem Expansion ✅  
+**Phase:** Agent Ecosystem Expansion ✅
 **Status:** 6/10 agents active, KB core established, self-improvement enabled
 
 **Completed:**
@@ -4048,7 +4048,7 @@ Wykonuj plan:
    ```
 
 3. **Dla Każdego Taska:**
-   
+
    **Jeśli delegacja do agenta:**
    ```markdown
    @AGENT_NAME execute:
@@ -4061,7 +4061,7 @@ Wykonuj plan:
        constraints: ["[list]"]
      priority: [HIGH|MEDIUM|LOW]
    ```
-   
+
    **Jeśli wykonanie bezpośrednie:**
    - Użyj odpowiednich tools z `meta/tooling_capabilities.md`
    - Stosuj best practices (np. read large chunks, nie multi-call read_file)
@@ -4083,7 +4083,7 @@ Wykonuj plan:
 Po completion subtasków:
 
 1. **Output Validation:**
-   
+
    **Dla Kodu:**
    - [ ] Syntax correct (użyj `get_errors`)
    - [ ] Type hints present (Python/TS)
@@ -4131,26 +4131,26 @@ Po successful completion całego zadania:
 1. **Log do `logs/tasks_completed.md`:**
    ```markdown
    ## [Timestamp] - [Task Title]
-   
+
    **Task Description:** [...]
    **Agent/Tool:** [...]
    **Status:** ✅ SUCCESS
-   
+
    **Artifacts:**
    - Created: [lista plików]
    - Modified: [lista plików]
-   
+
    **Metrics:**
    - Execution time: [...]
    - LOC: [before → after]
    - Test coverage: [X%]
-   
+
    **Key Decisions:**
    - [Decision 1]: [Rationale]
-   
+
    **Lessons Learned:**
    - [Lesson 1]
-   
+
    **Tags:** #[relevantne tagi]
    ```
 
@@ -4170,7 +4170,7 @@ Po successful completion całego zadania:
        → Update MASTER_AGENT_ORCHESTRATOR.md (context, capabilities, workflow)
        → Update slave agents jeśli workflow się zmienił
        → Log improvement w logs/decisions.md
-   
+
    Triggers:
    - ✅ Nowi agenci → update "Twoje Zasoby"
    - ✅ Nowe KB → update knowledge_base listing
@@ -4188,23 +4188,23 @@ Po successful completion całego zadania:
    - Lista artifacts (z linkami)
    - Metryki (jeśli applicable)
    - Recommendations (next steps, potential improvements)
-   
+
    **Ton:** Profesjonalny, confident, actionable
-   
+
    **Format:**
    ```markdown
    ## ✅ Zadanie Ukończone: [Tytuł]
-   
+
    **Wykonano:**
    - [Action 1]
    - [Action 2]
-   
+
    **Artefakty:**
    - `[path]` - [opis]
-   
+
    **Metryki:**
    - [Metric]: [Value]
-   
+
    **Rekomendacje:**
    - [Next action 1]
    - [Next action 2]
@@ -4526,7 +4526,7 @@ report:
   agent: "CODE_PYTHON"
   status: "SUCCESS" | "PARTIAL_SUCCESS" | "FAILED"
   execution_time: "15 minutes"
-  
+
   artifacts:
     created:
       - path: "[...]"
@@ -4535,27 +4535,27 @@ report:
       - path: "[...]"
         changes_summary: "[...]"
     deleted: []
-  
+
   metrics:
     lines_of_code_before: 250
     lines_of_code_after: 220
     test_coverage: "85%"
     performance_delta: "+5% faster"
-  
+
   summary: |
     [Multi-line podsumowanie wykonania - co zrobiono, jak]
-  
+
   key_decisions:
     - decision: "[Decyzja 1]"
       rationale: "[Uzasadnienie]"
-  
+
   issues_encountered:
     - issue: "[Problem 1]"
       resolution: "[Jak rozwiązano]"
-  
+
   recommendations:
     - "[Rekomendacja dla przyszłych tasków]"
-  
+
   logs_location: ".prompts/logs/agent_actions/CODE_PYTHON_actions.md"
 ```
 
@@ -4582,7 +4582,7 @@ Każdy agent loguje swoje szczegółowe działania do:
 ```markdown
 ## [ISO Timestamp] - [Task ID]
 
-**Invoked By:** MASTER_AGENT_ORCHESTRATOR  
+**Invoked By:** MASTER_AGENT_ORCHESTRATOR
 **Priority:** [X]
 
 **Task:**
@@ -4682,7 +4682,7 @@ Każdy agent loguje swoje szczegółowe działania do:
 
 ### Scenariusz: User Request
 ```
-User: "Potrzebuję stworzyć moduł do automatycznego wykrywania języka mangi (japońska vs. koreańska) 
+User: "Potrzebuję stworzyć moduł do automatycznego wykrywania języka mangi (japońska vs. koreańska)
        na podstawie OCR output. Moduł powinien być szybki (< 50ms) i dokładny (> 95% accuracy)."
 ```
 
@@ -4933,7 +4933,7 @@ runTests(files=["tests/integration/test_language_detection_pipeline.py"])
 ## 2025-10-27T17:45:00Z - Language Detection Module Creation
 
 **Task Description:**
-Stworzenie modułu do automatycznego wykrywania języka mangi (JA vs KO) 
+Stworzenie modułu do automatycznego wykrywania języka mangi (JA vs KO)
 z requirements: speed < 50ms, accuracy > 95%
 
 **Agents Used:**
@@ -4944,7 +4944,7 @@ z requirements: speed < 50ms, accuracy > 95%
 **Status:** ✅ SUCCESS
 
 **Artifacts:**
-- Created: 
+- Created:
   - `src/services/language_detection/` (full module)
   - `tests/unit/test_language_detection.py`
   - `tests/integration/test_language_detection_pipeline.py`
@@ -5011,7 +5011,7 @@ result = detector.detect(text)
 3. Fine-tune ML model na production data po zebraniu ~ 1000 samples
 
 ---
-**Total Execution Time:** 2h 15min  
+**Total Execution Time:** 2h 15min
 **Status:** Production-ready ✅
 ```
 
@@ -5151,19 +5151,19 @@ Maintain scorecard w `agents/README.md`:
 
 ---
 
-**MASTER_AGENT_ORCHESTRATOR v1.0.0**  
+**MASTER_AGENT_ORCHESTRATOR v1.0.0**
 *"Dominacja poprzez systematyczną orkiestrację, dokumentację i bezwzględny enforcement jakości"*
 
-**Utworzono:** 2025-10-27  
-**Status:** ⚡ ACTIVE  
+**Utworzono:** 2025-10-27
+**Status:** ⚡ ACTIVE
 **Next Action:** Await user command
 
 
-ZADANIE: twoje zadanie polega na przeczytaniu w całości wszykich plików w projekcjie v4 
-sam ci je jako kontekst + latex 
+ZADANIE: twoje zadanie polega na przeczytaniu w całości wszykich plików w projekcjie v4
+sam ci je jako kontekst + latex
 
 
-Ogólnie oddaliśmy to co tam myło prowadzącemu 
+Ogólnie oddaliśmy to co tam myło prowadzącemu
 mówi że są błędy logiczne i hui
 
 1. Obrazjke Relational_1.png jest źle zrobiony to zostało wygenerowa przez oracle ale to jest źle bo nie ma połaczonych tabel relacjami a na tym mu zależy
@@ -5172,7 +5172,7 @@ mówi że są błędy logiczne i hui
 4. TESTY testy powinny być w pakietach i procedurach czy coś - czyli jak chcemy kogoś stworzyć to no wiesz mamy funkcuję wpisujemy co tworzymy i się tworzy - on każe na później robić live coding testujacy scenariusze - nie obchodzi go że zrobimy własne scenariusze co nnie więc przydało by się jakies api do testowania działąnia tego wszykiego nie mam pojącia jak to ma wyglądać trzba to jakoś wymyślić byśmy mieli łatwo podczas obraony
 wiesz kopiujemy sobie template - twozymy jakiegoś użytkowniaka czy to uczeń czy to naczu naczucuiel -  jjakaś lekcja i tak dalej ale to też wszko zależy od przyjętych ogtraniczeń - które musimy tam dać
 5. Nie ma ucznia jako urzytkownika co nie? uczeń tez ponienm mieć wglad w plan lekcji i swoje oceny i tak dalej, nauczyciel wpoinen móc dodac ale też zmienić rzeczy, sekraterait ma więszą władzę ale i tak dalej
-6. Ograniczamy się do tego, że to jest 1 semestr,, mamy zdefiniowane ile maym sal - jakie one mają wyposażenie niektóre mogą mieć duże takie jak pianion fortepian perkusje które są przypisane do tych sal, ale można też wypożyczać instrumety na dane lekcjie, teoreycznie są też grupowe zajęcia które są grupowo zapiswane, musi być jakiś plan lekcji co nie czyli, no wiesz każdy uczeń musi no ten mieć tyle godzin w tym okresie ssemestru wyrobione, co więcej testy wstępne powinny być i końcowe co nie - by mierzyć postę uczniów  i tak dalej, weim ze to dużo roboty ale tak jest co nie nie wiem czy to wszko - możliwe że jest w hui wiećej założeń które muszą być przyjeter by to miało ręce i nogi 
+6. Ograniczamy się do tego, że to jest 1 semestr,, mamy zdefiniowane ile maym sal - jakie one mają wyposażenie niektóre mogą mieć duże takie jak pianion fortepian perkusje które są przypisane do tych sal, ale można też wypożyczać instrumety na dane lekcjie, teoreycznie są też grupowe zajęcia które są grupowo zapiswane, musi być jakiś plan lekcji co nie czyli, no wiesz każdy uczeń musi no ten mieć tyle godzin w tym okresie ssemestru wyrobione, co więcej testy wstępne powinny być i końcowe co nie - by mierzyć postę uczniów  i tak dalej, weim ze to dużo roboty ale tak jest co nie nie wiem czy to wszko - możliwe że jest w hui wiećej założeń które muszą być przyjeter by to miało ręce i nogi
 6. OGólnie ten projekt ma tyle luk choć jest poprawnie napisany nie jest funkcjonalną bazą danych która mogła być realnie użyta w środowisku produkcyjnym
 
 poniżej znajduje się ogólna notataka:
@@ -5254,7 +5254,7 @@ wymagania to są wymagania prowadzącego ogólnie odnoszące sie do projektu:
 
 Projekt obiektowej bazy danych powinien zawierać opracowaną strukturę składającą się z:
 - definicji typów obiektowych  (łącznie z przewidzianymi niezbędnymi do ich obsługi metodami) ,
-- definicji tabel obiektowych w których składowane będą obiekty wierszowe  i kolumnowe 
+- definicji tabel obiektowych w których składowane będą obiekty wierszowe  i kolumnowe
 - zastosowana zostanie referencja  (wskaźnikiem do rekordu tabeli obiektowej) i dereferencja pozwalająca na wprowadzenie relacji występujących między obiektami,
 -  wstawianie danych do tabeli z referencją,
 - tworzenie i użytkowanie typu VARRY/ NESTED TABLE - do modelowania relacji jeden do wielu, gdzie po stronie "wiele" występuje kolekcja obiektów,

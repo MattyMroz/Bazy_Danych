@@ -3,21 +3,21 @@ use pn_10
 -- usuwanie
 
 --drop
-alter table dane 
+alter table dane
 add do_usuniecia varchar(20)
 
 select * from dane
 
-alter table dane 
-drop column do_usuniecia 
+alter table dane
+drop column do_usuniecia
 
 
 drop table dane
 
---delete 
+--delete
 
 delete from dane3
-where id=4 
+where id=4
 
 select * from dane3
 
@@ -61,35 +61,35 @@ select * from pracownicy
 
 select * from dzialy
 
--- chce wyswetlic pracownikow pracujacych w danym dziale 
+-- chce wyswetlic pracownikow pracujacych w danym dziale
 
 select dzialID,nazwa from dzialy
 
-select dzialy.dzialID,pracownicy.dzialID,nazwa,nazwisko,imie 
+select dzialy.dzialID,pracownicy.dzialID,nazwa,nazwisko,imie
 from dzialy,pracownicy
 
 
 select * from pracownicy
 
-select dzialy.dzialID,pracownicy.dzialID,nazwa,nazwisko,imie 
+select dzialy.dzialID,pracownicy.dzialID,nazwa,nazwisko,imie
 from dzialy,pracownicy
 where dzialy.dzialID=pracownicy.dzialID
 
 /*
-select nazwa,nazwisko,imie 
+select nazwa,nazwisko,imie
 from dzialy join pracownicy
 on dzialy.dzialID=pracownicy.dzialID
 */
 -- alias
 
-select dzialy.dzialID,pracownicy.dzialID,nazwa,nazwisko,imie 
+select dzialy.dzialID,pracownicy.dzialID,nazwa,nazwisko,imie
 from dzialy,pracownicy
 where dzialy.dzialID=pracownicy.dzialID
 
-select d.dzialID,p.dzialID,nazwa,nazwisko,imie 
+select d.dzialID,p.dzialID,nazwa,nazwisko,imie
 from dzialy as d,pracownicy as p
 where d.dzialID=p.dzialID
 
-select jasio.dzialID,p.dzialID,nazwa,nazwisko,imie 
+select jasio.dzialID,p.dzialID,nazwa,nazwisko,imie
 from dzialy as jasio,pracownicy as p
 where jasio.dzialID=p.dzialID

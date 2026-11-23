@@ -46,15 +46,15 @@ DECLARE
     v_dane VARCHAR2(100);
 BEGIN
     SELECT VALUE(u) INTO v_uczen FROM t_uczen u WHERE u.id_ucznia = 1;
-    
+
     v_wiek := v_uczen.wiek();
     v_pelnoletni := v_uczen.czy_pelnoletni();
     v_dane := v_uczen.pelne_dane();
-    
+
     DBMS_OUTPUT.PUT_LINE('Uczen: ' || v_dane);
     DBMS_OUTPUT.PUT_LINE('Wiek: ' || v_wiek);
     DBMS_OUTPUT.PUT_LINE('Pelnoletni: ' || v_pelnoletni);
-    
+
     IF v_wiek > 0 AND v_pelnoletni IN ('TAK', 'NIE') AND v_dane IS NOT NULL THEN
         DBMS_OUTPUT.PUT_LINE('[PASS] Metody t_uczen_obj dzialaja poprawnie');
     ELSE
@@ -76,15 +76,15 @@ DECLARE
     v_senior VARCHAR2(3);
 BEGIN
     SELECT VALUE(n) INTO v_nauczyciel FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
-    
+
     v_dane := v_nauczyciel.pelne_dane();
     v_liczba := v_nauczyciel.liczba_instrumentow();
     v_senior := v_nauczyciel.czy_senior();
-    
+
     DBMS_OUTPUT.PUT_LINE('Nauczyciel: ' || v_dane);
     DBMS_OUTPUT.PUT_LINE('Liczba instrumentow: ' || v_liczba);
     DBMS_OUTPUT.PUT_LINE('Senior (10+ lat): ' || v_senior);
-    
+
     IF v_liczba > 0 AND v_senior IN ('TAK', 'NIE') THEN
         DBMS_OUTPUT.PUT_LINE('[PASS] Metody t_nauczyciel_obj dzialaja poprawnie');
     ELSE
@@ -105,13 +105,13 @@ DECLARE
     v_info VARCHAR2(200);
 BEGIN
     SELECT VALUE(k) INTO v_kurs FROM t_kurs k WHERE k.id_kursu = 1;
-    
+
     v_ind := v_kurs.czy_indywidualny();
     v_info := v_kurs.info();
-    
+
     DBMS_OUTPUT.PUT_LINE('Kurs info: ' || v_info);
     DBMS_OUTPUT.PUT_LINE('Indywidualny: ' || v_ind);
-    
+
     IF v_ind IN ('TAK', 'NIE') AND v_info IS NOT NULL THEN
         DBMS_OUTPUT.PUT_LINE('[PASS] Metody t_kurs_obj dzialaja poprawnie');
     ELSE
@@ -132,13 +132,13 @@ DECLARE
     v_opis VARCHAR2(200);
 BEGIN
     SELECT VALUE(l) INTO v_lekcja FROM t_lekcja l WHERE l.id_lekcji = 1;
-    
+
     v_odbyta := v_lekcja.czy_odbyta();
     v_opis := v_lekcja.krotki_opis();
-    
+
     DBMS_OUTPUT.PUT_LINE('Lekcja opis: ' || v_opis);
     DBMS_OUTPUT.PUT_LINE('Odbyta: ' || v_odbyta);
-    
+
     IF v_odbyta IN ('TAK', 'NIE') AND v_opis IS NOT NULL THEN
         DBMS_OUTPUT.PUT_LINE('[PASS] Metody t_lekcja_obj dzialaja poprawnie');
     ELSE
@@ -159,13 +159,13 @@ DECLARE
     v_dni NUMBER;
 BEGIN
     SELECT VALUE(z) INTO v_zapis FROM t_zapis z WHERE z.id_zapisu = 1;
-    
+
     v_aktywny := v_zapis.czy_aktywny();
     v_dni := v_zapis.dni_od_zapisu();
-    
+
     DBMS_OUTPUT.PUT_LINE('Zapis aktywny: ' || v_aktywny);
     DBMS_OUTPUT.PUT_LINE('Dni od zapisu: ' || v_dni);
-    
+
     IF v_aktywny IN ('TAK', 'NIE') AND v_dni >= 0 THEN
         DBMS_OUTPUT.PUT_LINE('[PASS] Metody t_zapis_obj dzialaja poprawnie');
     ELSE
@@ -185,12 +185,12 @@ DECLARE
     v_poziom VARCHAR2(20);
 BEGIN
     SELECT VALUE(o) INTO v_ocena FROM t_ocena_postepu o WHERE o.id_oceny = 1;
-    
+
     v_poziom := v_ocena.poziom_slowny();
-    
+
     DBMS_OUTPUT.PUT_LINE('Ocena poziom: ' || v_poziom);
-    
-    IF v_poziom IN ('niedostateczny', 'dopuszczajacy', 'dostateczny', 
+
+    IF v_poziom IN ('niedostateczny', 'dopuszczajacy', 'dostateczny',
                     'dobry', 'bardzo dobry', 'celujacy') THEN
         DBMS_OUTPUT.PUT_LINE('[PASS] Metoda poziom_slowny() dziala poprawnie');
     ELSE
@@ -210,12 +210,12 @@ DECLARE
     v_opis VARCHAR2(200);
 BEGIN
     SELECT VALUE(s) INTO v_sala FROM t_sala s WHERE s.id_sali = 1;
-    
+
     v_opis := v_sala.opis_pelny();
-    
+
     DBMS_OUTPUT.PUT_LINE('Sala: ' || v_sala.nazwa);
     DBMS_OUTPUT.PUT_LINE('Opis pelny: ' || v_opis);
-    
+
     IF v_opis IS NOT NULL THEN
         DBMS_OUTPUT.PUT_LINE('[PASS] Metoda opis_pelny() dziala poprawnie');
     ELSE
@@ -236,14 +236,14 @@ DECLARE
     v_dni NUMBER;
 BEGIN
     SELECT VALUE(s) INTO v_semestr FROM t_semestr s WHERE s.czy_aktywny = 'T';
-    
+
     v_w_trakcie := v_semestr.czy_w_trakcie();
     v_dni := v_semestr.dni_do_konca();
-    
+
     DBMS_OUTPUT.PUT_LINE('Semestr: ' || v_semestr.nazwa);
     DBMS_OUTPUT.PUT_LINE('W trakcie: ' || v_w_trakcie);
     DBMS_OUTPUT.PUT_LINE('Dni do konca: ' || v_dni);
-    
+
     IF v_w_trakcie IN ('TAK', 'NIE') THEN
         DBMS_OUTPUT.PUT_LINE('[PASS] Metody t_semestr_obj dzialaja poprawnie');
     ELSE
@@ -271,7 +271,7 @@ DECLARE
 BEGIN
     INSERT INTO t_lekcja (id_lekcji, data_lekcji, godzina_start, czas_trwania, status)
     VALUES (9999, SYSDATE, '10:00', 45, 'nieprawidlowy_status');
-    
+
     DELETE FROM t_lekcja WHERE id_lekcji = 9999;
 EXCEPTION
     WHEN OTHERS THEN
@@ -296,11 +296,11 @@ DECLARE
 BEGIN
     SELECT REF(u) INTO v_ref_uczen FROM t_uczen u WHERE u.id_ucznia = 1;
     SELECT REF(n) INTO v_ref_nauczyciel FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
-    
+
     INSERT INTO t_ocena_postepu VALUES (
         t_ocena_obj(9999, SYSDATE, 7, 'Test', 'test', v_ref_uczen, v_ref_nauczyciel)
     );
-    
+
     DELETE FROM t_ocena_postepu WHERE id_oceny = 9999;
 EXCEPTION
     WHEN OTHERS THEN
@@ -423,7 +423,7 @@ DECLARE
     v_sem t_semestr_obj;
 BEGIN
     v_sem := pkg_semestr.pobierz_aktywny_semestr();
-    
+
     IF v_sem IS NOT NULL THEN
         DBMS_OUTPUT.PUT_LINE('Aktywny semestr: ' || v_sem.nazwa);
         DBMS_OUTPUT.PUT_LINE('[PASS] Funkcja pobierz_aktywny_semestr() dziala');
@@ -460,11 +460,11 @@ BEGIN
     -- Sprawdz zajeta sale (ID 1 na 2025-05-20 o 09:00)
     v_status := pkg_sala.sprawdz_dostepnosc(1, TO_DATE('2025-05-20', 'YYYY-MM-DD'), '09:00');
     DBMS_OUTPUT.PUT_LINE('Sala 1 o 09:00: ' || v_status);
-    
+
     -- Sprawdz wolna godzine
     v_status := pkg_sala.sprawdz_dostepnosc(1, TO_DATE('2025-05-20', 'YYYY-MM-DD'), '20:00');
     DBMS_OUTPUT.PUT_LINE('Sala 1 o 20:00: ' || v_status);
-    
+
     IF v_status = 'WOLNA' THEN
         DBMS_OUTPUT.PUT_LINE('[PASS] Funkcja sprawdz_dostepnosc() dziala');
     END IF;
@@ -497,7 +497,7 @@ DECLARE
 BEGIN
     v_liczba := pkg_uczen.liczba_uczniow();
     DBMS_OUTPUT.PUT_LINE('Liczba uczniow: ' || v_liczba);
-    
+
     IF v_liczba = 12 THEN
         DBMS_OUTPUT.PUT_LINE('[PASS] Funkcja liczba_uczniow() zwraca 12');
     ELSE
@@ -517,7 +517,7 @@ DECLARE
 BEGIN
     v_srednia := pkg_uczen.srednia_ocen(1);
     DBMS_OUTPUT.PUT_LINE('Srednia ucznia ID 1: ' || v_srednia);
-    
+
     IF v_srednia > 0 THEN
         DBMS_OUTPUT.PUT_LINE('[PASS] Funkcja srednia_ocen() dziala');
     ELSE
@@ -541,7 +541,7 @@ DECLARE
     v_count NUMBER := 0;
 BEGIN
     v_cursor := pkg_uczen.uczniowie_wiek(5, 15);
-    
+
     DBMS_OUTPUT.PUT_LINE('Uczniowie w wieku 5-15 lat (dzieci):');
     LOOP
         FETCH v_cursor INTO v_id, v_imie, v_nazwisko, v_wiek;
@@ -550,7 +550,7 @@ BEGIN
         v_count := v_count + 1;
     END LOOP;
     CLOSE v_cursor;
-    
+
     IF v_count > 0 THEN
         DBMS_OUTPUT.PUT_LINE('[PASS] REF CURSOR zwrocil ' || v_count || ' uczniow');
     ELSE
@@ -584,15 +584,15 @@ DECLARE
     v_wynik VARCHAR2(200);
 BEGIN
     -- Sprawdz wolny termin
-    v_wynik := pkg_lekcja.sprawdz_dostepnosc_kompleksowa(1, 1, 1, 
+    v_wynik := pkg_lekcja.sprawdz_dostepnosc_kompleksowa(1, 1, 1,
                     TO_DATE('2025-06-01', 'YYYY-MM-DD'), '10:00');
     DBMS_OUTPUT.PUT_LINE('Wolny termin: ' || v_wynik);
-    
+
     -- Sprawdz zajety termin (Anna ma lekcje 2025-05-27 o 09:00)
     v_wynik := pkg_lekcja.sprawdz_dostepnosc_kompleksowa(1, 1, 1,
                     TO_DATE('2025-05-27', 'YYYY-MM-DD'), '09:00');
     DBMS_OUTPUT.PUT_LINE('Zajety termin: ' || v_wynik);
-    
+
     IF v_wynik LIKE 'BLAD%' THEN
         DBMS_OUTPUT.PUT_LINE('[PASS] Wykryto konflikt poprawnie');
     END IF;
@@ -662,7 +662,7 @@ BEGIN
     INSERT INTO t_uczen VALUES (
         t_uczen_obj(9999, 'Baby', 'Test', SYSDATE - 365, 'baby@test.com', NULL, SYSDATE)
     );
-    
+
     DELETE FROM t_uczen WHERE id_ucznia = 9999;
     DBMS_OUTPUT.PUT_LINE('[FAIL] Trigger powinien zablokowac zbyt mlodego ucznia');
 EXCEPTION
@@ -692,14 +692,14 @@ BEGIN
     SELECT REF(n) INTO v_ref_nauczyciel FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
     SELECT REF(k) INTO v_ref_kurs FROM t_kurs k WHERE k.id_kursu = 1;
     SELECT REF(s) INTO v_ref_sala FROM t_sala s WHERE s.id_sali = 1;
-    
+
     -- Proba zaplanowania lekcji o 10:00 (przed 14:00!)
     INSERT INTO t_lekcja VALUES (
         t_lekcja_obj(9999, TO_DATE('2025-06-10', 'YYYY-MM-DD'), '10:00', 45,
                      NULL, NULL, 'zaplanowana',
                      v_ref_uczen, v_ref_nauczyciel, v_ref_kurs, v_ref_sala)
     );
-    
+
     DELETE FROM t_lekcja WHERE id_lekcji = 9999;
     DBMS_OUTPUT.PUT_LINE('[FAIL] Trigger powinien zablokowac lekcje rano dla dziecka');
 EXCEPTION
@@ -729,16 +729,16 @@ BEGIN
     SELECT REF(n) INTO v_ref_nauczyciel FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
     SELECT REF(k) INTO v_ref_kurs FROM t_kurs k WHERE k.id_kursu = 1;
     SELECT REF(s) INTO v_ref_sala FROM t_sala s WHERE s.id_sali = 2;
-    
+
     -- Lekcja o 15:00 - dozwolona dla dziecka
     INSERT INTO t_lekcja VALUES (
         t_lekcja_obj(v_id, TO_DATE('2025-06-11', 'YYYY-MM-DD'), '15:00', 45,
                      NULL, NULL, 'zaplanowana',
                      v_ref_uczen, v_ref_nauczyciel, v_ref_kurs, v_ref_sala)
     );
-    
+
     DBMS_OUTPUT.PUT_LINE('[PASS] Lekcja o 15:00 dla dziecka dozwolona');
-    
+
     DELETE FROM t_lekcja WHERE id_lekcji = v_id;
     COMMIT;
 EXCEPTION
@@ -765,28 +765,28 @@ BEGIN
     SELECT REF(n) INTO v_ref_nauczyciel FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
     SELECT REF(k) INTO v_ref_kurs FROM t_kurs k WHERE k.id_kursu = 1;
     SELECT REF(s) INTO v_ref_sala FROM t_sala s WHERE s.id_sali = 2;
-    
+
     -- Dodaj 2. lekcje
     INSERT INTO t_lekcja VALUES (
         t_lekcja_obj(9997, TO_DATE('2025-05-27', 'YYYY-MM-DD'), '11:00', 45,
                      NULL, NULL, 'zaplanowana',
                      v_ref_uczen, v_ref_nauczyciel, v_ref_kurs, v_ref_sala)
     );
-    
+
     -- Proba dodania 3. lekcji
     INSERT INTO t_lekcja VALUES (
         t_lekcja_obj(9996, TO_DATE('2025-05-27', 'YYYY-MM-DD'), '13:00', 45,
                      NULL, NULL, 'zaplanowana',
                      v_ref_uczen, v_ref_nauczyciel, v_ref_kurs, v_ref_sala)
     );
-    
+
     DELETE FROM t_lekcja WHERE id_lekcji IN (9996, 9997);
     DBMS_OUTPUT.PUT_LINE('[FAIL] Trigger powinien zablokowac 3. lekcje');
 EXCEPTION
     WHEN OTHERS THEN
         DELETE FROM t_lekcja WHERE id_lekcji = 9997;
         COMMIT;
-        
+
         IF SQLCODE = -20052 THEN
             DBMS_OUTPUT.PUT_LINE('[PASS] Trigger zablokował 3. lekcje ucznia');
         ELSE
@@ -812,13 +812,13 @@ BEGIN
     SELECT REF(n) INTO v_ref_nauczyciel FROM t_nauczyciel n WHERE n.id_nauczyciela = 2;
     SELECT REF(k) INTO v_ref_kurs FROM t_kurs k WHERE k.id_kursu = 3;
     SELECT REF(s) INTO v_ref_sala FROM t_sala s WHERE s.id_sali = 1;
-    
+
     INSERT INTO t_lekcja VALUES (
         t_lekcja_obj(9995, TO_DATE('2025-05-20', 'YYYY-MM-DD'), '09:00', 45,
                      NULL, NULL, 'zaplanowana',
                      v_ref_uczen, v_ref_nauczyciel, v_ref_kurs, v_ref_sala)
     );
-    
+
     DELETE FROM t_lekcja WHERE id_lekcji = 9995;
     DBMS_OUTPUT.PUT_LINE('[FAIL] Trigger powinien zablokowac konflikt sali');
 EXCEPTION
@@ -840,20 +840,20 @@ PROMPT [TEST 4.6] Trigger: tylko jeden semestr aktywny
 BEGIN
     -- Semestr 2 jest aktywny, proba aktywacji semestru 1
     UPDATE t_semestr SET czy_aktywny = 'T' WHERE id_semestru = 1;
-    
+
     -- Sprawdz czy poprzedni zostal dezaktywowany
     DECLARE
         v_count NUMBER;
     BEGIN
         SELECT COUNT(*) INTO v_count FROM t_semestr WHERE czy_aktywny = 'T';
-        
+
         IF v_count = 1 THEN
             DBMS_OUTPUT.PUT_LINE('[PASS] Tylko 1 semestr aktywny po zmianie');
         ELSE
             DBMS_OUTPUT.PUT_LINE('[FAIL] ' || v_count || ' semestr(y/ow) aktywnych');
         END IF;
     END;
-    
+
     -- Przywroc semestr 2 jako aktywny
     UPDATE t_semestr SET czy_aktywny = 'T' WHERE id_semestru = 2;
     COMMIT;
@@ -881,13 +881,13 @@ BEGIN
     SELECT REF(n) INTO v_ref_nauczyciel FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
     SELECT REF(k) INTO v_ref_kurs FROM t_kurs k WHERE k.id_kursu = 1;
     SELECT REF(s) INTO v_ref_sala FROM t_sala s WHERE s.id_sali = 2;
-    
+
     INSERT INTO t_lekcja VALUES (
         t_lekcja_obj(9994, TO_DATE('2025-05-20', 'YYYY-MM-DD'), '09:00', 45,
                      NULL, NULL, 'zaplanowana',
                      v_ref_uczen, v_ref_nauczyciel, v_ref_kurs, v_ref_sala)
     );
-    
+
     DELETE FROM t_lekcja WHERE id_lekcji = 9994;
     DBMS_OUTPUT.PUT_LINE('[FAIL] Trigger powinien zablokowac konflikt nauczyciela');
 EXCEPTION
@@ -917,13 +917,13 @@ BEGIN
     SELECT REF(n) INTO v_ref_nauczyciel FROM t_nauczyciel n WHERE n.id_nauczyciela = 2;
     SELECT REF(k) INTO v_ref_kurs FROM t_kurs k WHERE k.id_kursu = 3;
     SELECT REF(s) INTO v_ref_sala FROM t_sala s WHERE s.id_sali = 3;
-    
+
     INSERT INTO t_lekcja VALUES (
         t_lekcja_obj(9993, TO_DATE('2025-05-20', 'YYYY-MM-DD'), '09:00', 45,
                      NULL, NULL, 'zaplanowana',
                      v_ref_uczen, v_ref_nauczyciel, v_ref_kurs, v_ref_sala)
     );
-    
+
     DELETE FROM t_lekcja WHERE id_lekcji = 9993;
     DBMS_OUTPUT.PUT_LINE('[FAIL] Trigger powinien zablokowac konflikt ucznia');
 EXCEPTION
@@ -957,32 +957,32 @@ DECLARE
     v_ref_nauczyciel REF t_nauczyciel_obj;
 BEGIN
     DBMS_OUTPUT.PUT_LINE('1. Dodawanie nowego ucznia...');
-    pkg_uczen.dodaj_ucznia('Test', 'Scenariusz', 
+    pkg_uczen.dodaj_ucznia('Test', 'Scenariusz',
                            TO_DATE('2000-01-01', 'YYYY-MM-DD'),
                            'test.scen@email.com', '999888777');
-    
+
     SELECT MAX(id_ucznia) INTO v_id_ucznia FROM t_uczen;
     DBMS_OUTPUT.PUT_LINE('   Utworzono ucznia ID: ' || v_id_ucznia);
-    
+
     DBMS_OUTPUT.PUT_LINE('2. Zapis na kurs...');
     SELECT REF(u) INTO v_ref_uczen FROM t_uczen u WHERE u.id_ucznia = v_id_ucznia;
     SELECT REF(k) INTO v_ref_kurs FROM t_kurs k WHERE k.id_kursu = 1;
     SELECT REF(n) INTO v_ref_nauczyciel FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
-    
+
     INSERT INTO t_zapis VALUES (
-        t_zapis_obj(seq_zapis.NEXTVAL, SYSDATE, 'aktywny', 
+        t_zapis_obj(seq_zapis.NEXTVAL, SYSDATE, 'aktywny',
                     v_ref_uczen, v_ref_kurs, v_ref_nauczyciel)
     );
     DBMS_OUTPUT.PUT_LINE('   Zapis utworzony');
-    
+
     DBMS_OUTPUT.PUT_LINE('3. Sprawdzenie sredniej (powinna byc 0)...');
     DBMS_OUTPUT.PUT_LINE('   Srednia: ' || pkg_uczen.srednia_ocen(v_id_ucznia));
-    
+
     DBMS_OUTPUT.PUT_LINE('4. Sprzatanie danych testowych...');
     DELETE FROM t_zapis WHERE DEREF(ref_uczen).id_ucznia = v_id_ucznia;
     DELETE FROM t_uczen WHERE id_ucznia = v_id_ucznia;
     COMMIT;
-    
+
     DBMS_OUTPUT.PUT_LINE('[PASS] Scenariusz cyklu zycia ucznia wykonany');
 EXCEPTION
     WHEN OTHERS THEN
@@ -1003,10 +1003,10 @@ DECLARE
     v_zablokowane NUMBER := 0;
 BEGIN
     DBMS_OUTPUT.PUT_LINE('Test godzin dla dziecka (Michal ID 8):');
-    
+
     FOR h IN 8..20 LOOP
         v_godz := LPAD(h, 2, '0') || ':00';
-        
+
         BEGIN
             DECLARE
                 v_ref_uczen REF t_uczen_obj;
@@ -1018,13 +1018,13 @@ BEGIN
                 SELECT REF(n) INTO v_ref_nauczyciel FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
                 SELECT REF(k) INTO v_ref_kurs FROM t_kurs k WHERE k.id_kursu = 1;
                 SELECT REF(s) INTO v_ref_sala FROM t_sala s WHERE s.id_sali = 7;
-                
+
                 INSERT INTO t_lekcja VALUES (
                     t_lekcja_obj(8000 + h, TO_DATE('2025-06-15', 'YYYY-MM-DD'), v_godz, 45,
                                  NULL, NULL, 'zaplanowana',
                                  v_ref_uczen, v_ref_nauczyciel, v_ref_kurs, v_ref_sala)
                 );
-                
+
                 DELETE FROM t_lekcja WHERE id_lekcji = 8000 + h;
                 DBMS_OUTPUT.PUT_LINE('  ' || v_godz || ' - DOZWOLONA');
                 v_dozwolone := v_dozwolone + 1;
@@ -1035,10 +1035,10 @@ BEGIN
                 v_zablokowane := v_zablokowane + 1;
         END;
     END LOOP;
-    
+
     COMMIT;
     DBMS_OUTPUT.PUT_LINE('Dozwolone: ' || v_dozwolone || ', Zablokowane: ' || v_zablokowane);
-    
+
     IF v_dozwolone = 5 AND v_zablokowane = 8 THEN  -- 14:00-18:00 dozwolone
         DBMS_OUTPUT.PUT_LINE('[PASS] Godziny dziecka poprawnie ograniczone do 14-19');
     ELSE
@@ -1056,7 +1056,7 @@ PROMPT [TEST 5.3] Scenariusz: statystyki obciazenia nauczyciela
 BEGIN
     DBMS_OUTPUT.PUT_LINE('Obciazenie nauczycieli na dzien 2025-05-20:');
     DBMS_OUTPUT.PUT_LINE('');
-    
+
     FOR rec IN (
         SELECT n.id_nauczyciela, n.imie, n.nazwisko,
                NVL(SUM(l.czas_trwania), 0) AS suma_minut,
@@ -1075,7 +1075,7 @@ BEGIN
             ROUND(rec.suma_minut/360*100) || '%)'
         );
     END LOOP;
-    
+
     DBMS_OUTPUT.PUT_LINE('');
     DBMS_OUTPUT.PUT_LINE('[PASS] Raport obciazenia wygenerowany');
 END;
@@ -1090,7 +1090,7 @@ PROMPT [TEST 5.4] Scenariusz: liczba lekcji uczniow na dzien
 BEGIN
     DBMS_OUTPUT.PUT_LINE('Liczba lekcji uczniow na 2025-05-20:');
     DBMS_OUTPUT.PUT_LINE('');
-    
+
     FOR rec IN (
         SELECT u.id_ucznia, u.imie, u.nazwisko, u.wiek() AS wiek,
                COUNT(l.id_lekcji) AS liczba_lekcji
@@ -1108,7 +1108,7 @@ BEGIN
             ' Lekcji: ' || rec.liczba_lekcji || '/2 max'
         );
     END LOOP;
-    
+
     DBMS_OUTPUT.PUT_LINE('');
     DBMS_OUTPUT.PUT_LINE('[PASS] Raport lekcji uczniow wygenerowany');
 END;
@@ -1130,7 +1130,7 @@ PROMPT [TEST 6.1] Blokada usuwania ucznia z zapisami
 
 BEGIN
     DELETE FROM t_uczen WHERE id_ucznia = 1;
-    
+
     DBMS_OUTPUT.PUT_LINE('[FAIL] Ucznia z zapisami nie powinno sie usunac');
 EXCEPTION
     WHEN OTHERS THEN
@@ -1150,7 +1150,7 @@ PROMPT [TEST 6.2] Blokada usuwania nauczyciela z lekcjami
 
 BEGIN
     DELETE FROM t_nauczyciel WHERE id_nauczyciela = 1;
-    
+
     DBMS_OUTPUT.PUT_LINE('[FAIL] Nauczyciela z lekcjami nie powinno sie usunac');
 EXCEPTION
     WHEN OTHERS THEN
@@ -1170,7 +1170,7 @@ PROMPT [TEST 6.3] Blokada usuwania kursu z zapisami
 
 BEGIN
     DELETE FROM t_kurs WHERE id_kursu = 1;
-    
+
     DBMS_OUTPUT.PUT_LINE('[FAIL] Kursu z zapisami nie powinno sie usunac');
 EXCEPTION
     WHEN OTHERS THEN
@@ -1190,7 +1190,7 @@ PROMPT [TEST 6.4] Blokada usuwania sali z lekcjami
 
 BEGIN
     DELETE FROM t_sala WHERE id_sali = 1;
-    
+
     DBMS_OUTPUT.PUT_LINE('[FAIL] Sali z lekcjami nie powinno sie usunac');
 EXCEPTION
     WHEN OTHERS THEN
@@ -1210,7 +1210,7 @@ PROMPT [TEST 6.5] Blokada usuwania aktywnego semestru
 
 BEGIN
     DELETE FROM t_semestr WHERE czy_aktywny = 'T';
-    
+
     DBMS_OUTPUT.PUT_LINE('[FAIL] Aktywnego semestru nie powinno sie usunac');
 EXCEPTION
     WHEN OTHERS THEN
@@ -1239,12 +1239,12 @@ PROMPT [TEST 7.1] Weryfikacja istnienia rol
 DECLARE
     v_count NUMBER;
 BEGIN
-    SELECT COUNT(*) INTO v_count 
-    FROM dba_roles 
+    SELECT COUNT(*) INTO v_count
+    FROM dba_roles
     WHERE role IN ('ROLA_ADMIN_SZKOLY', 'ROLA_NAUCZYCIEL', 'ROLA_SEKRETARIAT');
-    
+
     DBMS_OUTPUT.PUT_LINE('Znalezione role: ' || v_count || '/3');
-    
+
     IF v_count = 3 THEN
         DBMS_OUTPUT.PUT_LINE('[PASS] Wszystkie 3 role istnieja');
     ELSE
@@ -1265,12 +1265,12 @@ PROMPT [TEST 7.2] Weryfikacja uprawnien do tabel
 DECLARE
     v_count NUMBER;
 BEGIN
-    SELECT COUNT(*) INTO v_count 
-    FROM user_tab_privs 
+    SELECT COUNT(*) INTO v_count
+    FROM user_tab_privs
     WHERE table_name IN ('T_UCZEN', 'T_NAUCZYCIEL', 'T_LEKCJA', 'T_KURS', 'T_SALA', 'T_SEMESTR');
-    
+
     DBMS_OUTPUT.PUT_LINE('Uprawnienia do tabel: ' || v_count);
-    
+
     IF v_count > 0 THEN
         DBMS_OUTPUT.PUT_LINE('[PASS] Istnieja uprawnienia do tabel');
     ELSE

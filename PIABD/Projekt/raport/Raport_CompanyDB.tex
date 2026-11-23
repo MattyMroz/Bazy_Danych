@@ -98,38 +98,38 @@
 \begin{titlepage}
     \centering
     \vspace*{1.5cm}
-    
+
     {\Large\textsc{POLITECHNIKA ŁÓDZKA}\\[0.4cm]
     \large Wydział Elektrotechniki, Elektroniki, Informatyki i Automatyki}
-    
+
     \vspace{2.5cm}
-    
+
     {\large\textbf{Projektowanie i Administracja Baz Danych}\\[0.2cm]
     Semestr 5}
-    
+
     \vspace{2.5cm}
-    
+
     \rule{0.8\textwidth}{0.5pt}
     \vspace{0.5cm}
-    
+
     {\Huge\bfseries Projekt Bazy Danych\\[0.4cm]}
     {\LARGE Company (CrunchBase)}
-    
+
     \vspace{0.5cm}
     \rule{0.8\textwidth}{0.5pt}
-    
+
     \vspace{3.5cm}
-    
+
     \begin{center}
         \large
         \textbf{Autor:} Mateusz Mróz\\
         \textbf{Nr indeksu:} 251190
     \end{center}
-    
+
     \vfill
-    
+
     {\large Łódź, styczeń 2026}
-    
+
 \end{titlepage}
 
 % ============================================================================
@@ -228,7 +228,7 @@ Starałem się trzymać zasad normalizacji:
     \item \textbf{1NF (Atomowość):} W każdej kratce tabeli jest jedna wartość. Wyjątkiem są wspomniane wcześniej tagi, które zostawiłem jako listę po przecinku dla wygody.
     \item \textbf{2NF:} Każda tabela ma swój klucz główny (\texttt{ID}), więc wszystkie dane w wierszu dotyczą konkretnego obiektu (np.\@ konkretnej firmy). Nie ma sytuacji, że część danych zależy od czegoś innego.
     \item \textbf{3NF:} Usunąłem zależności przechodnie.
-    
+
     \textit{Mały wyjątek:} W tabeli \texttt{Acquisition} (Przejęcia) trzymam nazwę przejętej firmy ORAZ jej ID. Robię to celowo --- czasem przejmowana firma nie istnieje w naszej bazie (nie ma ID), a musimy wiedzieć, jak się nazywała. To bezpieczniejsza opcja.
 \end{itemize}
 
@@ -483,9 +483,9 @@ IX\_FundingRound\_RoundCode & FundingRound & round\_code \\
 
 \begin{enumerate}[noitemsep]
     \item \textbf{IX\_Company\_Name} --- przyspiesza wyszukiwanie firm po nazwie, często używane w zapytaniach.
-    
+
     \item \textbf{IX\_Company\_CategoryCode} --- przyspiesza filtrowanie firm według kategorii działalności.
-    
+
     \item \textbf{IX\_FundingRound\_RoundCode} --- przyspiesza grupowanie i filtrowanie rund finansowania według typu (seed, series-a, series-b, etc.).
 \end{enumerate}
 
@@ -540,8 +540,8 @@ CREATE OR ALTER PROCEDURE crunchbase.UpsertCompany
 AS
 BEGIN
     SET NOCOUNT ON;
-    
-    IF EXISTS (SELECT 1 FROM crunchbase.Company 
+
+    IF EXISTS (SELECT 1 FROM crunchbase.Company
                WHERE mongo_id = @mongo_id)
     BEGIN
         UPDATE crunchbase.Company
@@ -552,18 +552,18 @@ BEGIN
             founded_year = @founded_year,
             updated_at = GETDATE()
         WHERE mongo_id = @mongo_id;
-        
+
         PRINT 'Firma zaktualizowana: ' + @name;
     END
     ELSE
     BEGIN
-        INSERT INTO crunchbase.Company 
-            (mongo_id, name, permalink, category_code, 
+        INSERT INTO crunchbase.Company
+            (mongo_id, name, permalink, category_code,
              description, number_of_employees, founded_year)
-        VALUES 
-            (@mongo_id, @name, @permalink, @category_code, 
+        VALUES
+            (@mongo_id, @name, @permalink, @category_code,
              @description, @number_of_employees, @founded_year);
-        
+
         PRINT 'Firma dodana: ' + @name;
     END
 END
@@ -593,11 +593,11 @@ RETURNS DECIMAL(18,2)
 AS
 BEGIN
     DECLARE @total DECIMAL(18,2);
-    
+
     SELECT @total = ISNULL(SUM(raised_amount), 0)
     FROM crunchbase.FundingRound
     WHERE company_id = @company_id;
-    
+
     RETURN @total;
 END
 \end{lstlisting}
@@ -621,7 +621,7 @@ ORDER BY funding DESC;
 \begin{lstlisting}[caption={Widok vw\_CompanyOverview}]
 CREATE OR ALTER VIEW crunchbase.vw_CompanyOverview
 AS
-SELECT 
+SELECT
     c.company_id,
     c.name,
     c.category_code,
@@ -629,9 +629,9 @@ SELECT
     c.number_of_employees,
     c.homepage_url,
     crunchbase.GetTotalFunding(c.company_id) AS total_funding,
-    (SELECT COUNT(*) FROM crunchbase.FundingRound fr 
+    (SELECT COUNT(*) FROM crunchbase.FundingRound fr
      WHERE fr.company_id = c.company_id) AS funding_rounds_count,
-    (SELECT COUNT(*) FROM crunchbase.Product p 
+    (SELECT COUNT(*) FROM crunchbase.Product p
      WHERE p.company_id = c.company_id) AS products_count
 FROM crunchbase.Company c;
 \end{lstlisting}
@@ -766,7 +766,7 @@ Aby zalogować się jako contained user w SQL Server Management Studio:
 \begin{lstlisting}
 -- Logowanie jako Admin - moze wszystko
 SELECT * FROM crunchbase.Company;
-INSERT INTO crunchbase.Company (mongo_id, name, permalink) 
+INSERT INTO crunchbase.Company (mongo_id, name, permalink)
 VALUES ('test123', 'Test', 'test');
 EXEC crunchbase.UpsertCompany 'test456', 'Test2', 'test2';
 \end{lstlisting}
@@ -802,11 +802,11 @@ Podczas realizacji projektu napotkano następujące wyzwania:
 
 \begin{enumerate}
     \item \textbf{Struktura zagnieżdżona JSON} --- dokumenty JSON zawierały głęboko zagnieżdżone obiekty (np.\ \texttt{investments} wewnątrz \texttt{funding\_rounds}). Wymagało to użycia wielokrotnego \texttt{CROSS APPLY OPENJSON}.
-    
+
     \item \textbf{Polimorficzne inwestycje} --- inwestorem może być osoba (\texttt{person}), organizacja finansowa (\texttt{financial\_org}) lub firma (\texttt{company}). Rozwiązano przez trzy opcjonalne klucze obce w tabeli \texttt{Investment}.
-    
+
     \item \textbf{Referencje do nieistniejących firm} --- niektórzy konkurenci i przejęte firmy nie istnieją w danych źródłowych (6 firm). Zachowano ich nazwy i permalinki jako tekst, z opcjonalnym kluczem obcym jeśli firma istnieje w bazie.
-    
+
     \item \textbf{Contained users} --- wymagana była dodatkowa konfiguracja serwera (\texttt{sp\_configure}) przed utworzeniem użytkowników lokalnych.
 \end{enumerate}
 

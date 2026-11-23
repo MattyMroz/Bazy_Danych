@@ -51,7 +51,7 @@ select OrderID , SUM(UnitPrice*Quantity) as TotWartosc
 from dbo.[Order Details]
 Group by OrderID;
 
-select OrderID, ProductID , 
+select OrderID, ProductID ,
 	SUM(UnitPrice*Quantity) OVER(Partition by OrderID ) as TotWartosc
 from dbo.[Order Details];
 
@@ -74,7 +74,7 @@ where Country = 'USA'
 select country, ROW_NUMBER() OVER(partition by country order by country) as rn
 from [dbo].[Employees]
 where Country like 'U%'
-INTERSECT 
+INTERSECT
 select country, ROW_NUMBER() OVER(partition by country order by country) as rn
 from [dbo].[Customers]
 where Country like 'U%'
@@ -97,7 +97,7 @@ Select kol1, kol2, kol3 from tabela5
 
 SELECT RIGHT ('hello world' , 3) ;
 SELECT LEFT ('hello world' , 3) ;
-SELECT CHARINDEX (' ','hello world') ;  --- szuka znaku 
+SELECT CHARINDEX (' ','hello world') ;  --- szuka znaku
 SELECT SUBSTRING ('hello world', 4,5) ;
 
 SELECT LEFT ('hello world' ,  CHARINDEX (' ','hello world') -1 )
@@ -106,16 +106,13 @@ SELECT SUBSTRING(`nazwa_kolumny`, pozycja[,liczba_znak w])
 FROM `nazwa_tabeli`
 WHERE `nazwa_tabeli` operator 'warto  '
 
- --Znale   najta szy i najdro szy z produkt w kto go dostarczy  do jakiej kategorii 
---nale y 
---(najta szy produkt nie mo e mie  warto ci nieokre lonej lub zero) a w osobnej 
---kolumnie zamie   informacje czy produkt jest najta szy czy najdro szy 
+ --Znale   najta szy i najdro szy z produkt w kto go dostarczy  do jakiej kategorii
+--nale y
+--(najta szy produkt nie mo e mie  warto ci nieokre lonej lub zero) a w osobnej
+--kolumnie zamie   informacje czy produkt jest najta szy czy najdro szy
 
 
 
 -- znajdz najtanszy i najdrozszy produkt dostarczony przez dostawce ktorego nazwa
  -- zaczyna sie na litere od a-g podaj z jakiej kategorii on pochodzi oraz w dodatkowej
- -- kolumnie czy jest on najdrozszy czy najtanszy produkt nazwa kategorii. 
-
-
- 
+ -- kolumnie czy jest on najdrozszy czy najtanszy produkt nazwa kategorii.

@@ -55,30 +55,30 @@ CREATE OR REPLACE PACKAGE BODY pkg_uczen AS
             )
         );
 
-        DBMS_OUTPUT.PUT_LINE('Dodano ucznia: ' || p_imie || ' ' || p_nazwisko || 
+        DBMS_OUTPUT.PUT_LINE('Dodano ucznia: ' || p_imie || ' ' || p_nazwisko ||
                             ' (wiek: ' || v_wiek || ' lat)');
     END dodaj;
 
     PROCEDURE lista IS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== LISTA UCZNIOW ===');
-        DBMS_OUTPUT.PUT_LINE(RPAD('ID', 5) || RPAD('Imie', 15) || 
+        DBMS_OUTPUT.PUT_LINE(RPAD('ID', 5) || RPAD('Imie', 15) ||
                             RPAD('Nazwisko', 20) || RPAD('Wiek', 6) || 'Status');
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 60, '-'));
 
         -- Uzycie VALUE(u) do pobrania obiektu i wywolania metod
         FOR r IN (
-            SELECT u.id_ucznia, u.imie, u.nazwisko, 
+            SELECT u.id_ucznia, u.imie, u.nazwisko,
                    VALUE(u).wiek() AS wiek,
-                   CASE WHEN VALUE(u).czy_dziecko() = 'T' 
+                   CASE WHEN VALUE(u).czy_dziecko() = 'T'
                         THEN 'dziecko' ELSE 'dorosly' END AS status
             FROM t_uczen u
             ORDER BY u.nazwisko, u.imie
         ) LOOP
             DBMS_OUTPUT.PUT_LINE(
-                RPAD(r.id_ucznia, 5) || 
-                RPAD(r.imie, 15) || 
-                RPAD(r.nazwisko, 20) || 
+                RPAD(r.id_ucznia, 5) ||
+                RPAD(r.imie, 15) ||
+                RPAD(r.nazwisko, 20) ||
                 RPAD(r.wiek, 6) ||
                 r.status
             );
@@ -93,14 +93,14 @@ CREATE OR REPLACE PACKAGE BODY pkg_uczen AS
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 50, '-'));
 
         FOR r IN (
-            SELECT u.id_ucznia, u.imie, u.nazwisko, 
+            SELECT u.id_ucznia, u.imie, u.nazwisko,
                    VALUE(u).wiek() AS wiek
             FROM t_uczen u
             WHERE VALUE(u).czy_dziecko() = 'T'
             ORDER BY VALUE(u).wiek(), u.nazwisko
         ) LOOP
             DBMS_OUTPUT.PUT_LINE(
-                r.id_ucznia || '. ' || r.imie || ' ' || r.nazwisko || 
+                r.id_ucznia || '. ' || r.imie || ' ' || r.nazwisko ||
                 ' (lat ' || r.wiek || ')'
             );
             v_count := v_count + 1;
@@ -131,8 +131,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_uczen AS
         DBMS_OUTPUT.PUT_LINE('Nazwisko:     ' || v_uczen.nazwisko);
         DBMS_OUTPUT.PUT_LINE('Data ur.:     ' || TO_CHAR(v_uczen.data_urodzenia, 'YYYY-MM-DD'));
         DBMS_OUTPUT.PUT_LINE('Wiek:         ' || v_uczen.wiek() || ' lat');
-        DBMS_OUTPUT.PUT_LINE('Status:       ' || CASE WHEN v_uczen.czy_dziecko() = 'T' 
-                                                       THEN 'dziecko (14:00-19:00)' 
+        DBMS_OUTPUT.PUT_LINE('Status:       ' || CASE WHEN v_uczen.czy_dziecko() = 'T'
+                                                       THEN 'dziecko (14:00-19:00)'
                                                        ELSE 'dorosly' END);
         DBMS_OUTPUT.PUT_LINE('Email:        ' || NVL(v_uczen.email, 'brak'));
         DBMS_OUTPUT.PUT_LINE('Data zapisu:  ' || TO_CHAR(v_uczen.data_zapisu, 'YYYY-MM-DD'));
@@ -229,7 +229,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         v_instrument_kursu VARCHAR2(100);
     BEGIN
         -- Przelicz godzine startu na minuty od polnocy
-        v_godz_start_new := TO_NUMBER(SUBSTR(p_godzina, 1, 2)) * 60 + 
+        v_godz_start_new := TO_NUMBER(SUBSTR(p_godzina, 1, 2)) * 60 +
                            TO_NUMBER(SUBSTR(p_godzina, 4, 2));
         v_godz_end_new := v_godz_start_new + p_czas_trwania;
 
@@ -238,18 +238,18 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         -- Nauczyciel musi miec instrument kursu w swoim VARRAY
         -- =================================================================
         SELECT i.nazwa INTO v_instrument_kursu
-        FROM t_kurs k 
+        FROM t_kurs k
         JOIN t_instrument i ON DEREF(k.ref_instrument).id_instrumentu = i.id_instrumentu
         WHERE k.id_kursu = p_id_kursu;
 
         -- Porownanie z uzyciem UPPER dla bezpieczenstwa
         SELECT COUNT(*) INTO v_cnt
         FROM t_nauczyciel n, TABLE(n.instrumenty) t
-        WHERE n.id_nauczyciela = p_id_nauczyciela 
+        WHERE n.id_nauczyciela = p_id_nauczyciela
           AND UPPER(t.COLUMN_VALUE) = UPPER(v_instrument_kursu);
 
         IF v_cnt = 0 THEN
-            RAISE_APPLICATION_ERROR(-20030, 
+            RAISE_APPLICATION_ERROR(-20030,
                 'Nauczyciel nie uczy gry na: ' || v_instrument_kursu);
         END IF;
 
@@ -263,8 +263,8 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
           AND l.status IN ('zaplanowana', 'odbyta');
 
         IF v_suma_minut + p_czas_trwania > 360 THEN
-            RAISE_APPLICATION_ERROR(-20104, 
-                'Nauczyciel przekroczy limit 6h dziennie (obecnie: ' || 
+            RAISE_APPLICATION_ERROR(-20104,
+                'Nauczyciel przekroczy limit 6h dziennie (obecnie: ' ||
                 v_suma_minut || ' min).');
         END IF;
 
@@ -278,7 +278,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
           AND l.status IN ('zaplanowana', 'odbyta');
 
         IF v_cnt >= 2 THEN
-            RAISE_APPLICATION_ERROR(-20105, 
+            RAISE_APPLICATION_ERROR(-20105,
                 'Uczen ma juz 2 lekcje tego dnia - limit wyczerpany.');
         END IF;
 
@@ -292,26 +292,26 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
           AND l.status IN ('zaplanowana', 'odbyta')
           AND (
               -- Nowa lekcja zaczyna sie w trakcie istniejacej
-              (v_godz_start_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+              (v_godz_start_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                    TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))
-               AND v_godz_start_new < TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+               AND v_godz_start_new < TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                        TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania)
               OR
               -- Nowa lekcja konczy sie w trakcie istniejacej
-              (v_godz_end_new > TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+              (v_godz_end_new > TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                 TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))
-               AND v_godz_end_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+               AND v_godz_end_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                       TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania)
               OR
               -- Nowa lekcja obejmuje cala istniejaca
-              (v_godz_start_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+              (v_godz_start_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                     TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))
-               AND v_godz_end_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+               AND v_godz_end_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                       TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania)
           );
 
         IF v_cnt > 0 THEN
-            RAISE_APPLICATION_ERROR(-20106, 
+            RAISE_APPLICATION_ERROR(-20106,
                 'Konflikt sali - termin jest juz zajety.');
         END IF;
 
@@ -324,24 +324,24 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
           AND TRUNC(l.data_lekcji) = TRUNC(p_data)
           AND l.status IN ('zaplanowana', 'odbyta')
           AND (
-              (v_godz_start_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+              (v_godz_start_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                    TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))
-               AND v_godz_start_new < TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+               AND v_godz_start_new < TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                        TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania)
               OR
-              (v_godz_end_new > TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+              (v_godz_end_new > TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                 TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))
-               AND v_godz_end_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+               AND v_godz_end_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                       TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania)
               OR
-              (v_godz_start_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+              (v_godz_start_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                     TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))
-               AND v_godz_end_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+               AND v_godz_end_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                       TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania)
           );
 
         IF v_cnt > 0 THEN
-            RAISE_APPLICATION_ERROR(-20107, 
+            RAISE_APPLICATION_ERROR(-20107,
                 'Nauczyciel ma juz lekcje w tym czasie.');
         END IF;
 
@@ -354,24 +354,24 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
           AND TRUNC(l.data_lekcji) = TRUNC(p_data)
           AND l.status IN ('zaplanowana', 'odbyta')
           AND (
-              (v_godz_start_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+              (v_godz_start_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                    TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))
-               AND v_godz_start_new < TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+               AND v_godz_start_new < TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                        TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania)
               OR
-              (v_godz_end_new > TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+              (v_godz_end_new > TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                 TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))
-               AND v_godz_end_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+               AND v_godz_end_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                       TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania)
               OR
-              (v_godz_start_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+              (v_godz_start_new <= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                     TO_NUMBER(SUBSTR(l.godzina_start, 4, 2))
-               AND v_godz_end_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 + 
+               AND v_godz_end_new >= TO_NUMBER(SUBSTR(l.godzina_start, 1, 2)) * 60 +
                                       TO_NUMBER(SUBSTR(l.godzina_start, 4, 2)) + l.czas_trwania)
           );
 
         IF v_cnt > 0 THEN
-            RAISE_APPLICATION_ERROR(-20108, 
+            RAISE_APPLICATION_ERROR(-20108,
                 'Uczen ma juz lekcje w tym czasie.');
         END IF;
 
@@ -399,13 +399,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
             )
         );
 
-        DBMS_OUTPUT.PUT_LINE('Zaplanowano lekcje ID=' || v_id || 
-                            ' na ' || TO_CHAR(p_data, 'YYYY-MM-DD') || 
+        DBMS_OUTPUT.PUT_LINE('Zaplanowano lekcje ID=' || v_id ||
+                            ' na ' || TO_CHAR(p_data, 'YYYY-MM-DD') ||
                             ' godz. ' || p_godzina);
 
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
-            RAISE_APPLICATION_ERROR(-20010, 
+            RAISE_APPLICATION_ERROR(-20010,
                 'Nie znaleziono podanego ucznia, nauczyciela, kursu lub sali');
     END zaplanuj;
 
@@ -416,7 +416,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         WHERE id_lekcji = p_id_lekcji AND status = 'zaplanowana';
 
         IF SQL%ROWCOUNT = 0 THEN
-            RAISE_APPLICATION_ERROR(-20011, 
+            RAISE_APPLICATION_ERROR(-20011,
                 'Nie mozna oznaczyc - lekcja nie istnieje lub nie jest zaplanowana');
         END IF;
 
@@ -430,7 +430,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         WHERE id_lekcji = p_id_lekcji AND status = 'zaplanowana';
 
         IF SQL%ROWCOUNT = 0 THEN
-            RAISE_APPLICATION_ERROR(-20012, 
+            RAISE_APPLICATION_ERROR(-20012,
                 'Nie mozna odwolac - lekcja nie istnieje lub nie jest zaplanowana');
         END IF;
 
@@ -440,7 +440,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
     PROCEDURE plan_dnia(p_data DATE DEFAULT SYSDATE) IS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== PLAN DNIA: ' || TO_CHAR(p_data, 'YYYY-MM-DD (DY)') || ' ===');
-        DBMS_OUTPUT.PUT_LINE(RPAD('Godz', 8) || RPAD('Sala', 10) || 
+        DBMS_OUTPUT.PUT_LINE(RPAD('Godz', 8) || RPAD('Sala', 10) ||
                             RPAD('Uczen', 20) || RPAD('Nauczyciel', 20) || 'Status');
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 75, '-'));
 
@@ -472,9 +472,9 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         FROM t_nauczyciel n
         WHERE n.id_nauczyciela = p_id_nauczyciela;
 
-        DBMS_OUTPUT.PUT_LINE('=== PLAN: ' || v_naucz.imie || ' ' || v_naucz.nazwisko || 
+        DBMS_OUTPUT.PUT_LINE('=== PLAN: ' || v_naucz.imie || ' ' || v_naucz.nazwisko ||
                             ' (' || TO_CHAR(p_data, 'YYYY-MM-DD') || ') ===');
-        DBMS_OUTPUT.PUT_LINE(RPAD('Godz', 8) || RPAD('Czas', 6) || 
+        DBMS_OUTPUT.PUT_LINE(RPAD('Godz', 8) || RPAD('Czas', 6) ||
                             RPAD('Sala', 10) || RPAD('Uczen', 25) || 'Kurs');
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 70, '-'));
 
@@ -510,7 +510,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 50, '-'));
 
         FOR r IN (
-            SELECT 
+            SELECT
                 DEREF(l.ref_nauczyciel).imie || ' ' || DEREF(l.ref_nauczyciel).nazwisko AS naucz,
                 COUNT(*) AS lekcji,
                 SUM(l.czas_trwania) AS minuty
@@ -521,10 +521,10 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
             ORDER BY minuty DESC
         ) LOOP
             DBMS_OUTPUT.PUT_LINE(
-                RPAD(r.naucz, 30) || 
-                r.lekcji || ' lekcji, ' || 
+                RPAD(r.naucz, 30) ||
+                r.lekcji || ' lekcji, ' ||
                 r.minuty || ' min ' ||
-                CASE WHEN r.minuty > 360 THEN '[!!! PRZEKROCZONO]' 
+                CASE WHEN r.minuty > 360 THEN '[!!! PRZEKROCZONO]'
                      WHEN r.minuty >= 300 THEN '[blisko limitu]'
                      ELSE '' END
             );
@@ -596,7 +596,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
         SELECT VALUE(u) INTO v_uczen FROM t_uczen u WHERE u.id_ucznia = p_id_ucznia;
 
         DBMS_OUTPUT.PUT_LINE('=== HISTORIA OCEN: ' || v_uczen.imie || ' ' || v_uczen.nazwisko || ' ===');
-        DBMS_OUTPUT.PUT_LINE(RPAD('Data', 12) || RPAD('Obszar', 15) || 
+        DBMS_OUTPUT.PUT_LINE(RPAD('Data', 12) || RPAD('Obszar', 15) ||
                             RPAD('Ocena', 7) || 'Komentarz');
         DBMS_OUTPUT.PUT_LINE(RPAD('-', 60, '-'));
 
@@ -631,7 +631,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_ocena AS
 
         -- Srednie ocen w poszczegolnych obszarach
         FOR r IN (
-            SELECT o.obszar, 
+            SELECT o.obszar,
                    ROUND(AVG(o.ocena), 2) AS srednia,
                    COUNT(*) AS liczba_ocen
             FROM t_ocena o

@@ -1,21 +1,21 @@
 use("airbnb");
-// 1. Pobieramy narzędzie mongoimport i inne (MongoDB Command Line Database Tools) do katalogu c:\data 
+// 1. Pobieramy narzędzie mongoimport i inne (MongoDB Command Line Database Tools) do katalogu c:\data
 // Znajdziemy go tutaj: https://www.mongodb.com/try/download/database-tools
 
 
-// 2. Importujemy za pomocą polecenia mongoimport przykładowy zestaw danych z katalogu .\sample_airbnb. 
+// 2. Importujemy za pomocą polecenia mongoimport przykładowy zestaw danych z katalogu .\sample_airbnb.
 // Baza ma mieć nazwę airbnb
-// (nazwa kolekcji = nazwa pliku bez rozszerzenia) - analizujemy strukturę. 
+// (nazwa kolekcji = nazwa pliku bez rozszerzenia) - analizujemy strukturę.
 
 
-// 3. Importujemy za pomocą polecenia mongoimport przykładowy zestaw danych z katalogu .\sample_weather. 
+// 3. Importujemy za pomocą polecenia mongoimport przykładowy zestaw danych z katalogu .\sample_weather.
 // Baza ma mieć nazwę weather.
 // (nazwa kolekcji = nazwa pliku bez rozszerzenia) - analizujemy strukturę.
 
 
-// 4. Importujemy za pomocą polecenia mongoimport przykładowy zestaw danych z katalogu .\sample_analytics. 
-// Baza ma mieć nazwę analytics. 
-// Tym razem wykorzystujemy polecenie mongoimport z kontenera w dockerze i trzeba przesłać *.json do katalogu /data w kontenerze 
+// 4. Importujemy za pomocą polecenia mongoimport przykładowy zestaw danych z katalogu .\sample_analytics.
+// Baza ma mieć nazwę analytics.
+// Tym razem wykorzystujemy polecenie mongoimport z kontenera w dockerze i trzeba przesłać *.json do katalogu /data w kontenerze
 // (nazwy kolekcji = nazwy plików bez rozszerzenia) - analizujemy strukturę.
 
 
@@ -26,24 +26,24 @@ use("airbnb");
 // -- db.listingsAndReviews.countDocuments()
 // -- db.listingsAndReviews.estimatedDocumentCount()
 
-// 6. Utwórz kopię zapasową (bezpieczeństwa) swoich zaimportowanych kolekcji używając narzędzia mongodump. 
+// 6. Utwórz kopię zapasową (bezpieczeństwa) swoich zaimportowanych kolekcji używając narzędzia mongodump.
 // Po wykonaniu kopii zapasowej przywróć dane za pomocą narzędzia mongorestore (po uprzednim usunięciu trzech nowo utworzonych baz).
 
 // 7. Odtwórz bazy z pliku sampledata.archive (wcześniej skasuj trzy nowo utworzone bazy)
-// kopiuj archiwum (PowerShell): 
-// -- curl https://atlas-education.s3.amazonaws.com/sampledata.archive -o sampledata.archive 
+// kopiuj archiwum (PowerShell):
+// -- curl https://atlas-education.s3.amazonaws.com/sampledata.archive -o sampledata.archive
 // lub pobierz z sieci lokalnej.
 // -- Kopiuj do kontenera: docker cp C:\temp\sampledata.archive mongodb:/data/sampledata.archive
 // -- Rozpakuj z pliku sampledata.archive: docker exec -i mongodb mongorestore --archive=/data/sampledata.archive
 
 
-// 8. Wyświetl plan wykonania wybranego zapytania. 
+// 8. Wyświetl plan wykonania wybranego zapytania.
 // -- db.listingsAndReviews.find().explain("executionStats")
-// Czy został użyty jakikolwiek indeks (COLLSCAN (pełne skanowanie kolekcji) czy IXSCAN (skanowanie indeksu))? 
+// Czy został użyty jakikolwiek indeks (COLLSCAN (pełne skanowanie kolekcji) czy IXSCAN (skanowanie indeksu))?
 // Napisz takie zapytanie, aby MongoDB zdecydował się na indeksu name_1 (np. wybiera element "name" zaczynający się na słowo Resort - wyrażenie regularne).
 
 
-// 9. Przeprowadź eksperyment podający szybkość realizacji zapytania 
+// 9. Przeprowadź eksperyment podający szybkość realizacji zapytania
 // db.listingsAndReviews.find().sort({"name":1}) (z indeksem)
 // db.listingsAndReviews.find() (bez indeksu)
 // (np. wykorzystując .explain("executionStats").executionStats.nReturned zwracana jest ilość dokumentów).
@@ -54,7 +54,7 @@ use("airbnb");
 
 
 
-// Zapytania z bazy sample_airbnb 
+// Zapytania z bazy sample_airbnb
 // (korzystamy z funkcji aggregate() - bardziej zaawansowane operacje, np. grupowanie, sumowanie, filtrowanie, sortowanie i projekcja w jednym pipeline)
 use("sample_airbnb");
 // 11. Podaj uniklane wartości z pola property_type (operator $group):
@@ -189,7 +189,7 @@ use("sample_airbnb");
 //   { _id: 'Hong Kong', totalPeople: 1749 }
 // ]
 
-// 21. Na podstawie powyższej instrukcji zdefiniuj nową kolekcję country, w której nazwa kraju będzie będzie identyfikatorem _id. 
+// 21. Na podstawie powyższej instrukcji zdefiniuj nową kolekcję country, w której nazwa kraju będzie będzie identyfikatorem _id.
 
 
 // Wynik:
@@ -298,7 +298,7 @@ use("sample_airbnb");
 //   },
 // ....
 
-// 30. Które 3 obiekty mają najwięcej opinii i z jakiego państwa (number_of_reviews)? 
+// 30. Które 3 obiekty mają najwięcej opinii i z jakiego państwa (number_of_reviews)?
 
 
 // Wynik:

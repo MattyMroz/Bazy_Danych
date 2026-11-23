@@ -4,23 +4,23 @@
 
 select * from Zamówienia
 
-select Imiê, nazwisko, count(IDzamówienia) as ilosc 
+select Imiê, nazwisko, count(IDzamówienia) as ilosc
 from pracownicy as p join Zamówienia as z
 on
 p.IDpracownika=z.IDpracownika
-group by Imiê, nazwisko 
+group by Imiê, nazwisko
 
 
-select Imiê, nazwisko, count(IDzamówienia) as ilosc 
+select Imiê, nazwisko, count(IDzamówienia) as ilosc
 from pracownicy as p join Zamówienia as z
 on
 p.IDpracownika=z.IDpracownika
 where DataWymagana > DataWysy³ki
-group by Imiê, nazwisko 
+group by Imiê, nazwisko
 
 DataZamówienia
 
-select Imiê, nazwisko, count(IDzamówienia) as ilosc 
+select Imiê, nazwisko, count(IDzamówienia) as ilosc
 from pracownicy as p join Zamówienia as z
 on
 p.IDpracownika=z.IDpracownika
@@ -28,11 +28,11 @@ where DataWymagana > DataZamówienia
 group by Imiê, nazwisko
 
 
-select Imiê, nazwisko, count(IDzamówienia) as ilosc 
+select Imiê, nazwisko, count(IDzamówienia) as ilosc
 from pracownicy as p join Zamówienia as z
 on
 p.IDpracownika=z.IDpracownika
-where DataZamówienia < DataWymagana  
+where DataZamówienia < DataWymagana
 group by Imiê, nazwisko
 
 
@@ -42,7 +42,7 @@ join zamówienia as z on p.IDpracownika = z.IDpracownika
 where DataWysy³ki > DataWymagana
 group by Imiê, Nazwisko
 having count(IDzamówienia) = (select max(ilosc) from
-(select Imiê, nazwisko, count(IDzamówienia) 
+(select Imiê, nazwisko, count(IDzamówienia)
 as ilosc from pracownicy as p
 join zamówienia as z on p.IDpracownika = z.IDpracownika
 where DataWysy³ki > DataWymagana
@@ -73,14 +73,14 @@ select nazwisko,imie from pracownicy
 order by imie desc
 
 
-/*Zapytanie zwracaj¹ce nazwê firmy, która z³o¿y³a najdro¿sze 
+/*Zapytanie zwracaj¹ce nazwê firmy, która z³o¿y³a najdro¿sze
 zamówienie (QUICK-Stop)*/
 
-SELECT CompanyName FROM 
-[Order Details] as ord  JOIN Orders as od 
-ON ord.OrderID = od.OrderID  JOIN Customers as c 
+SELECT CompanyName FROM
+[Order Details] as ord  JOIN Orders as od
+ON ord.OrderID = od.OrderID  JOIN Customers as c
 ON c.CustomerID = od.CustomerID GROUP BY od.OrderID, CompanyName
-HAVING SUM(quantity*unitprice) = 
+HAVING SUM(quantity*unitprice) =
 (SELECT MAX(sums) FROM
 (SELECT SUM(quantity*Unitprice) as sums FROM
 "Order Details" GROUP BY OrderID) as temp)

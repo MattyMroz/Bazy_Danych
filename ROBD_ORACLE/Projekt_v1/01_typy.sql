@@ -86,7 +86,7 @@ CREATE OR REPLACE TYPE t_instrument_obj AS OBJECT (
     id_instrumentu  NUMBER,
     nazwa           VARCHAR2(100),
     kategoria       VARCHAR2(50),    -- dety, strunowe, perkusyjne, klawiszowe
-    
+
     -- Metoda: Zwraca pelny opis instrumentu
     MEMBER FUNCTION opis RETURN VARCHAR2
 );
@@ -119,25 +119,25 @@ CREATE OR REPLACE TYPE t_nauczyciel_obj AS OBJECT (
     telefon         VARCHAR2(20),
     data_zatrudnienia DATE,
     instrumenty     t_lista_instrumentow,  -- VARRAY - lista instrumentow
-    
+
     -- Metoda: Zwraca pelne dane nauczyciela
     MEMBER FUNCTION pelne_dane RETURN VARCHAR2,
-    
+
     -- Metoda: Sprawdza czy nauczyciel jest seniorem (>10 lat stazu)
     MEMBER FUNCTION czy_senior RETURN VARCHAR2,
-    
+
     -- Metoda: Oblicza lata stazu
     MEMBER FUNCTION lata_stazu RETURN NUMBER
 );
 /
 
 CREATE OR REPLACE TYPE BODY t_nauczyciel_obj AS
-    
+
     MEMBER FUNCTION pelne_dane RETURN VARCHAR2 IS
     BEGIN
         RETURN imie || ' ' || nazwisko || ' (tel: ' || telefon || ')';
     END pelne_dane;
-    
+
     MEMBER FUNCTION czy_senior RETURN VARCHAR2 IS
     BEGIN
         IF MONTHS_BETWEEN(SYSDATE, data_zatrudnienia) / 12 > 10 THEN
@@ -146,12 +146,12 @@ CREATE OR REPLACE TYPE BODY t_nauczyciel_obj AS
             RETURN 'NIE';
         END IF;
     END czy_senior;
-    
+
     MEMBER FUNCTION lata_stazu RETURN NUMBER IS
     BEGIN
         RETURN TRUNC(MONTHS_BETWEEN(SYSDATE, data_zatrudnienia) / 12);
     END lata_stazu;
-    
+
 END;
 /
 
@@ -167,30 +167,30 @@ CREATE OR REPLACE TYPE t_uczen_obj AS OBJECT (
     email           VARCHAR2(100),
     telefon         VARCHAR2(20),
     data_zapisu     DATE,
-    
+
     -- Metoda: Oblicza wiek ucznia
     MEMBER FUNCTION wiek RETURN NUMBER,
-    
+
     -- Metoda: Zwraca pelne dane ucznia
     MEMBER FUNCTION pelne_dane RETURN VARCHAR2,
-    
+
     -- Metoda: Sprawdza czy uczen jest pelnoletni
     MEMBER FUNCTION czy_pelnoletni RETURN VARCHAR2
 );
 /
 
 CREATE OR REPLACE TYPE BODY t_uczen_obj AS
-    
+
     MEMBER FUNCTION wiek RETURN NUMBER IS
     BEGIN
         RETURN TRUNC(MONTHS_BETWEEN(SYSDATE, data_urodzenia) / 12);
     END wiek;
-    
+
     MEMBER FUNCTION pelne_dane RETURN VARCHAR2 IS
     BEGIN
         RETURN imie || ' ' || nazwisko || ' (wiek: ' || SELF.wiek() || ' lat)';
     END pelne_dane;
-    
+
     MEMBER FUNCTION czy_pelnoletni RETURN VARCHAR2 IS
     BEGIN
         IF SELF.wiek() >= 18 THEN
@@ -199,7 +199,7 @@ CREATE OR REPLACE TYPE BODY t_uczen_obj AS
             RETURN 'NIE';
         END IF;
     END czy_pelnoletni;
-    
+
 END;
 /
 
@@ -213,19 +213,19 @@ CREATE OR REPLACE TYPE t_kurs_obj AS OBJECT (
     poziom          VARCHAR2(20),    -- poczatkujacy, sredni, zaawansowany
     cena_za_lekcje  NUMBER(10,2),
     ref_instrument  REF t_instrument_obj,  -- REFERENCJA do instrumentu
-    
+
     -- Metoda: Zwraca informacje o kursie
     MEMBER FUNCTION info_kursu RETURN VARCHAR2
 );
 /
 
 CREATE OR REPLACE TYPE BODY t_kurs_obj AS
-    
+
     MEMBER FUNCTION info_kursu RETURN VARCHAR2 IS
     BEGIN
         RETURN nazwa || ' [' || poziom || '] - ' || cena_za_lekcje || ' PLN/lekcja';
     END info_kursu;
-    
+
 END;
 /
 
@@ -244,22 +244,22 @@ CREATE OR REPLACE TYPE t_lekcja_obj AS OBJECT (
     ref_uczen       REF t_uczen_obj,
     ref_nauczyciel  REF t_nauczyciel_obj,
     ref_kurs        REF t_kurs_obj,
-    
+
     -- Metoda: Zwraca czas trwania w formacie tekstowym
     MEMBER FUNCTION czas_trwania_txt RETURN VARCHAR2,
-    
+
     -- Metoda: Sprawdza czy lekcja juz sie odbyla
     MEMBER FUNCTION czy_odbyta RETURN VARCHAR2
 );
 /
 
 CREATE OR REPLACE TYPE BODY t_lekcja_obj AS
-    
+
     MEMBER FUNCTION czas_trwania_txt RETURN VARCHAR2 IS
     BEGIN
         RETURN czas_trwania || ' minut';
     END czas_trwania_txt;
-    
+
     MEMBER FUNCTION czy_odbyta RETURN VARCHAR2 IS
     BEGIN
         IF status = 'odbyta' THEN
@@ -268,7 +268,7 @@ CREATE OR REPLACE TYPE BODY t_lekcja_obj AS
             RETURN 'NIE';
         END IF;
     END czy_odbyta;
-    
+
 END;
 /
 
@@ -284,17 +284,17 @@ CREATE OR REPLACE TYPE t_ocena_obj AS OBJECT (
     obszar          VARCHAR2(100),   -- technika, teoria, sluch, rytm, interpretacja
     ref_uczen       REF t_uczen_obj,
     ref_nauczyciel  REF t_nauczyciel_obj,
-    
+
     -- Metoda: Sprawdza czy ocena jest pozytywna (>=2)
     MEMBER FUNCTION czy_pozytywna RETURN VARCHAR2,
-    
+
     -- Metoda: Zwraca ocene slownie
     MEMBER FUNCTION ocena_slownie RETURN VARCHAR2
 );
 /
 
 CREATE OR REPLACE TYPE BODY t_ocena_obj AS
-    
+
     MEMBER FUNCTION czy_pozytywna RETURN VARCHAR2 IS
     BEGIN
         IF ocena >= 2 THEN
@@ -303,7 +303,7 @@ CREATE OR REPLACE TYPE BODY t_ocena_obj AS
             RETURN 'NIE';
         END IF;
     END czy_pozytywna;
-    
+
     MEMBER FUNCTION ocena_slownie RETURN VARCHAR2 IS
     BEGIN
         CASE ocena
@@ -316,7 +316,7 @@ CREATE OR REPLACE TYPE BODY t_ocena_obj AS
             ELSE RETURN 'nieznana';
         END CASE;
     END ocena_slownie;
-    
+
 END;
 /
 

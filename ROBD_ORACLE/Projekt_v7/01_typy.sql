@@ -244,7 +244,7 @@ END;
 -- 10. POTWIERDZENIE
 -- ============================================================================
 
-SELECT object_name, object_type, status 
-FROM user_objects 
+SELECT object_name, object_type, status
+FROM user_objects
 WHERE object_type IN ('TYPE', 'TYPE BODY')
 ORDER BY object_name;

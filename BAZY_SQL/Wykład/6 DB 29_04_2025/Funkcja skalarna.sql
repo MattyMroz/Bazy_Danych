@@ -2,7 +2,7 @@ CREATE OR ALTER FUNCTION LiczF
 (@mini real = 0) RETURNS int
 AS
 BEGIN
-	DECLARE @ile int 
+	DECLARE @ile int
 	SELECT @ile = COUNT(IdOsoby)
 	FROM Osoby WHERE Wzrost > @mini
 	RETURN @ile

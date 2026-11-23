@@ -33,7 +33,7 @@ BEGIN
         SPRZEDAZ.PKG_SPRZEDAZ.sp_zarejestruj_zamowienie(p_id_klienta => 1, p_id_zamowienia => v_id_zamowienia);
 
         -- Check if order was created and has status 'NOWE'
-        SELECT COUNT(*) INTO v_cnt 
+        SELECT COUNT(*) INTO v_cnt
         FROM SPRZEDAZ.ZAMOWIENIE z
         JOIN SPRZEDAZ.STATUS_ZAMOWIENIA sz ON z.ID_STATUSU = sz.ID_STATUSU
         WHERE z.ID_ZAMOWIENIA = v_id_zamowienia AND sz.NAZWA = 'NOWE';
@@ -201,8 +201,8 @@ BEGIN
         VALUES (v_id_zamowienia_arch, 2, ADD_MONTHS(SYSDATE, -36));
 
         -- Verify it was inserted in archive table via DB Link
-        SELECT COUNT(*) INTO v_cnt 
-        FROM ARCHIWUM.ZAMOWIENIE_ARCH@LNK_ARCHIWUM 
+        SELECT COUNT(*) INTO v_cnt
+        FROM ARCHIWUM.ZAMOWIENIE_ARCH@LNK_ARCHIWUM
         WHERE ID_ZAMOWIENIA = v_id_zamowienia_arch;
 
         report_result('Insert archived order through view (goes to archive)', v_cnt = 1);

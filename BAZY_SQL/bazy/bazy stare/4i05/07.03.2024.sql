@@ -1,12 +1,12 @@
 
 
-create database cz_12 
+create database cz_12
 
 sp_helpdb cz_12
 
 use cz_12
 
-create table dane 
+create table dane
 (imie varchar,
 nazwisko varchar,
 wiek int
@@ -20,7 +20,7 @@ values('jasio','kotek',34)
 insert into dane
 values('j','k',34)
 
-create table dane1 
+create table dane1
 (imie varchar(10) is not null,
 nazwisko varchar(20),
 wiek int
@@ -47,8 +47,8 @@ values(1)
 
 select * from dane1
 
-create table dane2 
-(id int identity(1,1) primary key, 
+create table dane2
+(id int identity(1,1) primary key,
 imie varchar(10),
 nazwisko varchar(20),
 wiek int
@@ -97,7 +97,7 @@ insert into pracownicy(dousuniecia2) values(2);
 insert into pracownicy(dousuniecia2) values(1);
 
 alter table pracownicy
-add wzrost int 
+add wzrost int
 
 insert into pracownicy(wzrost) values(192);
 
@@ -106,7 +106,7 @@ select * from pracownicy
 insert into pracownicy(wzrost) values(1.92);
 
 alter table pracownicy
-add wzrost2 decimal(3,2) 
+add wzrost2 decimal(3,2)
 
 insert into pracownicy(wzrost2) values(1.92);
 

@@ -163,7 +163,7 @@ CREATE INDEX idx_uczniowie_nazwisko ON UCZNIOWIE(nazwisko);
 -- 11. POTWIERDZENIE
 -- ============================================================================
 
-SELECT table_name FROM user_tables 
+SELECT table_name FROM user_tables
 WHERE table_name IN ('PRZEDMIOTY','NAUCZYCIELE','GRUPY','SALE','UCZNIOWIE','LEKCJE','OCENY')
 ORDER BY table_name;
 

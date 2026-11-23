@@ -42,23 +42,23 @@ DECLARE
 BEGIN
     -- Walidacja 1: Data lekcji nie moze byc w przeszlosci (tylko dla nowych)
     IF INSERTING AND :NEW.data_lekcji < v_data_min THEN
-        RAISE_APPLICATION_ERROR(-20010, 
-            'Data lekcji nie moze byc w przeszlosci. Podano: ' || 
+        RAISE_APPLICATION_ERROR(-20010,
+            'Data lekcji nie moze byc w przeszlosci. Podano: ' ||
             TO_CHAR(:NEW.data_lekcji, 'YYYY-MM-DD'));
     END IF;
-    
+
     -- Walidacja 2: Godzina musi byc w zakresie 08:00 - 20:00
     IF :NEW.godzina_start < '08:00' OR :NEW.godzina_start > '20:00' THEN
-        RAISE_APPLICATION_ERROR(-20011, 
+        RAISE_APPLICATION_ERROR(-20011,
             'Godzina lekcji musi byc miedzy 08:00 a 20:00. Podano: ' || :NEW.godzina_start);
     END IF;
-    
+
     -- Walidacja 3: Nie mozna zmienic statusu z "odbyta" na "zaplanowana"
     IF UPDATING AND :OLD.status = 'odbyta' AND :NEW.status = 'zaplanowana' THEN
-        RAISE_APPLICATION_ERROR(-20012, 
+        RAISE_APPLICATION_ERROR(-20012,
             'Nie mozna zmienic statusu lekcji z "odbyta" na "zaplanowana".');
     END IF;
-    
+
     -- Walidacja 4: Sprawdzamy konflikt ucznia (ten sam uczen w tym samym czasie)
     IF INSERTING OR (UPDATING AND :NEW.data_lekcji != :OLD.data_lekcji) THEN
         SELECT COUNT(*) INTO v_konflikt
@@ -68,13 +68,13 @@ BEGIN
           AND l.data_lekcji = :NEW.data_lekcji
           AND l.godzina_start = :NEW.godzina_start
           AND l.status != 'odwolana';
-        
+
         IF v_konflikt > 0 THEN
-            RAISE_APPLICATION_ERROR(-20013, 
+            RAISE_APPLICATION_ERROR(-20013,
                 'Uczen ma juz zaplanowana lekcje o tej godzinie!');
         END IF;
     END IF;
-    
+
     DBMS_OUTPUT.PUT_LINE('[TRG] Lekcja zwalidowana pomyslnie.');
 END;
 /
@@ -95,32 +95,32 @@ BEGIN
     IF INSERTING THEN
         v_operacja := 'INSERT';
         v_stara_wartosc := NULL;
-        v_nowa_wartosc := 'ID:' || :NEW.id_oceny || 
-                          ', Ocena:' || :NEW.ocena || 
+        v_nowa_wartosc := 'ID:' || :NEW.id_oceny ||
+                          ', Ocena:' || :NEW.ocena ||
                           ', Obszar:' || :NEW.obszar;
     ELSIF UPDATING THEN
         v_operacja := 'UPDATE';
-        v_stara_wartosc := 'ID:' || :OLD.id_oceny || 
-                           ', Ocena:' || :OLD.ocena || 
+        v_stara_wartosc := 'ID:' || :OLD.id_oceny ||
+                           ', Ocena:' || :OLD.ocena ||
                            ', Obszar:' || :OLD.obszar;
-        v_nowa_wartosc := 'ID:' || :NEW.id_oceny || 
-                          ', Ocena:' || :NEW.ocena || 
+        v_nowa_wartosc := 'ID:' || :NEW.id_oceny ||
+                          ', Ocena:' || :NEW.ocena ||
                           ', Obszar:' || :NEW.obszar;
     ELSIF DELETING THEN
         v_operacja := 'DELETE';
-        v_stara_wartosc := 'ID:' || :OLD.id_oceny || 
-                           ', Ocena:' || :OLD.ocena || 
+        v_stara_wartosc := 'ID:' || :OLD.id_oceny ||
+                           ', Ocena:' || :OLD.ocena ||
                            ', Obszar:' || :OLD.obszar;
         v_nowa_wartosc := NULL;
     END IF;
-    
+
     -- Wstawiamy log
     INSERT INTO t_audit_log (
-        id_logu, 
-        nazwa_tabeli, 
-        operacja, 
-        stara_wartosc, 
-        nowa_wartosc, 
+        id_logu,
+        nazwa_tabeli,
+        operacja,
+        stara_wartosc,
+        nowa_wartosc,
         uzytkownik
     ) VALUES (
         seq_audit_log.NEXTVAL,
@@ -130,7 +130,7 @@ BEGIN
         v_nowa_wartosc,
         USER
     );
-    
+
     DBMS_OUTPUT.PUT_LINE('[AUDIT] Zalogowano ' || v_operacja || ' na T_OCENA_POSTEPU');
 END;
 /
@@ -150,14 +150,14 @@ BEGIN
     FROM t_lekcja l
     WHERE DEREF(l.ref_uczen).id_ucznia = :OLD.id_ucznia
       AND l.status = 'zaplanowana';
-    
+
     IF v_aktywne_lekcje > 0 THEN
-        RAISE_APPLICATION_ERROR(-20020, 
-            'Nie mozna usunac ucznia (ID: ' || :OLD.id_ucznia || 
+        RAISE_APPLICATION_ERROR(-20020,
+            'Nie mozna usunac ucznia (ID: ' || :OLD.id_ucznia ||
             ') - ma ' || v_aktywne_lekcje || ' zaplanowanych lekcji. ' ||
             'Najpierw odwolaj lub usun lekcje.');
     END IF;
-    
+
     DBMS_OUTPUT.PUT_LINE('[TRG] Uczen ID:' || :OLD.id_ucznia || ' moze zostac usuniety.');
 END;
 /
@@ -173,13 +173,13 @@ BEGIN
     -- Jesli nie podano daty zatrudnienia, ustawiamy dzisiejsza
     IF :NEW.data_zatrudnienia IS NULL THEN
         :NEW.data_zatrudnienia := SYSDATE;
-        DBMS_OUTPUT.PUT_LINE('[TRG] Ustawiono date zatrudnienia na: ' || 
+        DBMS_OUTPUT.PUT_LINE('[TRG] Ustawiono date zatrudnienia na: ' ||
                              TO_CHAR(:NEW.data_zatrudnienia, 'YYYY-MM-DD'));
     END IF;
-    
+
     -- Data zatrudnienia nie moze byc w przyszlosci
     IF :NEW.data_zatrudnienia > SYSDATE THEN
-        RAISE_APPLICATION_ERROR(-20021, 
+        RAISE_APPLICATION_ERROR(-20021,
             'Data zatrudnienia nie moze byc w przyszlosci.');
     END IF;
 END;
@@ -194,11 +194,11 @@ AFTER UPDATE OF cena_za_lekcje ON t_kurs
 FOR EACH ROW
 BEGIN
     INSERT INTO t_audit_log (
-        id_logu, 
-        nazwa_tabeli, 
-        operacja, 
-        stara_wartosc, 
-        nowa_wartosc, 
+        id_logu,
+        nazwa_tabeli,
+        operacja,
+        stara_wartosc,
+        nowa_wartosc,
         uzytkownik
     ) VALUES (
         seq_audit_log.NEXTVAL,
@@ -208,8 +208,8 @@ BEGIN
         'Kurs:' || :NEW.nazwa || ', Cena:' || :NEW.cena_za_lekcje || ' PLN',
         USER
     );
-    
-    DBMS_OUTPUT.PUT_LINE('[AUDIT] Zmiana ceny kursu "' || :NEW.nazwa || 
+
+    DBMS_OUTPUT.PUT_LINE('[AUDIT] Zmiana ceny kursu "' || :NEW.nazwa ||
                          '": ' || :OLD.cena_za_lekcje || ' -> ' || :NEW.cena_za_lekcje || ' PLN');
 END;
 /
@@ -218,8 +218,8 @@ END;
 -- WIDOK LOGOW AUDYTOWYCH
 -- ============================================================================
 CREATE OR REPLACE VIEW v_audit_ostatnie AS
-SELECT id_logu, nazwa_tabeli, operacja, 
-       stara_wartosc, nowa_wartosc, 
+SELECT id_logu, nazwa_tabeli, operacja,
+       stara_wartosc, nowa_wartosc,
        uzytkownik, data_zmiany
 FROM t_audit_log
 ORDER BY data_zmiany DESC

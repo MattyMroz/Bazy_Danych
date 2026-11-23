@@ -7,7 +7,7 @@
 
 --- Rozwiązanie pracy domowej:
 --------------------------------
--- Podać jaka jest wartość sprzedaży w poszczególnych 
+-- Podać jaka jest wartość sprzedaży w poszczególnych
 -- miesiącach (serwer WA-06) dwóch lat
 --o największej realizacji sprzedaży (serwer WA-08)
 
@@ -27,7 +27,7 @@ go
 
 select YEAR(o.OrderDate) ROK,  MONTH(o.OrderDate) MIESIAC, SUM(unitprice * quantity * (1 - Discount)) WARTOSC from [Order Details] od
 join Orders o on o.OrderID = od.OrderID
-GROUP BY YEAR(o.OrderDate), MONTH(o.OrderDate) 
+GROUP BY YEAR(o.OrderDate), MONTH(o.OrderDate)
 go
 
 
@@ -45,7 +45,7 @@ ORDER BY WARTOSC desc
 tata as (
 select YEAR(o.OrderDate) ROK,  MONTH(o.OrderDate) MIESIAC, SUM(unitprice * quantity * (1 - Discount)) WARTOSC from [Order Details] od
 join Orders o on o.OrderID = od.OrderID
-GROUP BY YEAR(o.OrderDate), MONTH(o.OrderDate) 
+GROUP BY YEAR(o.OrderDate), MONTH(o.OrderDate)
 )
 select t.ROK, t.MIESIAC, t.WARTOSC from mama m inner join tata t on m.ROK=t.ROK
 order by 1,2
@@ -66,7 +66,7 @@ SELECT d.* FROM OPENROWSET(
 	ORDER BY WARTOSC desc'
 ) AS d
 
------------------------ 
+-----------------------
 -- Etap D:
 -- kopiujemy do zapytania CTE lokalnego OPENROWSETY:
 
@@ -98,7 +98,7 @@ go
 -- Zadanie 2: --> (UWAGA !!! --> wykonujemy tylko gdy pracujemy w nowym środowisku ORACLE (np. w domu) i nie mamy założonego konta ORACLE
 ------------------
 --- Po zainstalowaniu środowiska ORACLE wykonać założyć nowego
--- użytkownika o identyfikatorze loginu NorthWind (z dowolnym hasłem). 
+-- użytkownika o identyfikatorze loginu NorthWind (z dowolnym hasłem).
 -- W dalszej kolejności nadać użytkownikowi NORTHWIND odpowiednie Role i prawa systemowe.
 
 -- Zakładanie użytkownika w systemie ORACLE można przeprowadzić logując się na użytkownika i rolę
@@ -170,7 +170,7 @@ LISTENER =
 
 -- UWAGA !!!
 -----------------------
--- W przypadku pracy rozproszonej po stronie aplikacji klienckiej w trybie dostępowym do serwera ORACLE z poziomu środowiska SQL Server  
+-- W przypadku pracy rozproszonej po stronie aplikacji klienckiej w trybie dostępowym do serwera ORACLE z poziomu środowiska SQL Server
 -- konieczne jest ustawienie tzw. parametrów TNS : Local Naming Parameters (tnsnames.ora) lub skorzystanie z takiej specyfikacji bezpośrednio w instrukcji dostępowej OPENROWSET.
 
 --- Plik tnsnames.ora oraz konfiguracja opisana została w dokumentacji technicznej ORACLE na stronie:
@@ -180,12 +180,12 @@ https://docs.oracle.com/cd/B28359_01/network.111/b28317/tnsnames.htm#NETRF259
 --------------
 --- Plik tnsnames.ora - jest plikiem konfiguracyjnym, który zawiera nazwy usług sieciowych zmapowane do deskryptorów połączeń dla lokalnej metody nazewnictwa lub nazwy usług sieciowych. Zawiera on również nazwy TNS zmapowane na adresy protokołów nasłuchujących.
 
--- Nazwa usługi sieciowej - to alias odwzorowany na adres sieciowy bazy danych zawarty w pliku połączeniowym deskryptora. Deskryptor połączenia zawiera lokalizację nasłuchiwania za pośrednictwem adresu protokołu i nazwy usługi bazy danych, z którą należy się połączyć. 
+-- Nazwa usługi sieciowej - to alias odwzorowany na adres sieciowy bazy danych zawarty w pliku połączeniowym deskryptora. Deskryptor połączenia zawiera lokalizację nasłuchiwania za pośrednictwem adresu protokołu i nazwy usługi bazy danych, z którą należy się połączyć.
 -- Klienci i serwery baz danych (które są klientami innych serwerów baz danych) używają nazwy usługi podczas nawiązywania połączenia z aplikacją.
 
 --- Plik tnsnames.ora domyślnie znajduje się w katalogu (system Windows):
  $ORACLE_HOME/network/admin
--- W systemach operacyjnych UNIX w katalogu  
+-- W systemach operacyjnych UNIX w katalogu
 %ORACLE_HOME%\network\admin
 
 
@@ -193,17 +193,17 @@ https://docs.oracle.com/cd/B28359_01/network.111/b28317/tnsnames.htm#NETRF259
 --------------------------------------
 -- Podstawową składnię pliku  tnsnames.ora pokazano w przykładzie:
 
-net_service_name = 
- (DESCRIPTION = 
+net_service_name =
+ (DESCRIPTION =
    (ADRES = (informacja o adresie protokołu ))
-   (CONNECT_DATA = 
-     (SERVICE_NAME = nazwa_usługi))) 
+   (CONNECT_DATA =
+     (SERVICE_NAME = nazwa_usługi)))
 
 
 -- gdzie:
 
--- DESCRIPTION 	- zawiera deskryptor połączenia, 
--- ADDRESS 	- adres protokołu 
+-- DESCRIPTION 	- zawiera deskryptor połączenia,
+-- ADDRESS 	- adres protokołu
 -- CONNECT_DATA	- informacje identyfikujące usługę bazy danych.
 
 

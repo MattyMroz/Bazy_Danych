@@ -15,5 +15,3 @@ DECLARE @ile int, @ok int
 EXEC @ok = IleWDzialeP 10, @ile OUT
 PRINT @ile
 PRINT @ok
-
-

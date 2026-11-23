@@ -111,14 +111,14 @@ Planowanie lekcji i egzaminów.
 ```sql
 -- Lekcja indywidualna (TO WCZEŚNIEJ WYWOŁYWAŁO ORA-00600!)
 EXEC PKG_LEKCJE.dodaj_lekcje_indywidualna(
-    'Fortepian', 'Kowalska', '101', 
-    'Kowalski', 'Jan', 
+    'Fortepian', 'Kowalska', '101',
+    'Kowalski', 'Jan',
     DATE '2026-02-02', '14:00', 30
 );
 
 -- Lekcja grupowa
 EXEC PKG_LEKCJE.dodaj_lekcje_grupowa(
-    'Ksztalcenie sluchowe', 'Lewandowska', '201', 
+    'Ksztalcenie sluchowe', 'Lewandowska', '201',
     '1A', DATE '2026-02-02', '16:00', 45
 );
 

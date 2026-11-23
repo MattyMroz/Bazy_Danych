@@ -27,7 +27,7 @@
 
 #### Pomysł A: Kategorie wiekowe z automatycznymi ograniczeniami
 - Dzieci (5-14 lat): tylko 14:00-19:00 (po szkole)
-- Młodzież (15-18 lat): 12:00-20:00 
+- Młodzież (15-18 lat): 12:00-20:00
 - Dorośli (18+): 08:00-20:00
 - **Ocena: ⭐⭐⭐⭐⭐⭐⭐⭐ (8/10)** - logiczne, proste w implementacji
 
@@ -235,7 +235,7 @@ Prosty podział: uczniowie poniżej 15 lat (w szkole podstawowej/gimnazjum) maj�
 
 ```
 SCENARIUSZ 1: Pełny cykl życia ucznia
-- Dodanie ucznia → Zapisanie na kurs → Zaplanowanie lekcji → 
+- Dodanie ucznia → Zapisanie na kurs → Zaplanowanie lekcji →
 - Przeprowadzenie lekcji → Wystawienie oceny → Raport postępu
 
 SCENARIUSZ 2: Planowanie semestru
