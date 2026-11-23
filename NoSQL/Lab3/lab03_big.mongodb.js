@@ -1,10 +1,6 @@
-// Mateusz Mróz 251190
-
 // 0. Importujemy jeden duży plik z dokumentami JSON (wcześniej przygotowany z plików pobranych poniżej)
 // Wykorzystujemy dane do MongoDB dużego zbioru danych o dość złożonej strukturze. Dane pobrano z serwisu filmowego IMDb, https://www.imdb.com/interfaces.
 // Dostęp do pliku z sieci lokalnej - podany na zajęciach.
-// -- docker cp .\movies.json mongodb:/data/movies.json
-// -- docker exec mongodb mongoimport --db imdb --collection movies --file /data/movies.json
 use("imdb");
 db.movies.countDocuments();
 db.movies.findOne();
