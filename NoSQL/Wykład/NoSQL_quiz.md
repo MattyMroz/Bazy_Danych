@@ -15380,6 +15380,3 @@ db.Students.updateOne(
 **C** — dla indeksu na jednym polu kierunek nie ma znaczenia przy sortowaniu. Kierunek liczy się dopiero przy sortowaniu po kilku polach w indeksie złożonym. (Lab 3, duży plik, zad. 4 i 8)
 
 </details>
-
-
-
