@@ -172,7 +172,7 @@ BEGIN
     SELECT REF(i) INTO v_ref_flet FROM t_instrument i WHERE i.nazwa = 'Flet';
     SELECT REF(i) INTO v_ref_perkusja FROM t_instrument i WHERE i.nazwa = 'Perkusja';
     SELECT REF(i) INTO v_ref_saksofon FROM t_instrument i WHERE i.nazwa = 'Saksofon';
-    
+
     -- Kursy fortepianowe (3 poziomy)
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Fortepian - podstawy', 'poczatkujacy', 80, v_ref_fortepian)
@@ -183,7 +183,7 @@ BEGIN
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Fortepian - zaawansowany', 'zaawansowany', 120, v_ref_fortepian)
     );
-    
+
     -- Kursy gitarowe
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Gitara klasyczna - podstawy', 'poczatkujacy', 70, v_ref_gitara_kl)
@@ -191,7 +191,7 @@ BEGIN
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Gitara elektryczna - rock', 'sredni', 90, v_ref_gitara_el)
     );
-    
+
     -- Kursy smyczkowe
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Skrzypce - podstawy', 'poczatkujacy', 85, v_ref_skrzypce)
@@ -199,7 +199,7 @@ BEGIN
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Skrzypce - sredni', 'sredni', 105, v_ref_skrzypce)
     );
-    
+
     -- Kursy dete
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Flet - podstawy', 'poczatkujacy', 75, v_ref_flet)
@@ -207,12 +207,12 @@ BEGIN
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Saksofon - jazz', 'zaawansowany', 110, v_ref_saksofon)
     );
-    
+
     -- Kurs perkusyjny
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Perkusja - podstawy', 'poczatkujacy', 80, v_ref_perkusja)
     );
-    
+
     COMMIT;
 END;
 /
@@ -247,7 +247,7 @@ BEGIN
     SELECT id_sali INTO v_id_sala1 FROM t_sala WHERE nazwa = 'Sala A1' AND ROWNUM = 1;
     SELECT id_sali INTO v_id_sala2 FROM t_sala WHERE nazwa = 'Sala A2' AND ROWNUM = 1;
     SELECT id_sali INTO v_id_sala3 FROM t_sala WHERE nazwa = 'Sala B1' AND ROWNUM = 1;
-    
+
     -- Lekcja 1: dziecko (Kacper) o 14:00 - dozwolona godzina dla dzieci
     pkg_lekcja.zaplanuj(
         p_id_ucznia     => v_id_kacper,
@@ -258,7 +258,7 @@ BEGIN
         p_godzina       => '14:00',
         p_czas_trwania  => 45
     );
-    
+
     -- Lekcja 2: mlodziez (Adam) o 10:00
     pkg_lekcja.zaplanuj(
         p_id_ucznia     => v_id_adam,
@@ -269,7 +269,7 @@ BEGIN
         p_godzina       => '10:00',
         p_czas_trwania  => 45
     );
-    
+
     -- Lekcja 3: dorosly (Michal) o 08:00
     pkg_lekcja.zaplanuj(
         p_id_ucznia     => v_id_michal,
@@ -280,7 +280,7 @@ BEGIN
         p_godzina       => '08:00',
         p_czas_trwania  => 60
     );
-    
+
     COMMIT;
     DBMS_OUTPUT.PUT_LINE('Dodano 3 przykladowe lekcje na: ' || TO_CHAR(v_data, 'YYYY-MM-DD'));
 END;
@@ -299,7 +299,7 @@ BEGIN
     SELECT REF(u) INTO v_ref_uczen_adam FROM t_uczen u WHERE u.nazwisko = 'Szymanski' AND ROWNUM = 1;
     SELECT REF(n) INTO v_ref_naucz_jan FROM t_nauczyciel n WHERE n.nazwisko = 'Kowalski' AND ROWNUM = 1;
     SELECT REF(n) INTO v_ref_naucz_anna FROM t_nauczyciel n WHERE n.nazwisko = 'Nowak' AND ROWNUM = 1;
-    
+
     -- Oceny dla ucznia Kacper Malinowski
     INSERT INTO t_ocena VALUES (
         t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 30, 4, 'technika', 'Dobra postawa', v_ref_uczen_kacper, v_ref_naucz_jan)
@@ -310,7 +310,7 @@ BEGIN
     INSERT INTO t_ocena VALUES (
         t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 7, 4, 'teoria', NULL, v_ref_uczen_kacper, v_ref_naucz_jan)
     );
-    
+
     -- Oceny dla ucznia Adam Szymanski
     INSERT INTO t_ocena VALUES (
         t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 20, 3, 'technika', 'Do poprawy chwyty', v_ref_uczen_adam, v_ref_naucz_anna)
@@ -321,7 +321,7 @@ BEGIN
     INSERT INTO t_ocena VALUES (
         t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 5, 5, 'interpretacja', 'Bardzo dobra ekspresja', v_ref_uczen_adam, v_ref_naucz_anna)
     );
-    
+
     COMMIT;
     DBMS_OUTPUT.PUT_LINE('Dodano 6 przykladowych ocen');
 END;

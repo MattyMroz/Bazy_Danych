@@ -10,7 +10,7 @@ BEGIN
 	INSERT INTO @Wysocy
 	SELECT IdOsoby, Nazwisko, Wzrost, @mini
 	FROM Osoby WHERE Wzrost > @mini
-	RETURN 
+	RETURN
 END
 GO
 SELECT * FROM WysocyF(1.8)

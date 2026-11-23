@@ -75,8 +75,8 @@ END;
 -- AFTER INSERT ON LEKCJE
 -- FOR EACH ROW
 -- BEGIN
---     DBMS_OUTPUT.PUT_LINE('Dodano lekcje ID=' || :NEW.id_lekcji || 
---         ' na ' || TO_CHAR(:NEW.data_lekcji, 'YYYY-MM-DD') || 
+--     DBMS_OUTPUT.PUT_LINE('Dodano lekcje ID=' || :NEW.id_lekcji ||
+--         ' na ' || TO_CHAR(:NEW.data_lekcji, 'YYYY-MM-DD') ||
 --         ' o ' || :NEW.godzina_start);
 -- END;
 -- /

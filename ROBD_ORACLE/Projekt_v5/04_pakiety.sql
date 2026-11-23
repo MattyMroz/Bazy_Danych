@@ -262,7 +262,7 @@ PROMPT [3/6] Tworzenie pakietu pkg_lekcja...
 CREATE OR REPLACE PACKAGE pkg_lekcja AS
 
     -- ========== CRUD ==========
-    
+
     -- Planuje lekcje indywidualna
     PROCEDURE planuj_lekcje(
         p_data         DATE,
@@ -293,7 +293,7 @@ CREATE OR REPLACE PACKAGE pkg_lekcja AS
     PROCEDURE odwolaj_lekcje(p_id_lekcji NUMBER);
 
     -- ========== WALIDACJE ==========
-    
+
     -- Sprawdza czy nauczyciel jest wolny w danym przedziale
     FUNCTION czy_nauczyciel_wolny(
         p_id_naucz NUMBER,
@@ -319,7 +319,7 @@ CREATE OR REPLACE PACKAGE pkg_lekcja AS
     ) RETURN CHAR;
 
     -- ========== HEURYSTYKA PLANOWANIA ==========
-    
+
     -- Generuje plan na caly tydzien (poniedzialek-piatek)
     -- Zasada: BIG ROCKS FIRST - najpierw grupowe, potem indywidualne
     PROCEDURE generuj_plan_tygodnia(
@@ -344,7 +344,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
     -- ========================================================================
     -- FUNKCJE POMOCNICZE (prywatne)
     -- ========================================================================
-    
+
     -- Dodaje minuty do godziny w formacie HH:MI
     FUNCTION dodaj_minuty(p_godz VARCHAR2, p_min NUMBER) RETURN VARCHAR2 IS
         v_h NUMBER := TO_NUMBER(SUBSTR(p_godz, 1, 2));
@@ -449,7 +449,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         WHERE DEREF(l.ref_nauczyciel).id_nauczyciela = p_id_naucz
           AND l.data_lekcji = p_data
           AND l.status != 'odwolana'
-          AND NOT (l.godzina_start >= p_godz_do 
+          AND NOT (l.godzina_start >= p_godz_do
                OR VALUE(l).godzina_koniec() <= p_godz_od);
         RETURN CASE WHEN v_cnt = 0 THEN 'T' ELSE 'N' END;
     END;
@@ -467,7 +467,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         WHERE DEREF(l.ref_sala).id_sali = p_id_sali
           AND l.data_lekcji = p_data
           AND l.status != 'odwolana'
-          AND NOT (l.godzina_start >= p_godz_do 
+          AND NOT (l.godzina_start >= p_godz_do
                OR VALUE(l).godzina_koniec() <= p_godz_od);
         RETURN CASE WHEN v_cnt = 0 THEN 'T' ELSE 'N' END;
     END;
@@ -488,7 +488,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
                ))
           AND l.data_lekcji = p_data
           AND l.status != 'odwolana'
-          AND NOT (l.godzina_start >= p_godz_do 
+          AND NOT (l.godzina_start >= p_godz_do
                OR VALUE(l).godzina_koniec() <= p_godz_od);
         RETURN CASE WHEN v_cnt = 0 THEN 'T' ELSE 'N' END;
     END;
@@ -498,7 +498,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
     -- ========================================================================
     --
     -- ZASADA: BIG ROCKS FIRST (najpierw duze kamienie)
-    -- 
+    --
     -- 1. Najpierw planuj lekcje GRUPOWE:
     --    - blokuja duze sale
     --    - blokuja czas wielu uczniow naraz
@@ -525,20 +525,20 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
         v_slot         VARCHAR2(5);
     BEGIN
         -- Pobierz typ ucznia (okresla minimalna godzine)
-        SELECT typ_ucznia INTO v_typ_ucznia 
+        SELECT typ_ucznia INTO v_typ_ucznia
         FROM uczniowie WHERE id_ucznia = p_id_ucznia;
-        
+
         -- Ustal godzine startowa
         IF v_typ_ucznia = 'uczacy_sie_w_innej_szkole' THEN
             v_slot := '15:00';
         ELSE
             v_slot := '14:00';
         END IF;
-        
+
         -- Iteruj po slotach co 15 min az do 19:00
         WHILE v_slot <= '19:00' LOOP
             v_godz_koniec := dodaj_minuty(v_slot, p_czas);
-            
+
             -- Sprawdz wszystkie warunki
             IF  czy_nauczyciel_wolny(p_id_naucz, p_data, v_slot, v_godz_koniec) = 'T'
             AND czy_sala_wolna(p_id_sali, p_data, v_slot, v_godz_koniec) = 'T'
@@ -546,11 +546,11 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
             THEN
                 RETURN v_slot;  -- Znaleziono!
             END IF;
-            
+
             -- Nastepny slot (+15 min)
             v_slot := dodaj_minuty(v_slot, 15);
         END LOOP;
-        
+
         RETURN NULL;  -- Brak wolnego slotu
     END;
 
@@ -566,44 +566,44 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
     BEGIN
         -- Opcjonalnie usun istniejace lekcje
         IF p_nadpisz = 'T' THEN
-            DELETE FROM lekcje 
+            DELETE FROM lekcje
             WHERE data_lekcji BETWEEN p_data_pn AND p_data_pn + 4
               AND status = 'zaplanowana';
         END IF;
-        
+
         -- ===========================================
         -- FAZA 1: LEKCJE GRUPOWE (duze kamienie)
         -- ===========================================
         -- Dla kazdej grupy i kazdego przedmiotu grupowego
         -- znajdz slot w ktorymkolwiek dniu tygodnia
-        
+
         FOR r_grupa IN (
             SELECT id_grupy, klasa FROM grupy WHERE status = 'aktywna'
         ) LOOP
             FOR r_przedm IN (
-                SELECT id_przedmiotu, nazwa, czas_trwania 
-                FROM przedmioty 
+                SELECT id_przedmiotu, nazwa, czas_trwania
+                FROM przedmioty
                 WHERE typ_zajec = 'grupowy'
                   AND r_grupa.klasa BETWEEN klasa_od AND klasa_do
             ) LOOP
                 -- Znajdz nauczyciela grupowego
                 FOR r_naucz IN (
-                    SELECT id_nauczyciela FROM nauczyciele 
+                    SELECT id_nauczyciela FROM nauczyciele
                     WHERE czy_prowadzi_grupowe = 'T' AND status = 'aktywny'
                 ) LOOP
                     -- Znajdz sale grupowa
                     FOR r_sala IN (
-                        SELECT id_sali FROM sale 
-                        WHERE typ_sali IN ('grupowa', 'wielofunkcyjna') 
+                        SELECT id_sali FROM sale
+                        WHERE typ_sali IN ('grupowa', 'wielofunkcyjna')
                           AND status = 'aktywna'
                     ) LOOP
                         -- Probuj kazdy dzien tygodnia
                         FOR v_dzien IN 0..4 LOOP
                             v_data := p_data_pn + v_dzien;
                             v_slot := '15:00';  -- grupowe od 15:00
-                            
+
                             WHILE v_slot <= '18:00' LOOP
-                                IF czy_nauczyciel_wolny(r_naucz.id_nauczyciela, v_data, 
+                                IF czy_nauczyciel_wolny(r_naucz.id_nauczyciela, v_data,
                                        v_slot, dodaj_minuty(v_slot, r_przedm.czas_trwania)) = 'T'
                                 AND czy_sala_wolna(r_sala.id_sali, v_data,
                                        v_slot, dodaj_minuty(v_slot, r_przedm.czas_trwania)) = 'T'
@@ -626,13 +626,13 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
                 NULL;
             END LOOP;
         END LOOP;
-        
+
         -- ===========================================
         -- FAZA 2: LEKCJE INDYWIDUALNE
         -- ===========================================
         -- Dla kazdego aktywnego ucznia zaplanuj 1 lekcje
         -- instrumentu glownego w tygodniu
-        
+
         FOR r_uczen IN (
             SELECT u.id_ucznia, u.typ_ucznia, u.klasa,
                    DEREF(u.ref_instrument).id_instrumentu AS id_instr,
@@ -656,7 +656,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
                 ) LOOP
                     -- Znajdz sale indywidualna
                     FOR r_sala IN (
-                        SELECT id_sali FROM sale 
+                        SELECT id_sali FROM sale
                         WHERE typ_sali IN ('indywidualna', 'wielofunkcyjna')
                           AND status = 'aktywna'
                     ) LOOP
@@ -684,7 +684,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_lekcja AS
             <<next_uczen>>
             NULL;
         END LOOP;
-        
+
         COMMIT;
         DBMS_OUTPUT.PUT_LINE('Zaplanowano: ' || v_zaplan || ', pominieto: ' || v_pomin);
     END;

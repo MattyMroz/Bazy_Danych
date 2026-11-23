@@ -78,8 +78,8 @@ END;
 -- Tabele (obiektowe)
 DECLARE
     v_tabele SYS.ODCIVARCHAR2LIST := SYS.ODCIVARCHAR2LIST(
-        'OCENY', 'EGZAMINY', 'LEKCJE', 'PRZEDMIOTY', 
-        'UCZNIOWIE', 'GRUPY', 'NAUCZYCIELE', 'SALE', 
+        'OCENY', 'EGZAMINY', 'LEKCJE', 'PRZEDMIOTY',
+        'UCZNIOWIE', 'GRUPY', 'NAUCZYCIELE', 'SALE',
         'INSTRUMENTY', 'SEMESTRY'
     );
 BEGIN
@@ -144,7 +144,7 @@ BEGIN
         EXCEPTION WHEN OTHERS THEN NULL;
         END;
     END LOOP;
-    
+
     -- Uzytkownicy
     FOR r IN (SELECT username FROM dba_users WHERE username LIKE 'USR_%') LOOP
         BEGIN
@@ -152,10 +152,10 @@ BEGIN
         EXCEPTION WHEN OTHERS THEN NULL;
         END;
     END LOOP;
-    
+
     DBMS_OUTPUT.PUT_LINE('Usunieto uzytkownikow i role');
-EXCEPTION 
-    WHEN OTHERS THEN 
+EXCEPTION
+    WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('Pominieto (brak uprawnien DBA)');
 END;
 /
@@ -169,10 +169,10 @@ PROMPT [4/4] Weryfikacja...
 DECLARE
     v_cnt NUMBER;
 BEGIN
-    SELECT COUNT(*) INTO v_cnt 
-    FROM user_objects 
+    SELECT COUNT(*) INTO v_cnt
+    FROM user_objects
     WHERE object_type IN ('TABLE', 'TYPE', 'PACKAGE', 'TRIGGER', 'VIEW', 'SEQUENCE');
-    
+
     IF v_cnt = 0 THEN
         DBMS_OUTPUT.PUT_LINE('Baza wyczyszczona - 0 obiektow');
     ELSE

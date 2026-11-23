@@ -23,13 +23,13 @@ PROMPT ;
 
 -- Test metod t_instrument_obj
 PROMPT [1.1] Metoda opis() dla instrumentow:;
-SELECT i.nazwa, i.opis() AS opis 
+SELECT i.nazwa, i.opis() AS opis
 FROM t_instrument i;
 
 -- Test metod t_nauczyciel_obj
 PROMPT ;
 PROMPT [1.2] Metody nauczycieli:;
-SELECT n.imie, n.nazwisko, 
+SELECT n.imie, n.nazwisko,
        n.pelne_dane() AS pelne_dane,
        n.lata_stazu() AS staz,
        n.czy_senior() AS senior
@@ -47,13 +47,13 @@ FROM t_uczen u;
 -- Test metod t_kurs_obj
 PROMPT ;
 PROMPT [1.4] Metoda info_kursu():;
-SELECT k.id_kursu, k.info_kursu() AS info 
+SELECT k.id_kursu, k.info_kursu() AS info
 FROM t_kurs k;
 
 -- Test metod t_ocena_obj
 PROMPT ;
 PROMPT [1.5] Metody ocen:;
-SELECT o.ocena, 
+SELECT o.ocena,
        o.ocena_slownie() AS slownie,
        o.czy_pozytywna() AS pozytywna
 FROM t_ocena_postepu o
@@ -75,7 +75,7 @@ BEGIN
         v_nauczyciel := rec.naucz;
         DBMS_OUTPUT.PUT_LINE('Nauczyciel: ' || v_nauczyciel.pelne_dane());
         DBMS_OUTPUT.PUT_LINE('  Instrumenty (' || v_nauczyciel.instrumenty.COUNT || '):');
-        
+
         FOR i IN 1..v_nauczyciel.instrumenty.COUNT LOOP
             DBMS_OUTPUT.PUT_LINE('    - ' || v_nauczyciel.instrumenty(i));
         END LOOP;
@@ -151,14 +151,14 @@ DECLARE
     v_wiek      NUMBER;
 BEGIN
     v_cursor := pkg_uczen.uczniowie_wiek(10, 16);
-    DBMS_OUTPUT.PUT_LINE(RPAD('ID', 5) || RPAD('Imie', 15) || 
+    DBMS_OUTPUT.PUT_LINE(RPAD('ID', 5) || RPAD('Imie', 15) ||
                          RPAD('Nazwisko', 15) || 'Wiek');
     DBMS_OUTPUT.PUT_LINE(RPAD('-', 45, '-'));
-    
+
     LOOP
         FETCH v_cursor INTO v_id, v_imie, v_nazwisko, v_wiek;
         EXIT WHEN v_cursor%NOTFOUND;
-        DBMS_OUTPUT.PUT_LINE(RPAD(v_id, 5) || RPAD(v_imie, 15) || 
+        DBMS_OUTPUT.PUT_LINE(RPAD(v_id, 5) || RPAD(v_imie, 15) ||
                              RPAD(v_nazwisko, 15) || v_wiek);
     END LOOP;
     CLOSE v_cursor;
@@ -180,8 +180,8 @@ PROMPT [4.5] Dodawanie ucznia (test walidacji wieku):;
 -- Proba dodania za mlodego ucznia
 BEGIN
     pkg_uczen.dodaj_ucznia(
-        'TestImie', 
-        'TestNazwisko', 
+        'TestImie',
+        'TestNazwisko',
         DATE '2022-01-01',  -- za mlody!
         'test@test.pl'
     );
@@ -220,11 +220,11 @@ BEGIN
     v_cursor := pkg_lekcja.lekcje_ucznia(1, SYSDATE + 30);
     DBMS_OUTPUT.PUT_LINE('Lekcje ucznia ID=1:');
     DBMS_OUTPUT.PUT_LINE(RPAD('-', 80, '-'));
-    
+
     LOOP
         FETCH v_cursor INTO v_id, v_data, v_godzina, v_naucz, v_kurs, v_status;
         EXIT WHEN v_cursor%NOTFOUND;
-        DBMS_OUTPUT.PUT_LINE(v_id || ' | ' || TO_CHAR(v_data, 'YYYY-MM-DD') || 
+        DBMS_OUTPUT.PUT_LINE(v_id || ' | ' || TO_CHAR(v_data, 'YYYY-MM-DD') ||
                              ' ' || v_godzina || ' | ' || v_kurs || ' | ' || v_status);
     END LOOP;
     CLOSE v_cursor;
@@ -271,11 +271,11 @@ DECLARE
 BEGIN
     v_cursor := pkg_ocena.ostatnie_oceny(2, 3);
     DBMS_OUTPUT.PUT_LINE('Ostatnie 3 oceny ucznia ID=2:');
-    
+
     LOOP
         FETCH v_cursor INTO v_data, v_ocena, v_obszar, v_komentarz, v_nauczyciel;
         EXIT WHEN v_cursor%NOTFOUND;
-        DBMS_OUTPUT.PUT_LINE(TO_CHAR(v_data, 'YYYY-MM-DD') || ' | Ocena: ' || 
+        DBMS_OUTPUT.PUT_LINE(TO_CHAR(v_data, 'YYYY-MM-DD') || ' | Ocena: ' ||
                              v_ocena || ' | ' || v_obszar);
     END LOOP;
     CLOSE v_cursor;
@@ -308,11 +308,11 @@ BEGIN
     SELECT REF(u) INTO v_ref_uczen FROM t_uczen u WHERE u.id_ucznia = 1;
     SELECT REF(n) INTO v_ref_naucz FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
     SELECT REF(k) INTO v_ref_kurs FROM t_kurs k WHERE k.id_kursu = 1;
-    
+
     -- Proba wstawienia lekcji o 6:00 (poza zakresem)
     INSERT INTO t_lekcja VALUES (
-        t_lekcja_obj(seq_lekcja.NEXTVAL, SYSDATE + 10, '06:00', 45, 
-                     NULL, NULL, 'zaplanowana', 
+        t_lekcja_obj(seq_lekcja.NEXTVAL, SYSDATE + 10, '06:00', 45,
+                     NULL, NULL, 'zaplanowana',
                      v_ref_uczen, v_ref_naucz, v_ref_kurs));
 EXCEPTION
     WHEN OTHERS THEN
@@ -326,7 +326,7 @@ EXEC pkg_ocena.dodaj_ocene(1, 1, 5, 'rytm', 'Test audytu');
 
 PROMPT ;
 PROMPT [7.3] Sprawdzenie logow audytowych:;
-SELECT id_logu, nazwa_tabeli, operacja, 
+SELECT id_logu, nazwa_tabeli, operacja,
        SUBSTR(nowa_wartosc, 1, 40) AS nowa_wartosc,
        uzytkownik, TO_CHAR(data_zmiany, 'HH24:MI:SS') AS czas
 FROM t_audit_log

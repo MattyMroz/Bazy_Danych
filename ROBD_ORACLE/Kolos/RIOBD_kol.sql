@@ -7,7 +7,7 @@ kod pisz w znacznikach kodu ``` ```
 BAZA SCOTT:
 
 -- USER SQL
-CREATE USER SCOTT IDENTIFIED BY 12345 
+CREATE USER SCOTT IDENTIFIED BY 12345
 DEFAULT TABLESPACE "USERS"
 TEMPORARY TABLESPACE "TEMP";
 
@@ -26,42 +26,42 @@ GRANT UNLIMITED TABLESPACE TO SCOTT ;
 
 --------------------------------------------------------
 
-  CREATE TABLE "SCOTT"."EMP" 
-   (	"EMPNO" NUMBER(4,0), 
-	"ENAME" VARCHAR2(10), 
-	"JOB" VARCHAR2(9), 
-	"MGR" NUMBER(4,0), 
-	"HIREDATE" DATE, 
-	"SAL" NUMBER(7,2), 
-	"COMM" NUMBER(7,2), 
+  CREATE TABLE "SCOTT"."EMP"
+   (	"EMPNO" NUMBER(4,0),
+	"ENAME" VARCHAR2(10),
+	"JOB" VARCHAR2(9),
+	"MGR" NUMBER(4,0),
+	"HIREDATE" DATE,
+	"SAL" NUMBER(7,2),
+	"COMM" NUMBER(7,2),
 	"DEPTNO" NUMBER(2,0)
    ) ;
 --------------------------------------------------------
 --  DDL for Table DEPT
 --------------------------------------------------------
 
-  CREATE TABLE "SCOTT"."DEPT" 
-   (	"DEPTNO" NUMBER(2,0), 
-	"DNAME" VARCHAR2(14), 
+  CREATE TABLE "SCOTT"."DEPT"
+   (	"DEPTNO" NUMBER(2,0),
+	"DNAME" VARCHAR2(14),
 	"LOC" VARCHAR2(13)
    ) ;
 --------------------------------------------------------
 --  DDL for Table BONUS
 --------------------------------------------------------
 
-  CREATE TABLE "SCOTT"."BONUS" 
-   (	"ENAME" VARCHAR2(10), 
-	"JOB" VARCHAR2(9), 
-	"SAL" NUMBER, 
+  CREATE TABLE "SCOTT"."BONUS"
+   (	"ENAME" VARCHAR2(10),
+	"JOB" VARCHAR2(9),
+	"SAL" NUMBER,
 	"COMM" NUMBER
    ) ;
 --------------------------------------------------------
 --  DDL for Table SALGRADE
 --------------------------------------------------------
 
-  CREATE TABLE "SCOTT"."SALGRADE" 
-   (	"GRADE" NUMBER, 
-	"LOSAL" NUMBER, 
+  CREATE TABLE "SCOTT"."SALGRADE"
+   (	"GRADE" NUMBER,
+	"LOSAL" NUMBER,
 	"HISAL" NUMBER
    ) ;
 REM INSERTING into SCOTT.EMP
@@ -126,10 +126,10 @@ CREATE TABLE DEPTZAL AS SELECT * FROM SCOTT.DEPT;
 
 -- 1
 -- polecenie:
--- Napisać blok PL/SQL w którym wykorzystana zostanie zmienna typu VARCHAR 
+-- Napisać blok PL/SQL w którym wykorzystana zostanie zmienna typu VARCHAR
 -- z przypisanym ciągiem znaków w postaci jednego zdania:
 -- 'KoLoKwIum z przedmiotu Relacyjne Obiektowe BD '
--- w którym wykorzystane zostaną instrukcje sterujące zamieniające znaki małe 
+-- w którym wykorzystane zostaną instrukcje sterujące zamieniające znaki małe
 -- na duże a duże na małe. Zaprezentować przykład działania tego bloku.
 
 SET SERVEROUTPUT ON;
@@ -164,11 +164,11 @@ END;
 
 -- 2
 -- polecenie:
--- Opracować procedurę o nazwie MGR_EMP, która poprzez parametr typu OUT 
--- zwraca średnią pensję wszystkich pracowników podlegających szefowi 
+-- Opracować procedurę o nazwie MGR_EMP, która poprzez parametr typu OUT
+-- zwraca średnią pensję wszystkich pracowników podlegających szefowi
 -- podanemu jako parametr typu IN w postaci nazwiska (ENAME).
--- W agregacji uwzględnić kolumnę SAL oraz kolumnę COMM. 
--- W przypadku podania nieistniejącego nazwiska szefa zrealizować wyjątek, 
+-- W agregacji uwzględnić kolumnę SAL oraz kolumnę COMM.
+-- W przypadku podania nieistniejącego nazwiska szefa zrealizować wyjątek,
 -- który będzie obsłużony w części EXCEPTION.
 -- Napisać przykład wykorzystujący tę procedurę.
 
@@ -211,9 +211,9 @@ END;
 
 -- 3
 -- polecenie:
--- Napisać funkcję DZIEN_URODZIN(dataU IN DATE) zwracającą słownie dzień tygodnia 
--- dla podanej daty urodzin. W przypadku braku parametru wejściowego zrealizować 
--- wyjątek, który będzie obsłużony w części EXCEPTION. 
+-- Napisać funkcję DZIEN_URODZIN(dataU IN DATE) zwracającą słownie dzień tygodnia
+-- dla podanej daty urodzin. W przypadku braku parametru wejściowego zrealizować
+-- wyjątek, który będzie obsłużony w części EXCEPTION.
 -- Napisać przykład wykorzystujący tę funkcję.
 
 
@@ -250,9 +250,9 @@ END;
 
 -- 4
 -- polecenie:
--- Dołożyć do tabeli EMP dodatkową kolumnę "email" z ograniczeniem UNIQUE, 
--- którego wartość będzie dodawana za pomocą wyzwalacza przy operacji INSERT. 
--- Email ma mieć postać: nazwa z ENAME zamieniona na małe litery, spacje zamienione 
+-- Dołożyć do tabeli EMP dodatkową kolumnę "email" z ograniczeniem UNIQUE,
+-- którego wartość będzie dodawana za pomocą wyzwalacza przy operacji INSERT.
+-- Email ma mieć postać: nazwa z ENAME zamieniona na małe litery, spacje zamienione
 -- na podkreślenia, plus '@test.pl'.
 -- Napisać przykładowe instrukcje prezentujące działanie wyzwalacza.
 
@@ -648,7 +648,7 @@ DECLARE
 
     CURSOR kursor (limit NUMBER) IS
         SELECT E.ENAME,
-               (E.SAL + NVL(E.COMM, 0)) AS ZAROBEK, 
+               (E.SAL + NVL(E.COMM, 0)) AS ZAROBEK,
                S.SREDNIA
         FROM EMPZAL E
         JOIN (
@@ -898,7 +898,7 @@ BEGIN
         FETCH kursor INTO rekord;
         EXIT WHEN kursor%NOTFOUND;
 
-        DBMS_OUTPUT.PUT_LINE('Pracownik: ' || rekord.ENAME || 
+        DBMS_OUTPUT.PUT_LINE('Pracownik: ' || rekord.ENAME ||
                              ' Suma plac w dziale: ' || rekord.SUMA_PLAC);
     END LOOP;
     CLOSE kursor;
@@ -1246,7 +1246,7 @@ BEGIN
 END;
 /
 
--- 4. Założyć tabelę EMP_HISTORY (z kolumnami: DEPTNO_OLD, DEPTNO_NEW, CHDATE). Opracować wyzwalacz wierszowy 
+-- 4. Założyć tabelę EMP_HISTORY (z kolumnami: DEPTNO_OLD, DEPTNO_NEW, CHDATE). Opracować wyzwalacz wierszowy
 -- na tabeli DEPTZAL, który automatycznie zaktualizuje numer działu w tabeli EMP jeżeli  zmieni się on w tabeli
 -- DEPTZAL. Dodatkowo wyzwalacz zarejestruje w tabeli EMP_HISTORY informację z jakiego numeru na jaki numer
 -- zmieniono dział oraz kiedy to zostało zrobione.
@@ -1311,6 +1311,3 @@ FROM ROZGRYWKI R
 JOIN DRUZYNY D1 ON R.ID_GOSPODARZ = D1.ID_DRUZYNY
 JOIN DRUZYNY D2 ON R.ID_GOSC = D2.ID_DRUZYNY;
 ORDER BY m.match_date;
-
-
-

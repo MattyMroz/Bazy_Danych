@@ -132,7 +132,7 @@ ORDER BY products_count DESC;
 -- ============================================================================
 
 -- 5.1 Dodanie nowej firmy przez procedurę
-EXEC crunchbase.UpsertCompany 
+EXEC crunchbase.UpsertCompany
     @mongo_id = 'test123456789',
     @name = 'TestCompany',
     @permalink = 'testcompany',
@@ -145,7 +145,7 @@ EXEC crunchbase.UpsertCompany
 SELECT * FROM crunchbase.Company WHERE mongo_id = 'test123456789';
 
 -- 5.3 Aktualizacja firmy przez procedurę (ten sam mongo_id)
-EXEC crunchbase.UpsertCompany 
+EXEC crunchbase.UpsertCompany
     @mongo_id = 'test123456789',
     @name = 'TestCompany Updated',
     @permalink = 'testcompany',
@@ -155,8 +155,8 @@ EXEC crunchbase.UpsertCompany
     @founded_year = 2020;
 
 -- 5.4 Sprawdzenie aktualizacji
-SELECT name, category_code, number_of_employees, updated_at 
-FROM crunchbase.Company 
+SELECT name, category_code, number_of_employees, updated_at
+FROM crunchbase.Company
 WHERE mongo_id = 'test123456789';
 
 -- 5.5 Usunięcie firmy testowej (czyszczenie)
@@ -289,9 +289,9 @@ EXECUTE AS USER='Emp';
 -- Powinno działać: EXEC procedury
 PRINT 'Test 1: EXEC procedury UpsertCompany (powinno działać)';
 BEGIN TRY
-    EXEC crunchbase.UpsertCompany 
-        @mongo_id='test_emp_001', 
-        @name='TestEmp', 
+    EXEC crunchbase.UpsertCompany
+        @mongo_id='test_emp_001',
+        @name='TestEmp',
         @permalink='testemp',
         @category_code='software';
     PRINT 'SUKCES: Emp może wykonywać procedury';
@@ -340,9 +340,9 @@ END CATCH
 -- Powinno działać: EXEC procedury
 PRINT 'Test 2: EXEC procedury (powinno działać)';
 BEGIN TRY
-    EXEC crunchbase.UpsertCompany 
-        @mongo_id='test_admin_001', 
-        @name='TestAdmin', 
+    EXEC crunchbase.UpsertCompany
+        @mongo_id='test_admin_001',
+        @name='TestAdmin',
         @permalink='testadmin',
         @category_code='enterprise';
     PRINT 'SUKCES: Admin może wykonywać procedury';
@@ -354,8 +354,8 @@ END CATCH
 -- Powinno działać: SELECT funkcji
 PRINT 'Test 3: SELECT funkcji (powinno działać)';
 BEGIN TRY
-    SELECT TOP 3 name, crunchbase.GetTotalFunding(company_id) AS total_funding 
-    FROM crunchbase.Company 
+    SELECT TOP 3 name, crunchbase.GetTotalFunding(company_id) AS total_funding
+    FROM crunchbase.Company
     ORDER BY total_funding DESC;
     PRINT 'SUKCES: Admin może używać funkcji';
 END TRY

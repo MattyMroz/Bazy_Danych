@@ -1,10 +1,14 @@
+PLIK: entities.7z
+https://tulodz-my.sharepoint.com/:u:/r/personal/251190_edu_p_lodz_pl/_layouts/15/onedrive.aspx?id=%2Fpersonal%2F251190%5Fedu%5Fp%5Flodz%5Fpl%2FDocuments%2Fentities%2E7z&parent=%2Fpersonal%2F251190%5Fedu%5Fp%5Flodz%5Fpl%2FDocuments&share=cQqOB99bCbBJTpGlOvd%5FN05qEgUCV7TttHglCs7iAFf%2DJex5vw
+
+
 // 0. Importujemy jeden duży plik z dokumentami JSON (wcześniej przygotowany z plików pobranych poniżej)
 // Wykorzystujemy dane do MongoDB dużego zbioru danych o dość złożonej strukturze. Dane pobrano z serwisu filmowego IMDb, https://www.imdb.com/interfaces.
 // Dostęp do pliku z sieci lokalnej - podany na zajęciach.
 
 
 
-// Wykonujemy szereg zapytań: 
+// Wykonujemy szereg zapytań:
 // 1. zapytania punktowe, gdzie poszukujemy konkretnego dokumentu (Ew. dokumentów), np. gdy chcemy wyświetlić dane o filmie o podanym tytule,
 
 
@@ -12,7 +16,7 @@
 //   wykorzystać składnię dodając do zapytania w celu zwrócenia czasu wykonania: .explain("executionStats").executionStats.executionTimeMillis;
 
 
-// 3. zapytania agregujące dane (funkcjonalny odpowiednik klauzuli GROUP BY w bazach relacyjnych), 
+// 3. zapytania agregujące dane (funkcjonalny odpowiednik klauzuli GROUP BY w bazach relacyjnych),
 //   np. policzenie ile filmów otrzymało wskazany rating, ile mamy filmów wyprodukowanych w kolejnych latach, itp.,
 
 
@@ -29,4 +33,3 @@
 
 
 // 8. zapytania z sortowanie danych oraz ograniczaniem ilości wyświetlanych dokumentów (metody sort() oraz limit()).
-

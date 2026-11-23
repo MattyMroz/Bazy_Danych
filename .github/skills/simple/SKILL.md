@@ -85,6 +85,6 @@ Follow these rules:
 - Test before shipping.
 - Ship the complete thing.
 
-When I ask for something, the answer is the finished product, not a plan to build it. Time is not an excuse. Fatigue is not an excuse. Complexity is not an excuse. 
+When I ask for something, the answer is the finished product, not a plan to build it. Time is not an excuse. Fatigue is not an excuse. Complexity is not an excuse.
 
 Boil the ocean.

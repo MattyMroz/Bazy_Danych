@@ -173,7 +173,7 @@ BEGIN
     SELECT REF(i) INTO v_ref_flet FROM t_instrument i WHERE i.nazwa = 'Flet';
     SELECT REF(i) INTO v_ref_perkusja FROM t_instrument i WHERE i.nazwa = 'Perkusja';
     SELECT REF(i) INTO v_ref_saksofon FROM t_instrument i WHERE i.nazwa = 'Saksofon';
-    
+
     -- Kursy fortepianowe
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Fortepian - podstawy', 'poczatkujacy', 80, v_ref_fortepian)
@@ -184,7 +184,7 @@ BEGIN
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Fortepian - zaawansowany', 'zaawansowany', 120, v_ref_fortepian)
     );
-    
+
     -- Kursy gitarowe
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Gitara klasyczna - podstawy', 'poczatkujacy', 70, v_ref_gitara_kl)
@@ -192,7 +192,7 @@ BEGIN
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Gitara elektryczna - rock', 'sredni', 90, v_ref_gitara_el)
     );
-    
+
     -- Kursy smyczkowe
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Skrzypce - podstawy', 'poczatkujacy', 85, v_ref_skrzypce)
@@ -200,7 +200,7 @@ BEGIN
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Skrzypce - sredni', 'sredni', 105, v_ref_skrzypce)
     );
-    
+
     -- Kursy dete
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Flet - podstawy', 'poczatkujacy', 75, v_ref_flet)
@@ -208,12 +208,12 @@ BEGIN
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Saksofon - jazz', 'zaawansowany', 110, v_ref_saksofon)
     );
-    
+
     -- Kurs perkusyjny
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Perkusja - podstawy', 'poczatkujacy', 80, v_ref_perkusja)
     );
-    
+
     COMMIT;
 END;
 /
@@ -235,41 +235,41 @@ DECLARE
 BEGIN
     -- Oblicz najblizszy poniedzialek
     v_data := NEXT_DAY(SYSDATE, 'MONDAY');
-    
+
     -- Pobranie referencji
     SELECT REF(u) INTO v_ref_uczen1 FROM t_uczen u WHERE u.id_ucznia = 1;    -- Kacper (dziecko)
     SELECT REF(u) INTO v_ref_uczen5 FROM t_uczen u WHERE u.id_ucznia = 5;    -- Adam (17 lat)
     SELECT REF(u) INTO v_ref_uczen7 FROM t_uczen u WHERE u.id_ucznia = 7;    -- Michal (25 lat)
-    
+
     SELECT REF(n) INTO v_ref_naucz1 FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;  -- Jan
     SELECT REF(n) INTO v_ref_naucz2 FROM t_nauczyciel n WHERE n.id_nauczyciela = 2;  -- Anna
-    
+
     SELECT REF(k) INTO v_ref_kurs1 FROM t_kurs k WHERE k.id_kursu = 1;   -- Fortepian podstawy
     SELECT REF(k) INTO v_ref_kurs4 FROM t_kurs k WHERE k.id_kursu = 4;   -- Gitara klasyczna
-    
+
     SELECT REF(s) INTO v_ref_sala1 FROM t_sala s WHERE s.id_sali = 1;    -- Sala A1
     SELECT REF(s) INTO v_ref_sala3 FROM t_sala s WHERE s.id_sali = 3;    -- Sala B1
-    
+
     -- Lekcja 1: dziecko - godzina 14:00 (dozwolona)
     INSERT INTO t_lekcja VALUES (
         t_lekcja_obj(seq_lekcja.NEXTVAL, v_data, '14:00', 45, 'zaplanowana',
                      v_ref_uczen1, v_ref_naucz1, v_ref_kurs1, v_ref_sala1)
     );
-    
+
     -- Lekcja 2: mlodziez - godzina 10:00 (dozwolona)
     INSERT INTO t_lekcja VALUES (
         t_lekcja_obj(seq_lekcja.NEXTVAL, v_data, '10:00', 45, 'zaplanowana',
                      v_ref_uczen5, v_ref_naucz2, v_ref_kurs4, v_ref_sala3)
     );
-    
+
     -- Lekcja 3: dorosly - godzina 08:00 (dozwolona)
     INSERT INTO t_lekcja VALUES (
         t_lekcja_obj(seq_lekcja.NEXTVAL, v_data, '08:00', 60, 'zaplanowana',
                      v_ref_uczen7, v_ref_naucz1, v_ref_kurs1, v_ref_sala1)
     );
-    
+
     COMMIT;
-    
+
     DBMS_OUTPUT.PUT_LINE('Dodano 3 przykladowe lekcje na: ' || TO_CHAR(v_data, 'YYYY-MM-DD'));
 END;
 /
@@ -287,7 +287,7 @@ BEGIN
     SELECT REF(u) INTO v_ref_uczen5 FROM t_uczen u WHERE u.id_ucznia = 5;
     SELECT REF(n) INTO v_ref_naucz1 FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
     SELECT REF(n) INTO v_ref_naucz2 FROM t_nauczyciel n WHERE n.id_nauczyciela = 2;
-    
+
     -- Oceny dla ucznia 1 (Kacper)
     INSERT INTO t_ocena_postepu VALUES (
         t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 30, 4, 'technika', 'Dobra postawa', v_ref_uczen1, v_ref_naucz1)
@@ -298,7 +298,7 @@ BEGIN
     INSERT INTO t_ocena_postepu VALUES (
         t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 7, 4, 'teoria', NULL, v_ref_uczen1, v_ref_naucz1)
     );
-    
+
     -- Oceny dla ucznia 5 (Adam)
     INSERT INTO t_ocena_postepu VALUES (
         t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 20, 3, 'technika', 'Do poprawy chwyty', v_ref_uczen5, v_ref_naucz2)
@@ -309,9 +309,9 @@ BEGIN
     INSERT INTO t_ocena_postepu VALUES (
         t_ocena_obj(seq_ocena.NEXTVAL, SYSDATE - 5, 5, 'interpretacja', 'Bardzo dobra ekspresja', v_ref_uczen5, v_ref_naucz2)
     );
-    
+
     COMMIT;
-    
+
     DBMS_OUTPUT.PUT_LINE('Dodano 6 przykladowych ocen');
 END;
 /

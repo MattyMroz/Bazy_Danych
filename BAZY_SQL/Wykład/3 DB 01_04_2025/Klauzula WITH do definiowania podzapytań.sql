@@ -1,6 +1,6 @@
 --SELECT 3, SYSDATETIME(), GETDATE()
 
-/*WITH SumaWyplat 
+/*WITH SumaWyplat
 AS
 (SELECT IdOsoby, SUM(Brutto) AS Razem
 FROM Zarobki

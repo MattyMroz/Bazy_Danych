@@ -187,7 +187,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_osoby AS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== NAUCZYCIELE ===');
         FOR r IN (
-            SELECT n.id, n.pelne_nazwisko() AS nazwa, 
+            SELECT n.id, n.pelne_nazwisko() AS nazwa,
                    DEREF(n.ref_przedmiot).nazwa AS przedmiot
             FROM nauczyciele n ORDER BY n.id
         ) LOOP

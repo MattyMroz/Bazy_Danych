@@ -193,7 +193,7 @@ FROM OCENY o;
 
 -- 8.1 Wyswietlenie wyposazenia jako lista
 SELECT s.numer, s.typ, s.pojemnosc,
-       (SELECT LISTAGG(COLUMN_VALUE, ', ') WITHIN GROUP (ORDER BY ROWNUM) 
+       (SELECT LISTAGG(COLUMN_VALUE, ', ') WITHIN GROUP (ORDER BY ROWNUM)
         FROM TABLE(s.wyposazenie)) AS wyposazenie
 FROM SALE s ORDER BY s.numer;
 
@@ -204,7 +204,7 @@ FROM SALE s ORDER BY s.numer;
 -- ============================================================================
 
 -- 9.1 Wyswietlenie uczniow z nazwami grup (DEREF)
-SELECT u.id_ucznia, u.pelne_nazwisko() AS uczen, 
+SELECT u.id_ucznia, u.pelne_nazwisko() AS uczen,
        DEREF(u.ref_grupa).kod AS grupa,
        DEREF(u.ref_grupa).klasa AS klasa
 FROM UCZNIOWIE u ORDER BY DEREF(u.ref_grupa).klasa, u.nazwisko;
@@ -214,7 +214,7 @@ SELECT l.id_lekcji, l.data_lekcji, l.godzina_start,
        DEREF(l.ref_przedmiot).nazwa AS przedmiot,
        DEREF(l.ref_nauczyciel).pelne_nazwisko() AS nauczyciel,
        DEREF(l.ref_sala).numer AS sala,
-       CASE WHEN l.ref_uczen IS NOT NULL 
+       CASE WHEN l.ref_uczen IS NOT NULL
             THEN DEREF(l.ref_uczen).pelne_nazwisko()
             ELSE 'Grupa ' || DEREF(l.ref_grupa).kod END AS kto
 FROM LEKCJE l WHERE ROWNUM <= 10 ORDER BY l.data_lekcji, l.godzina_start;

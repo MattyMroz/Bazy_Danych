@@ -26,16 +26,10 @@ AS
 CAST('|' AS varchar(max)) AS Sciezka
 FROM Osoby WHERE IdOsoby = 2 --IdSzefa IS NULL
 UNION ALL
-SELECT Poziom+1, Osoby.IdOsoby, Osoby.Nazwisko, Osoby.IdSzefa, 
+SELECT Poziom+1, Osoby.IdOsoby, Osoby.Nazwisko, Osoby.IdSzefa,
 CAST(Hierarchia.Nazwisko AS varchar(33)),
 CAST(Sciezka + Hierarchia.Nazwisko+'\' AS varchar(max))
 FROM Osoby JOIN Hierarchia
 ON Osoby.IdSzefa=Hierarchia.IdOsoby
 )
 SELECT * FROM Hierarchia
-
-
-
-
-
-

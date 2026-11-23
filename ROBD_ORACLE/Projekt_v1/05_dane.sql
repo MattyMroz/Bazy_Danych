@@ -186,29 +186,29 @@ BEGIN
     SELECT REF(i) INTO v_ref_skrzypce FROM t_instrument i WHERE i.nazwa = 'Skrzypce';
     SELECT REF(i) INTO v_ref_flet FROM t_instrument i WHERE i.nazwa = 'Flet poprzeczny';
     SELECT REF(i) INTO v_ref_perkusja FROM t_instrument i WHERE i.nazwa = 'Perkusja';
-    
+
     -- Kursy fortepianu
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Fortepian - Poczatki', 'poczatkujacy', 80.00, v_ref_fortepian));
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Fortepian - Sredni', 'sredni', 100.00, v_ref_fortepian));
-    
+
     -- Kurs gitary
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Gitara klasyczna - Poczatki', 'poczatkujacy', 70.00, v_ref_gitara));
-    
+
     -- Kurs skrzypiec
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Skrzypce - Zaawansowany', 'zaawansowany', 120.00, v_ref_skrzypce));
-    
+
     -- Kurs fletu
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Flet - Sredni', 'sredni', 90.00, v_ref_flet));
-    
+
     -- Kurs perkusji
     INSERT INTO t_kurs VALUES (
         t_kurs_obj(seq_kurs.NEXTVAL, 'Perkusja - Poczatki', 'poczatkujacy', 85.00, v_ref_perkusja));
-    
+
     COMMIT;
 END;
 /
@@ -239,42 +239,42 @@ BEGIN
     SELECT REF(u) INTO v_ref_uczen2 FROM t_uczen u WHERE u.id_ucznia = 2;
     SELECT REF(u) INTO v_ref_uczen3 FROM t_uczen u WHERE u.id_ucznia = 3;
     SELECT REF(u) INTO v_ref_uczen4 FROM t_uczen u WHERE u.id_ucznia = 4;
-    
+
     SELECT REF(n) INTO v_ref_naucz1 FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
     SELECT REF(n) INTO v_ref_naucz2 FROM t_nauczyciel n WHERE n.id_nauczyciela = 2;
     SELECT REF(n) INTO v_ref_naucz3 FROM t_nauczyciel n WHERE n.id_nauczyciela = 3;
-    
+
     SELECT REF(k) INTO v_ref_kurs1 FROM t_kurs k WHERE k.id_kursu = 1;
     SELECT REF(k) INTO v_ref_kurs2 FROM t_kurs k WHERE k.id_kursu = 2;
     SELECT REF(k) INTO v_ref_kurs3 FROM t_kurs k WHERE k.id_kursu = 3;
     SELECT REF(k) INTO v_ref_kurs4 FROM t_kurs k WHERE k.id_kursu = 4;
-    
+
     -- Lekcje zaplanowane (na przyszly tydzien)
     INSERT INTO t_lekcja VALUES (
-        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start, '10:00', 45, NULL, NULL, 
+        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start, '10:00', 45, NULL, NULL,
                      'zaplanowana', v_ref_uczen1, v_ref_naucz1, v_ref_kurs1));
-    
+
     INSERT INTO t_lekcja VALUES (
-        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start, '11:00', 45, NULL, NULL, 
+        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start, '11:00', 45, NULL, NULL,
                      'zaplanowana', v_ref_uczen2, v_ref_naucz1, v_ref_kurs2));
-    
+
     INSERT INTO t_lekcja VALUES (
-        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start + 1, '14:00', 60, NULL, NULL, 
+        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start + 1, '14:00', 60, NULL, NULL,
                      'zaplanowana', v_ref_uczen3, v_ref_naucz2, v_ref_kurs4));
-    
+
     INSERT INTO t_lekcja VALUES (
-        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start + 1, '15:00', 45, NULL, NULL, 
+        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start + 1, '15:00', 45, NULL, NULL,
                      'zaplanowana', v_ref_uczen4, v_ref_naucz3, v_ref_kurs3));
-    
+
     INSERT INTO t_lekcja VALUES (
-        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start + 2, '09:00', 45, NULL, NULL, 
+        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start + 2, '09:00', 45, NULL, NULL,
                      'zaplanowana', v_ref_uczen1, v_ref_naucz1, v_ref_kurs1));
-    
+
     -- Lekcja odwolana
     INSERT INTO t_lekcja VALUES (
-        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start + 2, '16:00', 45, NULL, 
+        t_lekcja_obj(seq_lekcja.NEXTVAL, v_data_start + 2, '16:00', 45, NULL,
                      'Choroba ucznia', 'odwolana', v_ref_uczen2, v_ref_naucz2, v_ref_kurs4));
-    
+
     COMMIT;
 END;
 /
@@ -290,22 +290,22 @@ BEGIN
     SELECT REF(u) INTO v_ref_uczen2 FROM t_uczen u WHERE u.id_ucznia = 2;
     SELECT REF(n) INTO v_ref_naucz1 FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
     SELECT REF(k) INTO v_ref_kurs1 FROM t_kurs k WHERE k.id_kursu = 1;
-    
+
     -- Wylaczamy trigger tymczasowo
     EXECUTE IMMEDIATE 'ALTER TRIGGER trg_lekcja_walidacja DISABLE';
-    
+
     INSERT INTO t_lekcja VALUES (
-        t_lekcja_obj(seq_lekcja.NEXTVAL, DATE '2025-12-10', '10:00', 45, 
-                     'Podstawy gamy C-dur', 'Uczen robi postepy', 
+        t_lekcja_obj(seq_lekcja.NEXTVAL, DATE '2025-12-10', '10:00', 45,
+                     'Podstawy gamy C-dur', 'Uczen robi postepy',
                      'odbyta', v_ref_uczen1, v_ref_naucz1, v_ref_kurs1));
-    
+
     INSERT INTO t_lekcja VALUES (
-        t_lekcja_obj(seq_lekcja.NEXTVAL, DATE '2025-12-17', '10:00', 45, 
-                     'Cwiczenia reki prawej', 'Wymaga poprawy techniki', 
+        t_lekcja_obj(seq_lekcja.NEXTVAL, DATE '2025-12-17', '10:00', 45,
+                     'Cwiczenia reki prawej', 'Wymaga poprawy techniki',
                      'odbyta', v_ref_uczen1, v_ref_naucz1, v_ref_kurs1));
-    
+
     EXECUTE IMMEDIATE 'ALTER TRIGGER trg_lekcja_walidacja ENABLE';
-    
+
     COMMIT;
 END;
 /
@@ -331,51 +331,51 @@ BEGIN
     SELECT REF(u) INTO v_ref_uczen4 FROM t_uczen u WHERE u.id_ucznia = 4;
     SELECT REF(n) INTO v_ref_naucz1 FROM t_nauczyciel n WHERE n.id_nauczyciela = 1;
     SELECT REF(n) INTO v_ref_naucz2 FROM t_nauczyciel n WHERE n.id_nauczyciela = 2;
-    
+
     -- Oceny ucznia 1 (Piotr)
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-10-15', 4, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-10-15', 4,
                     'Dobra postawa przy instrumencie', 'technika', v_ref_uczen1, v_ref_naucz1));
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-11-10', 5, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-11-10', 5,
                     'Bardzo dobra znajomosc gam', 'teoria', v_ref_uczen1, v_ref_naucz1));
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-12-05', 4, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-12-05', 4,
                     'Poprawny sluch muzyczny', 'sluch', v_ref_uczen1, v_ref_naucz1));
-    
+
     -- Oceny ucznia 2 (Katarzyna)
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-09-20', 5, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-09-20', 5,
                     'Swietna interpretacja Chopina', 'interpretacja', v_ref_uczen2, v_ref_naucz1));
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-10-25', 6, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-10-25', 6,
                     'Wybitna technika', 'technika', v_ref_uczen2, v_ref_naucz1));
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-11-30', 5, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-11-30', 5,
                     'Bardzo dobre poczucie rytmu', 'rytm', v_ref_uczen2, v_ref_naucz1));
-    
+
     -- Oceny ucznia 3 (Michal)
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-11-05', 3, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-11-05', 3,
                     'Wymaga poprawy', 'technika', v_ref_uczen3, v_ref_naucz2));
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-12-01', 4, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-12-01', 4,
                     'Postep widoczny', 'teoria', v_ref_uczen3, v_ref_naucz2));
-    
+
     -- Oceny ucznia 4 (Aleksandra)
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-09-15', 5, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-09-15', 5,
                     'Bardzo dobra', 'sluch', v_ref_uczen4, v_ref_naucz2));
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-10-20', 5, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-10-20', 5,
                     'Postepy w interpretacji', 'interpretacja', v_ref_uczen4, v_ref_naucz2));
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-11-25', 6, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-11-25', 6,
                     'Wzorowa technika', 'technika', v_ref_uczen4, v_ref_naucz2));
     INSERT INTO t_ocena_postepu VALUES (
-        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-12-10', 5, 
+        t_ocena_obj(seq_ocena.NEXTVAL, DATE '2025-12-10', 5,
                     'Bardzo dobre poczucie rytmu', 'rytm', v_ref_uczen4, v_ref_naucz2));
-    
+
     COMMIT;
 END;
 /

@@ -237,7 +237,7 @@ System MangaShift składa się z następujących warstw:
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[
-    box/.style={rectangle, draw=black!70, fill=gray!10, 
+    box/.style={rectangle, draw=black!70, fill=gray!10,
                 minimum width=3.5cm, minimum height=0.8cm, align=center},
     arrow/.style={->, thick, black!70}
 ]

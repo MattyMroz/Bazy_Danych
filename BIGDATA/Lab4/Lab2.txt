@@ -46,5 +46,3 @@ Analyze the remaining files of the ml100k data set, then use the Hive framework 
 6. What genres of films were most often watched by people from specific professions?
 7. People from which professions gave the highest ratings to which genres of films?
 8. Think about it: is there a connection between the ratings themselves, the rated genres of films, profession and gender?
-
-

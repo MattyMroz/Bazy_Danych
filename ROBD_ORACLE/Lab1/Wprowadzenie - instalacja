@@ -1,6 +1,6 @@
 Należy zainstalować u siebie system Oracle.
 
-Zalecam instalację  wersję: ORACLE 19c. Wersja  najnowsza to ORACLE 23c- dostępna jest na różne systemy operacyjne (np. system Linux oraz Windows). 
+Zalecam instalację  wersję: ORACLE 19c. Wersja  najnowsza to ORACLE 23c- dostępna jest na różne systemy operacyjne (np. system Linux oraz Windows).
 
 Aby ściągnąć wersję Oracle 19c lub 23c  to należy zarejestrować się na stronie Oracle, gdzie będzie można ściągnąć instalację:
 
@@ -12,13 +12,13 @@ Aby ściągnąć wersję Oracle 19c lub 23c  to należy zarejestrować się na s
 
 https://www.oracle.com/database/technologies/databaseappdev-vm.html
 
-3. Docker (kontener Oracle do pobrania przez link podany w punkcie 1 lub z repozytorium Git) 
+3. Docker (kontener Oracle do pobrania przez link podany w punkcie 1 lub z repozytorium Git)
 
 - https://www.oracle.com/database/technologies/oracle-database-software-downloads.html
 
 - https://github.com/oracle/docker-images
 
- 
+
 
 Link do różnych wersji kontenera Docker systemu Oracle.
 
@@ -34,7 +34,7 @@ najlepiej już z dołączonym JDK.
 
  Istnieją również rozszerzenia do innych środowisk:
 
- --> CS Studio Code 
+ --> CS Studio Code
 
 
 https://marketplace.visualstudio.com/items?itemName=Oracle.sql-developer

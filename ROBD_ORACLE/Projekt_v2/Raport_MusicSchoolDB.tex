@@ -24,22 +24,22 @@
 \begin{titlepage}
     \centering
     \vspace*{1cm}
-    
+
     {\Large\textbf{Politechnika Łódzka}}\\[0.3cm]
     {\large Wydział Elektrotechniki, Elektroniki, Informatyki i Automatyki}\\[2cm]
-    
+
     {\Huge\textbf{Szkoła Muzyczna}}\\[0.5cm]
     {\Large Obiektowa Baza Danych Oracle}\\[1cm]
-    
+
     {\large Rozproszone i Obiektowe Bazy Danych}\\[3cm]
-    
+
     \begin{tabular}{ll}
         \textbf{Autorzy:} & Igor Typiński (251237) \\
                           & Mateusz Mróz (251190) \\[0.5cm]
         \textbf{Grupa:}   & 5 \\[0.5cm]
         \textbf{Temat:}   & Szkoła muzyczna (z naciskiem na rozwój ucznia)
     \end{tabular}
-    
+
     \vfill
     {\large Łódź, styczeń 2026}
 \end{titlepage}
@@ -579,7 +579,7 @@ Uczniowie poniżej 15 lat uczęszczają do zwykłej szkoły (podstawowej lub śr
 IF v_wiek < 15 THEN
     v_godzina := TO_NUMBER(SUBSTR(:NEW.godzina_start, 1, 2));
     IF v_godzina < 14 OR v_godzina >= 19 THEN
-        RAISE_APPLICATION_ERROR(-20050, 
+        RAISE_APPLICATION_ERROR(-20050,
             'Dziecko moze miec lekcje tylko 14:00-19:00');
     END IF;
 END IF;

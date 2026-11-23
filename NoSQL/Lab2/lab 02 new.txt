@@ -1,14 +1,14 @@
 // ! Do pobierania danych wykorzystujemy metodę find()
 // 1.  Utwórz bazę danych o nazwie northwind
 
-// 2.  Utwórz kolekcje: customers, orders, departments (bez danych) 
+// 2.  Utwórz kolekcje: customers, orders, departments (bez danych)
 // https://www.mongodb.com/docs/manual/reference/method/db.createCollection/
 
 // 3.  Dodaj dokumenty z materiałów do kolekcji za pomocą polecenia insertOne lub insertMany (podaj wszystkie polecenia)
 
-// 4.  Utwórz kolekcję o nazwie lab_test. 
-// Dodaj do tej kolekcji wszystkie dokumenty z istniejących trzech kolekcji. 
-// Sprawdź czy dokumenty dodały się do kolekcji lab_test, a następnie usuń kolekcję lab_test 
+// 4.  Utwórz kolekcję o nazwie lab_test.
+// Dodaj do tej kolekcji wszystkie dokumenty z istniejących trzech kolekcji.
+// Sprawdź czy dokumenty dodały się do kolekcji lab_test, a następnie usuń kolekcję lab_test
 // (wykorzystać polecenie insertMany i metodę toArray() - mogą być trzy osobne polecenia)
 // https://www.mongodb.com/docs/manual/reference/method/cursor.toArray/
 
@@ -31,7 +31,7 @@
 // 12. Wyświetl dokumenty z orders, gdzie totalCost jest między between 5000 i 10000.
 
 // 13. Wyświetl klientów z tabeli customer, gdzie lastName zaczyna się na literę K
-// https://www.mongodb.com/docs/manual/reference/operator/query/regex/ 
+// https://www.mongodb.com/docs/manual/reference/operator/query/regex/
 
 // 14. Wyświetl dokumenty z departments, gdzie city to: Poznań, Warszawa albo Łódź.
 // https://www.mongodb.com/docs/manual/reference/operator/aggregation/in/
@@ -55,25 +55,25 @@
 
 // 23. Usuń drugi indeks z poprzedniego zadania.
 
-// 24. Wykorzystujemy metodę find(), sort(), limit(), skip() i sprawdzamy dla dowolnej kolekcji 
+// 24. Wykorzystujemy metodę find(), sort(), limit(), skip() i sprawdzamy dla dowolnej kolekcji
 // czy kolejność ostatnich 3 metod ma znaczenie na wynik zapytania. Podaj przykłady.
 
 // ------------------------------------------------------------------------
 // ------------------------------------------------------------------------
-// 25. Utwórz nową bazę danych Politechnika i ponownie wylistuj istniejące bazy danych (mongosh). 
+// 25. Utwórz nową bazę danych Politechnika i ponownie wylistuj istniejące bazy danych (mongosh).
 
-//   25.1 - w danej bazie utwórz kolekcję Students i wstaw dowolne dane związane z danymi studentów 
-// np. imię nazwisko, wydział, specjalność, rok urodzenia, zainteresowania w postaci listy, 
-// adresy poczty elektronicznej firmowej, prywatnej w postaci zagnieżdżonego JSON, data i godzina wstawienia dokumentu (createdAt: new Date()) za pomocą poleceń insertMany() (2 dokumenty) oraz insertOne() (1 dokument) 
+//   25.1 - w danej bazie utwórz kolekcję Students i wstaw dowolne dane związane z danymi studentów
+// np. imię nazwisko, wydział, specjalność, rok urodzenia, zainteresowania w postaci listy,
+// adresy poczty elektronicznej firmowej, prywatnej w postaci zagnieżdżonego JSON, data i godzina wstawienia dokumentu (createdAt: new Date()) za pomocą poleceń insertMany() (2 dokumenty) oraz insertOne() (1 dokument)
 // (format struktury danych JSON w tym znaczniki ustalić wspólnie na zajęciach)
-// Dana kolekcja ma mieć ograniczoną wielkość kolekcji na 1MB lub 100 dokumentów. 
+// Dana kolekcja ma mieć ograniczoną wielkość kolekcji na 1MB lub 100 dokumentów.
 // Sprawdzić co się dzieje po przekroczeniu 1MB lub 100 dokumentów w kolekcji
 
-//   25.2 - następnie wykonaj przykładowe polecenia updateMany(), updateOne(), replaceOne() 
+//   25.2 - następnie wykonaj przykładowe polecenia updateMany(), updateOne(), replaceOne()
 // i sprawdź zmodyfikowane odpowiednie dane.
 
-//   25.3 - zmodyfikuj istniejące dane: dodaj nowe pole np. z aktualną datą ($set), 
-// wyrzuć pole np. z datą ($unset). 
+//   25.3 - zmodyfikuj istniejące dane: dodaj nowe pole np. z aktualną datą ($set),
+// wyrzuć pole np. z datą ($unset).
 // https://www.mongodb.com/docs/manual/reference/operator/update/set/
 // https://www.mongodb.com/docs/manual/reference/operator/update/unset/
 

@@ -40,23 +40,23 @@ BEGIN PKG_SLOWNIKI.dodaj_przedmiot('Ksztalcenie sluchu', 'grupowy', 45); END;
 -- 2. SALE (4 sale) - UZYCIE VARRAY T_WYPOSAZENIE
 -- ============================================================================
 
-BEGIN 
-    PKG_SLOWNIKI.dodaj_sale('101', 'indywidualna', 3, 
+BEGIN
+    PKG_SLOWNIKI.dodaj_sale('101', 'indywidualna', 3,
         T_WYPOSAZENIE('Pianino Yamaha', 'Pulpit na nuty', 'Krzeslo obrotowe'));
 END;
 /
-BEGIN 
-    PKG_SLOWNIKI.dodaj_sale('102', 'indywidualna', 3, 
+BEGIN
+    PKG_SLOWNIKI.dodaj_sale('102', 'indywidualna', 3,
         T_WYPOSAZENIE('Fortepian Steinway', 'Metronom', 'Lustro'));
 END;
 /
-BEGIN 
-    PKG_SLOWNIKI.dodaj_sale('103', 'indywidualna', 3, 
+BEGIN
+    PKG_SLOWNIKI.dodaj_sale('103', 'indywidualna', 3,
         T_WYPOSAZENIE('Pianino cyfrowe', 'Wzmacniacz', 'Stojak gitarowy'));
 END;
 /
-BEGIN 
-    PKG_SLOWNIKI.dodaj_sale('201', 'grupowa', 15, 
+BEGIN
+    PKG_SLOWNIKI.dodaj_sale('201', 'grupowa', 15,
         T_WYPOSAZENIE('Tablica interaktywna', 'Naglosnienie', 'Pianino', 'Krzesla x15', 'Projektor'));
 END;
 /
@@ -169,13 +169,13 @@ COMMIT;
 SELECT id_przedmiotu AS ID, nazwa, typ_zajec AS "Typ", czas_trwania_min AS "Czas" FROM PRZEDMIOTY ORDER BY typ_zajec, nazwa;
 
 SELECT id_sali AS ID, numer, typ, pojemnosc,
-       (SELECT LISTAGG(COLUMN_VALUE, ', ') WITHIN GROUP (ORDER BY ROWNUM) 
+       (SELECT LISTAGG(COLUMN_VALUE, ', ') WITHIN GROUP (ORDER BY ROWNUM)
         FROM TABLE(s.wyposazenie)) AS wyposazenie
 FROM SALE s ORDER BY numer;
 
 SELECT id_grupy AS ID, kod, klasa, rok_szkolny FROM GRUPY ORDER BY klasa;
 
-SELECT id_nauczyciela AS ID, imie, nazwisko, NVL(instrument, '(grupowe)') AS specjalizacja 
+SELECT id_nauczyciela AS ID, imie, nazwisko, NVL(instrument, '(grupowe)') AS specjalizacja
 FROM NAUCZYCIELE ORDER BY nazwisko;
 
 SELECT DEREF(u.ref_grupa).kod AS Grupa, u.id_ucznia AS ID, u.imie, u.nazwisko, u.instrument

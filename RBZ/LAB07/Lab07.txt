@@ -4,7 +4,7 @@
 -- Celem ćwiczenia jest zapoznanie się z łącznikami baz danych oraz wykorzystania łącznika bazy danych i jego definiowanie w celu dostępu z bazy -- lokalnej do zdalnej. Definiowanie łącznika prywatnego, publicznego i współdzielonego. Pobieranie informacji o łącznika użytkownika baz danych. -- Zarządzanie łącznikami baz danych. Definicja perspektyw oraz wyzwalacza instead-of. :
 
 
---W laboratorium wymagany będzie dostęp do dwóch różnych źródeł danych opartych na serwerze Oracle. W tym celu można na danej jednostce zainstalować nową instancję bazy danych lub można korzystać z jednej instancji symulując dostęp do różnych serwerów. 
+--W laboratorium wymagany będzie dostęp do dwóch różnych źródeł danych opartych na serwerze Oracle. W tym celu można na danej jednostce zainstalować nową instancję bazy danych lub można korzystać z jednej instancji symulując dostęp do różnych serwerów.
 
 -------------------------------------------------------------
 
@@ -17,7 +17,7 @@
 
 -- Zadanie 1.
 -----------------
--- Zapoznać się z dokumentacją techniczną firmy ORACLE dotyczącą podstaw pracy w rozproszonej bazie danych w tym przetwarzani rozproszonego w 
+-- Zapoznać się z dokumentacją techniczną firmy ORACLE dotyczącą podstaw pracy w rozproszonej bazie danych w tym przetwarzani rozproszonego w
 oparciu o serwery ORACLE:
 -- https://docs.oracle.com/en/database/oracle/oracle-database/18/admin/distributed-database-concepts.html#GUID-40725723-DA7E-49CD-99FD-5A3DDCE44E4A
 
@@ -31,7 +31,7 @@ oparciu o serwery ORACLE:
 -- Zadanie 2:
 --------------------
 -- W systemie ORACLE zalogować się na użytkownika roli SYS oraz sprawdzić identyfikator nazwy globalnej.
--- Aktualną globalną nazwę bazy danych sprawdzić można za pomocą perspektywy słownika danych o nazwie GLOBAL_NAME: 
+-- Aktualną globalną nazwę bazy danych sprawdzić można za pomocą perspektywy słownika danych o nazwie GLOBAL_NAME:
 
 
 select value from v$parameter where name='service_names';
@@ -41,7 +41,7 @@ show parameter service_names;
 
 select * from SCOTT.EMP@pd19.IMSI.PL.PL;
 
--- Z punktu widzenia danej bazy danych zapytania wykonujemy podając nazwę schematu oraz nazwę obiektu bazy danych. Jeżeli jesteśmy zalogowani jako 
+-- Z punktu widzenia danej bazy danych zapytania wykonujemy podając nazwę schematu oraz nazwę obiektu bazy danych. Jeżeli jesteśmy zalogowani jako
 -- użytkownik, który jest właścicielem danego schematu to wystarczy podać nazwę obiektu.
 
 
@@ -77,7 +77,7 @@ GRANT CREATE SYNONYM TO RBD;
 GRANT CREATE PUBLIC SYNONYM TO RBD;
 
 -- UWAGA !!!- przywiązywanie praw roli  DBA do roli RBD: (jeżeli chcesz administrować)
--- ( kolejnych krokach z poziomu użytkownika lokalnego będzie można tworzyć i zarządzać 
+-- ( kolejnych krokach z poziomu użytkownika lokalnego będzie można tworzyć i zarządzać
 -- innymi użytkownikami celem symulacji pracy zdalnej RBD)
 
 GRANT DBA TO RBD;
@@ -90,8 +90,8 @@ REVOKE DBA FROM RBD;
 
 -- Zadanie 5:
 ----------------------
--- Tworzymy na instancji ORACLE użytkownika z określonym hasłem. 
- 
+-- Tworzymy na instancji ORACLE użytkownika z określonym hasłem.
+
 -- Dodatkowo nadajemy uprawnienia:
 
 -- USER SQL
@@ -197,11 +197,11 @@ using '(DESCRIPTION =
 
 -- Zadanie (symulacja na jednej instancji):
 --------------------------
--- 9.	Założyć nowego użytkownika schemat: U2: TEST2 (wybrane hasło). 
--- 10.	Skopiować  tabele emp i dept do schematu schematu test2 oraz założyć w obu schematach użytkowników U1: TEST oraz U2: TEST2 sekwencję seq2. 
+-- 9.	Założyć nowego użytkownika schemat: U2: TEST2 (wybrane hasło).
+-- 10.	Skopiować  tabele emp i dept do schematu schematu test2 oraz założyć w obu schematach użytkowników U1: TEST oraz U2: TEST2 sekwencję seq2.
 -- 11.	Nadać prawa do tworzenia database linków dla użytkownika test (o ile nie wykonano wcześniejszych zadań laboratoryjnych).
--- 12.	Założyć database link w schemacie użytkownika TEST z wykorzystaniem użytkownika TEST2 
--- 13.	Zdefiniować widok niemodyfikowalny o nazwie: DEPARTMENT(nazwa, server)   który z wykorzystaniem operatora UNION ALL pobierze dane z tabeli: 
+-- 12.	Założyć database link w schemacie użytkownika TEST z wykorzystaniem użytkownika TEST2
+-- 13.	Zdefiniować widok niemodyfikowalny o nazwie: DEPARTMENT(nazwa, server)   który z wykorzystaniem operatora UNION ALL pobierze dane z tabeli:
 -- DEPT schematu lokalnego i schematu użytkownika U2: TEST2
 
 -- UWAGA !!
@@ -224,8 +224,3 @@ using '(DESCRIPTION =
 
 
 ----------------------------
-
-
-
-
-

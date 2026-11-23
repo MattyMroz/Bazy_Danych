@@ -379,7 +379,7 @@ COMMIT
 3. Sprawdź jego plan
 4. Sprawdź listę uczniów w grupie 2A
 
-**Oczekiwany rezultat:** 
+**Oczekiwany rezultat:**
 - Uczeń ma 2 lekcje fortepianu w różnych dniach
 - Uczeń ma lekcję grupową (kształcenie słuchu) razem z grupą 2A
 

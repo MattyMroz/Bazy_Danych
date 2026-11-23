@@ -42,7 +42,7 @@ end
 declare @a float,@wynik float
 set @a=15;
 set @wynik=dbo.potega(@a);
-print cast(@a as varchar) + ' do kwadratu to ' 
+print cast(@a as varchar) + ' do kwadratu to '
 + cast(@wynik as varchar)
 
 select (avg(wiek)) from pracownicy;
@@ -52,8 +52,8 @@ select dbo.potega(avg(wiek)) from pracownicy;
 create function fun2(@filtr varchar(3))
  returns table
 as
-return (select imie,nazwisko from pracownicy 
-where nazwisko like @filtr) 
+return (select imie,nazwisko from pracownicy
+where nazwisko like @filtr)
 
 
 select * from dbo.fun2('n%')
@@ -62,15 +62,15 @@ select * from dbo.fun2('n%')
 
 
 create function fun3(@filtr varchar(3))
- returns 
- @tab_return table(imie varchar(50), nazwisko 
+ returns
+ @tab_return table(imie varchar(50), nazwisko
  varchar(50) )
 as
 begin
 	insert into @tab_return
 		select imie ,nazwisko from pracownicy
 		where nazwisko like @filtr
-	return 
+	return
 end
 
 
@@ -81,30 +81,30 @@ end
 
 
 
--- Stwórz funkcjê która bêdzie przyjmowaæ 2 
---argumenty bed¹ce ci¹gami znaków 
--- (maksymalnie do 100 znaków) i zwróci 
+-- Stwórz funkcjê która bêdzie przyjmowaæ 2
+--argumenty bed¹ce ci¹gami znaków
+-- (maksymalnie do 100 znaków) i zwróci
 --ci¹g znaków powsta³y z wymieszania na
--- przemian znaków 
--- z ci¹gu pierwszego z ci¹giem drugim . 
+-- przemian znaków
+-- z ci¹gu pierwszego z ci¹giem drugim .
 --Dodatkowo funkcja ta ma zamieniæ kolejnoœæ znaków
--- PRZYK£AD: funkcja('ABCDE','12345') zwróci: 
---5E4D3C2B1A  
--- W przypadku niezgodnoœci d³ugoœci ci¹gów 
---wejœciowych wyœwietl komuikat typu: 
+-- PRZYK£AD: funkcja('ABCDE','12345') zwróci:
+--5E4D3C2B1A
+-- W przypadku niezgodnoœci d³ugoœci ci¹gów
+--wejœciowych wyœwietl komuikat typu:
 --'B³¹d d³ugoœci znaków: X <> Y
 -- gdzie X i Y to d³ugoœci ci¹gów wejœciowych
 
 
 
-create function funkcja(@str1 varchar(100), @str2 
-varchar(100)) 
+create function funkcja(@str1 varchar(100), @str2
+varchar(100))
 returns varchar(200)
 as
 begin
 
 if len(@str1) != len(@str2)
- return 'B³¹d d³ugoœci znaków: ' + cast(len(@str1) 
+ return 'B³¹d d³ugoœci znaków: ' + cast(len(@str1)
  as varchar)+' <> '+ cast(len(@str2) as varchar)
 
 declare @licznik int;
@@ -115,12 +115,12 @@ set @result = '';
 
 
 while @licznik <= len(@str1)
-begin 
+begin
 		set @licznik = @licznik + 1
-		set @result = @result + 
-		substring(@str1,@licznik-1,1) 
-		set @result = @result + 
-		substring(@str2,@licznik-1,1)		
+		set @result = @result +
+		substring(@str1,@licznik-1,1)
+		set @result = @result +
+		substring(@str2,@licznik-1,1)
 end
 
 return  reverse(@result)
@@ -131,12 +131,12 @@ select dbo.funkcja('ABCDE','12345')
 
 
 
---Dodaj funkcjê fun_kol, która zwróci tekstow¹ nazwê 
+--Dodaj funkcjê fun_kol, która zwróci tekstow¹ nazwê
 --dnia tygodnia  powsta³¹
---z daty powsta³ej z dodania X dni 
---(gdzie X to drugi parametr) 
+--z daty powsta³ej z dodania X dni
+--(gdzie X to drugi parametr)
 --do daty podanej w pierwszym parametrze.
---W przypadku ustawienia null w parametrze 
---X dodaj 10 dni. 
+--W przypadku ustawienia null w parametrze
+--X dodaj 10 dni.
 --Przyk³adowy wynik wywo³ania funkcji:
 --'Otrzymany dzieñ to: Sunday'

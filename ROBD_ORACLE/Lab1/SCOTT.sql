@@ -1,5 +1,5 @@
 -- USER SQL
-CREATE USER SCOTT IDENTIFIED BY 12345 
+CREATE USER SCOTT IDENTIFIED BY 12345
 DEFAULT TABLESPACE "USERS"
 TEMPORARY TABLESPACE "TEMP";
 
@@ -18,42 +18,42 @@ GRANT UNLIMITED TABLESPACE TO SCOTT ;
 
 --------------------------------------------------------
 
-  CREATE TABLE "SCOTT"."EMP" 
-   (	"EMPNO" NUMBER(4,0), 
-	"ENAME" VARCHAR2(10), 
-	"JOB" VARCHAR2(9), 
-	"MGR" NUMBER(4,0), 
-	"HIREDATE" DATE, 
-	"SAL" NUMBER(7,2), 
-	"COMM" NUMBER(7,2), 
+  CREATE TABLE "SCOTT"."EMP"
+   (	"EMPNO" NUMBER(4,0),
+	"ENAME" VARCHAR2(10),
+	"JOB" VARCHAR2(9),
+	"MGR" NUMBER(4,0),
+	"HIREDATE" DATE,
+	"SAL" NUMBER(7,2),
+	"COMM" NUMBER(7,2),
 	"DEPTNO" NUMBER(2,0)
    ) ;
 --------------------------------------------------------
 --  DDL for Table DEPT
 --------------------------------------------------------
 
-  CREATE TABLE "SCOTT"."DEPT" 
-   (	"DEPTNO" NUMBER(2,0), 
-	"DNAME" VARCHAR2(14), 
+  CREATE TABLE "SCOTT"."DEPT"
+   (	"DEPTNO" NUMBER(2,0),
+	"DNAME" VARCHAR2(14),
 	"LOC" VARCHAR2(13)
    ) ;
 --------------------------------------------------------
 --  DDL for Table BONUS
 --------------------------------------------------------
 
-  CREATE TABLE "SCOTT"."BONUS" 
-   (	"ENAME" VARCHAR2(10), 
-	"JOB" VARCHAR2(9), 
-	"SAL" NUMBER, 
+  CREATE TABLE "SCOTT"."BONUS"
+   (	"ENAME" VARCHAR2(10),
+	"JOB" VARCHAR2(9),
+	"SAL" NUMBER,
 	"COMM" NUMBER
    ) ;
 --------------------------------------------------------
 --  DDL for Table SALGRADE
 --------------------------------------------------------
 
-  CREATE TABLE "SCOTT"."SALGRADE" 
-   (	"GRADE" NUMBER, 
-	"LOSAL" NUMBER, 
+  CREATE TABLE "SCOTT"."SALGRADE"
+   (	"GRADE" NUMBER,
+	"LOSAL" NUMBER,
 	"HISAL" NUMBER
    ) ;
 REM INSERTING into SCOTT.EMP

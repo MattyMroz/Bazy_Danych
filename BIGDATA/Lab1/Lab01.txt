@@ -1,5 +1,5 @@
 
-UWAGA!!! - zmienić nazwę zamieszczonego na WIKAMP pliku: <210234 Nowak Jan.txt> na nazwę: nazwisko_imię_Album.txt (wprowadzić własne dane) 
+UWAGA!!! - zmienić nazwę zamieszczonego na WIKAMP pliku: <210234 Nowak Jan.txt> na nazwę: nazwisko_imię_Album.txt (wprowadzić własne dane)
 
 Dodatkowo w pierwszym wierszy umieścić:
 

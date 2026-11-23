@@ -6,7 +6,7 @@ use baza
 
 CREATE TABLE dzialy(
 	dzialID int IDENTITY(1,1) NOT NULL PRIMARY KEY,
-	nazwa varchar(50) 
+	nazwa varchar(50)
 )
 
 go

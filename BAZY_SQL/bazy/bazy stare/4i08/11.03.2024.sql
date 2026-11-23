@@ -1,4 +1,4 @@
-create database pon_12 
+create database pon_12
 use pon_12
 
 sp_helpdb pon_12
@@ -9,7 +9,7 @@ create table [dane moje]
 
 )
 
-create table dane 
+create table dane
 (imie varchar,
 nazwisko varchar,
 wiek int
@@ -23,7 +23,7 @@ select * from dane
 insert into dane
 values('jasio','kotek',33)
 
-create table dane1 
+create table dane1
 (imie varchar(10) is not null,
 nazwisko varchar(20),
 wiek int
@@ -40,7 +40,7 @@ select * from dane1
 
 -- dodajemy do tabeli unkalna kolumne
 
-alter table dane1 
+alter table dane1
 add id int
 
 insert into dane1
@@ -102,7 +102,7 @@ where id='5'
 
 
 
-use baza 
+use baza
 
 alter table pracownicy
 add dousuniecia2 int default 1
@@ -115,7 +115,7 @@ insert into pracownicy(dousuniecia2) values(2);
 insert into pracownicy(dousuniecia2) values(1);
 
 alter table pracownicy
-add wzrost int 
+add wzrost int
 
 insert into pracownicy(wzrost) values(190);
 insert into pracownicy(wzrost) values(1.90);
@@ -123,7 +123,7 @@ insert into pracownicy(wzrost) values(1.90);
 select * from pracownicy
 
 alter table pracownicy
-add wzrost1 decimal(3,2) 
+add wzrost1 decimal(3,2)
 
 insert into pracownicy(wzrost1) values(1.90);
 
@@ -132,7 +132,7 @@ update pracownicy set wzrost1=1.75 where pracid=5
 update pracownicy set wzrost1=1.80 where pracid>5
 
 alter table pracownicy
-add aktualny2 varchar(10) 
+add aktualny2 varchar(10)
 
 update pracownicy set aktualny2='tak'
 

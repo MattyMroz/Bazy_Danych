@@ -211,4 +211,3 @@ W głównym agencie, należy zdefiniować, jak i kiedy najchętniej wywoływać 
 # IX. Inne i Notatki
 
 Ważne dla Polaka: Język Polski wykazuje większą precyzję i klarowność w wyrażaniu myśli i idei technicznych w porównaniu do angielskiego, jednak taki prompt zawiera więcej tokenów. My wykorzystujemy język Polski, ale warto mieć na uwadze, że w angielskim prompt może być krótszy o około 5-15%.
-

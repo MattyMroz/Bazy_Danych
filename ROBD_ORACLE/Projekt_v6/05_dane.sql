@@ -81,7 +81,7 @@ BEGIN
     PKG_SLOWNIKI.dodaj_przedmiot('Audycje muzyczne', 'grupowy', 45, T_WYPOSAZENIE('tablica'));
     PKG_SLOWNIKI.dodaj_przedmiot('Chor', 'grupowy', 90, T_WYPOSAZENIE('naglosnienie'));
     PKG_SLOWNIKI.dodaj_przedmiot('Orkiestra', 'grupowy', 90, T_WYPOSAZENIE('pulpity'));
-    
+
     DBMS_OUTPUT.PUT_LINE('Dodano 10 przedmiotow');
 END;
 /
@@ -109,7 +109,7 @@ BEGIN
     PKG_SLOWNIKI.dodaj_sale('201', 'grupowa', 20, T_WYPOSAZENIE('tablica', 'pianino', 'lustra', 'naglosnienie', 'pulpity'));
     PKG_SLOWNIKI.dodaj_sale('202', 'grupowa', 20, T_WYPOSAZENIE('tablica', 'pianino', 'lustra', 'naglosnienie', 'pulpity'));
     PKG_SLOWNIKI.dodaj_sale('203', 'grupowa', 20, T_WYPOSAZENIE('tablica', 'pianino', 'lustra', 'naglosnienie', 'pulpity'));
-    
+
     DBMS_OUTPUT.PUT_LINE('Dodano 15 sal (12 indywidualnych + 3 grupowe)');
 END;
 /
@@ -119,7 +119,7 @@ END;
 -- ============================================================================
 
 BEGIN
-    -- Klasy I-III 
+    -- Klasy I-III
     PKG_SLOWNIKI.dodaj_grupe('1A', 1, '2025/2026');
     PKG_SLOWNIKI.dodaj_grupe('2A', 2, '2025/2026');
     PKG_SLOWNIKI.dodaj_grupe('3A', 3, '2025/2026');
@@ -128,7 +128,7 @@ BEGIN
     PKG_SLOWNIKI.dodaj_grupe('4A', 4, '2025/2026');
     PKG_SLOWNIKI.dodaj_grupe('5A', 5, '2025/2026');
     PKG_SLOWNIKI.dodaj_grupe('6A', 6, '2025/2026');
-    
+
     DBMS_OUTPUT.PUT_LINE('Dodano 6 grup');
 END;
 /
@@ -163,7 +163,7 @@ BEGIN
     PKG_OSOBY.dodaj_nauczyciela('Maria', 'Jankowska', NULL, 'jankowska@szkola.pl', '610000000');
     PKG_OSOBY.dodaj_nauczyciela('Robert', 'Krawczyk', NULL, 'krawczyk@szkola.pl', '612222222');
     PKG_OSOBY.dodaj_nauczyciela('Barbara', 'Mazur', NULL, 'mazur@szkola.pl', '613333333');
-    
+
     DBMS_OUTPUT.PUT_LINE('Dodano 15 nauczycieli (12 instrumentalistow + 3 grupowych)');
 END;
 /
@@ -193,7 +193,7 @@ BEGIN
     PKG_OSOBY.dodaj_ucznia('Katarzyna', 'Szymanska', DATE '2019-11-30', '1A', 'Fortepian', 'szymanska.rodzic@email.pl', '500100108');
     PKG_OSOBY.dodaj_ucznia('Michal', 'Dabrowski', DATE '2019-06-18', '1A', 'Gitara', 'dabrowski.rodzic@email.pl', '500100109');
     PKG_OSOBY.dodaj_ucznia('Jakub', 'Jankowski', DATE '2019-10-05', '1A', 'Perkusja', 'jankowski.rodzic@email.pl', '500100110');
-    
+
     DBMS_OUTPUT.PUT_LINE('Dodano 10 uczniow klasy 1A');
 END;
 /
@@ -210,7 +210,7 @@ BEGIN
     PKG_OSOBY.dodaj_ucznia('Antonina', 'Mazurkiewicz', DATE '2018-07-15', '2A', 'Gitara', 'mazurkiewicz.rodzic@email.pl', '500100208');
     PKG_OSOBY.dodaj_ucznia('Nadia', 'Kwiatkowska', DATE '2018-11-04', '2A', 'Perkusja', 'kwiatkowska.rodzic@email.pl', '500100209');
     PKG_OSOBY.dodaj_ucznia('Borys', 'Jablonski', DATE '2018-09-21', '2A', 'Flet', 'jablonski.rodzic@email.pl', '500100210');
-    
+
     DBMS_OUTPUT.PUT_LINE('Dodano 10 uczniow klasy 2A');
 END;
 /
@@ -225,7 +225,7 @@ BEGIN
     PKG_OSOBY.dodaj_ucznia('Blanka', 'Pawlik', DATE '2017-11-21', '3A', 'Fortepian', 'pawlik.rodzic@email.pl', '500100306');
     PKG_OSOBY.dodaj_ucznia('Ryszard', 'Gorski', DATE '2017-02-07', '3A', 'Skrzypce', 'gorski.rodzic@email.pl', '500100307');
     PKG_OSOBY.dodaj_ucznia('Iga', 'Szewczyk', DATE '2017-04-13', '3A', 'Gitara', 'szewczyk.rodzic@email.pl', '500100308');
-    
+
     DBMS_OUTPUT.PUT_LINE('Dodano 8 uczniow klasy 3A');
 END;
 /
@@ -240,7 +240,7 @@ BEGIN
     PKG_OSOBY.dodaj_ucznia('Dawid', 'Borkowski', DATE '2016-01-20', '4A', 'Skrzypce', 'borkowski.rodzic@email.pl', '500100406');
     PKG_OSOBY.dodaj_ucznia('Malwina', 'Sadowski', DATE '2016-03-27', '4A', 'Gitara', 'sadowski.rodzic@email.pl', '500100407');
     PKG_OSOBY.dodaj_ucznia('Jowita', 'Wasilewski', DATE '2016-07-11', '4A', 'Perkusja', 'wasilewski.rodzic@email.pl', '500100408');
-    
+
     DBMS_OUTPUT.PUT_LINE('Dodano 8 uczniow klasy 4A');
 END;
 /
@@ -253,7 +253,7 @@ BEGIN
     PKG_OSOBY.dodaj_ucznia('Karolina', 'Adamski', DATE '2015-07-07', '5A', 'Fortepian', 'adamski.rodzic@email.pl', '500100504');
     PKG_OSOBY.dodaj_ucznia('Artur', 'Sikorski', DATE '2015-09-14', '5A', 'Flet', 'sikorski.rodzic@email.pl', '500100505');
     PKG_OSOBY.dodaj_ucznia('Rafal', 'Mroz', DATE '2015-02-28', '5A', 'Skrzypce', 'mroz.rodzic@email.pl', '500100506');
-    
+
     DBMS_OUTPUT.PUT_LINE('Dodano 6 uczniow klasy 5A');
 END;
 /
@@ -266,7 +266,7 @@ BEGIN
     PKG_OSOBY.dodaj_ucznia('Izabela', 'Kurek', DATE '2014-08-08', '6A', 'Fortepian', 'kurek.rodzic@email.pl', '500100604');
     PKG_OSOBY.dodaj_ucznia('Andrzej', 'Sobieski', DATE '2014-01-29', '6A', 'Skrzypce', 'sobieski.rodzic@email.pl', '500100605');
     PKG_OSOBY.dodaj_ucznia('Anna', 'Borkowska', DATE '2014-07-22', '6A', 'Perkusja', 'borkowska.rodzic@email.pl', '500100606');
-    
+
     DBMS_OUTPUT.PUT_LINE('Dodano 6 uczniow klasy 6A (dyplomanci)');
 END;
 /
@@ -301,7 +301,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('GENEROWANIE PLANU - TYDZIEN 1');
     DBMS_OUTPUT.PUT_LINE('Data: 2026-02-02 (poniedzialek)');
     DBMS_OUTPUT.PUT_LINE('========================================');
-    
+
     PKG_LEKCJE.generuj_plan_tygodnia(DATE '2026-02-02');
 END;
 /
@@ -312,7 +312,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('GENEROWANIE PLANU - TYDZIEN 2');
     DBMS_OUTPUT.PUT_LINE('Data: 2026-02-09 (poniedzialek)');
     DBMS_OUTPUT.PUT_LINE('========================================');
-    
+
     PKG_LEKCJE.generuj_plan_tygodnia(DATE '2026-02-09');
 END;
 /
@@ -323,7 +323,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('GENEROWANIE PLANU - TYDZIEN 3');
     DBMS_OUTPUT.PUT_LINE('Data: 2026-02-16 (poniedzialek)');
     DBMS_OUTPUT.PUT_LINE('========================================');
-    
+
     PKG_LEKCJE.generuj_plan_tygodnia(DATE '2026-02-16');
 END;
 /
@@ -334,7 +334,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('GENEROWANIE PLANU - TYDZIEN 4');
     DBMS_OUTPUT.PUT_LINE('Data: 2026-02-23 (poniedzialek)');
     DBMS_OUTPUT.PUT_LINE('========================================');
-    
+
     PKG_LEKCJE.generuj_plan_tygodnia(DATE '2026-02-23');
 END;
 /
@@ -438,7 +438,7 @@ ORDER BY COUNT(*) DESC;
 -- Rozklad lekcji wg typu
 PROMPT
 PROMPT Rozklad lekcji wg typu:
-SELECT 
+SELECT
     CASE WHEN ref_uczen IS NOT NULL THEN 'indywidualna' ELSE 'grupowa' END AS typ,
     COUNT(*) AS liczba
 FROM LEKCJE

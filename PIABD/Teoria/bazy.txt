@@ -1,12 +1,12 @@
 1
- Projektowanie 
-i 
+ Projektowanie
+i
 Administracja baz danych
  Sprawy organizacyjne
  dr inż. Henryk Welfle
  Instytut Mechatroniki i Systemów Informatycznych
  e-mail: henryk.welfle@p.lodz.pl
- Godziny przyjęć :  sprawdzić na stronie http://imsi.pl   
+ Godziny przyjęć :  sprawdzić na stronie http://imsi.pl
 pokój 8(IMSI)
  Zaliczenieczęściwykładowejnapodstawietestu
  przeprowadzonegonaostatnimwykładzie(8tydzień)-28.11.2025piątekgodzina14.15
@@ -34,7 +34,7 @@ pokój 8(IMSI)
  6
 4
  Platforma bazodanowa SQL Server od 2008 -komponenty
- Silnik baz danych (Database Engine) 
+ Silnik baz danych (Database Engine)
 W chwili obecnej funkcjonalności dostępne w SQL Server, pozwalają
  wykorzystaćplatformędobudowyzarównomałychiśrednichbazdanych,w
  których wymagane są podstawowe elementy funkcjonalne (Express,
@@ -49,7 +49,7 @@ MemoryOLTP,ColumnStore Index,BufferPool Extension) i bezpieczeństwo (technologi
  analizybazydanychi integracjiPolyBasewceludostępdousługiHadoopi
  innychniejednorodnych źródeł danychoraz serwera usługDataQuality
  Services(DQS).
- Usługi replikacji danych 
+ Usługi replikacji danych
 (Replication Services)
  Obsługareplikacjidanychwzastosowaniachtakichjakrozproszone
  lubmobilne aplikacje przetwarzania danych, systemy wysokiej
@@ -61,7 +61,7 @@ MemoryOLTP,ColumnStore Index,BufferPool Extension) i bezpieczeństwo (technologi
  7
  8
 5
- Usługi powiadamiania 
+ Usługi powiadamiania
 (Notification Services)
  Zaawansowane możliwości powiadamiania pozwalające na
  tworzenie i wdrażanie skalowalnych aplikacji, służących do
@@ -69,7 +69,7 @@ MemoryOLTP,ColumnStore Index,BufferPool Extension) i bezpieczeństwo (technologi
  informacji na dowolne przenośne lub podłączone do sieci
  urządzenie.
  Platforma bazodanowa SQL Server od 2008 -komponenty
- Usługi integracyjne 
+ Usługi integracyjne
 (Integration Services)
  SSIS,którywprowadzonowSQLServer2005, zdużymsukcesem
  zastąpiłdostępnewSQLServer2000DataTransformationServices
@@ -115,7 +115,7 @@ raportowych.Stosunkowoprostewbudowieiwdrożeniuraporty
  11
  12
 7
- Usługi uczenia maszynowego 
+ Usługi uczenia maszynowego
 (Machine Learning Services (In-Database))
  Usługi Machine Learning Services (In-Database) obsługują
  rozproszone, skalowalne rozwiązania uczenia maszynowego
@@ -123,29 +123,29 @@ raportowych.Stosunkowoprostewbudowieiwdrożeniuraporty
  2016obsługiwanybył językR. SQL Server 2017obsługujeR i
  Python.
  Platforma bazodanowa SQL Server od 2008 -komponenty
- Popularne elementy SQL Server rozszerzone zostały o dodatkowe komponenty 
-(w zależności od edycji) pozwalające na:-Kontrolę jakości danych -Data Quality Service (DQS). Usługa, która pozwala z 
-wykorzystaniem prostych interfejsów użytkownika zapanować, nad jakością 
+ Popularne elementy SQL Server rozszerzone zostały o dodatkowe komponenty
+(w zależności od edycji) pozwalające na:-Kontrolę jakości danych -Data Quality Service (DQS). Usługa, która pozwala z
+wykorzystaniem prostych interfejsów użytkownika zapanować, nad jakością
 danych wykorzystywanych w organizacji. -Zarządzanie i kontrolę danych (rozproszonych) –Master Data Services
- Potrzeby aktualności i dostępności, a także wiarygodności najważniejszych 
-danych rozproszonych wykorzystywanych w różnych procesach biznesowych i 
-serwerach. MDS można skonfigurować do zarządzania dowolną domeną 
-(produkty, klienci, konta) i obejmuje hierarchie, szczegółowe zabezpieczenia, 
-transakcje, wersjonowanie danych i reguły biznesowe.-Integrację ze środowiskami firm trzecich np. CDC for Oracle. W wielu 
-przypadkach niezbędna jest grupa funkcjonalności, 
-umożliwiających efektywną wymianę danych z systemów 
-zewnętrznych. 
+ Potrzeby aktualności i dostępności, a także wiarygodności najważniejszych
+danych rozproszonych wykorzystywanych w różnych procesach biznesowych i
+serwerach. MDS można skonfigurować do zarządzania dowolną domeną
+(produkty, klienci, konta) i obejmuje hierarchie, szczegółowe zabezpieczenia,
+transakcje, wersjonowanie danych i reguły biznesowe.-Integrację ze środowiskami firm trzecich np. CDC for Oracle. W wielu
+przypadkach niezbędna jest grupa funkcjonalności,
+umożliwiających efektywną wymianę danych z systemów
+zewnętrznych.
 Platforma bazodanowa SQL Server od 2008 -komponenty
  13
  14
 8
- Dodatkowo, niezmiennie wraz z głównymi komponentami 
-funkcjonalnymi, dostarczane są narzędzia umożliwiające 
-efektywne zarządzanie i wspierające optymalizację np.:-SQL Server Management Studio -zintegrowane 
-narzędzie do zarządzania, konfiguracji i tworzenia 
+ Dodatkowo, niezmiennie wraz z głównymi komponentami
+funkcjonalnymi, dostarczane są narzędzia umożliwiające
+efektywne zarządzanie i wspierające optymalizację np.:-SQL Server Management Studio -zintegrowane
+narzędzie do zarządzania, konfiguracji i tworzenia
 elementów kodu T-SQL,-SQL Server Profiler / SQL Distributed Replay
- narzędzia, które w połączeniu z danymi uzyskanymi 
-z SQL Trace / Performance Monitor pozwalają 
+ narzędzia, które w połączeniu z danymi uzyskanymi
+z SQL Trace / Performance Monitor pozwalają
 na obserwację i ocenę wydajności pracy środowiska,-Database Engine Tuning Advisor
  Platforma bazodanowa SQL Server od 2008 -komponenty
  Dodatkowe komponenty –Data Migration Assistant
@@ -160,19 +160,19 @@ na obserwację i ocenę wydajności pracy środowiska,-Database Engine Tuning Ad
 9
  Cechy systemu SQL Server
  • Łatwość obsługi
- • SQL Server Management Studio (SSMS)–graficzne narzędzie do zarządzania bazą danych, tworzenia 
+ • SQL Server Management Studio (SSMS)–graficzne narzędzie do zarządzania bazą danych, tworzenia
 zapytań i administracji.
  • Monitorowanie i dostrajanie wydajności–funkcje do analizy obciążenia serwera i optymalizacji zapytań.
  • SQL Management Objects (SMO)–biblioteka obiektów .NET do programowego zarządzania SQL Server.
  • Dostępność
  • Mirroring baz danych–mechanizm utrzymywania kopii bazy na innym serwerze dla wysokiej dostępności.
- • Konfiguracje klastrowe odporne na awarie (fail-over)–automatyczne przełączanie na węzeł zapasowy w 
+ • Konfiguracje klastrowe odporne na awarie (fail-over)–automatyczne przełączanie na węzeł zapasowy w
 przypadku awarii.
  • Migawkowa kopia bazy danych–szybkie tworzenie kopii stanu bazy w danym momencie.
  • Szybkie odtwarzanie–skrócenie czasu przywracania bazy po awarii.
- • Dedykowane połączenie administracyjne (SQLCMD)–specjalny kanał do zarządzania serwerem w 
+ • Dedykowane połączenie administracyjne (SQLCMD)–specjalny kanał do zarządzania serwerem w
 sytuacjach krytycznych.
- • Operacje w trybie on-line–możliwość przebudowy indeksów i odtwarzania kopii zapasowych bez 
+ • Operacje w trybie on-line–możliwość przebudowy indeksów i odtwarzania kopii zapasowych bez
 zatrzymywania pracy bazy.
  • Replikacja–kopiowanie danych pomiędzy serwerami w celu synchronizacji lub dystrybucji.
  • Skalowalność
@@ -203,20 +203,20 @@ zatrzymywania pracy bazy.
  21
  22
 12
- Wysoka dostępność (High Availability, HA) 
+ Wysoka dostępność (High Availability, HA)
 Odporność na awarie (DisasterRecovery, DR)
  Always On Availability Groups (AG)
  Database Mirroring (Mirroring baz danych)
- Mirroringpolega na replikacji całej bazy danych w czasie rzeczywistymz jednego 
-serwera (Principal) na drugi (Mirror). Działa na poziomie pojedynczej bazy danych, a nie 
+ Mirroringpolega na replikacji całej bazy danych w czasie rzeczywistymz jednego
+serwera (Principal) na drugi (Mirror). Działa na poziomie pojedynczej bazy danych, a nie
 całego serwera.
  Jak to jest realizowane
- Istnieją dwie (lub trzy)instancje SQL Server:-Principal–główna baza danych, z której korzystają aplikacje.-Mirror–kopia bazy danych w trybie „standby”, aktualizowana na bieżąco.-Witness(opcjonalny) –trzeci serwer, który monitoruje stan Principal i Mirror i może 
+ Istnieją dwie (lub trzy)instancje SQL Server:-Principal–główna baza danych, z której korzystają aplikacje.-Mirror–kopia bazy danych w trybie „standby”, aktualizowana na bieżąco.-Witness(opcjonalny) –trzeci serwer, który monitoruje stan Principal i Mirror i może
 automatycznie przełączyć ruch w razie awarii.
  Tryby pracy
- High Safety(Synchronous) Transakcje są zapisywane jednocześnie na Principal i Mirror. Gwarantuje 
+ High Safety(Synchronous) Transakcje są zapisywane jednocześnie na Principal i Mirror. Gwarantuje
 zerową utratę danych. Może wspierać automatyczny failover(z serwerem Witness).
- High Performance (Asynchronous) Mirror jest aktualizowany z opóźnieniem. Lepsza wydajność, ale 
+ High Performance (Asynchronous) Mirror jest aktualizowany z opóźnieniem. Lepsza wydajność, ale
 możliwa utrata danych przy awarii.
  Zalety
  Szybkie przełączenie po awarii.
@@ -225,7 +225,7 @@ możliwa utrata danych przy awarii.
  Wady
  Działa tylko dla jednej bazy na raz(nie obejmuje całego serwera).
  Wymaga, aby obie bazy miały identyczną strukturę.
- Od SQL Server 2012 funkcja została zastąpiona przez AlwaysOn(choć wciąż działa w trybie 
+ Od SQL Server 2012 funkcja została zastąpiona przez AlwaysOn(choć wciąż działa w trybie
 kompatybilności).
  23
  24
@@ -326,7 +326,7 @@ kompatybilności).
  UsługaSQL Server Agent
  UsługiSQLServer
  • Zarządzanie danymi
- • Przetwarzanie transakcji 
+ • Przetwarzanie transakcji
 i kwerend
  • Integralność danych
  • Zadania
@@ -335,7 +335,7 @@ i kwerend
  • Zarządzanie raportami
  • Katalogi z pełnym tekstem
  • Indeksy z pełnym tekstem
- • Zarządzanie transakcjami 
+ • Zarządzanie transakcjami
 rozproszonymi
  Serwer
  UsługiSQL Server
@@ -343,21 +343,21 @@ rozproszonymi
  34
 18
  OprogramowanieserweraSQL
- • Program SQL Server 
+ • Program SQL Server
 Management Studio
  • Narzędziaadministracyjnei
  kreatorzy
  • Narzędziazarządzaniadostępne
  w wierszupolecenia
- • PomocipodręcznikiSQL Server 
-Documentation –Microsoft 
-Learn 
-• UsługiOLAP serweraMicrosoft 
+ • PomocipodręcznikiSQL Server
+Documentation –Microsoft
+Learn
+• UsługiOLAP serweraMicrosoft
 SQL Server
  •…
  Architektura SQLServer
  Komunikacja
- Opracowanie 
+ Opracowanie
 aplikacji
  Administracja
  35
@@ -412,21 +412,21 @@ relacyjnego,
  •Zarządzanie obiektami
  •Monitorowanie i raportowanie
  Zabezpieczenia serwera SQL
- •Uwierzytelnianie logowania 
+ •Uwierzytelnianie logowania
 (Login Authentication)
  •Typy ról serwera
  (Typesof Roles)
- •Konta użytkowników baz danych i role 
+ •Konta użytkowników baz danych i role
 (Database User Accounts and Roles)
- •Sprawdzanie poprawności uprawnień 
+ •Sprawdzanie poprawności uprawnień
 (PermissionValidation)
- Warstwy uwierzytelniania 
+ Warstwy uwierzytelniania
 39
  40
 21
  Uwierzytelnianielogowania(Login Authentication)
  UWIERZYTELNIANIE
- System Windows 
+ System Windows
 weryfikuje hasło
  Serwer SQL
  weryfikujehasło
@@ -440,7 +440,7 @@ weryfikuje hasło
  Konta użytkownikówbazdanychirole
  (Database User Accounts and Roles)
  System
- Windows 
+ Windows
 weryfikuje hasło
  Serwer SQL
  weryfikuje hasło
@@ -466,68 +466,68 @@ weryfikuje hasło
 22
  Typy ról (Types of Roles)
  Role serwera
- •Grupa uprawnień 
-administracyjnych na 
+ •Grupa uprawnień
+administracyjnych na
 poziomie serwera
- Role serwera 
-zdefiniowane 
+ Role serwera
+zdefiniowane
 przez użytkownika
  Role bazy danych
- •Grupa uprawnień 
-administracyjnych na 
+ •Grupa uprawnień
+administracyjnych na
 poziomie bazy danych
- Role bazy danych 
-zdefiniowane 
+ Role bazy danych
+zdefiniowane
 przez użytkownika
- Role aplikacyjne 
+ Role aplikacyjne
 bazy danych
- Stałe role 
+ Stałe role
 serwera
  Role  [Uprawnienia]
- • Database creators (dbcreator) [Tworzenia i 
+ • Database creators (dbcreator) [Tworzenia i
 modyfikowania baz danych]
- • Disk administrators(diskadmin) [Zarządzanie plikami na 
+ • Disk administrators(diskadmin) [Zarządzanie plikami na
 dysku]
- • Processadministrators(processadmin) 
+ • Processadministrators(processadmin)
 [Zarządzanie procesami SQL Server]
- • Security administrators (securityadmin) 
+ • Security administrators (securityadmin)
 [Zarządzanie i audyt logowania serwera]
- • Server administrators (serveradmin) [Konfiguracja 
+ • Server administrators (serveradmin) [Konfiguracja
 ustawień dla całego serwera]
- • Setup administrators (setupadmin) [Instalacja 
+ • Setup administrators (setupadmin) [Instalacja
 replikacji]
  • System administrators (sysadmin) [Pełne uprawnienia]
- • Bulkadministrators(bulkadmin) [Wykonywanie składni 
+ • Bulkadministrators(bulkadmin) [Wykonywanie składni
 BULK INSERT]
- • Public (public) –rola domyślna. Członkowie widzą bazy 
+ • Public (public) –rola domyślna. Członkowie widzą bazy
 danych w instancji
  43
  44
-Stałe role 
+Stałe role
 bazy danych
  Role  [Uprawnienia]
- • public [domyślne uprawnienia dla użytkowników 
+ • public [domyślne uprawnienia dla użytkowników
 bazy danych]
  • db_owner [właściciel bazy danych]
- • db_accessadmin [dodawanie lub usuwanie 
+ • db_accessadmin [dodawanie lub usuwanie
 użytkowników b.d., grupy i roli]
- • db_ddladmin [dodawanie, modyfikowanie lub 
+ • db_ddladmin [dodawanie, modyfikowanie lub
 usuwanie obiektów b.d.]
- • db_securityadmin [Przypisywanie uprawnień do 
+ • db_securityadmin [Przypisywanie uprawnień do
 obiektów]
  • db_backupoperator [Backup bazy danych]
  • db_datareader [Odczyt danych z dowolnej tabeli]
- • db_datawriter [Dodawanie, modyfikowanie lub 
+ • db_datawriter [Dodawanie, modyfikowanie lub
 usuwanie danych ze wszystkich tabel]
- • db_denydatareader [Nie można odczytać danych z 
+ • db_denydatareader [Nie można odczytać danych z
 wszystkich tabel]
- • db_denydatawriter [Nie można zmieniać dane z 
+ • db_denydatawriter [Nie można zmieniać dane z
 wszystkich tabel]
  45
  Sprawdzaniepoprawnościuprawnień
  (Permission Validation)
  1
- Użytkownik bazy 
+ Użytkownik bazy
 danych wykonuje
  polecenie
  2
@@ -538,11 +538,11 @@ danych wykonuje
  uprawnień
  3
  Uprawnienie
- prawidłowe; 
+ prawidłowe;
 wykonanie
  polecenia
  Uprawnienie
- nieprawidłowe; 
+ nieprawidłowe;
 zwrócenie błędu
  46
  23
@@ -571,28 +571,28 @@ zwrócenie błędu
  • Baza danychmaster
  KluczowabazadanychdlauruchomionegoserweraSQL Server. Zawiera
  wskaźnikdo podstawowegoplikuz danymidlakażdejnastępnejbazydanych
- instalowanejw systemiejak równieżkluczoweinformacjenatematserwera. 
-Informacjata zawieratakieelementyjak komunikatybłędów, informacjeo 
-logowaniu, systemoweproceduryskładowaneiserwerypołączone. 
+ instalowanejw systemiejak równieżkluczoweinformacjenatematserwera.
+Informacjata zawieratakieelementyjak komunikatybłędów, informacjeo
+logowaniu, systemoweproceduryskładowaneiserwerypołączone.
 • Baza danychmodel
  Baza danychmodel jest szablonembazydanych. Za każdymrazem, tworząc
  nowąbazędanych, kopiowanajest bazamodel, a następniesądokonywane
  zmianynp.: rozmiaru, wymaganedlanowejbazydanych. Dlatego, każdy
  obiektistniejącyw baziedanychmodel jest kopiowanydo nowopowstającej
- bazydanych. 
+ bazydanych.
 Systemowe bazy danych
  • Baza danychtempdb
  Baza danychtempdbto miejsce, gdziewykonywanesąoperacjewymagające
- przestrzenitymczasowej, jak np.: sortowania, złączeniaiinne. Baza ta 
-(podobniejak innedomyślnebazyserweraSQL Server) możesięzwiększyć, 
+ przestrzenitymczasowej, jak np.: sortowania, złączeniaiinne. Baza ta
+(podobniejak innedomyślnebazyserweraSQL Server) możesięzwiększyć,
 gdyokażesię, żepotrzebawięcejprzestrzeni. Baza tempdbjest ponownie
- inicjalizowanaza każdymrazemgdySQL Server (usługaSQL Server) jest 
+ inicjalizowanaza każdymrazemgdySQL Server (usługaSQL Server) jest
 uruchamiany.
  • Baza danychmsdb
- Baza danychmsdbobsługujeusługęSQL Server Agent, włączającw to 
+ Baza danychmsdbobsługujeusługęSQL Server Agent, włączającw to
 przechowywanieinformacjinatematzadań, zdarzeńireplikacji. W tejbazie
  danychtrzymanajest historiawszystkichkopiizapasowychiwykonywanych
- działańdotyczącychodzyskiwania. 
+ działańdotyczącychodzyskiwania.
 49
  50
 26
@@ -641,21 +641,21 @@ przechowywanieinformacjinatematzadań, zdarzeńireplikacji. W tejbazie
  •Nazwy częściowo określone
  oJako nazwa serwera przyjmowana jest domyślnie
  nazwa lokalnego serwera
- oJako nazwa bazy danych przyjmowana jest 
+ oJako nazwa bazy danych przyjmowana jest
 domyślnie nazwa bieżącej bazy danych
- oJako nazwa właściciela przyjmowana jest domyślnie 
-nazwa użytkownika w bazie danych (lub nazwa 
+ oJako nazwa właściciela przyjmowana jest domyślnie
+nazwa użytkownika w bazie danych (lub nazwa
 schematu domyślnego)
  CREATE TABLE northwind.dbo.order_history
  51
  52
 27
  Tabele systemowe
- •Przechowują informacje (metadane) dotyczące systemu 
+ •Przechowują informacje (metadane) dotyczące systemu
 i obiektów baz danych
- •Katalog bazy danych przechowuje metadane dotyczące 
+ •Katalog bazy danych przechowuje metadane dotyczące
 określonej bazy danych
- •Katalog systemowy przechowuje metadane dotyczące 
+ •Katalog systemowy przechowuje metadane dotyczące
 całego systemu i wszystkich innych baz danych
  Pobieraniemetadanych
  •Systemowe procedury przechowywane
@@ -671,10 +671,10 @@ całego systemu i wszystkich innych baz danych
  Praca z SQL
  Server
  Administrowanie bazą danych SQL Server
- Wdrożenie bazy danych SQL Server 
+ Wdrożenie bazy danych SQL Server
 (implementowanie)
  Wybór architektury aplikacji dla SQL Server
- Projektowanie aplikacji z wykorzystaniem 
+ Projektowanie aplikacji z wykorzystaniem
 API dla bazy danych
  55
  56
@@ -684,7 +684,7 @@ API dla bazy danych
  aplikacja
  kliencka
  (2 warstwy)
-Smart 
+Smart
 Client
  Prezentacja
  Firma
@@ -705,22 +705,22 @@ N-Tier Architecture,
  Inteligentny
  serwer
  (2 warstwy)
-Smart 
+Smart
 Application
  Firma
  Dane
  Prezentacja
- Implementowanie bazy danych 
+ Implementowanie bazy danych
 SQLServer
  •Projektowanie bazy danych
  •Tworzenie bazy danych i obiektów bazy danych
- •Testowanie i dopracowywanie aplikacji 
+ •Testowanie i dopracowywanie aplikacji
 i bazy danych
  •Planowanie zastosowania
  •Administrowanie aplikacją po zastosowaniu
  57
  58
-Administrowanie bazą danych 
+Administrowanie bazą danych
 SQLServer
  • Instalowanie serwera SQL
  oTworzenie zabezpieczeń sieciowych
@@ -728,31 +728,31 @@ SQLServer
  • Tworzenie baz danych
  • Zarządzanie bieżącymi działaniami
  oImportowanie i eksportowanie danych
- oWykonywanie kopii zapasowej i przywracanie bazy 
+ oWykonywanie kopii zapasowej i przywracanie bazy
 danych oraz dziennika
  oMonitorowanie i dopracowywanie bazy danych
  59
  30
 Instalacjaikonfiguracja
  SQL Server
- Oto wybrane, niezbędne zadania i aspekty, które trzeba uwzględnić 
+ Oto wybrane, niezbędne zadania i aspekty, które trzeba uwzględnić
 w trakcie planowania systemu bazodanowego.
  • Ustalenie obecnego obciążenia systemu,
  • Oszacowanie wzrostu obciążenia,
  • Ustalenie minimalnych wymagań sprzętowych i programowych,
- •Właściwe ustawienie pamięci dla systemu i ustalenie wymagań 
+ •Właściwe ustawienie pamięci dla systemu i ustalenie wymagań
 dla operacji wejścia-wyjścia,
  • Ustalenie odpowiedniej edycji systemu SQL Server,
- • Określenie kolacji (ang. collation), lokalizacji plików i wielkości 
+ • Określenie kolacji (ang. collation), lokalizacji plików i wielkości
 bazy tempdb dla systemu SQL Server,
  •Wybranie kont powiązanych z usługami,
- • Opracowanie planu konserwacji i tworzenia kopii zapasowych 
+ • Opracowanie planu konserwacji i tworzenia kopii zapasowych
 bazy danych,
- • Ustalenie minimalnych poziomów czasu nieprzerwanej pracy i 
+ • Ustalenie minimalnych poziomów czasu nieprzerwanej pracy i
 czasu reakcji,
  • Przygotowanie strategii przywracania stanu po awarii.
  Microsoft SQL Server 2014 Podręcznik administratora
- A.Jorgensen, B.Ball, S.Wort, R.LoForte, B.Knight. Helion 2015 
+ A.Jorgensen, B.Ball, S.Wort, R.LoForte, B.Knight. Helion 2015
 Planowanie systemu
  1
  2
@@ -760,30 +760,30 @@ PołączenieSQL Server
  •Używanienarzędziagraficznego
  oSQL Server Enterprise Manager(do wersji 2000)
  oMicrosoft SQL Server Management Studio (od wersji 2005)
- •Użycienarzędziapoprzezprogram 
-osql(2000,2005,2008) 
+ •Użycienarzędziapoprzezprogram
+osql(2000,2005,2008)
 lub sqlcmd(od 2005) (opcja -A połączenie w trybie Admin)
  oKomunikowaniesięprzyużyciuODBC
- Np. C:\sqlcmd-S ACER1\MSSQLSERVER-U sa-P hw -Q 
+ Np. C:\sqlcmd-S ACER1\MSSQLSERVER-U sa-P hw -Q
 "select productnamefrom products"-d northwind
  SQL Server Management Studio
- •Zintegrowane środowisko do pracy z SQL 
+ •Zintegrowane środowisko do pracy z SQL
 Server
  oWykonywanie zapytań
  oKonfiguracja serwera
  oZarządzanie serwerem
  oAdministracja bazą danych
- •Graficzne narzędzie do pracy z wieloma 
+ •Graficzne narzędzie do pracy z wieloma
 komponentami
- oPołączenie z Database Engine, Analysis Services, 
+ oPołączenie z Database Engine, Analysis Services,
 Reporting Services, Integration Services, Azure
  BlobStorage
- •Zarządzanie projektami i skryptami (wsparcie 
+ •Zarządzanie projektami i skryptami (wsparcie
 Intelisense)
  3
  4
 Microsoft SQL Server Data Tools
- Narzędzie PowerShell (Invoke-Sqlcmd) 
+ Narzędzie PowerShell (Invoke-Sqlcmd)
 oraz wiersz poleceń cmd(Sqlcmd)
  PowerShell i wiersz poleceń (cmd) to oba interfejsywiersza
  poleceń w systemieWindows, ale różnią się one językami
@@ -820,9 +820,9 @@ ConfigurationManager
  4.Opcjakonkretnegopolecenia(HINT)
  9
  10
-Przykładowe właściwości instancji:-Pamięć (Min/Max Memory),-Planowanie wykonania (AffinityMask, Max Worker),-Operacje I/O (AffinityI/O Mask),-Przetwarzanie zapytań (QueryWait, Min MemoryPer Query, 
+Przykładowe właściwości instancji:-Pamięć (Min/Max Memory),-Planowanie wykonania (AffinityMask, Max Worker),-Operacje I/O (AffinityI/O Mask),-Przetwarzanie zapytań (QueryWait, Min MemoryPer Query,
 BlockedProcessTreshold, Max DegreeOf Parallesim, IndexCreate
- Memory),-Domyślne wartości 
+ Memory),-Domyślne wartości
 bazy danych-Ustawienie FileStream
  Konfiguracja instancji SQL Server
  Konfiguracja instancji SQL Server
@@ -852,21 +852,21 @@ Processors
  https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/configure-the-priority-boost-server-configuration-option?view=sql-server-ver15
  Konfiguracja instancji SQL Server
  Security
- Departament Obrony Stanów Zjednoczonych stworzył 
+ Departament Obrony Stanów Zjednoczonych stworzył
 standard TrustedComputer System Evaluation Criteria
- (Kryteria oceny zaufanych systemów komputerowych), 
-mający służyć do oceny poziomu bezpieczeństwa 
-systemów komputerowych. Kryteria dla klas od C2do 
-A1 wymagają, by wykonywane przez użytkownika 
-działania mogły być przedmiotem inspekcji oraz by w 
-przedsiębiorstwie zatrudniony był personel 
-odpowiedzialny za procedury związane z inspekcją. 
-Wymagania inspekcji na poziomie klasy C2 definiują 
-określone zdarzenia i informacje, które będą podlegać 
+ (Kryteria oceny zaufanych systemów komputerowych),
+mający służyć do oceny poziomu bezpieczeństwa
+systemów komputerowych. Kryteria dla klas od C2do
+A1 wymagają, by wykonywane przez użytkownika
+działania mogły być przedmiotem inspekcji oraz by w
+przedsiębiorstwie zatrudniony był personel
+odpowiedzialny za procedury związane z inspekcją.
+Wymagania inspekcji na poziomie klasy C2 definiują
+określone zdarzenia i informacje, które będą podlegać
 inspekcji.
- Standard CC(CommonCriteria) to międzynarodowy 
-standard w zakresie bezpieczeństwa, który powinien 
-służyć jako podstawa przy ocenie właściwości 
+ Standard CC(CommonCriteria) to międzynarodowy
+standard w zakresie bezpieczeństwa, który powinien
+służyć jako podstawa przy ocenie właściwości
 zabezpieczeń aplikacji i serwerów.
  Konfiguracja instancji SQL Server
  15
@@ -874,59 +874,59 @@ zabezpieczeń aplikacji i serwerów.
 Security
  Konfiguracja instancji SQL Server
  Kiedy używać Ryzyka / Wady Zalety Opis Opcja
- Gdy system musi być 
-zgodny z Common 
-Criteria (np. w 
-sektorze publicznym).-Może ograniczyć 
-funkcjonalność.-Spadek wydajności.-Wymaga testów 
-aplikacji.-Spełnia wymagania 
-certyfikacji 
-bezpieczeństwa.-Zwiększa kontrolę 
+ Gdy system musi być
+zgodny z Common
+Criteria (np. w
+sektorze publicznym).-Może ograniczyć
+funkcjonalność.-Spadek wydajności.-Wymaga testów
+aplikacji.-Spełnia wymagania
+certyfikacji
+bezpieczeństwa.-Zwiększa kontrolę
 nad uprawnieniami.
- Włącza tryb zgodności 
+ Włącza tryb zgodności
 z normą Common
- Criteria(ISO/IEC 
+ Criteria(ISO/IEC
 15408).
- Enable Common 
-Criteria 
+ Enable Common
+Criteria
 compliance
- Tylko gdy wymagają 
-tego przepisy lub 
-audyt 
-bezpieczeństwa.-Duże obciążenie 
-serwera.-Szybkie zapełnianie 
-dysku.-Brak miejsca = 
-zatrzymanie SQL 
-Server.-Pełna inspekcja 
-działań 
-użytkowników.-Spełnia wymagania 
+ Tylko gdy wymagają
+tego przepisy lub
+audyt
+bezpieczeństwa.-Duże obciążenie
+serwera.-Szybkie zapełnianie
+dysku.-Brak miejsca =
+zatrzymanie SQL
+Server.-Pełna inspekcja
+działań
+użytkowników.-Spełnia wymagania
 audytowe.
- Włącza audyt zgodny 
-z klasą C2(TCSEC). 
-Rejestruje wszystkie 
-zdarzenia 
+ Włącza audyt zgodny
+z klasą C2(TCSEC).
+Rejestruje wszystkie
+zdarzenia
 bezpieczeństwa.
- Enable C2 audit 
+ Enable C2 audit
 tracing
- Tylko w 
-kontrolowanych 
-środowiskach, gdy 
-jest to absolutnie 
-konieczne.-Ryzyko eskalacji 
-uprawnień.-Potencjalne 
-naruszenia 
-bezpieczeństwa.-Ułatwia działanie 
-aplikacji 
-korzystających z wielu 
+ Tylko w
+kontrolowanych
+środowiskach, gdy
+jest to absolutnie
+konieczne.-Ryzyko eskalacji
+uprawnień.-Potencjalne
+naruszenia
+bezpieczeństwa.-Ułatwia działanie
+aplikacji
+korzystających z wielu
 baz.
- Pozwala na 
-łańcuchowe 
-przekazywanie 
-uprawnień między 
-bazami o tym samym 
+ Pozwala na
+łańcuchowe
+przekazywanie
+uprawnień między
+bazami o tym samym
 właścicielu.
- Cross database 
-ownership 
+ Cross database
+ownership
 chaining
  Jak to wpływa na bazę danych w praktyce?
  Audyt i logowanie:Włączenie audytu (np. logowanie SELECT, INSERT, UPDATE, DELETE) → większe zużycie dysku i CPU.
@@ -934,7 +934,7 @@ chaining
  Szyfrowanie:Transparent Data Encryption(TDE), szyfrowanie połączeń (SSL/TLS).
  Zabezpieczanie serwera: Wyłączenie xp_cmdshell, ograniczenie ról sysadmin, konfiguracja firewalli.
  Connections
- Użyj zarządcy zapytań, aby zapobiec 
+ Użyj zarządcy zapytań, aby zapobiec
 długotrwałym  zapytaniom
  Konfiguracja instancji SQL Server
  17
@@ -968,53 +968,53 @@ Konfiguracja instancji SQL Server
  21
  22
 Zestaw znakowy –strona kodowa
- •Domyślnym zestawem znakowym jest strona kodowa 1252 (ISO 
+ •Domyślnym zestawem znakowym jest strona kodowa 1252 (ISO
 CharacterSet) dla LATIN1_GENERAL_CI_AS
  •Kiedy dokonasz wyboru zestawu znakowego:
- oWybierz stronę kodową, która zawiera znaki dla języka używanego przez 
+ oWybierz stronę kodową, która zawiera znaki dla języka używanego przez
 twoją bazę danych,
  oWybierz standardowy zestaw znakowy i używaj typów danych Unicode
  jeżeli masz zamiar zapisywać dane w wielu językach,
- oUżywaj tego samego zestawu znakowego dla wszystkich klientów i 
+ oUżywaj tego samego zestawu znakowego dla wszystkich klientów i
 serwerów, chyba że masz zamiar używać tylko pierwszych 128 znaków.
- • Zmiana porządku sortowania po instalacji wymaga przebudowania 
-wszystkich baz danych 
-(Zmiana strony kodowej to operacja zaawansowana i ma wpływ na działanie bazy 
-danych i aplikacji. Starannie należy przemyśleć tę zmianę i przetestować ją na 
+ • Zmiana porządku sortowania po instalacji wymaga przebudowania
+wszystkich baz danych
+(Zmiana strony kodowej to operacja zaawansowana i ma wpływ na działanie bazy
+danych i aplikacji. Starannie należy przemyśleć tę zmianę i przetestować ją na
 środowisku testowym, zanim zastosujemy ją na produkcji)
  Porządek sortowania
- •Domyślnym porządkiem sortowania jest 
-sortowanie wg słownikowego porządku 
+ •Domyślnym porządkiem sortowania jest
+sortowanie wg słownikowego porządku
 sortowania (nie binarnego) np. Polish_CI_AS.
  •Wybieranie sortowania może mieć wpływa na:
  oKońcowe ustawienia,
  oSposób działania,
  oKlientów.
- •Zmiana porządku sortowania po instalacji 
-wymaga przebudowania wszystkich baz 
+ •Zmiana porządku sortowania po instalacji
+wymaga przebudowania wszystkich baz
 danych
  23
  24
 Zestawienie Unicode
- •Domyślne zestawienie Unicodeczęsto jest ogólną 
-wersją Unicodez odpwiedniąopcją porównywania i 
+ •Domyślne zestawienie Unicodeczęsto jest ogólną
+wersją Unicodez odpwiedniąopcją porównywania i
 sortowania danych.
  •Kiedy wybieramy zestawienie Unicode:
- oWybór tego samego porządku sortowania w przypadku 
+ oWybór tego samego porządku sortowania w przypadku
 danych Unicodei nie-Unicodejest szczególnie zalecane,
- oZmiana w standardowym zestawieniu Unicodepowoduje, 
+ oZmiana w standardowym zestawieniu Unicodepowoduje,
 że migracja danych pomiędzy danymi Unicodea nie
-Unicodestaję się trudniejsza i powoduje różnice w 
+Unicodestaję się trudniejsza i powoduje różnice w
 sortowaniu,
- oWybranie tego samego zestawienia Unicodedla wszystkich 
-serwerów jest wymagane do backupu i replikacji bazy 
-danych pomiędzy serwerami. 
+ oWybranie tego samego zestawienia Unicodedla wszystkich
+serwerów jest wymagane do backupu i replikacji bazy
+danych pomiędzy serwerami.
 Zestawienie Unicode
  SQL Server Collation
  Windows Collation
  25
  26
-Sort order description Windows collation suffix 
+Sort order description Windows collation suffix
 Binary sort. _BIN
  BIN2 binary sort order, sinceSQLServer2005. _BIN2
  Case-insensitive, accent-insensitive, kana-insensitive, width-insensitive. _CI_AI
@@ -1033,13 +1033,13 @@ Binary sort. _BIN
  Case-sensitive, accent-sensitive, kana-sensitive, width-insensitive _CS_AS_KS
  Case-sensitive, accent-sensitive, kana-sensitive, width-sensitive _CS_AS_KS_WS
  Case-sensitive, accent-sensitive, kana-insensitive, width-sensitive _CS_AS_WS
- Sortowanie systemu Windows jest łączone w postaci serii przyrostków w celu zdefiniowania wielkości liter, 
+ Sortowanie systemu Windows jest łączone w postaci serii przyrostków w celu zdefiniowania wielkości liter,
 akcentu, szerokości lub kana.
  Porządek sortowanie znaków
  Sposób przetwarzania przedrostek
- starsze sortowania BIN, wykonują niekompletne 
-porównanie punktów kodowych z punktami kodowymi 
-dla danych Unicode. 
+ starsze sortowania BIN, wykonują niekompletne
+porównanie punktów kodowych z punktami kodowymi
+dla danych Unicode.
 Binary (_BIN)
  jest to sortowanie danychdla znaków Unicode BIN2 (_BIN2)
  z rozróżnianiemwielkości liter Case-sensitive (_CS)
@@ -1050,7 +1050,7 @@ Binary (_BIN)
  27
  28
 1
- Zarządzanie plikami bazy danych 
+ Zarządzanie plikami bazy danych
 (partycjonowanie)
  PartycjonowanietabelwSQLServertotechnikaorganizacjidanychwtabelipoprzez
  ich podział na logiczne jednostki zwane partycjami. Każda partycja przechowuje
@@ -1073,17 +1073,17 @@ Binary (_BIN)
  2
 2
  Możemy używać wszystkich standardowych typów skalarnych:
- • liczbowych (bigint, int, smallint, tinyint, decimal/numeric, float, 
+ • liczbowych (bigint, int, smallint, tinyint, decimal/numeric, float,
 real, money, smallmoney),
- • znakowych i binarnych o stałej lub zmiennej długości, ale nie MAX 
+ • znakowych i binarnych o stałej lub zmiennej długości, ale nie MAX
 (char, varchar, nchar, nvarchar, binary, varbinary),
- • daty/czasu (date, time, datetime, smalldatetime, datetime2, 
+ • daty/czasu (date, time, datetime, smalldatetime, datetime2,
 datetimeoffset).
  Uwagi:
- • Definicja funkcji partycjonującej wspiera tylko jedną kolumnę 
-(jeden parametr). Liczba partycji to liczba wartości granicznych +1. 
-• Jeżeli podamy literały dat/czasu jako granice, to używamy 
-formatów jednoznacznych (np. yyyymmdd) albo jawnej konwersji, 
+ • Definicja funkcji partycjonującej wspiera tylko jedną kolumnę
+(jeden parametr). Liczba partycji to liczba wartości granicznych +1.
+• Jeżeli podamy literały dat/czasu jako granice, to używamy
+formatów jednoznacznych (np. yyyymmdd) albo jawnej konwersji,
 aby uniknąć zależności od ustawienia języka sesji.
  Partycjonowanie tabel
  Partycjonowanie tabel
@@ -1110,19 +1110,19 @@ aby uniknąć zależności od ustawienia języka sesji.
  • MERGE / SPLIT –dodawanie/usuwanie granic bez przebudowy tabeli.
  • Zarządzanie indeksami
  • Przebudowa indeksów per partycja (mniej blokad, krótszy czas).
- Choć fizycznie nie daje to korzyści w I/O, logiczna struktura partycji daje 
-elastyczność w zarządzaniu danymi i indeksami oraz przygotowuje grunt pod 
+ Choć fizycznie nie daje to korzyści w I/O, logiczna struktura partycji daje
+elastyczność w zarządzaniu danymi i indeksami oraz przygotowuje grunt pod
 przyszłe zmiany.
  9
  10
 6
  Partycjonowanie
  Partycjonowanie tabel
- SWITCH: Zamienia wypełnioną tabelę lub 
+ SWITCH: Zamienia wypełnioną tabelę lub
 partycję z pustą tabelą lub partycją.
- MERGE: Łączy dwie sąsiadujące partycje 
+ MERGE: Łączy dwie sąsiadujące partycje
 w jedną partycję.
- SPLIT: Wstawia granicę w istniejącej 
+ SPLIT: Wstawia granicę w istniejącej
 partycji, aby utworzyć nową partycję.
  11
  12
@@ -1133,33 +1133,33 @@ partycji, aby utworzyć nową partycję.
  14
 8
  Partycjonowanie tabel -SWITCH
- StretchDatabase (przechowywanie części danych w Chmurze) 
+ StretchDatabase (przechowywanie części danych w Chmurze)
 (deprecated)
  Czym jest StretchDatabase?
- • Dane historyczne 
+ • Dane historyczne
 przechowywane w chmurze
- • Dane bieżące –przechowywane 
+ • Dane bieżące –przechowywane
 lokalnie (on-premise)
  Korzyści:
  • Szybsze kopie zapasowe
- • Zmniejszone wymagania 
-dotyczące lokalnej przestrzeni 
+ • Zmniejszone wymagania
+dotyczące lokalnej przestrzeni
 dyskowej
  • Przezroczyste dla użytkowników
  https://docs.microsoft.com/pl-pl/sql/sql-server/stretch-database/stretch-database?view=sql-server-ver15
  15
  16
 Stretch Database (przechowywanie części danych w Chmurze)
- Jakie są zalety Stretch Database?- Zapewnia ekonomiczną dostępność do danych rzadko używanych (danych 
+ Jakie są zalety Stretch Database?- Zapewnia ekonomiczną dostępność do danych rzadko używanych (danych
 historycznych) - Nie wymaga zmian zapytań ani aplikacji- Usprawnia lokalną konserwację danych (szybszy backup lokalnej bazy)- Zapewnia bezpieczeństwo danych nawet podczas migracji- Redukuje zasoby dyskowe na serwerze lokalnym
  Do czego służy Stretch Database?
- Po włączeniu Stretch Database dla 
-instancji SQL Server i bazy danych 
-oraz wybraniu co najmniej jednej tabeli, 
-Stretch Database cicho rozpoczyna 
-migrację danych na platformę Azure.- Jeśli przechowujesz dane w osobnej tabeli, 
-możesz migrować całą tabelę.- Jeśli tabela zawiera zarówno normalne 
-i historyczne dane, możesz określić funkcję 
+ Po włączeniu Stretch Database dla
+instancji SQL Server i bazy danych
+oraz wybraniu co najmniej jednej tabeli,
+Stretch Database cicho rozpoczyna
+migrację danych na platformę Azure.- Jeśli przechowujesz dane w osobnej tabeli,
+możesz migrować całą tabelę.- Jeśli tabela zawiera zarówno normalne
+i historyczne dane, możesz określić funkcję
 filtrowania, aby wybrać wiersze do migracji.
  Identyfikowanie bazy danych i tabel
  dla Stretch Database można realizować
@@ -1181,7 +1181,7 @@ filtrowania, aby wybrać wiersze do migracji.
 2
  Jak są przechowywane dane
  Zakres (Extent)
- (8 ciągłych stron 
+ (8 ciągłych stron
 o wielkości 8 KB)
  Strona (Page) (8 KB)
  Tabele, indeksy
@@ -1193,42 +1193,42 @@ o wielkości 8 KB)
  .ldf
  Maks. rozmiar wiersza = 8060 bajtów
  Jak pracuje dziennik transakcji
- Modyfikacja danych 
+ Modyfikacja danych
 z poziomu aplikacji
  1
  Dysk
- Zmiany sa rejestrowane 
+ Zmiany sa rejestrowane
 w dzienniku transakcji na dysku
  3
- Zmiany rejestrowane są 
+ Zmiany rejestrowane są
 w ‘buffer  cache‘
  2
  Buffer Cache
  Dysk
- Po osiągnięciu punktu 
-kontrolnego 
-‘Checkpoint’ zmiany 
+ Po osiągnięciu punktu
+kontrolnego
+‘Checkpoint’ zmiany
 są zapisane do bazy
  4
  3
  4
 3
  Tworzenie baz danych
- •Tworzenie bazy danych obejmuje 
-definiowanie: 
+ •Tworzenie bazy danych obejmuje
+definiowanie:
 •Nazwy bazy danych
  •Rozmiaru bazy danych
  •Plików, w których będzie rezydować baza danych
  CREATE DATABASE sample
  ON
- PRIMARY ( NAME=sample_data,  
-FILENAME='c:\mssql7\data\sample.mdf', 
+ PRIMARY ( NAME=sample_data,
+FILENAME='c:\mssql7\data\sample.mdf',
 SIZE=10MB,
  MAXSIZE=15MB,
- FILEGROWTH=20%) 
-LOG ON 
-( NAME=sample_log, 
-FILENAME='c:\mssql7\data\sample.ldf', 
+ FILEGROWTH=20%)
+LOG ON
+( NAME=sample_log,
+FILENAME='c:\mssql7\data\sample.ldf',
 SIZE=3MB,
  MAXSIZE=5MB,
  FILEGROWTH=1MB)
@@ -1237,7 +1237,7 @@ SIZE=3MB,
  •Często wykorzystywane opcje
  • dbouseonly
  • readonly
- • trunc. log on chkpt. 
+ • trunc. log on chkpt.
 (związane z Recoverymodel)
  • autoshrink
  •Przeglądanie opcji baz danych
@@ -1245,7 +1245,7 @@ SIZE=3MB,
  6
 4
  Przeglądanie opcji baz danych
- •Przeglądanie opcji 
+ •Przeglądanie opcji
 baz danych
  Przegladanieopcjibazdanych
  select * from sys.databases-lista wszystkich dostępnych opcji,
@@ -1317,7 +1317,7 @@ baz danych
  13
  14
 8
- Ustawianie opcji dla danego połączenia (query) 
+ Ustawianie opcji dla danego połączenia (query)
 SETNOCOUNT-wyłączeniewyświetlaniainformacjioliczbiezwracanychwierszy.
  SETNOEXEC-instrukcja zostanie skompilowana, ale niewykonana.Wrezultacie
  zostaniesprawdzonapoprawnośćsyntaktycznaisemantyczna.
@@ -1335,7 +1335,7 @@ SETNOCOUNT-wyłączeniewyświetlaniainformacjioliczbiezwracanychwierszy.
  oliczbiemspotrzebnychnaanalizę,sprawdzeniepoprawnościiwykonanieinstrukcji.
  SET STATISTICS IO-dodatkowo zostanąwyświetlone informacjeo liczbie i czasie
  operacjiIOprzeprowadzonychprzezSQLServerwceluwykonaniainstrukcji.
- Ustawianie opcji dla danego połączenia (query) 
+ Ustawianie opcji dla danego połączenia (query)
 GrupaopcjiSETANSI_DEAFAULTSwymuszazgodnośćzestandardemSQL-92:
  SETANSI_NULLS—domyślnieON.Wynikiemjakichkolwiekporównań zwartością
  NULL będziewartość nieokreślona. PonieważwartośćNULL reprezentujewartość
@@ -1374,7 +1374,7 @@ GrupaopcjiSETANSI_DEAFAULTSwymuszazgodnośćzestandardemSQL-92:
  SET DATEFIRST 7
  SET TRANSACTION ISOLATION LEVEL READ COMMITTED
  Modyfikowaniebazdanych
- •Zarządzanie danymi i wzrostem rozmiaru pliku 
+ •Zarządzanie danymi i wzrostem rozmiaru pliku
 dziennika
  •Rozszerzanie dziennika transakcji
  •Zmniejszanie bazy danych lub pliku
@@ -1382,7 +1382,7 @@ dziennika
  17
  18
 10
- Zarządzanie danymi i wzrostem rozmiaru 
+ Zarządzanie danymi i wzrostem rozmiaru
 pliku dziennika
  7 MB 7 MB
  3 MB 3 MB
@@ -1391,7 +1391,7 @@ pliku dziennika
  SIZE = 10MB)
  GO
  ALTER DATABASE sample
- ADD FILE 
+ ADD FILE
 (NAME = sample_data2 ,
  FILENAME='c:\mssql7\data\sample2.ndf',
  SIZE=10MB ,
@@ -1400,11 +1400,11 @@ pliku dziennika
  Rozszerzanie dziennika transakcji
  •Monitorowanie dziennika
  •Rozszerzanie dziennika w razie potrzeby
- •Monitorowanie sytuacji powodujących wzmożoną 
+ •Monitorowanie sytuacji powodujących wzmożoną
 aktywność dziennika
  •Masowe ładowanie danych do tabeli indeksowanej
  •Duże transakcje
- •Wykonywanie operacji związanych z tekstem i obrazami 
+ •Wykonywanie operacji związanych z tekstem i obrazami
 zarejestrowanymi w dzienniku
  19
  20
@@ -1421,9 +1421,9 @@ zarejestrowanymi w dzienniku
  • Instrukcja DROP DATABASE
  •Ograniczenia dotyczące usuwania bazy danych
  •Podczas przywracania
- •Kiedy użytkownik nawiąże połączenie z bazą 
+ •Kiedy użytkownik nawiąże połączenie z bazą
 danych
- •Podczas publikowania stanowiącego część 
+ •Podczas publikowania stanowiącego część
 replikacji
  DROP DATABASE Northwind, AdvantureWorks
  21
@@ -1453,7 +1453,7 @@ replikacji
  24
 13
  Planowanie pojemności
- •Ustalanie rozmiaru modelu bazy danych i tabel 
+ •Ustalanie rozmiaru modelu bazy danych i tabel
 systemowych
  •Oszacowywanie ilości danych w tabelach
  Ustalanie rozmiaru modelu bazy danych i tabel systemowych
@@ -1461,18 +1461,18 @@ systemowych
  Log (file)
  Activity
  Frequency
- Transaction 
+ Transaction
 Size
  Back Up
  Tables
  # of Rows
- User and 
+ User and
 System
  Indexes
  Key Value
  # of Rows
  Fill Factor
- Czynniki, które należy wziąć pod uwagę podczas 
+ Czynniki, które należy wziąć pod uwagę podczas
 oszacowywanie rozmiaru bazy danych
  25
  26
@@ -1482,10 +1482,10 @@ oszacowywanie rozmiaru bazy danych
  • sumujemy liczbę bajtów w rekordzie
  •uśredniamy kolumny zależne od wielkości
  •Ustalanie ilość rekordów w stronie danych
- •dzielimy 8060 przez zsumowaną ilość bajtów w 
+ •dzielimy 8060 przez zsumowaną ilość bajtów w
 rekordzie
  • zaokrąglamy do najbliższej liczby całkowitej
- •Dzielimy ilość rekordów w tabeli przez ilość 
+ •Dzielimy ilość rekordów w tabeli przez ilość
 rekordów na stronie danych
  Szacowany rozmiar wielkości pliku danych -przykład
  27
@@ -1500,12 +1500,12 @@ rekordów na stronie danych
  Typy danych udostępniane przez system
  • Exactnumerics–typy liczbowe o dokładnej wartości (np. int, decimal, numeric).
  • Approximatenumerics–typy liczbowe przybliżone (np. float, real).
- • Dateand time–typy przechowujące daty i czas 
+ • Dateand time–typy przechowujące daty i czas
 (np. date, datetime, time).
  • Characterstrings–typy znakowe (np. char, varchar).
  • Unicodecharacterstrings–typy znakowe obsługujące Unicode
  (np. nchar, nvarchar).
- • Binarystrings–typy przechowujące dane binarne 
+ • Binarystrings–typy przechowujące dane binarne
 (np. binary, varbinary).
  • Otherdata types–pozostałe typy, np. xml, cursor, sql_variant.
  1
@@ -1528,10 +1528,10 @@ rekordów na stronie danych
 17.10.2025
  Typy danych -pozostałe
  timestamp
- Przechowuje unikalny numer, który jest aktualizowany za każdym razem, gdy wiersz zostaje utworzony lub 
-zmodyfikowany. Wartość timestampopiera się na wewnętrznym zegarze i nie odpowiada rzeczywistemu 
+ Przechowuje unikalny numer, który jest aktualizowany za każdym razem, gdy wiersz zostaje utworzony lub
+zmodyfikowany. Wartość timestampopiera się na wewnętrznym zegarze i nie odpowiada rzeczywistemu
 czasowi. Każda tabela może mieć tylko jedną kolumnę typu timestamp.
- 6F9619FF-8B86-D011-B42D-00C04FC964FF 
+ 6F9619FF-8B86-D011-B42D-00C04FC964FF
 Typy danych -HierarchicalData (SQL Server)
  • Typ danych hierarchyid-Wbudowany typ w SQL Server do przechowywania danych hierarchicznych.-Zoptymalizowany do reprezentowania struktur drzewiastych.-Ułatwia wykonywanie zapytań na danych hierarchicznych.
  • Definicja danych hierarchicznych-Zbiór elementów powiązanych relacjami nadrzędny–podrzędny.-Każdy element może mieć element nadrzędny i podrzędne.
@@ -1539,7 +1539,7 @@ Typy danych -HierarchicalData (SQL Server)
  9
  10
 1
- Zarządzanie plikami bazy danych 
+ Zarządzanie plikami bazy danych
 (FILESTREAM)
  Jest tomechanizmdostępnywSQL Server, który pozwala na przechowywanie i
  zarządzaniedużymi plikami binarnymi (np. zdjęcia, dokumenty, plikiwideo)wbazie
@@ -1562,13 +1562,13 @@ Typy danych -HierarchicalData (SQL Server)
  •Wszystkie dane w jednym miejscu,
  •Jedno środowisko przechowywania i odpytywania danych,
  •Oszczędność miejsca w bazie,
- •Rozmiar pliku ograniczony tylko przez system operacyjny i 
+ •Rozmiar pliku ograniczony tylko przez system operacyjny i
 miejsce na dysku,
  •Wydajne pobieranie danych,
  •Zmniejsza rozmiar logu transakcyjnego.
  •Integracja z backupem i HA/DR
  •Obsługa FILETABLE
- •Lepsza skalowalność dla dużych BLOB –nie obciąża bufora 
+ •Lepsza skalowalność dla dużych BLOB –nie obciąża bufora
 stron i mechanizmu I/O SQL Server tak jak VARBINARY(MAX).
  Jak przechowywać pliki: w bazie czy w systemie?
  3
@@ -1577,17 +1577,17 @@ stron i mechanizmu I/O SQL Server tak jak VARBINARY(MAX).
  korzyść
  wydajność
  Czy T-SQL jest wydajny?
- https://msdn.microsoft.com/en-us/library/hh461480.aspx-Po przekroczeniu ~1 MB odczyt FILESTREAM via Win32(strumieniowanie 
-po API systemu plików) coraz wyraźniej wygrywa z VARBINARY(MAX)i 
-FILESTREAM via T-SQL, bo korzysta z natywnych mechanizmów I/O i 
-systemowej pamięci podręcznej (NT cache), a nie z bufora stron SQL. -FILESTREAM via T-SQLpozostaje najwolniejszy w miarę wzrostu rozmiaru 
+ https://msdn.microsoft.com/en-us/library/hh461480.aspx-Po przekroczeniu ~1 MB odczyt FILESTREAM via Win32(strumieniowanie
+po API systemu plików) coraz wyraźniej wygrywa z VARBINARY(MAX)i
+FILESTREAM via T-SQL, bo korzysta z natywnych mechanizmów I/O i
+systemowej pamięci podręcznej (NT cache), a nie z bufora stron SQL. -FILESTREAM via T-SQLpozostaje najwolniejszy w miarę wzrostu rozmiaru
 —wygodny, ale nie wykorzystuje przewagi strumieniowania Win32.
  Kilka zaleceń
  • Stosuj FILESTREAM dla plików > 1 MB,
  • Nie nadużywaj T-SQL, raczej korzystaj z API,
- • Użyj kolumny wyliczanej do przechowywania 
+ • Użyj kolumny wyliczanej do przechowywania
 rozmiaru danych,
- • Przechowuj pliki FILESTREAM na oddzielnych 
+ • Przechowuj pliki FILESTREAM na oddzielnych
 dyskach.
  5
  6
@@ -1595,23 +1595,23 @@ dyskach.
  Wady FILESTREAM?
  • Database SNAPSHOT nie obsługuje grup FILESTREAM
  • Database Mirroring nie obsługuje FILESTREAM
- • TDE nie obsługuje szyfrowania plików w grupach 
+ • TDE nie obsługuje szyfrowania plików w grupach
 FILESTREAM
- • Kompresja SQL Server nie dotyczy plików w grupach 
+ • Kompresja SQL Server nie dotyczy plików w grupach
 FILESTREAM
  Ustawienie FILESTREAM
  7
  8
 5
  Ustawienie FILESTREAM
- Funkcje interfejsu API 
-(ang. Application Programming Interface) 
-Wymaga Microsoft.Data.SqlClienti uprawnień 
-do tabeli/kolumny FILESTREAM. 
+ Funkcje interfejsu API
+(ang. Application Programming Interface)
+Wymaga Microsoft.Data.SqlClienti uprawnień
+do tabeli/kolumny FILESTREAM.
 Kluczowe klasy/funkcje: -SqlFileStream, -PathName(),-GET_FILESTREAM_TRANSACTION_CONTEXT().
  Ustawienie FILESTREAM
- EXEC sp_configurefilestream_access_level, 2 
-RECONFIGURE 
+ EXEC sp_configurefilestream_access_level, 2
+RECONFIGURE
 https://learn.microsoft.com/en-us/sql/relational-databases/blob/enable-and-configure-filestream?view=sql-server-ver17
  9
  10
@@ -1629,16 +1629,16 @@ https://learn.microsoft.com/en-us/sql/relational-databases/blob/enable-and-confi
  danychBLOBwsystemieplików.FaktyczneusuwanieplikówFILESTREAMto
  procesasynchroniczny
  Dostęp do danych Filestreamza pomocą T-SQL
- Dostęp do danych FILESTREAM za pomocą interfejsów strumieniowych wymaga poniższych 
+ Dostęp do danych FILESTREAM za pomocą interfejsów strumieniowych wymaga poniższych
 kroków, niezależnie od używanej biblioteki klienta czy języka programowania:
  1. Rozpocznij transakcję:
- Aby uzyskać dostęp do danych FILESTREAM poprzez strumieniowe API, konieczne jest 
+ Aby uzyskać dostęp do danych FILESTREAM poprzez strumieniowe API, konieczne jest
 rozpoczęcie transakcji.
  2. Pobierz nazwę ścieżki i kontekst transakcji:
- Należy uzyskać logiczną nazwę ścieżki do pliku danych FILESTREAM oraz wskaźnik do 
+ Należy uzyskać logiczną nazwę ścieżki do pliku danych FILESTREAM oraz wskaźnik do
 bieżącego kontekstu transakcji, aby uzyskać dostęp do danych FILESTREAM.
  3. Otwórz plik danych FILESTREAM:
- Uzyskaj dostęp do pliku danych FILESTREAM za pomocą klasy opakowującej .NET lub 
+ Uzyskaj dostęp do pliku danych FILESTREAM za pomocą klasy opakowującej .NET lub
 interfejsu API FILESTREAM w Win32.
  4. Odczytaj/Zapisz dane FILESTREAM:
  Odczytuj lub zapisuj dane FILESTREAM przy użyciu funkcji wejścia/wyjścia pliku.
@@ -1651,71 +1651,71 @@ interfejsu API FILESTREAM w Win32.
  12
 7
  Grupa plików -FILESTREAM
- ALTER DATABASE A01 
-ADD FILEGROUP file01 
-CONTAINS FILESTREAM; 
-GO 
-ALTER DATABASE A01 
-ADD FILE ( 
-NAME = file02, 
-FILENAME = 'C:\FILESTREAM\Data') 
-TO FILEGROUP file01; 
-GO 
+ ALTER DATABASE A01
+ADD FILEGROUP file01
+CONTAINS FILESTREAM;
+GO
+ALTER DATABASE A01
+ADD FILE (
+NAME = file02,
+FILENAME = 'C:\FILESTREAM\Data')
+TO FILEGROUP file01;
+GO
 Katalog na pliki -FILESTREAM
- ALTER DATABASE A01 
-ADD FILEGROUP file01 
-CONTAINS FILESTREAM; 
-GO 
-ALTER DATABASE A01 
-ADD FILE ( 
-NAME = file02, 
-FILENAME = 'C:\FILESTREAM\Data') 
-TO FILEGROUP file01; 
-GO 
+ ALTER DATABASE A01
+ADD FILEGROUP file01
+CONTAINS FILESTREAM;
+GO
+ALTER DATABASE A01
+ADD FILE (
+NAME = file02,
+FILENAME = 'C:\FILESTREAM\Data')
+TO FILEGROUP file01;
+GO
 13
  14
 8
  VARBINARY(MAX) FILESTREAM
- CREATE TABLE dbo.Records01 
-( 
-[Id] [uniqueidentifier] ROWGUIDCOL NOT NULL UNIQUE, 
-[SerialNumber] INTEGER UNIQUE, 
-[Chart] VARBINARY(MAX) FILESTREAM NULL 
-) ON [PRIMARY] FILESTREAM_ON [file01] 
-GO 
-CREATE TABLE [dbo].[Authors] 
-( 
-[AuthorID] UNIQUEIDENTIFIER ROWGUIDCOL NOT NULL 
-UNIQUE , 
-[AuthorName] VARCHAR(50) , 
-[AuthorImage] VARBINARY(MAX) FILESTREAM NULL 
-) 
-GO 
+ CREATE TABLE dbo.Records01
+(
+[Id] [uniqueidentifier] ROWGUIDCOL NOT NULL UNIQUE,
+[SerialNumber] INTEGER UNIQUE,
+[Chart] VARBINARY(MAX) FILESTREAM NULL
+) ON [PRIMARY] FILESTREAM_ON [file01]
+GO
+CREATE TABLE [dbo].[Authors]
+(
+[AuthorID] UNIQUEIDENTIFIER ROWGUIDCOL NOT NULL
+UNIQUE ,
+[AuthorName] VARCHAR(50) ,
+[AuthorImage] VARBINARY(MAX) FILESTREAM NULL
+)
+GO
 VARBINARY(MAX) FILESTREAM
- CREATE TABLE [dbo].[Authors] 
-( 
-[AuthorID] UNIQUEIDENTIFIER ROWGUIDCOL NOT NULL UNIQUE, 
-[AuthorName] VARCHAR(50) , 
-[AuthorImage] VARBINARY(MAX) FILESTREAM NULL 
-) 
-GO -- Insert the data to the table 
-INSERT INTO [dbo].[Authors] 
-( AuthorID , AuthorName , AuthorImage) 
-SELECT NEWID() , 'PhilFactor' , 
-bulkcolumn FROM OPENROWSET(BULK 'C:\temp\dane.jpg', 
-SINGLE_BLOB) AS x 
-GO 
-SELECT * FROM dbo.authors 
+ CREATE TABLE [dbo].[Authors]
+(
+[AuthorID] UNIQUEIDENTIFIER ROWGUIDCOL NOT NULL UNIQUE,
+[AuthorName] VARCHAR(50) ,
+[AuthorImage] VARBINARY(MAX) FILESTREAM NULL
+)
+GO -- Insert the data to the table
+INSERT INTO [dbo].[Authors]
+( AuthorID , AuthorName , AuthorImage)
+SELECT NEWID() , 'PhilFactor' ,
+bulkcolumn FROM OPENROWSET(BULK 'C:\temp\dane.jpg',
+SINGLE_BLOB) AS x
+GO
+SELECT * FROM dbo.authors
 15
  16
 FILESTREAM
  SQL Server Instance
  Filegroup_1
- File 1 - c:\Program 
+ File 1 - c:\Program
 Files\...\Data\MyDB.mdf
- File 2 - c:\Program 
+ File 2 - c:\Program
 Files\...\Data\MyDB2.ndf
- File 3 - c:\Program 
+ File 3 - c:\Program
 Files\...\Data\MyDB3.ndf
  Table: MyMP3s----------------
 Name varchar(200)
@@ -1740,8 +1740,8 @@ Porównanie technologii pamięci masowej BLOB
  porównawczy
  Maksymalny rozmiar obiektu
  BLOB
- Wydajność przesyłania 
-strumieniowego dużych 
+ Wydajność przesyłania
+strumieniowego dużych
 obiektów BLOB
  Bezpieczeństwo
  Koszt za GB
@@ -1750,14 +1750,14 @@ obiektów BLOB
  strukturalnymi
  Tworzenie
  i wdrażanie aplikacji
- Serwer plików / 
+ Serwer plików /
 system plików
  Rozmiar
  woluminu
  NTFS
  Doskonałe
- SQL Server 
-(przy użyciu funkcji 
+ SQL Server
+(przy użyciu funkcji
 varbinary(max))
  FileStream
  2 GB
@@ -1779,7 +1779,7 @@ varbinary(max))
  Zintegrowane
  Trudny
  Bardziej złożone
- Odzyskiwanie danych po 
+ Odzyskiwanie danych po
 fragmentacji danych
  Wydajność częstych małych
  aktualizacji
@@ -1804,38 +1804,38 @@ fragmentacji danych
  SQL Server security best practices -SQL Server | Microsoft Learn
  Informacjepodstawowe
  Przyzarządzaniuzabezpieczeniamitrzebazapewnić:
- •Rozwiązaniazapewniającepotrzebęużytkowników, 
+ •Rozwiązaniazapewniającepotrzebęużytkowników,
 a takżeochronędanychprzedosobaminieupoważnionymi
  •Ograniczenieuprawnieńw takisposób, aby zmniejszyć
  prawdopodobieństwozłośliwegolubprzypadkowego
  wykonaniaszkodliwychpoleceńprzezużytkowników
- •Usunięcieewentualnychlukw systemiezabezpieczeńnp. 
+ •Usunięcieewentualnychlukw systemiezabezpieczeńnp.
 wynikającychz przynależnościużytkownikówdo grupy
  Administratorzy.
  1
  2
 22
  Informacjepodstawowe
- Zarządzanie bezpieczeństwem w SQL Server wymaga zapewnienia 
-kilku kluczowych obszarów, aby chronić dane i kontrolować 
-dostęp. 
+ Zarządzanie bezpieczeństwem w SQL Server wymaga zapewnienia
+kilku kluczowych obszarów, aby chronić dane i kontrolować
+dostęp.
 1. Uwierzytelnianie (Authentication)
- • Tryby uwierzytelniania: 
-• Windows Authentication–zalecane, korzysta z 
+ • Tryby uwierzytelniania:
+• Windows Authentication–zalecane, korzysta z
 mechanizmów domeny i Kerberos.
- • SQL Server Authentication–wymaga silnych haseł i 
+ • SQL Server Authentication–wymaga silnych haseł i
 polityki ich wygasania.
- • Zasady haseł: 
-• Włącz politykę haseł systemu Windows (złożoność, długość, 
+ • Zasady haseł:
+• Włącz politykę haseł systemu Windows (złożoność, długość,
 historia).
  • Wymuszaj szyfrowanie połączeń (SSL/TLS).
  Informacjepodstawowe
  2. Autoryzacja (Authorization)
- • Role serwera(np. sysadmin, securityadmin) –nadawaj tylko 
+ • Role serwera(np. sysadmin, securityadmin) –nadawaj tylko
 niezbędne.
- • Role bazy danych(np. db_owner, db_datareader) –stosuj 
+ • Role bazy danych(np. db_owner, db_datareader) –stosuj
 zasadę minimalnych uprawnień.
- • Twórz role użytkownikazamiast nadawać uprawnienia 
+ • Twórz role użytkownikazamiast nadawać uprawnienia
 indywidualnie.
  • Używaj GRANT, DENY, REVOKEdo zarządzania uprawnieniami.
  3
@@ -1853,7 +1853,7 @@ indywidualnie.
  • Szyfrowanie połączeń –wymuszaj protokół TLS.
  Informacjepodstawowe
  5. Audyt i monitorowanie
- • Włącz SQL Server Audit–śledzenie logowań, zmian uprawnień, 
+ • Włącz SQL Server Audit–śledzenie logowań, zmian uprawnień,
 operacji DML.
  • Monitoruj failedloginsi nietypowe aktywności.
  • Używaj Extended Eventslub Profiler do analizy.
@@ -1871,11 +1871,11 @@ operacji DML.
  Zabezpieczenia w SQL Server –Kluczowe elementy
  1. Tryby uwierzytelniania (Authentication)
  • Windows Authentication–korzysta z mechanizmów domeny i Kerberos, zalecany.
- • Mixed Mode(Windows + SQL Authentication)–umożliwia logowanie zarówno 
+ • Mixed Mode(Windows + SQL Authentication)–umożliwia logowanie zarówno
 przez konta Windows, jak i konta SQL Server.
  2. Konta serwerowe (Loginy)
  • Loginy serwera umożliwiają dostęp do instancji SQL Server.
- • Mogą być: 
+ • Mogą być:
 • Windows logins(użytkownicy/domeny)
  • SQL logins(zdefiniowane w SQL Server)
  3. Uprawnienia (Authorization)
@@ -1909,7 +1909,7 @@ database-engine?view=sql-server-ver17
  AUTHORIZATION PERMISSION ON SECURABLE::NAME TO PRINCIPAL
  • AUTHORIZATIONmusi być jedną z komend: GRANT, REVOKElub DENY.
  • PERMISSIONto nazwa uprawnienia (wymieniona w tabelach poniżej).
- • ON SECURABLE::NAMEoznacza serwer, obiekt serwera, bazę danych lub obiekt bazy danych wraz 
+ • ON SECURABLE::NAMEoznacza serwer, obiekt serwera, bazę danych lub obiekt bazy danych wraz
 z jego nazwą.
  (ON SECURABLE::NAME pomija się dla uprawnień obejmujących cały serwer lub całą bazę danych).
  • PRINCIPALto login, użytkownik lub rola, która otrzymuje lub traci dane uprawnienie.
@@ -1921,9 +1921,9 @@ z jego nazwą.
  Aby usunąć wcześniej nadane uprawnienie, użyj REVOKE, a nie DENY.
  • Etapy zarządzania bezpieczeństwem w SQL Server
  Wybór trybu uwierzytelniania
- Przypisanie kont logowania do 
+ Przypisanie kont logowania do
 użytkowników i ról
- Przypisanie uprawnień użytkownikom 
+ Przypisanie uprawnień użytkownikom
 i rolom
  Planowanie bezpieczeństwa
  Role aplikacyjne
@@ -1932,18 +1932,18 @@ i rolom
 • Implementacja trybu uwierzytelniania
  Proces uwierzytelniania
  Wybranie trybu uwierzytelniania
- Kolejne kroki w implementowaniu trybu 
+ Kolejne kroki w implementowaniu trybu
 uwierzytelniania
  Tworzenie kont logowania
  15
  Proces uwierzytelniania
  Windows
- Windows  
+ Windows
 Group or User
- Weryfikuje wpisy 
+ Weryfikuje wpisy
 w tablicy syslogins ;
- ufa że Windows  
-zweryfikowało 
+ ufa że Windows
+zweryfikowało
 hasło
  ins ;
  syslogins
@@ -1951,7 +1951,7 @@ hasło
  SQL
  SQL Server
  Weryfikuje wpisy
- wtablicy syslogins 
+ wtablicy syslogins
 i weryfikuje hasło
  SQL Server
  Login Account
@@ -1964,7 +1964,7 @@ i weryfikuje hasło
  •dodawanie grupy jako jednego konta
  •szybki dostęp
  Zalety trybu identyfikacji  Windows  ( Windows Authentication)
- •dostęp dla użytkowników innych niż Windows i dla 
+ •dostęp dla użytkowników innych niż Windows i dla
 użytkowników Internetu
  •dodatkowa warstwa bezpieczeństwa ponad Windows
  Zalety trybu mieszanego (SQL Server Authentication)
@@ -1974,9 +1974,9 @@ użytkowników Internetu
  Zaloguj się do serwera
  Stwórz grupy i użytkowników Windows
  Upoważnij grupy i użytkowników Windows do logowania w SQL Server
- Stwórz konta SQL Server dla użytkowników, którzy łączą się przy użyciu trybu 
+ Stwórz konta SQL Server dla użytkowników, którzy łączą się przy użyciu trybu
 autentykacji SQL Server
- Stwórz konta SQL Server dla użytkowników, którzy łączą się przy użyciu trybu 
+ Stwórz konta SQL Server dla użytkowników, którzy łączą się przy użyciu trybu
 autentykacji SQL Server
  1
  2
@@ -2001,13 +2001,13 @@ autentykacji SQL Server
  MS SQL Server od wersji 2005
  //SQL Server Authentication
  //Windows Authentication
- //EXTERNAL -uwierzytelnianie przez 
+ //EXTERNAL -uwierzytelnianie przez
 zewnętrzny provider,
- //CERTIFICATE -obiekt kryptograficzny 
+ //CERTIFICATE -obiekt kryptograficzny
 do szyfrowania/podpisywania,
- //ASYMMETRIC KEY -para kluczy 
+ //ASYMMETRIC KEY -para kluczy
 (RSA) do szyfrowania i podpisywania.
- Przypisanie kont logowania do użytkowników 
+ Przypisanie kont logowania do użytkowników
 i ról bazy
  northwind..sysusers
  uid name
@@ -2021,7 +2021,7 @@ i ról bazy
  payroll
  Użytkownicy bazy są
  przechowywani w
- Prawa do bazy są 
+ Prawa do bazy są
 przechowywane w
  northwind..sysprotects
  sid
@@ -2053,8 +2053,8 @@ przechowywane w
  21
  22
 1212
- Przypisanie kont logowania do kont 
-użytkowników bazy-Dodanie kont użytkowników bazy danych 
+ Przypisanie kont logowania do kont
+użytkowników bazy-Dodanie kont użytkowników bazy danych
 (SQL Server 2000)
  • sp_grantdbaccess-Dodanie kont użytkowników bazy danych
  (od SQL Server 2005)
@@ -2079,30 +2079,30 @@ użytkowników bazy-Dodanie kont użytkowników bazy danych
  Na serwerze (instancji) włącz uwierzytelnianie contained:
  W docelowej bazie ustaw containment (PARTIAL):
  Utwórz użytkownika w bazie:
- Logowanie przez SSMS-Server name:Serwer\Instancjaalbo 
-tcp:nazwa_serwera,port-Authentication:SQL Server 
-Authentication-Login:AppUser(to jest containeduserw bazie)-Password:SilneHaslo#2025-Kliknij Options» Connection Propertiesi ustaw: 
-Connect to database:YourDatabase-to 
+ Logowanie przez SSMS-Server name:Serwer\Instancjaalbo
+tcp:nazwa_serwera,port-Authentication:SQL Server
+Authentication-Login:AppUser(to jest containeduserw bazie)-Password:SilneHaslo#2025-Kliknij Options» Connection Propertiesi ustaw:
+Connect to database:YourDatabase-to
 ważne, bo użytkownik istnieje tylko w tej bazie
  Przypisanie  kont do ról bazy danych
  Role serwera (wbudowane)
- Role serwera zdefiniowane przez 
+ Role serwera zdefiniowane przez
 użytkownika
  Role bazy danych (wbudowane)
- Role bazy danych zdefiniowane przez 
+ Role bazy danych zdefiniowane przez
 użytkownika
  25
  26
 1414
  Predefiniowanerole serwera
  Uprawnienia Rola
- członkowie roli mogą przeprowadzać masowe ładowanie danych (mogą wykonać instrukcję 
+ członkowie roli mogą przeprowadzać masowe ładowanie danych (mogą wykonać instrukcję
 BULK INSERT). bulkadmin
  członkowie roli mogą tworzyć i modyfikować bazy danych dbcreator
  członkowie roli mogą zarządzać plikami i urządzeniami pamięci masowej. diskadmin
  członkowie roli mogą zarządzać procesami SQL Servera(mogą wykonać instrukcję KILL). processadmin
  członkowie roli mogą zarządzać dostępem użytkowników do SQL Servera. securityadmin
- członkowie roli mogą konfigurować parametry pracy serwera bazodanowego, w tym 
+ członkowie roli mogą konfigurować parametry pracy serwera bazodanowego, w tym
 zatrzymywać serwer. serveradmin
  członkowie roli mogą zarządzać replikacją danych pomiędzy serwerami. setupadmin
  członkowie roli są administratorami serwera bazodanowego i mogą wykonywać każdą operację. sysadmin
@@ -2122,16 +2122,16 @@ zatrzymywać serwer. serveradmin
  https://learn.microsoft.com/en-us/sql/relational-databases/security/authentication-access/server-level-roles?view=sql-server-2017
  Predefiniowanerole bazydanych
  Uprawnienia Rola
- członkowie roli mogą zarządzać dostępem użytkowników do bazy danych. db_accessadmin 
+ członkowie roli mogą zarządzać dostępem użytkowników do bazy danych. db_accessadmin
 członkowie roli mogą tworzyć kopie zapasowe bazy danych. db_backupoperator
  członkowie roli mogą odczytywać dane zapisane w dowolnej tabeli bazy danych. db_datareader
- członkowie roli mogą modyfikować dane zapisane w dowolnej tabeli bazy danych. db_datawriter 
-członkowie roli mogą tworzyć, modyfikować i usuwać obiekty bazodanowe. db_ddladmin 
+ członkowie roli mogą modyfikować dane zapisane w dowolnej tabeli bazy danych. db_datawriter
+członkowie roli mogą tworzyć, modyfikować i usuwać obiekty bazodanowe. db_ddladmin
 członkowie roli nie mogą odczytywać danych zapisanych w jakiejkolwiek tabeli bd. db_denydatareader
  członkowie roli nie mogą modyfikować danych zapisanych w jakiejkolwiek tabeli bd. db_denydatawriter
  członkowie roli są administratorami bd i mogą w niej wykonywać każdą operację. db_owner
- członkowie roli mogą nadawać i odbierać uprawnienia użytkownikom. db_securityadmin 
-specjalna rola serwera, której członkami są wszyscy użytkownicy bazy danych. public 
+ członkowie roli mogą nadawać i odbierać uprawnienia użytkownikom. db_securityadmin
+specjalna rola serwera, której członkami są wszyscy użytkownicy bazy danych. public
 31
  32
 1717
@@ -2145,11 +2145,11 @@ specjalna rola serwera, której członkami są wszyscy użytkownicy bazy danych.
  Predefiniowanerole bazydanych
  https://docs.microsoft.com/en-us/sql/relational-databases/security/authentication-access/database-level-roles?view=sql-server-2017
  Role bazy danych definiowane przez użytkownika
- Dodawanie ról: 
-•Kiedy grupa ludzi potrzebuje wykonać tę samą 
+ Dodawanie ról:
+•Kiedy grupa ludzi potrzebuje wykonać tę samą
 czynność w SQL Server
- •Jeżeli nie masz uprawnień do zarządzanie kontami 
-Windows 
+ •Jeżeli nie masz uprawnień do zarządzanie kontami
+Windows
 EXEC sp_addrole Managers, dbo
  EXEC sp_addrolemember Managers, Alicia
  CREATE ROLE [Managers]
@@ -2161,7 +2161,7 @@ EXEC sp_addrole Managers, dbo
  https://learn.microsoft.com/en-us/sql/relational-databases/security/authentication-access/database-level-roles?view=sql-server-2017
  • Przypisanie uprawnień do użytkowników i ról
  Rodzaje uprawnień
- Przyznawanie,  zaprzeczanie, 
+ Przyznawanie,  zaprzeczanie,
 unieważnianie  uprawnień
  37
  38
@@ -2176,14 +2176,14 @@ Rodzaje uprawnień
  BACKUP DATABASE
  BACKUP LOG
  Obiekt
- SELECT 
+ SELECT
 INSERT
  UPDATE
  DELETE
  REFERENCES
  TABLE
  VIEW
- SELECT 
+ SELECT
 UPDATE
  REFERENCES
  Uprawnienia predefiniowane
@@ -2191,7 +2191,7 @@ UPDATE
  Właściciel obiektu
  COLUMN
  EXEC
- STORED 
+ STORED
 PROCEDURE
  39
  Przyznawanie, zaprzeczanie, unieważnianie uprawnień
@@ -2201,12 +2201,12 @@ PROCEDURE
  Może wykonać akcje
  40
  Zaprzeczanie:
- Nie może wykonywać 
+ Nie może wykonywać
 akcji
  20
  20
 Przyznawanie uprawnień umożliwiając dostęp
- GRANT SELECT 
+ GRANT SELECT
 ON products
  TO order
  GRANT INSERT, UPDATE
@@ -2256,34 +2256,34 @@ ON products
  •stworzenie ról definiowanych przez użytkownika
  •zastosowanie uprawnień do ról def. przez użytkownika
  •dodanie użytkowników do zdefiniowanych ról
- Tworzenie obiektów jako właściciel -dbo 
+ Tworzenie obiektów jako właściciel -dbo
 43
  44
 2323
- Przypisanie konta logowania do kont 
+ Przypisanie konta logowania do kont
 użytkowników i ról
  Zarządzanie uprawnieniami
  Elementy składni poleceń GRANT, REVOKE, DENY w SQL Server
- •ALL -Oznacza wszystkie możliwe uprawnienia dla obiektu danego typu (np. wszystkie prawa 
+ •ALL -Oznacza wszystkie możliwe uprawnienia dla obiektu danego typu (np. wszystkie prawa
 do tabeli –bez administracyjnych).
- •permission-Konkretne uprawnienie lub lista uprawnień, które mają zostać przyznane (np. 
+ •permission-Konkretne uprawnienie lub lista uprawnień, które mają zostać przyznane (np.
 SELECT, UPDATE, EXECUTE).
- •column-Określa poziom kolumny –można nadać uprawnienia tylko do wybranych kolumn 
+ •column-Określa poziom kolumny –można nadać uprawnienia tylko do wybranych kolumn
 (dotyczy np. SELECT i UPDATE).
- •principal -Podmiot, któremu nadajemy uprawnienia: użytkownik bazy danych, rola bazy 
+ •principal -Podmiot, któremu nadajemy uprawnienia: użytkownik bazy danych, rola bazy
 danych, login SQL Server lub grupa Windows.
- •WITH GRANT OPTION -Pozwala użytkownikowi, który otrzymał dane uprawnienie, 
+ •WITH GRANT OPTION -Pozwala użytkownikowi, który otrzymał dane uprawnienie,
 przekazać je innym użytkownikom.
- •AS principal -Określa, w czyim imieniu nadawane są uprawnienia (np. gdy administrator 
+ •AS principal -Określa, w czyim imieniu nadawane są uprawnienia (np. gdy administrator
 nadaje prawa jako inna rola).
  Dla instrukcji REVOKE i DENY
- •CASCADE -Usuwa lub blokuje również uprawnienia, które zostały nadane przez 
+ •CASCADE -Usuwa lub blokuje również uprawnienia, które zostały nadane przez
 użytkownika korzystającego z opcji WITH GRANT OPTION.
  45
  46
 2424
  Zarządzanie uprawnieniami
- ALL jest skrótem dla operacyjnych uprawnień typowych dla obiektów (np. SELECT, INSERT, UPDATE, DELETE dla tabel), ale nie 
+ ALL jest skrótem dla operacyjnych uprawnień typowych dla obiektów (np. SELECT, INSERT, UPDATE, DELETE dla tabel), ale nie
 obejmuje uprawnień administracyjnych ani specjalnych, które mogą wpływać na bezpieczeństwo lub strukturę bazy.
  Funkcjeskalarne:
  •Uprawnienia: EXECUTE, REFERENCES.
@@ -2296,24 +2296,24 @@ obejmuje uprawnień administracyjnych ani specjalnych, które mogą wpływać na
  Widoki:
  •Uprawnienia: SELECT, INSERT, UPDATE, DELETE, REFERENCES.
  Bazadanych:
- •Uprawnienia: BACKUP DATABASE, BACKUP LOG, CREATE DATABASE, CREATE 
-DEFAULT, CREATE FUNCTION, CREATE PROCEDURE, CREATE RULE, CREATE 
+ •Uprawnienia: BACKUP DATABASE, BACKUP LOG, CREATE DATABASE, CREATE
+DEFAULT, CREATE FUNCTION, CREATE PROCEDURE, CREATE RULE, CREATE
 TABLE, CREATE VIEW.
  GRANTALTER, CONTROL, DELETE
  ONSCHEMA::dboTOgrupa1
  Zarządzanie uprawnieniami
- •ALTER -Pozwala użytkownikowi zmieniać definicję obiektu (np. edytować kod procedury, 
+ •ALTER -Pozwala użytkownikowi zmieniać definicję obiektu (np. edytować kod procedury,
 zmieniać strukturę tabeli).
- •CONTROL -Daje pełną kontrolę nad obiektem, w tym możliwość usuwania obiektu, 
-zmieniania jego definicji czy nadawania uprawnień innym użytkownikom (działa jak właściciel 
-obiektu). 
-•TAKE OWNERSHIP -Pozwala przejąć własność obiektu –użytkownik staje się jego 
+ •CONTROL -Daje pełną kontrolę nad obiektem, w tym możliwość usuwania obiektu,
+zmieniania jego definicji czy nadawania uprawnień innym użytkownikom (działa jak właściciel
+obiektu).
+•TAKE OWNERSHIP -Pozwala przejąć własność obiektu –użytkownik staje się jego
 właścicielem.
- •VIEW DEFINITION -Umożliwia podgląd definicji obiektu (np. kod procedury, strukturę tabeli, 
+ •VIEW DEFINITION -Umożliwia podgląd definicji obiektu (np. kod procedury, strukturę tabeli,
 zapytanie widoku), bez prawa do jego modyfikacji czy wykonania.
  Procedury przechowywane, Funkcje, Tabele, Widoki:
  •Uprawnienia: ALTER, CONTROL, TAKE OWNERSHIP, VIEW DEFINITION.
- Bazy danych: 
+ Bazy danych:
 •Uprawnienia: ALTER, CONTROL, TAKE OWNERSHIP, VIEW DEFINITION
  47
  48
@@ -2323,11 +2323,11 @@ zapytanie widoku), bez prawa do jego modyfikacji czy wykonania.
  GO
  GRANT  ALL  ON [dbo].[Categories] TO [u1]
  // bez uprawnień:
- // -ALTER, 
-// -CONTROL, 
-// -TAKE OWNERSHIP, 
+ // -ALTER,
+// -CONTROL,
+// -TAKE OWNERSHIP,
 // -VIEW DEFINITION
- uprawnienia pozwalają na zarządzanie serwerem SQL Server, wykonywanie operacji administracyjnych oraz kontrolowanie 
+ uprawnienia pozwalają na zarządzanie serwerem SQL Server, wykonywanie operacji administracyjnych oraz kontrolowanie
 dostępu do baz danych i innych zasobów serwera.
  • CONTROL SERVER
  • CREATE DATABASE
@@ -2353,7 +2353,7 @@ dostępu do baz danych i innych zasobów serwera.
  49
  50
 2626
- uprawnienia kontrolują dostęp do obiektów w obrębie jednej bazy danych i umożliwiają różne operacje administracyjne 
+ uprawnienia kontrolują dostęp do obiektów w obrębie jednej bazy danych i umożliwiają różne operacje administracyjne
 oraz zarządzanie danymi.
  •ALTER
  •CONTROL
@@ -2362,7 +2362,7 @@ oraz zarządzanie danymi.
  •REFERENCES
  •SELECT
  •UPDATE
- •VIEW DEFINITION 
+ •VIEW DEFINITION
 Uprawnienia na poziomie schematu w bazie danych:
  uprawnienia kontrolują uprawnienia na poziomie obiektów bazy danych.
  •SELECT
@@ -2374,7 +2374,7 @@ Uprawnienia na poziomie schematu w bazie danych:
  •CONTROL
  •EXECUTE
  •TAKE OWNERSHIP
- •VIEW DEFINITION 
+ •VIEW DEFINITION
 Uprawnienia na poziomie obiektów w bazie danych:
  Uprawnienia
  Zarządzanie uprawnieniami za pomocą ról
@@ -2382,11 +2382,11 @@ Uprawnienia na poziomie obiektów w bazie danych:
  52
 2727
  • Zarządzanie bezpieczeństwem aplikacji
- Zarządzanie bezpieczeństwem przy użyciu 
-widoków i przechowywanych procedur 
-Zarządzanie bezpieczeństwem przy pomocy ról 
+ Zarządzanie bezpieczeństwem przy użyciu
+widoków i przechowywanych procedur
+Zarządzanie bezpieczeństwem przy pomocy ról
 aplikacyjnych
- Zarządzanie bezpieczeństwem przy użyciu 
+ Zarządzanie bezpieczeństwem przy użyciu
 widoków i procedur przechowywanych
  employees
  SELECT * FROM employees
@@ -2400,7 +2400,7 @@ widoków i procedur przechowywanych
  Davolio
  Fuller
  Leverling
- firstname 
+ firstname
 Nancy
  Andrew
  Janet
@@ -2430,24 +2430,24 @@ Nancy
  uprawnień tylkonapoziomiebazydanych, zapewniającdodatkowąwarstwękontroli
  dostępudodanych.
  Kiedy warto użyć roli aplikacyjnej?-Ukrycie logiki dostępu
- • Użytkownicy końcowi łączą się przez wspólne konto (lub różne konta), 
-ale aplikacja po zalogowaniu aktywuje rolę, która daje dodatkowe 
+ • Użytkownicy końcowi łączą się przez wspólne konto (lub różne konta),
+ale aplikacja po zalogowaniu aktywuje rolę, która daje dodatkowe
 uprawnienia.
- • Dzięki temu użytkownik nie ma bezpośredniego dostępu do wrażliwych 
+ • Dzięki temu użytkownik nie ma bezpośredniego dostępu do wrażliwych
 danych w SSMS –tylko aplikacja może aktywować rolę.-Centralne zarządzanie uprawnieniami aplikacji
- • Zamiast nadawać uprawnienia każdemu użytkownikowi, nadajesz je roli 
+ • Zamiast nadawać uprawnienia każdemu użytkownikowi, nadajesz je roli
 aplikacyjnej.
  • Aplikacja zna hasło roli i aktywuje ją w sesji.-Scenariusze z wieloma użytkownikami
- • Każdy użytkownik ma minimalne uprawnienia (np. SELECT na kilku 
+ • Każdy użytkownik ma minimalne uprawnienia (np. SELECT na kilku
 tabelach).
- • Aplikacja włącza rolę, aby uzyskać dodatkowe prawa (np. INSERT, 
+ • Aplikacja włącza rolę, aby uzyskać dodatkowe prawa (np. INSERT,
 UPDATE) tylko w kontekście działania aplikacji.-Bezpieczeństwo w środowisku z connectionpooling
- • Rola działa tylko w sesji, więc połączenie w puli nie „dziedziczy” roli, 
+ • Rola działa tylko w sesji, więc połączenie w puli nie „dziedziczy” roli,
 jeśli użyjesz sp_unsetapprole.
  55
  56
 2929
- Zarządzanie bezpieczeństwem aplikacji przy 
+ Zarządzanie bezpieczeństwem aplikacji przy
 pomocy ról aplikacyjnych
  Microsoft Excel Order Entry Application
  orders
@@ -2466,39 +2466,39 @@ pomocy ról aplikacyjnych
  Tworzenie roli aplikacyjnej
  Wykonanie polecenia CREATE APPLICATION ROLE
  [ sp_addapprole() –deprecated]
- Tylko członkowie db_owner, db_securityadmin, i 
+ Tylko członkowie db_owner, db_securityadmin, i
 sysadminmogą ją wykonywać
  57
  58
 3030
  Aktywowanie roli aplikacyjnej
  Użytkownik musi wyspecyfikować hasło
- Zasięgiem działania jest dana baza -jeżeli użytkownik przełączy się do innej bazy danych, 
+ Zasięgiem działania jest dana baza -jeżeli użytkownik przełączy się do innej bazy danych,
 użytkownik ma prawa użytkownika we wcześniejszej bazie danych
  Rola nie może być dezaktywowana aż do czasu jak użytkownik się nie rozłączy
  Zalecane praktyki
- Używaj Mixed Modetylko gdy konieczne; preferuj 
-Windows/Entradla reszty, 
-Nie używaj konta sa; nadawaj rolę sysadmindedykowanym 
+ Używaj Mixed Modetylko gdy konieczne; preferuj
+Windows/Entradla reszty,
+Nie używaj konta sa; nadawaj rolę sysadmindedykowanym
 loginom,
- Zapewnij, by dbobył właścicielem wszystkich obiektów, 
-Udostępniaj dane przez procedury składowanei widoki, 
-nie bezpośrednio tabele, 
-Stosuj zasadę najmniejszych uprawnieńi role zamiast 
-pojedynczych GRANT’ów, 
-Wyłącz/ogranicz guestw bazach użytkowych; nie dawaj 
+ Zapewnij, by dbobył właścicielem wszystkich obiektów,
+Udostępniaj dane przez procedury składowanei widoki,
+nie bezpośrednio tabele,
+Stosuj zasadę najmniejszych uprawnieńi role zamiast
+pojedynczych GRANT’ów,
+Wyłącz/ogranicz guestw bazach użytkowych; nie dawaj
 przywilejów roli public,
- Unikaj db_ownerdla kont aplikacyjnych; twórz role 
-„read-only” i „read-write”. 
+ Unikaj db_ownerdla kont aplikacyjnych; twórz role
+„read-only” i „read-write”.
 59
  60
-Backup 
+Backup
 bazy danych
  1
  Informacje podstawowe
  • Zapobieganie utracie danych
  • Zmiana ustawień i modele odzyskiwania bazy danych
- • Kopie zapasowe w SQL Server 
+ • Kopie zapasowe w SQL Server
 • Kiedy robić backup bazy danych
  • Wykonywanie kopii zapasowych
  • Rodzaje metod tworzenia kopii zapasowych
@@ -2509,55 +2509,55 @@ bazy danych
  Zapobieganieutraciedanych
  Dane możnautracićw wyniku:
  • awariisprzętuluboprogramowania,
- • przypadkowegolubzłośliwegoużyciainstrukcjinp.  
+ • przypadkowegolubzłośliwegoużyciainstrukcjinp.
 DELETE, UPDATE bez klauzuliWHERE,
  • działanianiebezpiecznychwirusówlubataków,
- • katastrofynaturalnenp. pożar, powódź, trzęsieniaziemi, 
+ • katastrofynaturalnenp. pożar, powódź, trzęsieniaziemi,
 atakiterrorystyczne,
  • Kradzież.
  •Posiadanie strategii kopii zapasowych
  ominimalizowanie utraty danych
  oodzyskiwanie utraconych danych
- oodzyskiwanie danych w  minimalnym czasie 
+ oodzyskiwanie danych w  minimalnym czasie
 •Regularne robienie kopii zapasowej
  Zapobieganie utracie danych
  3
  4
 3
- Wstępne planowanie operacji tworzenia 
+ Wstępne planowanie operacji tworzenia
 i przywracania kopii zapasowych
- Jakiego rodzaju bazę 
+ Jakiego rodzaju bazę
 danych rozpatrujemy?
- Jak ważne są dane 
-przechowywane w bazie 
+ Jak ważne są dane
+przechowywane w bazie
 danych?
- Jak często aktualizowane są 
-dane przechowywane w 
+ Jak często aktualizowane są
+dane przechowywane w
 bazie danych?
- Jak szybko wymagane jest 
+ Jak szybko wymagane jest
 przywrócenie danych?
- Czy posiadamy odpowiedni 
-sprzęt do wykonywania 
+ Czy posiadamy odpowiedni
+sprzęt do wykonywania
 kopii zapasowych?
- Czy tworzone kopie 
-zapasowe mogą być 
+ Czy tworzone kopie
+zapasowe mogą być
 kompresowane?
- Kiedy należy wykonywać 
+ Kiedy należy wykonywać
 kopie zapasowe?
- Czy konieczne jest 
-przechowywanie 
-tworzonych kopii 
-zapasowych poza siedzibą 
+ Czy konieczne jest
+przechowywanie
+tworzonych kopii
+zapasowych poza siedzibą
 firmy (oprogramowania)?
- Prosty (Simple 
+ Prosty (Simple
 Recoverymodel)- Przeznaczony dla baz, gdzie wystarczy odtworzenie do stanu z
  ostatniegopełnegolubróżnicowegobackupu.- Nie obsługuje backupówdziennika transakcji– brak point-in-time
  recovery.-Pokażdymcheckpointsystemautomatycznieczyścinieaktywnewpisy
  wdzienniku(opcjaTruncateLogonCheckpoint).-Zalecanydlabaz testowych,pomocniczych lubsystemowych, gdzie
  pełnahistoriatransakcjiniejestwymagana.
- Pełny (Full 
+ Pełny (Full
 Recoverymodel)-Pełnelogowaniewszystkichoperacji.-Obsługujebackupdziennikatransakcji→możliwepoint-in-timerecovery.-Wymagaregularnychbackupówlogu,inaczejdziennikrośnie.-Zalecanydlabazkrytycznych,gdziewymaganajestpełnahistoriatransakcji.
- Z rejestrowaniem masowym 
+ Z rejestrowaniem masowym
 (Bulk-LoggedRecoverymodel)-Minimalne logowaniedlaoperacjimasowych (np.BULK INSERT,
  SELECTINTO).- Obsługuje backup dziennika, ale brak point-in-time recovery
  wtrakcieoperacjimasowych.-Backuplogupooperacjachmasowychjestwiększy.- Dobry dla dużych operacji masowych, gdy wydajność jest
@@ -2566,8 +2566,8 @@ Recoverymodel)-Pełnelogowaniewszystkichoperacji.-Obsługujebackupdziennikatrans
  5
  6
 4
- Modele odzyskiwania bazy danych 
-z rejestrowaniem masowym 
+ Modele odzyskiwania bazy danych
+z rejestrowaniem masowym
 •Bulk-Logged RecoveryModel minimalizuje rejestrowaniewdzienniku
  transakcji dla operacji masowych (bulk operations), aby poprawić
  wydajność.
@@ -2590,35 +2590,35 @@ z rejestrowaniem masowym
  SET RECOVERY [FULL | SIMPLE | BULK_LOGGED]
  Przykład:
  ALTER DATABASE [Northwind] SET RECOVERY FULL WITH NO_WAIT --NO_WAIT | ROLLBACK AFTER 5 SECONDS | ROLLBACK IMMEDIATE
- select * from sys.databaseswhere name ='Northwind' 
+ select * from sys.databaseswhere name ='Northwind'
 7
  8
 5
- Backup  SQL Server 
-•Umożliwia robienie kopii zapasowej podczas gdy użytkownicy 
+ Backup  SQL Server
+•Umożliwia robienie kopii zapasowej podczas gdy użytkownicy
 kontynuują pracę ze swą bazą danych,
- •Robi kopię zapasową na wskazanych nośnikach i zapisuje ich 
+ •Robi kopię zapasową na wskazanych nośnikach i zapisuje ich
 lokalizację,
- •Wychwytuje działania na bazie danych, które zdarzają się podczas 
-procesu Backupu 
-owywołuje punkt kontrolny i rejestruje LSN (log sequencenumber) 
+ •Wychwytuje działania na bazie danych, które zdarzają się podczas
+procesu Backupu
+owywołuje punkt kontrolny i rejestruje LSN (log sequencenumber)
 najstarszego aktywnego rekordu dziennika trans.
- ozapisuje wszystkie strony na medium wykorzystywanym do robienia 
+ ozapisuje wszystkie strony na medium wykorzystywanym do robienia
 kopii zapasowej
- ozapisuje wszystkie transactionlog zarejestrowane podczas procesu 
+ ozapisuje wszystkie transactionlog zarejestrowane podczas procesu
 tworzenia kopii zapasowej
  Wykonywanie i składowanie kopii zapasowych
- Kto wykonuje kopie zapasowe-członkowie roli serwera sysadmin-członkowie roli baz danych db_owner, 
+ Kto wykonuje kopie zapasowe-członkowie roli serwera sysadmin-członkowie roli baz danych db_owner,
 db_backupoperator
- Gdzie przechowywać kopie 
-zapasowe-Dyski (systemy archiwizujące oparte na 
-dyskach)-Napędy taśmowe (z modułem 
+ Gdzie przechowywać kopie
+zapasowe-Dyski (systemy archiwizujące oparte na
+dyskach)-Napędy taśmowe (z modułem
 automatycznego zmieniania kaset)
  9
  10
 6
  Wybór urządzeń i nośników dla kopii zapasowych
- Wybór właściwego rozwiązania dla potrzeb archiwizacji danych uzależniony jest od 
+ Wybór właściwego rozwiązania dla potrzeb archiwizacji danych uzależniony jest od
 wielu czynników obejmujących między innymi:
  •Pojemność
  •Niezawodność
@@ -2630,49 +2630,49 @@ wielu czynników obejmujących między innymi:
  •Zakładanej częstotliwości wykonywania kopii zapasowych
  •Wymaganego okresu przechowywania dodatkowych zestawów danych
  Kiedy robić kopie zapasowe baz danych
- Tworzenie kopii 
-zapasowych 
-systemowych baz 
+ Tworzenie kopii
+zapasowych
+systemowych baz
 danych
- Tworzenie kopii 
-zapasowych baz 
-danych 
+ Tworzenie kopii
+zapasowych baz
+danych
 użytkowników
- Czynności, które są 
-zabronione 
-podczas robienia 
+ Czynności, które są
+zabronione
+podczas robienia
 kopii zapasowej
  11
  12
 7
  Backup systemowych baz danych
  Po zmodyfikowaniu bazy danych MASTER (SIMPLE)
- •Gdy używamy poleceń CREATE DATABASE, ALTER DATABASE lub DROP 
-DATABASE, CREATE LOGIN … 
-•Wykonujemy systemowe procedury przechowywane do zmiany konfiguracji 
+ •Gdy używamy poleceń CREATE DATABASE, ALTER DATABASE lub DROP
+DATABASE, CREATE LOGIN …
+•Wykonujemy systemowe procedury przechowywane do zmiany konfiguracji
 serwera (warto zachować kilka kopii)
  •Pewne zmiany realizowane są automatycznie (np. zmiana rozmiaru bazy danych)
  Po zmodyfikowaniu bazy danych MSDB (SIMPLE)
- •Zmiana harmonogramów zadań przez SQL Server Agent 
+ •Zmiana harmonogramów zadań przez SQL Server Agent
 •Dodawanie zadań, alertów czy operatorów
  •Przechowuje historię kopii zapasowych
  Po zmodyfikowaniu bazy danych MODEL (default FULL)
  Backup baz danych użytkownika
  Po utworzeniu baz danych
- Po utworzeniu indeksów dziennik transakcji rejestruje tylko fakt, że indeks został 
-utworzony, nie rzeczywiste zmiany stron danych. Czas, który 
-jest wymagany, aby odbudować indeks może być dłuższy niż 
+ Po utworzeniu indeksów dziennik transakcji rejestruje tylko fakt, że indeks został
+utworzony, nie rzeczywiste zmiany stron danych. Czas, który
+jest wymagany, aby odbudować indeks może być dłuższy niż
 czas potrzebny do przywrócenia pełnej kopii zapasowej.
- Po wyczyszczeniu dziennika 
-transakcji polecenia BACKUP LOG WITH TRUNCATE_ONLY 
+ Po wyczyszczeniu dziennika
+transakcji polecenia BACKUP LOG WITH TRUNCATE_ONLY
 lubBACKUP LOG WITH NOLOG (deprecated)
- Po wykonaniu 
+ Po wykonaniu
 nierejestrowanych operacji polecenie SELECT...INTO, bulkcopy(bcp)
  polecenie WRITETEXT lub UPDATETEXT (deprecated)
  13
  14
 8
- Czynności zabronione podczas tworzenia 
+ Czynności zabronione podczas tworzenia
 kopii zapasowej bazy danych
  •Tworzenie i modyfikowanie bazy danych
  •Wykonywanie operacji zmiany wielkości bazy danych
@@ -2683,38 +2683,38 @@ kopii zapasowej bazy danych
  Tworzenie urządzenia do tworzenia kopii zapasowej
  Tworzenie trwałych plików kopii zapasowych
  Tworzenie tymczasowych plików kopii zapasowych
- Użycie wielokrotnych plików kopii zapasowych do przechowywania 
+ Użycie wielokrotnych plików kopii zapasowych do przechowywania
 backupu
- Użycie polecenia BACKUP 
+ Użycie polecenia BACKUP
 Backup na urządzeniu taśmowym
  15
  16
 9
  Tworzenie urządzenia kopii zapasowych
- Dlaczego tworzyć urządzenia do 
+ Dlaczego tworzyć urządzenia do
 kopii zapasowych
- celem użycia w przyszłości w procesie 
+ celem użycia w przyszłości w procesie
 tworzenia kopii zapasowych
- aby zautomatyzować zadanie tworzenia 
+ aby zautomatyzować zadanie tworzenia
 kopii zapasowych
- Użycie systemowej 
-przechowywanej procedury 
+ Użycie systemowej
+przechowywanej procedury
 sp_addumpdevice
  określa logiczną nazwę urządzenia
- logiczne i fizyczne nazwy są 
-przechowywane w  systemowej  tablicy 
+ logiczne i fizyczne nazwy są
+przechowywane w  systemowej  tablicy
 sysdevices
  USE [master]
- EXEC sp_addumpdevice@devtype='disk', 
+ EXEC sp_addumpdevice@devtype='disk',
 @logicalname= 'backup_file',
  @physicalname= 'c:\backup\backup_file.bak';
  BACKUP DATABASE [Northwind] TO  [backup_file];
  Tworzenie tymczasowych plików kopii zapasowych
  Dlaczego tworzy się takie pliki
- •Aby wykonać pojedynczy proces archiwizacji danych 
-•Aby sprawdzić operacje archiwizacji danych, którą zamierza się 
+ •Aby wykonać pojedynczy proces archiwizacji danych
+•Aby sprawdzić operacje archiwizacji danych, którą zamierza się
 zautomatyzować
- Użycie wyrażenia BACKUP DATABASE 
+ Użycie wyrażenia BACKUP DATABASE
 •określamy typ medium (urządzenie dyskowe czy taśmowe)
  •określamy dokładną ścieżkę i nazwę pliku
  USE [master]
@@ -2755,32 +2755,32 @@ zautomatyzować
  Backup Set BackupA1
  BackupB1 BackupB1 BackupB1
  Database B Database B
- BACKUP DATABASE [Northwind] 
+ BACKUP DATABASE [Northwind]
 TO DISK='c:\temp\file1.bak', DISK='d:\temp\file2.bak', DISK = 'e:\temp\file3.bak' WITH FORMAT, INIT,
  MEDIADESCRIPTION='Opis',MEDIANAME='North01',NAME='FULL01',SKIP,NOREWIND,NOUNLOAD,COMPRESSION,STATS=10
  Użycie wielu plików do przechowywania kopii zapasowych
- Określenie opcji  INIT 
-lub NOINIT-opcja NOINIT dołącza do pliku kopii 
-zapasowej-opcja INIT nadpisuje plik kopii 
+ Określenie opcji  INIT
+lub NOINIT-opcja NOINIT dołącza do pliku kopii
+zapasowej-opcja INIT nadpisuje plik kopii
 zapasowej
- Użycie opcji  FORMAT 
-(występuje razem z opcją 
-INIT)-nadpisuje zawartość pliku kopii 
-zapasowej-tworzy nowy zestaw dla dodanych 
+ Użycie opcji  FORMAT
+(występuje razem z opcją
+INIT)-nadpisuje zawartość pliku kopii
+zapasowej-tworzy nowy zestaw dla dodanych
 plików kopii zapasowej
- Użycie opcji  NOFORMAT  
-razem z opcją NOINIT 
-sprawdza nazwę zestawu-WITH NOFORMAT, NOINIT,  
-MEDIANAME = 'North01'-WITH FORMAT, NOINIT (nie 
+ Użycie opcji  NOFORMAT
+razem z opcją NOINIT
+sprawdza nazwę zestawu-WITH NOFORMAT, NOINIT,
+MEDIANAME = 'North01'-WITH FORMAT, NOINIT (nie
 występuje)
- Użycie polecenia BACKUP 
+ Użycie polecenia BACKUP
 19
  20
 11
- Wymaga urządzenia taśmowego lokalnie dołączonego 
+ Wymaga urządzenia taśmowego lokalnie dołączonego
 do SQL Server
  Nagrywa informacje o kopii zapasowej na etykiecie taśmy
- przechowuje kopie zapasowe MS SQL Server  
+ przechowuje kopie zapasowe MS SQL Server
 i innych danych
  Backup na urządzeniu taśmowym
  Określanie opcji dla taśmy
@@ -2788,23 +2788,23 @@ i innych danych
  UNLOAD (default) Przewija i rozładowywuje taśmę
  NOUNLOAD Nie przewija i rozładowywuje taśmę
  BLOCKSIZE Zmienia fizyczny rozmiar bloku w bajtach
- FORMAT Nadpisuje nagłówki w plikach, które są używane do 
+ FORMAT Nadpisuje nagłówki w plikach, które są używane do
 Backup’u
- SKIP Ignoruje etykiety taśm  ANSI 
-NOSKIP (default) Czyta etykiety taśm ANSI 
-RESTART Restartuje proces kopii zapasowej od momentu 
+ SKIP Ignoruje etykiety taśm  ANSI
+NOSKIP (default) Czyta etykiety taśm ANSI
+RESTART Restartuje proces kopii zapasowej od momentu
 jej przerwania (realizowany dla wielu taśm)
  21
  22
 12
  COPY_ONLY
  RETAINDAYS = 5
- EXPIREDATE = 
+ EXPIREDATE =
 '01/01/2016 00:00:00'
- FILE 
+ FILE
 FILEGROUP
  TO  DISK TO  TAPE
- Tworzenie kopii zapasowej 
+ Tworzenie kopii zapasowej
 z poziomu SQL Server Management Studio
  TRUNCATE
  NO_TRUNCATE
@@ -2813,30 +2813,30 @@ z poziomu SQL Server Management Studio
  INIT
  MEDIANAME = ‘nazwa‘
  NOSKIP
- FORMAT, INIT,  
+ FORMAT, INIT,
 MEDIANAME = 'nazwa',
- MEDIADESCRIPTION = ‘Opis', 
+ MEDIADESCRIPTION = ‘Opis',
 SKIP
  RESTORE VERIFYONLY (polecenie)
- CHECKSUM, 
+ CHECKSUM,
 CONTINUE_AFTER_ERROR
  UNLOAD | NOUNLOAD
  REWIND | NOREWIND
  COMPRESSION
  NO_COMPRESSION
- Tworzenie kopii zapasowej 
+ Tworzenie kopii zapasowej
 z poziomu SQL Server Management Studio
  23
  24
 13
  Typy metod tworzenia kopii zapasowych
  •Full Backup–kopia całej bazy.
- •DifferentialBackup–zmiany od ostatniego pełnego backupu. 
-•TransactionLog Backup–zapis transakcji od ostatniego 
-backupu logu. 
+ •DifferentialBackup–zmiany od ostatniego pełnego backupu.
+•TransactionLog Backup–zapis transakcji od ostatniego
+backupu logu.
 •File/FilegroupBackup–dla dużych baz.
- •Copy-OnlyBackup–specjalny backup bez zmiany standardowego 
-łańcucha backupów (backup chain). 
+ •Copy-OnlyBackup–specjalny backup bez zmiany standardowego
+łańcucha backupów (backup chain).
 •Tail-Log Backup–przed restorew przypadku awarii.
  Pełna kopia zapasowa bazy danych
  •Dostarcza punkt bazowy
@@ -2851,59 +2851,59 @@ backupu logu.
  EXEC sp_addumpdevice'disk', 'disk_c',
  'C:\backup\dysk_c.bak'
  BACKUP DATABASE northwindTO disk_c
- Pełna kopia zapasowa pozwala na kompletne odtworzenie stanu wszystkich danych znajdujących się 
+ Pełna kopia zapasowa pozwala na kompletne odtworzenie stanu wszystkich danych znajdujących się
 w bazie w chwili zakończenia operacji tworzenia kopii zapasowej.
  25
  26
 14
  Pełna kopia zapasowa bazy danych
- Przykład 1. tworzy urządzenie kopii zapasowej o nazwie logicznej 'disk_c’ 
+ Przykład 1. tworzy urządzenie kopii zapasowej o nazwie logicznej 'disk_c’
 i wykonuje pełną kopię zapasową bazy danych.
  USE master
  EXEC sp_addumpdevice'disk', 'disk_c','c:\backup\disk_c.bak';
  BACKUP DATABASE Northwind TO disk_c;
- Przykład 2.wykonuje pełną kopię zapasową bazy danych do pliku 
+ Przykład 2.wykonuje pełną kopię zapasową bazy danych do pliku
 na urządzeniu disk_ci zastępuje poprzednie kopie zapasowe.
  BACKUP DATABASE Northwind TO disk_cWITH INIT
- Przykład 3.dołącza pełną kopię zapasową bazy danych do pliku na 
-urządzeniu 'disk_c'. Wszystkie wcześniejsze pliki kopii zapasowych pozostają 
+ Przykład 3.dołącza pełną kopię zapasową bazy danych do pliku na
+urządzeniu 'disk_c'. Wszystkie wcześniejsze pliki kopii zapasowych pozostają
 nienaruszone.
  BACKUP DATABASE Northwind TO disk_cWITH NOINIT
- Przykład 4.tworzy kopię zapasową pliku na dysku 
+ Przykład 4.tworzy kopię zapasową pliku na dysku
 i wykonuje pełną kopię zapasową bazy danych do tego pliku.
  BACKUP DATABASE NorthwindTO DISK='c:\backup\disktemp_c.bak'
  Różnicowa kopia zapasowa bazy danych
- •Używana do często modyfikowanych baz danych 
-•Wymaga pełnego backupu bazy danych 
-•Tworzy kopie zapasową zmian w bazie danych od czasu jej ostatniej 
-pełnej kopii zapasowej  
-•Oszczędza czas zarówno w samym procesie backupu jak i procesie 
+ •Używana do często modyfikowanych baz danych
+•Wymaga pełnego backupu bazy danych
+•Tworzy kopie zapasową zmian w bazie danych od czasu jej ostatniej
+pełnej kopii zapasowej
+•Oszczędza czas zarówno w samym procesie backupu jak i procesie
 odtwarzania
- •Tworzy część TransactionLog używanego w trakcie tworzenia kopii 
+ •Tworzy część TransactionLog używanego w trakcie tworzenia kopii
 zapasowej
- BACKUP DATABASE northwindTO 
+ BACKUP DATABASE northwindTO
 DISK = 'c:\backup\disktemp_c.bak'
  WITH DIFFERENTIAL
- Pełna i różnicowa  kopia zapasowa pozwala na kompletne odtworzenie stanu wszystkich danych 
+ Pełna i różnicowa  kopia zapasowa pozwala na kompletne odtworzenie stanu wszystkich danych
 znajdujących się w bazie w chwili zakończenia operacji tworzenia różnicowej kopii zapasowej.
  27
  28
 15
  Kopia zapasowa dziennika transakcji
  •Wymaga pełnego backup-u bazy danych
- •Tworzy wszystkie zmiany bazy danych od ostatniego polecenia 
+ •Tworzy wszystkie zmiany bazy danych od ostatniego polecenia
 BACKUP LOG do końca obecnego dziennika transakcji
  •Przycina dziennik transakcji
  USE master
  EXEC sp_addumpdevice'disk', 'disk_d',
  'd:\backup\disk_d.bak'
  BACKUP LOG northwindTO disk_d
- Kopia zapasowa dziennika transakcji zapisuje stan  istniejący w chwili operacji tworzenia 
+ Kopia zapasowa dziennika transakcji zapisuje stan  istniejący w chwili operacji tworzenia
 (rozpoczęcia) kopii zapasowej.
- Użycie opcji NO_TRUNCATE-Tworzy kopię zapasową dziennika transakcji (TransactionLog) dla bazy danych. -Może być wykonana nawet gdy baza jest w stanie SUSPECT lub częściowo offline, czyli w sytuacji 
-awaryjnej, gdy normalny backup logu nie jest możliwy. -Zachowuje wszystkie wpisy w dzienniku transakcji–nie czyści logu po wykonaniu backupu. -Umożliwia odzyskanie danych do momentu awarii (Point-in-Time Recovery), jeśli mamy pełny backup 
-+ wszystkie logi. -Wymaga modelu odzyskiwania Full lub Bulk-Logged–w trybie Simple backup logu nie działa. -Nie przerywa łańcucha logów–backup jest częścią chain, więc można go użyć w sekwencji restore. -Opcja NO_TRUNCATE jest typowa dla sytuacji awaryjnych, np. gdy baza jest uszkodzona, ale chcemy 
-uratować transakcje przed naprawą. 
+ Użycie opcji NO_TRUNCATE-Tworzy kopię zapasową dziennika transakcji (TransactionLog) dla bazy danych. -Może być wykonana nawet gdy baza jest w stanie SUSPECT lub częściowo offline, czyli w sytuacji
+awaryjnej, gdy normalny backup logu nie jest możliwy. -Zachowuje wszystkie wpisy w dzienniku transakcji–nie czyści logu po wykonaniu backupu. -Umożliwia odzyskanie danych do momentu awarii (Point-in-Time Recovery), jeśli mamy pełny backup
++ wszystkie logi. -Wymaga modelu odzyskiwania Full lub Bulk-Logged–w trybie Simple backup logu nie działa. -Nie przerywa łańcucha logów–backup jest częścią chain, więc można go użyć w sekwencji restore. -Opcja NO_TRUNCATE jest typowa dla sytuacji awaryjnych, np. gdy baza jest uszkodzona, ale chcemy
+uratować transakcje przed naprawą.
 BACKUP LOG NorthwindTO DISK= 'C:\Backup\Northwind_Log.bak' WITHNO_TRUNCATE
  29
  30
@@ -2911,8 +2911,8 @@ Czyszczenie dziennika transakcji
  • Użycie opcji TRUNCATE_ONLY lub NO_LOG (deprecated)
  owykonywać przed wykonaniem pełnego backupu bazy danych
  onie można odzyskać zmian
- onie jest nagrywany--Truncating the transaction log 
-BACKUP LOG NORTHWID WITH NO_LOG -- WITH TRUNCATE_ONLY 
+ onie jest nagrywany--Truncating the transaction log
+BACKUP LOG NORTHWID WITH NO_LOG -- WITH TRUNCATE_ONLY
 • Ustawienie opcji ‘trunc. log na chkpt’ (model simple)
  ozapisuje wszystkie zatwierdzone transakcje
  owykonuje się automatycznie po ustawieniu na true
@@ -2920,9 +2920,9 @@ BACKUP LOG NORTHWID WITH NO_LOG -- WITH TRUNCATE_ONLY
  Kopia zapasowa pliku bazy danych lub grupy plików
  • Używane przy bardzo dużych bazach danych
  • Tworzy kopię plików bazy danych oddzielnie
- • Zapewnia, że wszystkie pliki bazy danych znajdujące się w 
+ • Zapewnia, że wszystkie pliki bazy danych znajdujące się w
 grupie będą kopiowane
- • Należy utworzyć kopię dziennika transakcji w celu zgodności 
+ • Należy utworzyć kopię dziennika transakcji w celu zgodności
 danych
  BACKUP DATABASE Northwind
  FILE = 'northwind5' TO northwind5 –- FILE|FILEGROUP
@@ -2933,7 +2933,7 @@ danych
  Ograniczenia-kopiazapasowaplikulubgrupyplików
  D:\
  D:\
- Oba pliki muszą być 
+ Oba pliki muszą być
 zapisane jako jednostka
  Scenariusz1
  Table Table
@@ -2946,27 +2946,27 @@ zapisane jako jednostka
  Index 2 Index 2
  Filegroup 01
  Table Table
- Filegroups 1, 2, and 3 muszą 
-być zapisane 
+ Filegroups 1, 2, and 3 muszą
+być zapisane
 jako jednostka
  Indeksyitabelesą tworzone w tej samejgrupie plików
  Indeksy i tabele są tworzone w różnych grupach plików
  Planowanie strategii kopii zapasowej
  Strategia pełnej kopii zapasowej bazy danych (Full)
- Strategia pełnej kopii zapasowej bazy danych i kopii 
+ Strategia pełnej kopii zapasowej bazy danych i kopii
 zapasowej dziennika transakcji (Transaction Log)
- Strategia różnicowej kopii zapasowej bazy danych 
+ Strategia różnicowej kopii zapasowej bazy danych
 (Differential)
- Strategia kopii zapasowej plików bazy danych lub grupy 
+ Strategia kopii zapasowej plików bazy danych lub grupy
 plików
  33
  34
 Strategia pełnej kopii zapasowej bazy danych
- Utworzono bazę danych 
+ Utworzono bazę danych
 i wykonano pełny backup
- Pełny backup 
+ Pełny backup
 bazy danych
- Pełny backup 
+ Pełny backup
 bazy danych
  Data
  Log
@@ -2978,14 +2978,14 @@ bazy danych
  35
  Poniedziałek
  Wtorek
- Strategia pełnej kopii zapasowej bazy danych 
+ Strategia pełnej kopii zapasowej bazy danych
 i kopii zapasowej dziennika transakcji
- Pełny backup 
+ Pełny backup
 bazy danych
  Data
  Log
  Log
- Pełny backup 
+ Pełny backup
 bazy danych
  Log
  Log
@@ -2997,7 +2997,7 @@ bazy danych
  36
  18
 Strategia różnicowej kopii zapasowej baz danych
- Pełny backup 
+ Pełny backup
 bazy danych
  Log
  Data
@@ -3018,9 +3018,9 @@ bazy danych
  Poniedziałek
  37
  Wtorek
- Strategia kopii zapasowej plików bazy 
+ Strategia kopii zapasowej plików bazy
 danych lub grupy plików
- Pełny backup 
+ Pełny backup
 bazy danych
  Data
  Log
@@ -3047,17 +3047,17 @@ bazy danych
 20
  Strech Database(deprecated)
  Rozważania
- •Twórz kopię zapasową na wielu fizycznych urządzeniach 
-•Typ urządzenia wpływa na szybkość backupu 
-•Minimalizuj inne operacje SQL Server podczas backupu 
-•Używaj kompresji backupu 
-•Rozważ szyfrowanie kopii zapasowych 
-•Testuj odtwarzanie kopii zapasowych regularnie 
-•Planuj harmonogram backupów w oknach serwisowych 
-•Przechowuj kopie w różnych lokalizacjach (on-sitei off-site) 
-•Monitoruj czas trwania i integralność backupów 
+ •Twórz kopię zapasową na wielu fizycznych urządzeniach
+•Typ urządzenia wpływa na szybkość backupu
+•Minimalizuj inne operacje SQL Server podczas backupu
+•Używaj kompresji backupu
+•Rozważ szyfrowanie kopii zapasowych
+•Testuj odtwarzanie kopii zapasowych regularnie
+•Planuj harmonogram backupów w oknach serwisowych
+•Przechowuj kopie w różnych lokalizacjach (on-sitei off-site)
+•Monitoruj czas trwania i integralność backupów
 •Automatyzuj proces backupu (SQL Agent, Maintenance
- Plans) 
+ Plans)
 39
  40
 Polecanepraktyki
@@ -3070,29 +3070,29 @@ Polecanepraktyki
  Rozplanuj operacje Backupu, kiedy  aktywność bazy danych jest mniejsza
  Rozplanuj operacje Backupu, kiedy  aktywność bazy danych jest mniejsza
  Twórz trwałe pliki kopii zapasowej
- Wykonaj kopie zapasową plików bazy danych lub grupy plików, aby 
-zaoszczędzić czas 
-Wykonaj kopie zapasową plików bazy danych lub grupy plików, aby 
-zaoszczędzić czas 
+ Wykonaj kopie zapasową plików bazy danych lub grupy plików, aby
+zaoszczędzić czas
+Wykonaj kopie zapasową plików bazy danych lub grupy plików, aby
+zaoszczędzić czas
 41
- Przywracanie 
+ Przywracanie
 bazy danych
  42
  21
-Informacje 
+Informacje
 podstawowe
  • Proces SQL Server Recovery
- • Przygotowania do odtworzenia bazy 
+ • Przygotowania do odtworzenia bazy
 danych
- • Odtworzenie kopii zapasowej bazy 
+ • Odtworzenie kopii zapasowej bazy
 danych
- • Odtworzenie bazy z różnych typów 
+ • Odtworzenie bazy z różnych typów
 kopii zapasowych
- • Odtworzenie zepsutej systemowej bazy 
+ • Odtworzenie zepsutej systemowej bazy
 danych
  43
  Proces  SQL Server Recovery
- mechanizm przywracania spójności bazy po awarii 
+ mechanizm przywracania spójności bazy po awarii
 BEGIN
  BEGIN
  COMMIT
@@ -3105,29 +3105,29 @@ BEGIN
  COMMIT
  BEGIN
  COMMIT
- Zatwierdzone  transakcje są przekazywane 
+ Zatwierdzone  transakcje są przekazywane
 do bazy i zapisywane
- Niezatwierdzone transakcje są wycofywane 
+ Niezatwierdzone transakcje są wycofywane
 i nie zapisywane do bazy
  44
  22
 23
  Jak pracuje dziennik transakcji
- Modyfikacja danych 
+ Modyfikacja danych
 z poziomu aplikacji
  1
  Dysk
- Zmiany sa rejestrowane 
+ Zmiany sa rejestrowane
 w dzienniku transakcji na dysku
  3
- Zmiany rejestrowane są 
+ Zmiany rejestrowane są
 w ‘buffer  cache‘
  2
  Buffer Cache
  Dysk
- Po osiągnięciu punktu 
-kontrolnego 
-‘Checkpoint’ zmiany 
+ Po osiągnięciu punktu
+kontrolnego
+‘Checkpoint’ zmiany
 są zapisane do bazy
  4
  Odzyskiwanie transakcji i punkty kontrolne
@@ -3148,7 +3148,7 @@ są zapisane do bazy
  46
 24
  Recoverywewnętrzny -po starcie instancji
- • Analysis → Redo → Undo(kolejne etapy pracy z dziennikiem transakcyjnym po 
+ • Analysis → Redo → Undo(kolejne etapy pracy z dziennikiem transakcyjnym po
 restarcie bazy).
  Przygotowania do odtworzenia bazy danych
  • Weryfikacja kopii (RESTORE HEADERONLY, RESTORE FILELISTONLY)
@@ -3163,23 +3163,23 @@ restarcie bazy).
  c) Point-in-timez WITH STOPAT
  d) File/Filegrouprestore
  e) Bazy systemowe (master/msdb/model) –single-user+ WITH REPLACE
- f) Tail-log backup (gdy baza wciąż działa), następnie końcowe RESTORE … WITH 
+ f) Tail-log backup (gdy baza wciąż działa), następnie końcowe RESTORE … WITH
 RECOVERY
- Na koniec: DBCC CHECKDB (sprawdzenie integralności bazy danych), przełączenie aplikacji 
+ Na koniec: DBCC CHECKDB (sprawdzenie integralności bazy danych), przełączenie aplikacji
 do aktualnej bazy, odbudowa indeksów/statystyk
  SQL Server -proces odtwarzania
  SQL Server -proces odtwarzania
  47
  48
 25
- Czynności SQL Server podczas procesu 
+ Czynności SQL Server podczas procesu
 odtwarzania –status bazy
  •Wykonanie bezpiecznego sprawdzenia
  oCzy baza już istnieje
  oCzy  pliki bazy są różne od zawartych w backupie
  oCzy pliki bazy są niekompletne
  •Odtworzenie bazy i wszystkich powiązanych plików
- Sprawdzenie trybu i stanu pracy bazy danych 
+ Sprawdzenie trybu i stanu pracy bazy danych
 (stare podejście):
  select databaseproperty('master','IsShutDown')
  select databaseproperty('master','IsEmergencyMode')
@@ -3187,16 +3187,16 @@ odtwarzania –status bazy
  select databaseproperty('master','IsInload')
  select databaseproperty('master','IsInRecovery')
  SPRAWDZANIE INTEGRALNOŚCIBAZY DANYCH
- Database Console Commands–zestaw poleceń diagnostycznych 
-i konserwacyjnych, które działają bezpośrednio na bazach danych. 
+ Database Console Commands–zestaw poleceń diagnostycznych
+i konserwacyjnych, które działają bezpośrednio na bazach danych.
 Sprawdzaróżneaspektyintegralnościbazydanych.
- • DBCC CHECKDB  ( 'database_name' |database_id| 0, NOINDEX | 
+ • DBCC CHECKDB  ( 'database_name' |database_id| 0, NOINDEX |
 { REPAIR_ALLOW_DATA_LOSS| REPAIR_FAST | REPAIR_REBUILD} )
- WITH { ALL_ERRORMSGS, NO_INFOMSGS, TABLOCK, ESTIMATEONLY , 
-PHYSICAL_ONLY | DATA_PURITY} 
+ WITH { ALL_ERRORMSGS, NO_INFOMSGS, TABLOCK, ESTIMATEONLY ,
+PHYSICAL_ONLY | DATA_PURITY}
 • DBCC CHECKCATALOG –sprawdzaintegralnośćreferencyjnątabelsystemowych
- • DBCC CHECKALLOC 
-• DBCC CHECKTABLE -Aby skorzystaćz poleceniaDBCC trzebanależećdo roliSYSADMIN 
+ • DBCC CHECKALLOC
+• DBCC CHECKTABLE -Aby skorzystaćz poleceniaDBCC trzebanależećdo roliSYSADMIN
 lubroliDB_OWNER
  DBCC CHECKDB (Northwind, REPAIR_ALLOW_DATA_LOSS)
  49
@@ -3204,65 +3204,65 @@ lubroliDB_OWNER
 26
  DBCC -Database ConsoleCommands
  Przygotowania do odtworzenia bazy
- Weryfikacja kopii 
+ Weryfikacja kopii
 zapasowych
- Wykonanie 
-określonych zadań 
-przed odtworzeniem 
+ Wykonanie
+określonych zadań
+przed odtworzeniem
 kopii zapasowych
  51
  52
 27
  Weryfikowanie Backupów
- •Zwraca informację o pliku backupu Wyrażenie 
+ •Zwraca informację o pliku backupu Wyrażenie
 RESTORE HEADERONLY
- •Zwraca informacje o bazie danych i jej plikach 
-Wyrażenie 
-RESTORE FILELISTONLY 
+ •Zwraca informacje o bazie danych i jej plikach
+Wyrażenie
+RESTORE FILELISTONLY
 •Zwraca informacje o medium backup-u
- Wyrażenie 
+ Wyrażenie
 RESTORE LABELONLY
- •Weryfikuje czy indywidualne pliki są kompletne 
+ •Weryfikuje czy indywidualne pliki są kompletne
 i możliwe do odczytania
- Wyrażenie 
-RESTORE VERIFYONLY 
-RESTORE HEADERONLY FROM DISK = 'C:\xxx.bak' 
+ Wyrażenie
+RESTORE VERIFYONLY
+RESTORE HEADERONLY FROM DISK = 'C:\xxx.bak'
 RESTORE HEADERONLY FROM dysk_c
  RESTORE FILELISTONLY FROM dysk_c
- RESTORE FILELISTONLY FROM DISK = 'C:\xxx.bak' 
+ RESTORE FILELISTONLY FROM DISK = 'C:\xxx.bak'
 RESTORE LABELONLY FROM dysk_c
  RESTORE LABELONLY FROM DISK = 'C:\xxx.bak'
  RESTORE VERIFYONLY FROM dysk_c
- RESTORE VERIFYONLY FROM DISK = 'C:\xxx.bak' 
-Wykonanie określonych zadań 
+ RESTORE VERIFYONLY FROM DISK = 'C:\xxx.bak'
+Wykonanie określonych zadań
 przed odtworzeniem backupu
- •Musi być ustawiona przez członka roli sysadminlub 
+ •Musi być ustawiona przez członka roli sysadminlub
 db_owner
  •Ogranicza dostęp do bazy
  Ustawienie opcji dbouseonlydla danej bazy
  •Zapewnia spójność bazy danych
- •Przechowuje zmiany pomiędzy ostatnim backupem dziennika 
+ •Przechowuje zmiany pomiędzy ostatnim backupem dziennika
 transakcji i kiedy baza danych działała w trybie offline
  Backup Transaction Log
  53
  54
 28
  Odtwarzanie  kopii zapasowej
- Użycie polecenia 
-RESTORE 
-Inicjowanie 
-procesu 
+ Użycie polecenia
+RESTORE
+Inicjowanie
+procesu
 odtwarzania
- Określenie opcji 
+ Określenie opcji
 odtwarzania
- Użycie polecenia RESTORE 
-Użycie opcji 
+ Użycie polecenia RESTORE
+Użycie opcji
 odtworzenia
- •SQL Server automatycznie odtwarza pliki i obiekty 
+ •SQL Server automatycznie odtwarza pliki i obiekty
 bazy danych
  •Nie trzeba usuwać uszkodzonej bazy.
- Odtworzenie 
-uszkodzonej bazy 
+ Odtworzenie
+uszkodzonej bazy
 użytkownika
  USE master
  RESTORE DATABASE northwind
@@ -3271,7 +3271,7 @@ użytkownika
  56
 29
  RECOVERY i NORECOVERY –różnice w odtwarzaniu bazy
- RESTORE DATABASE nazwa_dbWITH RECOVERY 
+ RESTORE DATABASE nazwa_dbWITH RECOVERY
 Opcja RECOVERY
  •Kończy proces odtwarzania, wycofuje niezatwierdzone transakcje, przywraca spójność.
  •Po tym kroku nie możnazastosować kolejnych backupów (logów/różnicowych).
@@ -3283,21 +3283,21 @@ Opcja RECOVERY
  •Używaj przy wszystkich wcześniejszych backupach(pełne, różnicowe, logi).
  •Brak dostępu do bazy do czasu RECOVERY.
  Opcje odtwarzania bazy danych
- Użycie opcji FILE 
-•Odtwarza określony backup 
+ Użycie opcji FILE
+•Odtwarza określony backup
 •Musisz określić numer pliku (wymaga numeru pliku w zestawie)
  Użycie opcji MOVE...TO
- •MOVE pozwala wskazać nową ścieżkę i nazwę pliku dla każdego logicznego pliku z 
+ •MOVE pozwala wskazać nową ścieżkę i nazwę pliku dla każdego logicznego pliku z
 backupu podczas odtwarzania
  •Określa gdzie odtworzyć pliki backupu
  •Używane do odtworzenia różnych dysków, serwerów lub standbySQL Server
- Użycie opcji REPLACE 
-•REPLACE oznacza, że odtwarzanie powinno zastąpić każdą bazę danych o tej samej 
+ Użycie opcji REPLACE
+•REPLACE oznacza, że odtwarzanie powinno zastąpić każdą bazę danych o tej samej
 nazwie istniejącą na danym serwerze. Zamienia istniejącą bazę danych
  •SQL Server nie wykonuje bezpiecznego sprawdzenia
  57
  58
-Odtworzenie bazy danych 
+Odtworzenie bazy danych
 z różnych typów kopii zapasowych
  • Odtwarzanie z backupu Full Database
  • Odtwarzanie z backupu Differential
@@ -3310,7 +3310,7 @@ z różnych typów kopii zapasowych
  o Cała baza jest zniszczona, zepsuta lub skasowana
  o Aby utrzymać identyczną kopię bazy na innym serwerze
  • Określanie opcji odtworzenia
- o Rozpocząć proces odtworzenia z opcją RECOVERY 
+ o Rozpocząć proces odtworzenia z opcją RECOVERY
 o Odłożyć proces odtworzenia z opcją  NORECOVERY
  USE master
  RESTORE DATABASE northwind
@@ -3320,20 +3320,20 @@ o Odłożyć proces odtworzenia z opcją  NORECOVERY
  60
  30
 31
- Odtwarzanie z różnicowych 
+ Odtwarzanie z różnicowych
 kopii zapasowych
- •Odtwarza tylko część bazy danych, które zmieniły się od ostatniego 
-Full Database Backup 
+ •Odtwarza tylko część bazy danych, które zmieniły się od ostatniego
+Full Database Backup
 •Zwraca bazę do dokładnego stanu jaki był wykonywany DifferentialBackup
  •Zajmuje mniej czasu niż seria TransactionLogs
  USE master
  RESTORE DATABASE northwind
  FROM dysk_c_diff
  WITH NORECOVERY
- Określ plik backup,  
+ Określ plik backup,
 który zawiera
  differential backup
- Składnia jest ta sama kiedy 
+ Składnia jest ta sama kiedy
 odtwarzałeś pełną bazę
  Odtwarzanie -z kopii zapasowych dzienników transakcji
  Restore NorthwindDatabase
@@ -3367,15 +3367,15 @@ odtwarzałeś pełną bazę
  Full Database Differential
  Data Log Log Log ∆ Log
  RESTORE LOG northwind
- FROM dysk_c_logWITH FILE = 2, 
-RECOVERY, STOPAT = 'January 3, 
+ FROM dysk_c_logWITH FILE = 2,
+RECOVERY, STOPAT = 'January 3,
 2007 1:00 AM'
  BEGIN TRANSACTION WITH MARK
  RESTORE LOG WITH STOPATMARK | STOPBEFOREMARK
  Odtwarzanie z  kopii zapasowej pliku lub grupy plików
- Zastosuj wszystkie dzienniki transakcji od kopii zapasowej 
+ Zastosuj wszystkie dzienniki transakcji od kopii zapasowej
 pliku backupu
- Odtwarza grupę plików backupu zawierającą indeksy i tabele 
+ Odtwarza grupę plików backupu zawierającą indeksy i tabele
 jako jednostka
  USE master
  RESTORE DATABASE northwind
@@ -3384,7 +3384,7 @@ jako jednostka
  63
  64
 33
- Przywracanie uszkodzonych 
+ Przywracanie uszkodzonych
 systemowych baz danych
  Przywrócenie systemowej bazy z kopii zapasowej
  Przebudowanie systemowych baz danych
@@ -3411,7 +3411,7 @@ systemowych baz danych
  administratora
  Informacje podstawowe
  •Powody automatyzacji
- •Wstęp do automatyzacji SQL Server 
+ •Wstęp do automatyzacji SQL Server
 •Automatyzowanie rutynowych zadań utrzymywania
  •Tworzenie alarmów
  •Diagnozowanie serwera
@@ -3425,7 +3425,7 @@ systemowych baz danych
  •Rozpoznawanie i odpowiadanie na potencjalne problemy
  •Odpowiedź na zdarzenia SQL Server ( błędy)
  •Definiowanie warunków wykonania
- Wstęp do automatyzacji  SQL Server 
+ Wstęp do automatyzacji  SQL Server
 •Automatyzowanie administracji SQL Server
  •Zapisywanie zdarzeń do Application Log
  •Przygotowania do automatyzacji
@@ -3437,50 +3437,50 @@ systemowych baz danych
  •Poziomy ważności błędów SQL Server od 19 do 25
  •Systemowe przechowywane procedury sp_addmessage
  lub sp_altermessage
- •Wyrażenie RAISERROR WITH LOG 
+ •Wyrażenie RAISERROR WITH LOG
 •Rozszerzona przechowywana procedura xp_logevent
  Przygotowania do automatyzacji
  •Upewnij się że SQL Server Agent jest uruchomiony
- •Zweryfikuj czy SQL Server Agent Logon Accountjest 
+ •Zweryfikuj czy SQL Server Agent Logon Accountjest
 mapowany do roli sysadmin
  •Lokalne konto systemowe
  •Lokalne konto użytkownika
  •Domenowe konto użytkownika
- •Zweryfikuj czy  SQL Server Agent może się połączyć 
+ •Zweryfikuj czy  SQL Server Agent może się połączyć
 do lokalnego  SQL Server
  5
  6
 Konfigurowanie poczty
  SQLAgentMail (Database Mail)
  (SQLServerAgent Service)
- Wysyła zawiadomienia 
+ Wysyła zawiadomienia
 (zadania i alarm)
  SQL Mail (nie stosowane)
  (MSSQLServer Service)
- Wykonuje rozszerzoną 
+ Wykonuje rozszerzoną
 SQL
  Server
  7
- przechowywaną 
+ przechowywaną
 procedurę  xp_sendmail
  Automatyzowanie rutynowych zadań utrzymywania
  Tworzenia zadań
- Weryfikowanie 
+ Weryfikowanie
 uprawnień
- Definiowanie 
+ Definiowanie
 kroków zadań
- Ustalanie logiki 
-działania dla 
-każdego kroku 
+ Ustalanie logiki
+działania dla
+każdego kroku
 zadania
- Planowanie 
+ Planowanie
 zadań
- Przeglądanie i 
-konfigurowanie 
+ Przeglądanie i
+konfigurowanie
 historii zadań
  8
- Tworzenie 
-operatorów do 
+ Tworzenie
+operatorów do
 powiadomienia
  4
 5
@@ -3491,24 +3491,24 @@ powiadomienia
  Stwórz kategorię zadania
  Weryfikowanie uprawnień
  Wykonywanie Transact-SQL
- •SQL Server Agent przywołuje wyrażenie EXECUTE AS (dawniej 
+ •SQL Server Agent przywołuje wyrażenie EXECUTE AS (dawniej
 SETUSER), kiedy właściciel zadania nie jest członkiem roli sysadmin
- Wykonywanie komend systemu operacyjnego lub 
+ Wykonywanie komend systemu operacyjnego lub
 aktywnego języka skryptowego
  •Członkowie roli  sysadminużywają konta logowania SQL Server Agent
- •Właściciele zadania, którzy nie są członkami roli sysadminużywają  
+ •Właściciele zadania, którzy nie są członkami roli sysadminużywają
 SQLAgentCmdExecdla kont Windows
  9
  10
 6
  Definiowanie kroków zadania
- •Używanie poleceń języka Transact-SQL 
+ •Używanie poleceń języka Transact-SQL
 •Używanie komend system operacyjnego
  •Używanie aktywnych języków skryptowych
- Microsoft Visual Basic, Scripting Edition (VBScript) 
+ Microsoft Visual Basic, Scripting Edition (VBScript)
 lubJavaScript
  •Używanie procesów Replikacji
- Ustalanie logicznego przepływu danych 
+ Ustalanie logicznego przepływu danych
 dla każdego kroku zadania
  Job 3 ...
  Job 2 Backup Northwind Database Transaction Log
@@ -3535,26 +3535,26 @@ dla każdego kroku zadania
 Planowanie zdań
  Job 2: Backup Northwind Database Transaction Log
  Schedule: M-F Shift 1
- Sun  Mon  Tues Wed Thur Fri    Sat 
+ Sun  Mon  Tues Wed Thur Fri    Sat
 Every 2 Hours
  From: 8:00 A.M.
  To:     5:00 P.M.
  Schedule: M-F Shift 2
- Sun  Mon  Tues Wed Thur Fri    Sat 
+ Sun  Mon  Tues Wed Thur Fri    Sat
 Schedule: Weekend
- Sun  Mon  Tues Wed Thur Fri    Sat 
+ Sun  Mon  Tues Wed Thur Fri    Sat
 Every 8 Hours
  From: 12:00 A.M.
  To:     11:59 P.M.
  Schedule: CPU Idle
- Sun  Mon  Tues Wed Thur Fri    Sat 
+ Sun  Mon  Tues Wed Thur Fri    Sat
 Every 4 Hours
  From: 5:01 P.M.
  To:     7:59 A.M.
  13
  CPU Idle
  Tworzenie operatorów do powiadomienia
- Job: Northwind Data Transfer 
+ Job: Northwind Data Transfer
 Job Step 1:Back Up Transaction Log
  Job failed
  Job Step 2: Transfer Data
@@ -3580,9 +3580,9 @@ mail
  •Rezultat kroku zadania -sukces lub porażka
  •Czas wykonania
  •Błędy i uwagi
- •Konfigurowanie wielkości historii zadań 
+ •Konfigurowanie wielkości historii zadań
 •Zachowywanie informacji o każdym zadaniu
- •Nadpisanie historii, kiedy został osiągnięty jego 
+ •Nadpisanie historii, kiedy został osiągnięty jego
 maksymalny rozmiar
  Tworzenie alarmów
  •Używanie alarmów do odpowiadania na ewentualne problemy
@@ -3592,7 +3592,7 @@ maksymalny rozmiar
  •Przypisanie operatora Fail-Safe
  15
  16
-Używanie alarmów do odpowiadania 
+Używanie alarmów do odpowiadania
 na potencjalne problemy
  User Database
  customers Table
@@ -3656,26 +3656,26 @@ na potencjalne problemy
  ...
  ...
  Tworzenie alarmów reagujących na błędy SQL Server
- Definiowanie alarmów na błędy SQL Server 
+ Definiowanie alarmów na błędy SQL Server
 • dostarczane systemowo lub definiowane przez użytkownika
  • Muszą być wpisane do  dziennika Windows
  Definiowanie alarmów na poziomy ważności błędów
- • Poziomy ważności od 19 do 25 są automatycznie zapisywane w 
+ • Poziomy ważności od 19 do 25 są automatycznie zapisywane w
 dzienniku Windows
  • Konfigurowanie wysyłania alarmów
  18
  9
-Tworzenie alarmów na błędy 
+Tworzenie alarmów na błędy
 zdefiniowane przez użytkownika
  1
  2
  Tworzenie komunikatu błędu
  • Numer błędu musi być większy niż  50000
  • Można używać parametry
- EXEC sp_addmessage50099, 16, 'Customer %d 
+ EXEC sp_addmessage50099, 16, 'Customer %d
 was deleted by %s', 'us_english’, 'true'
  Reaguje na błędy z aplikacji bazodanowej
- • Używaj operatora  RAISERROR 
+ • Używaj operatora  RAISERROR
 • Deklaruj zmienne dla zwracanych parametrów
  3
  19
@@ -3688,9 +3688,9 @@ was deleted by %s', 'us_english’, 'true'
  northwind Database: Transfer Data Error
  Alert 1:
  northwind Database: Log 75% Full
- Execute Job: 
+ Execute Job:
 Operators to Notify:
- Threshold 
+ Threshold
 Reached
  at 1:28 A.M.
  Operator Name
@@ -3709,7 +3709,7 @@ Reached
  20
  10
 Przypisanie operatora Fail-Safe
- Alert: Error 18204 
+ Alert: Error 18204
 Backup Device Failed
  Operator Notification
  Operators
@@ -3726,23 +3726,23 @@ Backup Device Failed
  6:01 - 12:00 P.M. Jose Lugo
  21
  Diagnozowanie serwera
- Zwerifikuj czy SQL 
-Server Agent jest 
+ Zwerifikuj czy SQL
+Server Agent jest
 uruchomiony
- Zweryfikuj czy 
-zadanie plan, alarm, 
-lub operator są 
+ Zweryfikuj czy
+zadanie plan, alarm,
+lub operator są
 dostępne
- Upewnij się że konto 
-SQLAgentCmdExec 
-jest poprawnie 
+ Upewnij się że konto
+SQLAgentCmdExec
+jest poprawnie
 zainstalowane
- Przeglądaj logi 
+ Przeglądaj logi
 błędów
  22
  Przeglądaj historię
- Zweryfikuj czy  Mail 
-Client działa 
+ Zweryfikuj czy  Mail
+Client działa
 poprawnie
  11
 12
@@ -3750,16 +3750,16 @@ poprawnie
  •Windows Application Log jest pełny
  •Użycie CPU  jest zbyt wysokie
  • Ilość odpowiedzi alarmowych jest duża
- Czynniki, które 
-powodują alarmy 
-diagnostyczne 
+ Czynniki, które
+powodują alarmy
+diagnostyczne
 •Uniemożliwianie tymczasowo alarmowania
- •Zwiększanie opóźnienia pomiędzy 
+ •Zwiększanie opóźnienia pomiędzy
 odpowiedziami
  •Poprawianie globalnego problemu zasobów
  •Czyszczenie Windows Application Log
- Rozwiązywanie 
-alarmu 
+ Rozwiązywanie
+alarmu
 diagnostycznego
  Monitorowanieiutrzymywanie
  SQL Server
@@ -3786,7 +3786,7 @@ diagnostycznego
  Powody monitorowania  SQL Server
  •Ustaleniepowodumałejwydajności
  NadmiernailośćI/O
- DługośćczasuCPU 
+ DługośćczasuCPU
 Dużyruchw sieci
  •Sprawdzenieprzepustowościwszystkichprocesów
  wszystkichużytkowników
@@ -3811,7 +3811,7 @@ diagnostycznego
  Narzędziado monitorowaniaSQL Server
  •Wspólnezadaniamonitorowania
  •UżycieMicrosoft Event Viewer
- •UżycieSQL Server Performance Monitor 
+ •UżycieSQL Server Performance Monitor
 •UżycieActivity Monitor w SSMS
  •UżycieTransact-SQL do monitorowaniaSQL Server
  •UżycieSQL Server Profiler
@@ -3826,7 +3826,7 @@ diagnostycznego
  •System operacyjny
  •Aplikacja
  •SQL Server-Specific Monitoring
- •czynnościSQL Server 
+ •czynnościSQL Server
 •Konsystencjadanych(spójność)
  •Określonawydajnośćzapytań
  ActivityMonitorin SSMS
@@ -3836,7 +3836,7 @@ diagnostycznego
  Microsoft Event Viewer
  SQL Server Performance Monitor
  UżycieMicrosoft Event Viewer
- •Microsoft Event Viewer wyświetlabłędy, uwagi, 
+ •Microsoft Event Viewer wyświetlabłędy, uwagi,
 iwiadomości informacyjne
  •Microsoft Event Viewer umożliwiaprzeglądanie
  Windows NT Event Logs
@@ -3851,10 +3851,10 @@ iwiadomości informacyjne
  •Stosownaochrona
  •Liczniki(wskaźniki)monitorowania
  •predefiniowaneliczniki
- •licznikiSQL Server 
+ •licznikiSQL Server
 •licznikiWindows NT
  •licznikizdefiniowaneprzezużytkownika
- UżycieActivity Monitor 
+ UżycieActivity Monitor
 wSQL Server Management Studio
  •SQL Server Process Information
  •klucze, blokowanieizakleszczenia
@@ -3863,18 +3863,18 @@ wSQL Server Management Studio
  33
  34
 18
- UżycieTransact-SQL 
+ UżycieTransact-SQL
 do monitorowaniaSQL Server
  •Systemoweprzechowywaneprocedury
  •Zmienneglobalne
- •PolecenieTransact-SQL 
-•PoleceniaDBCC 
+ •PolecenieTransact-SQL
+•PoleceniaDBCC
 •Flagiśledzenia
  Użycie SQL Server Profiler
  •Monitorowaniebieżącejaktywnościserwera
  •Wybórzdarzeńdo monitorowania
  •Wybraćkryteriaśledzenia
- •Wybórdanychdo wychwycenia(np. czas rozpoczęcia, identyfikator sesji) 
+ •Wybórdanychdo wychwycenia(np. czas rozpoczęcia, identyfikator sesji)
 •Wychwytywanie danych w czasie rzeczywistym
  •Wychwytywaniedanychdo pliku(*.trc)
  35
@@ -3905,8 +3905,8 @@ Automatyzowaniezadańutrzymaniabazydanych
  • testy weryfikacji danych (CheckDatabase Integrity),
  • optymalizację danych (Reorganize Index i Rebuild Index),
  • częstotliwość i miejsce docelowe backup-ów.
- • Korzystamy z SQL Server Maintenance Plans 
-(plany konserwacji) 
+ • Korzystamy z SQL Server Maintenance Plans
+(plany konserwacji)
 w SQL Server Management Studio (SSMS)
  39
  Co warto monitorować
@@ -3949,9 +3949,9 @@ w SQL Server Management Studio (SSMS)
  blokady/s.
  SQL Server objects
  WskaźnikimonitorująceSZBD:DMV T-SQL
- Dynamiczne widoki zarządzania (DMV) powiązane z 
-systemem operacyjnym SQL Server (SQLOS). 
-SQLOS jest odpowiedzialny za zarządzanie zasobami 
+ Dynamiczne widoki zarządzania (DMV) powiązane z
+systemem operacyjnym SQL Server (SQLOS).
+SQLOS jest odpowiedzialny za zarządzanie zasobami
 systemu operacyjnego specyficznymi dla SQL Server
  43
  44
@@ -4028,7 +4028,7 @@ Polecane praktyki
  •Elastyczność –możliwość szyfrowania wybranych danych.
  •Szyfrowanie i deszyfrowanie możliwe w samej bazie danych.
  •Wady:
- •Większy narzut na aplikację (konieczność ręcznego szyfrowania/ 
+ •Większy narzut na aplikację (konieczność ręcznego szyfrowania/
 deszyfrowania).
  •Potencjalny wpływ na wydajność.
  51
@@ -4047,39 +4047,39 @@ deszyfrowania).
  •Wady:
  • Nie chroni danych "w spoczynku".
  Mechanizmy szyfrowania danych -porównanie
- Wpływ na 
+ Wpływ na
 aplikacje
- Łatwość 
+ Łatwość
 wdrożenia
- Ochrona 
-danych 
-"w spoczynku"
- Ochrona 
-danych 
-"w ruchu"
- Poziom 
-ochrony Mechanizm
- Żaden Łatwe Tak Nie Cała baza 
+ Ochrona
 danych
- Transparent 
-Data 
+"w spoczynku"
+ Ochrona
+danych
+"w ruchu"
+ Poziom
+ochrony Mechanizm
+ Żaden Łatwe Tak Nie Cała baza
+danych
+ Transparent
+Data
 Encryption
  (TDE)
- Wysoki Trudniejsze Tak Tak Wybrane 
+ Wysoki Trudniejsze Tak Tak Wybrane
 kolumny
  Always
  Encrypted
- Żaden Łatwe Tak Nie Kopie 
+ Żaden Łatwe Tak Nie Kopie
 zapasowe
- Backup 
+ Backup
 Encryption
  Wysoki Trudne Tak Nie
- Wybrane 
+ Wybrane
 kolumny/
  komórki
- Cell-Level 
+ Cell-Level
 Encryption
- Żaden Łatwe Nie Tak Połączenia 
+ Żaden Łatwe Nie Tak Połączenia
 sieciowe
  Transport Layer
  Security (TLS)
@@ -4097,7 +4097,7 @@ sieciowe
  jesttrudniejszedozarządzania.
  •TLS to standardowa praktyka dla bezpiecznych połączeń
  sieciowych.
- Mechanizmy generowanie skrótów 
+ Mechanizmy generowanie skrótów
 HashBytes
  WSQL Server funkcja HASHBYTES służy do generowania
  skrótów (hashy) danych za pomocą algorytmów
@@ -4113,27 +4113,27 @@ HashBytes
  55
  56
 29
- Transparent Data Encryption (TDE) 
+ Transparent Data Encryption (TDE)
 w SQL Server
  Wprowadzenie do TDE
  •Czym jest Transparent Data Encryption?
- •Funkcja SQL Server służąca do szyfrowania danych w 
+ •Funkcja SQL Server służąca do szyfrowania danych w
 spoczynku.
  •Cel TDE:
- •Ochrona danych przed nieautoryzowanym dostępem w 
+ •Ochrona danych przed nieautoryzowanym dostępem w
 przypadku utraty lub kradzieży plików bazy danych.
  •Wspierane wersje SQL Server:
- •Dostępne w edycjach Enterprise, Developer, oraz od SQL 
+ •Dostępne w edycjach Enterprise, Developer, oraz od SQL
 Server 2019 w Standard Edition.
  57
  58
 30
  Zasady Działania TDE
  •Szyfrowanie danych w spoczynku (data atrest):
- •Szyfrowane są pliki bazy danych (MDF, NDF) oraz pliki dziennika 
+ •Szyfrowane są pliki bazy danych (MDF, NDF) oraz pliki dziennika
 transakcji (LDF).
  •Klucz szyfrowania danych (DEK -Database EncryptionKey):
- •Klucz szyfrowania przechowywany w samej bazie, chroniony przez 
+ •Klucz szyfrowania przechowywany w samej bazie, chroniony przez
 certyfikat lub klucz asymetryczny w bazie systemowej master.
  •Przepływ procesu szyfrowania:
  1.Tworzenie certyfikatu w bazie master.
@@ -4141,10 +4141,10 @@ certyfikat lub klucz asymetryczny w bazie systemowej master.
  3.Włączenie TDE dla bazy danych.
  Korzyści z użycia TDE
  •Ochrona danych:
- •Uniemożliwia dostęp do danych w przypadku kradzieży 
+ •Uniemożliwia dostęp do danych w przypadku kradzieży
 plików bazy danych.
  •Przejrzystość dla aplikacji:
- •Proces szyfrowania i deszyfrowania jest transparentny dla 
+ •Proces szyfrowania i deszyfrowania jest transparentny dla
 aplikacji klienckich.
  •Zgodność z regulacjami:
  •Pomaga spełnić wymogi bezpieczeństwa danych, np. RODO.
@@ -4155,7 +4155,7 @@ aplikacji klienckich.
  •Tworzenie certyfikatu
  •Tworzenie klucza szyfrowania bazy danych (DEK)
  •Włączenie TDE
- Encrypt Column (Always Encrypted) 
+ Encrypt Column (Always Encrypted)
 w SQL Server
  61
  62
@@ -4175,14 +4175,14 @@ w SQL Server
  •Proces szyfrowania:
  •Klient szyfruje dane przed ich wysłaniem do serwera.
  •Przechowywanie kluczy:
- •Klucz główny (ColumnMaster Key-CMK) jest 
-przechowywany w bezpiecznym miejscu, np. w magazynie 
+ •Klucz główny (ColumnMaster Key-CMK) jest
+przechowywany w bezpiecznym miejscu, np. w magazynie
 certyfikatów lub AzureKeyVault.
  •Klucz szyfrowania kolumny (ColumnEncryptionKey
-CEK) szyfruje dane i jest przechowywany w bazie w postaci 
+CEK) szyfruje dane i jest przechowywany w bazie w postaci
 zaszyfrowanej.
  •Przykład użycia:
- •Szyfrowanie numerów kart kredytowych w bazie danych 
+ •Szyfrowanie numerów kart kredytowych w bazie danych
 czy haseł.
  63
  64
@@ -4195,7 +4195,7 @@ czy haseł.
  •Granularnośćszyfrowania:
  •Możliwość szyfrowania wybranych kolumn w tabeli.
  •Ograniczenie dostępu:
- • Administratorzy serwera SQL nie mają dostępu do 
+ • Administratorzy serwera SQL nie mają dostępu do
 danych w formie jawnej.
  Tryby szyfrowania kolumn
  •Deterministyczny (DeterministicEncryption):
@@ -4203,9 +4203,9 @@ danych w formie jawnej.
  •Możliwość użycia w filtrach WHERE, GROUP BY, itp.
  •Przykład: Numery PESEL.
  •Losowy (RandomizedEncryption):
- •Każde zaszyfrowanie tej samej wartości generuje inny 
+ •Każde zaszyfrowanie tej samej wartości generuje inny
 ciphertext.
- •Wyższy poziom bezpieczeństwa, ale brak możliwości 
+ •Wyższy poziom bezpieczeństwa, ale brak możliwości
 wyszukiwania w danych.
  •Przykład: Numery kart kredytowych
  65
@@ -4217,12 +4217,12 @@ wyszukiwania w danych.
  •Szyfrowanie Kolumny
  Najlepsze praktyki i ograniczenia
  •Najlepsze praktyki:
- •Wybieraj odpowiedni tryb szyfrowania (deterministyczny 
+ •Wybieraj odpowiedni tryb szyfrowania (deterministyczny
 /losowy) w zależności od wymagań aplikacji.
  •Bezpiecznie przechowuj klucze szyfrowania (CMK).
  •Regularnie monitoruj dostęp do danych zaszyfrowanych.
  •Ograniczenia:
- •Brak wsparcia dla funkcji takich jak LIKE, PATINDEX, 
+ •Brak wsparcia dla funkcji takich jak LIKE, PATINDEX,
 SUBSTRING.
  •Wymaga sterowników klienckich kompatybilnych z Always
  Encrypted.
@@ -4250,10 +4250,10 @@ SUBSTRING.
 38
  AlwaysEncrypted
  Podsumowanie
- •AlwaysEncryptedchroni wrażliwe dane nawet przed 
+ •AlwaysEncryptedchroni wrażliwe dane nawet przed
 administratorami serwera.
  •Szyfrowanie i deszyfrowanie odbywa się po stronie klienta.
- •Planuj strategię szyfrowania zgodnie z wymaganiami 
+ •Planuj strategię szyfrowania zgodnie z wymaganiami
 biznesowymi i bezpieczeństwa.
  75
  76
@@ -4277,36 +4277,36 @@ biznesowymi i bezpieczeństwa.
  uporządkowanezgodniezokreślonąregułą.
  Korzyści z zarządzania politykami
  •Standaryzacja konfiguracji:
- • Umożliwia automatyczne weryfikowanie, że wszystkie 
+ • Umożliwia automatyczne weryfikowanie, że wszystkie
 instancje SQL Server spełniają wymagania konfiguracji.
  •Poprawa bezpieczeństwa:
- •Możliwość monitorowania zgodności z politykami 
+ •Możliwość monitorowania zgodności z politykami
 bezpieczeństwa, np. silne hasła.
  •Redukcja błędów:
- • Automatyczne wykrywanie odchyleń od polityk 
+ • Automatyczne wykrywanie odchyleń od polityk
 minimalizuje ryzyko błędów konfiguracyjnych.
  79
  80
 41
  Kluczowe pojęcia
  •Polityka (Policy):
- •Definicja wymagań konfiguracji lub standardów, które 
+ •Definicja wymagań konfiguracji lub standardów, które
 mają być spełnione przez obiekty w bazie danych.
  •Kondycja (Condition):
- •Zbiór warunków, które muszą być spełnione, aby polityka 
+ •Zbiór warunków, które muszą być spełnione, aby polityka
 była uznana za zgodną.
  •Czynniki zewnętrzne (Facet):
- •Grupowanie właściwości SQL Server, które można 
+ •Grupowanie właściwości SQL Server, które można
 skonfigurować w ramach polityki.
  •Tryby oceny (Evaluation Modes):
- •Tryby sprawdzania zgodności, np. na żądanie, podczas 
+ •Tryby sprawdzania zgodności, np. na żądanie, podczas
 zmian, okresowo.
  Tworzenie i Konfiguracja Polityk
  •Tworzenie nowej polityki:
- •Proces tworzenia polityki w SQL Server Management 
+ •Proces tworzenia polityki w SQL Server Management
 Studio (SSMS).
  •Przykład:
- •Tworzenie polityki sprawdzającej, czy indeksy są 
+ •Tworzenie polityki sprawdzającej, czy indeksy są
 niepofragmentowane.
  •Definiowanie kondycji:
  •Warunki określające, jakie cechy musi posiadać obiekt.
@@ -4317,48 +4317,48 @@ niepofragmentowane.
 42
  Monitorowanie zgodności z politykami
  •Tryby oceny polityk:
- •On Demand(Na żądanie) –sprawdzenie zgodności tylko 
+ •On Demand(Na żądanie) –sprawdzenie zgodności tylko
 wtedy, gdy jest to wymagane.
- •On Change: Prevent(Na zmianę: zapobieganie) –blokuje 
+ •On Change: Prevent(Na zmianę: zapobieganie) –blokuje
 zmiany naruszające politykę.
- •On Schedule(Na harmonogram) –okresowe sprawdzanie 
+ •On Schedule(Na harmonogram) –okresowe sprawdzanie
 zgodności.
  •Przykład monitorowania zgodności z politykami:
- •Skonfigurowanie harmonogramu do sprawdzania 
+ •Skonfigurowanie harmonogramu do sprawdzania
 zgodności z politykami bezpieczeństwa bazy danych.
  Przykłady Polityk
  •Polityka dla bezpieczeństwa haseł:
- •Polityka wymuszająca stosowanie złożonych haseł dla 
+ •Polityka wymuszająca stosowanie złożonych haseł dla
 kont SQL Server.
  •Polityka dla struktur indeksów:
- •Sprawdzanie fragmentacji indeksów i zgodności ze 
+ •Sprawdzanie fragmentacji indeksów i zgodności ze
 standardami struktury.
- •Przykład kodu do oceny polityki: 
+ •Przykład kodu do oceny polityki:
 83
  84
 Podsumowanie
  Najlepsze praktyki:
  • Regularna weryfikacja polityk:
- • Okresowe sprawdzanie polityk w celu identyfikacji i rozwiązania 
+ • Okresowe sprawdzanie polityk w celu identyfikacji i rozwiązania
 niezgodności.
  • Automatyzacja oceny polityk:
- • Wykorzystanie harmonogramów SQL Server Agent do 
+ • Wykorzystanie harmonogramów SQL Server Agent do
 automatycznego sprawdzania zgodności.
  • Edukacja zespołu:
  • Szkolenie zespołu dotyczące zgodności i zasad używania polityk.
  Podsumowanie:
- • Zarządzanie politykami to skuteczne narzędzie zapewniające 
+ • Zarządzanie politykami to skuteczne narzędzie zapewniające
 zgodność z wymogami organizacyjnymi.
- • Regularnie aktualizuj polityki, aby dostosować się do zmieniających 
+ • Regularnie aktualizuj polityki, aby dostosować się do zmieniających
 się wymagań.
  85
  43
 1
  Normalizacja baz danych
- • Załóżmy, że atrybut Nazwa Firmy jest unikalna, tj. nie ma dwóch 
+ • Załóżmy, że atrybut Nazwa Firmy jest unikalna, tj. nie ma dwóch
 dostawców o tej samej nazwie.
  • Cechy relacji Dostawca:–redundancja danych -problem spójności danych–anomalia wprowadzania danych–anomalia usuwania danych–anomalia uaktualniania danych
- • Rozwiązaniem: dekompozycja relacji Dostawca na dwie relacje: 
+ • Rozwiązaniem: dekompozycja relacji Dostawca na dwie relacje:
 Dostawca i Dostawy
  Przykład:
  Dostawca
@@ -4418,7 +4418,7 @@ Dostawca i Dostawy
  6
 Pierwsza postać normalna 1NF
  • Definicja:
- Schemat relacji R znajduje się w pierwszej postaci normalnej(1NF), 
+ Schemat relacji R znajduje się w pierwszej postaci normalnej(1NF),
 jeżeli wartości atrybutów są atomowe (niepodzielne)
  Relacja w 1NF
  Relacja w 1NF
@@ -4477,10 +4477,10 @@ Druga postać normalna 2NF
  • Wprowadzenie do modelowania i projektowania systemów informatycznych
  • Model związków-encji–encje–atrybuty encji–związki pomiędzy encjami–hierarchia generalizacji
  Modelowanie -modele
- • Modelowanie -odwzorowanie rzeczywistych obiektów 
-świata rzeczywistego w systemie informatycznym (bazie 
+ • Modelowanie -odwzorowanie rzeczywistych obiektów
+świata rzeczywistego w systemie informatycznym (bazie
 danych)
- • Modele–konceptualne (reprezentacja obiektów w uniwersalnym modelu 
+ • Modele–konceptualne (reprezentacja obiektów w uniwersalnym modelu
 niezależnym od modelu implementacyjnego)
  model związków-encji
  model UML–implementacyjne
@@ -4499,28 +4499,28 @@ niezależnym od modelu implementacyjnego)
  implementacyjnych
  implementowanie bazy
  danych i aplikacji
- modele konceptualne opisujące 
+ modele konceptualne opisujące
 wymagania odnośnie:-danych-funkcjonalności aplikacji
  modele implementacyjne
  bazy danych i aplikacji
  Model związków-encji
- • Model związków-encji 
-(entity-relationship model -ER)–obiekty świata rzeczywistego reprezentowane za 
+ • Model związków-encji
+(entity-relationship model -ER)–obiekty świata rzeczywistego reprezentowane za
 pomocą encji (entities)–powiązania między obiektami świata rzeczywistego
  reprezentowane za pomocą związków (relationships)
  pomiędzy encjami
 4
  Encja
- • Reprezentuje zbiór obiektów opisany tymi samymi 
+ • Reprezentuje zbiór obiektów opisany tymi samymi
 cechami (atrybutami, własnościami)
- • Informacje o tych obiektach będą przechowywane w 
+ • Informacje o tych obiektach będą przechowywane w
 bazie danych
- • Konkretny obiekt świata rzeczywistego jest 
+ • Konkretny obiekt świata rzeczywistego jest
 reprezentowany jako wystąpienie encji (instancję encji)
  Modelowanie encji
  Obiekty świata rzeczywistego
- Firma zatrudnia pracowników. Chcemy przechowywać 
-informacje nt. danych personalnych pracowników (imię, 
+ Firma zatrudnia pracowników. Chcemy przechowywać
+informacje nt. danych personalnych pracowników (imię,
 nazwisko, adres i numer telefonu).
  Wspólne cechy
  pracownika
@@ -4534,9 +4534,9 @@ nazwisko, adres i numer telefonu).
 5
  Modelowanie encji
  Obiekty świata rzeczywistego
- Parking firmy jest przeznaczony do parkowania wielu 
-różnych samochodów. Chcemy przechowywać 
-informacje o samochodach (marka, model, numer 
+ Parking firmy jest przeznaczony do parkowania wielu
+różnych samochodów. Chcemy przechowywać
+informacje o samochodach (marka, model, numer
 rejestracyjny), które mogą parkować na parkingu firmy.
  Wspólne cechy
  samochodu
@@ -4550,13 +4550,13 @@ rejestracyjny), które mogą parkować na parkingu firmy.
  • Każda encja posiada–unikalną nazwę–zbiór cech (atrybutów)
  • Encje wchodzą w związki z innymi encjami–wyjątkiem są encje reprezentujące dane słownikowe i
  konfiguracyjne
- • Dowolna rzecz lub obiekt może być reprezentowana 
+ • Dowolna rzecz lub obiekt może być reprezentowana
 tylko
  przez jedną encję
  • Nazwa encji powinna być rzeczownikiem w liczbie
  pojedynczej
 Atrybuty encji
- • Identyfikator– atrybut lub zbiór atrybutów jednoznacznie identyfikujący 
+ • Identyfikator– atrybut lub zbiór atrybutów jednoznacznie identyfikujący
 wystąpienie encji– zbiór atrybutów + związki– związki
  • Identyfikatory naturalne– PESEL, NIP, nr dowodu, nr paszportu, nr rejestracyjny, ISBN
  • Identyfikatory sztuczne– numer pozycji katalogowej, identyfikator pracownika
@@ -4579,7 +4579,7 @@ wystąpienie encji– zbiór atrybutów + związki– związki
  • Związek (asocjacja) reprezentuje powiązania pomiędzy
  obiektami świata rzeczywistego–klienci posiadają rachunki bankowe–studenci otrzymują oceny z egzaminów
  • W modelu ER związek łączy encje
- • Związek z każdego końca posiada krótki opis 
+ • Związek z każdego końca posiada krótki opis
 ułatwiający interpretację związku
  Modelowanie związków
  Pracownik Samochód
@@ -4597,14 +4597,14 @@ Cechy związku
  • Istnienie (klasa przynależności)– opcjonalny– obowiązkowy
  Cechy związku - przykład
  • Pracownicy firmy posiadają samochody
- • W celu udostępnienia miejsca 
-parkingowego należy zarejestrować 
+ • W celu udostępnienia miejsca
+parkingowego należy zarejestrować
 pracownika i jego samochód
  • Każdy pracownik ma prawo parkować
  tylko jeden konkretny samochód
  • Nie każdy pracownik ma samochód
  • Zarejestrowany w rejestrze parkingowym
- samochód na pewno jest własnością 
+ samochód na pewno jest własnością
 jednego pracownika
  związek Pracownik-Samochód
  stopień związku: binarny
@@ -4685,14 +4685,14 @@ Atrybuty związku
  Data zakończenia
  Projekt
  podlega
- • Jeśli związek posiada dodatkowe cechy → należy wprowadzić 
+ • Jeśli związek posiada dodatkowe cechy → należy wprowadzić
 dodatkową encję (Realizacja)
  • Do encji tej dochodzą obowiązkowe związki typu wiele– interpretacja obowiązkowości związków
  * jeśli istnieje wystąpienie encji Realizacja, to musi ono dotyczyć jakiegoś projektu i pracownika
  * nie może istnieć realizacja bez pracownika i projektu
  Encja słaba
- • Encja słaba (weak entity)– nie posiada swojego identyfikatora– wystąpienia encji mogą istnieć tylko w kontekście wystąpień encji 
-powiązanych z encją słabą– konkretne wystąpienie encji Realizacja może wystąpić wyłącznie 
+ • Encja słaba (weak entity)– nie posiada swojego identyfikatora– wystąpienia encji mogą istnieć tylko w kontekście wystąpień encji
+powiązanych z encją słabą– konkretne wystąpienie encji Realizacja może wystąpić wyłącznie
 w kontekście konkretnego pracownika i konkretnego projektu
  uczestniczy w
  Pracownik
@@ -4708,7 +4708,7 @@ w kontekście konkretnego pracownika i konkretnego projektu
  11
 12
  Identyfikator encji słabej
- • Identyfikatorem encji słabej są wszystkie związki, w 
+ • Identyfikatorem encji słabej są wszystkie związki, w
 które wchodzi ta encja
  uczestniczy w Realizacja
  Funkcja
@@ -4722,14 +4722,14 @@ które wchodzi ta encja
  oznaczenie związku wchodzącego
  w skład identyfikatora encji
  Związek binarny rekursywny
- • Określa powiązanie pomiędzy wystąpieniem encji a 
+ • Określa powiązanie pomiędzy wystąpieniem encji a
 innym wystąpieniem tej samej encji
  • Modelowanie zależności służbowych
  • Modelowanie elementów złożonych
  Pracownik
  kieruje
  podlega
- Tego typu związek modelujący zależności hierarchiczne musi być opcjonalnym z 
+ Tego typu związek modelujący zależności hierarchiczne musi być opcjonalnym z
 obu stron. W przeciwnym przypadku, powstałaby hierarchia nieskończona.
  Podzespół
  składa się
@@ -4737,8 +4737,8 @@ obu stron. W przeciwnym przypadku, powstałaby hierarchia nieskończona.
  Związek 1:M opcjonalny z obu stron.
 13
  Związki ternarne
- Związek ternarny łączy 3 encje. 
-"Kierowca może otrzymać mandat za popełnione wykroczenie. 
+ Związek ternarny łączy 3 encje.
+"Kierowca może otrzymać mandat za popełnione wykroczenie.
 Mandat jest wystawiany przez konkretnego policjanta."
  otrzymuje
  Mandat Policjant Kierowca
@@ -4749,7 +4749,7 @@ Mandat jest wystawiany przez konkretnego policjanta."
  ukarane
  Związek ternarny jest reprezentowany jako encja (Mandat)–do encji Mandat dochodzą związki obowiązkowe
  * jeśli wystawiono mandat to jest on dla konkretnej osoby,
- został wystawiony przez konkretnego policjanta i dotyczy 
+ został wystawiony przez konkretnego policjanta i dotyczy
 konkretnego wykroczenia.
  Związki ternarne
  otrzymuje
@@ -4760,9 +4760,9 @@ konkretnego wykroczenia.
  ukarane
 14
  Związki wyłączne
- • Związki wyłączne (exclusive relationships)–konkretne wystąpienie encji może w danym momencie wchodzić 
+ • Związki wyłączne (exclusive relationships)–konkretne wystąpienie encji może w danym momencie wchodzić
 tylko w jeden z ze związków
- Np. [Rachunek bankowy] wchodzi w związek z encją [Osoba 
+ Np. [Rachunek bankowy] wchodzi w związek z encją [Osoba
 fizyczna] lub [Osoba prawna].
  Rachunek
  bankowy
@@ -4771,22 +4771,22 @@ fizyczna] lub [Osoba prawna].
  należy do posiada
  oznaczenie związku wyłącznego
  Hierarchia encji / generalizacja
- • Związek generalizacji–określa, że pewne encje o wspólnym zbiorze atrybutów 
-można uogólnić i stworzyć encję wyższego poziomu → 
+ • Związek generalizacji–określa, że pewne encje o wspólnym zbiorze atrybutów
+można uogólnić i stworzyć encję wyższego poziomu →
 encję generalizacji
- • Encje niższego poziomu w hierarchii generalizacji → 
+ • Encje niższego poziomu w hierarchii generalizacji →
 encje specjalizacji
- • Relacja opisująca związki typu 
-generalizacja/specjalizacja pomiędzy encjami → 
+ • Relacja opisująca związki typu
+generalizacja/specjalizacja pomiędzy encjami →
 hierarchia generalizacji/specjalizacji lub hierarchia encji
 15
  Hierarchia encji
  Dziedziczenie atrybutów
  Firma zatrudnia pracowników kontraktowych i godzinowych. Wszyscy
  pracownicy posiadają pewien zbiór wspólnych atrybutów (PESEL, imię,
- nazwisko, adres). Pracownicy kontraktowi i godzinowi posiadają 
-specyficzne dla siebie atrybuty. Dla pracowników kontraktowych jest to 
-numer kontraktu, a dla pracowników godzinowych są to: liczba godzin 
+ nazwisko, adres). Pracownicy kontraktowi i godzinowi posiadają
+specyficzne dla siebie atrybuty. Dla pracowników kontraktowych jest to
+numer kontraktu, a dla pracowników godzinowych są to: liczba godzin
 pracy w tygodniu i stawka godzinowa.
  # PESEL
  * Imię
@@ -4807,15 +4807,15 @@ pracy w tygodniu i stawka godzinowa.
  podencja
  encja specjalizacji
  Hierarchia encji
- Interpretacja–podencje dziedziczą wszystkie atrybuty 
-swojej nadencji–każde wystąpienie nadencji jest zawsze 
-wystąpieniem jednej podencji–semantyka związku generalizacji oznacza, 
-że każde wystąpienie podencji JEST 
+ Interpretacja–podencje dziedziczą wszystkie atrybuty
+swojej nadencji–każde wystąpienie nadencji jest zawsze
+wystąpieniem jednej podencji–semantyka związku generalizacji oznacza,
+że każde wystąpienie podencji JEST
 wystąpieniem nadencji
  * pracownik kontraktowy JEST pracownikiem
- * pracownik godzinowy JEST pracownikiem–identyfikator nadencji jest wspólny dla 
+ * pracownik godzinowy JEST pracownikiem–identyfikator nadencji jest wspólny dla
 wszystkich jej podencji
- • podencje nie posiadają swoich 
+ • podencje nie posiadają swoich
 identyfikatorów
  # PESEL
  * Imię
@@ -4872,7 +4872,7 @@ identyfikatorów
  model hierarchii nieskończonej "w górę"
  model hierarchii nieskończonej "w dół"
 17
- Transformacja modelu ER 
+ Transformacja modelu ER
 do modelu relacyjnego
  • Transformacja encji
  • Transformacja związków
@@ -4882,10 +4882,10 @@ do modelu relacyjnego
  • Relacja (tabela)–dwu-wymiarowa tablica–kolumny →atrybuty–wiersze → krotki, rekordy
  * każda krotka reprezentuje wystąpienie encji
  • Klucz podstawowy–atrybut lub zbiór atrybutów -wybrany spośród kluczy potencjalnych
- • Klucz obcy–atrybut lub zbiór atrybutów wskazujący na klucz podstawowy innej 
+ • Klucz obcy–atrybut lub zbiór atrybutów wskazujący na klucz podstawowy innej
 relacji
  * atrybut lub zbiór atrybutów w relacji B, będący
- jednocześnie kluczem podstawowym w relacji A–należy zaznaczyć, że klucz obcy może odnosić się do klucza 
+ jednocześnie kluczem podstawowym w relacji A–należy zaznaczyć, że klucz obcy może odnosić się do klucza
 podstawowego samej relacji, w której został on zdefiniowany
 Transformacja
  • Model ER →schemat relacyjny
@@ -4895,15 +4895,15 @@ Transformacja
  • Atrybut encji → atrybut relacji
  • Typ danych atrybutu encji →
  typ danych atrybutu relacji
- • Identyfikator encji → klucz 
+ • Identyfikator encji → klucz
 podstawowy relacji
- • Obowiązkowość atrybutów 
+ • Obowiązkowość atrybutów
 encji → ograniczenie NOT NULL
  • Opcjonalność atrybutów encji
  →ograniczenie NULL
- • Pozostałe ograniczenia 
+ • Pozostałe ograniczenia
 integralnościowe atrybutów encji
- →ograniczenia integralnościowe 
+ →ograniczenia integralnościowe
 atrybutów relacji
  Pracownicy (
  PESEL PRIMARY KEY,
@@ -4912,11 +4912,11 @@ atrybutów relacji
  telefon NULL )
  18
 Reguły transformacji związków
- • Związek binarny 1:1 → klucz obcy we wskazanej 
+ • Związek binarny 1:1 → klucz obcy we wskazanej
 tabeli
- • Związek unarny 1:1 → klucz obcy w tej samej 
+ • Związek unarny 1:1 → klucz obcy w tej samej
 tabeli
- • Związek binarny 1:M → klucz obcy w tabeli po 
+ • Związek binarny 1:M → klucz obcy w tabeli po
 stronie "wiele"
  • Związek binarny M:N → tabela
  • Związek unarny M:N → tabela
@@ -4964,11 +4964,11 @@ stronie "wiele"
  NrInwentarzowy PRIMARY KEY
  Biuro NOT NULL
  IdPracownika FOREIGN KEY
- IdPracownika NULL REFERENCES 
+ IdPracownika NULL REFERENCES
 Pracownicy(IdPracownika)
  }
  Komputer
- NrInwentarzowy NULL REFERENCES 
+ NrInwentarzowy NULL REFERENCES
 Komputery(NrInwentarzowy)
  Pracownicy
  IdPracownika PRIMARY KEY
@@ -5001,16 +5001,16 @@ Komputery(NrInwentarzowy)
  Związek binarny 1:1
 Związek 1:M
  • Klucz obcy dodawany do relacji po stronie "wiele"
- • Ograniczenia referencyjne definiowane dla klucza 
+ • Ograniczenia referencyjne definiowane dla klucza
 obcego
  • Obowiązkowość związku po stronie "wiele" →
- ograniczenie NOT NULL definiowane na kluczu 
+ ograniczenie NOT NULL definiowane na kluczu
 obcym
  • Opcjonalność związku po stronie "wiele" →
- ograniczenie NULL definiowaną na kluczu obcym 
+ ograniczenie NULL definiowaną na kluczu obcym
 relacji
- • Opcjonalność lub obowiązkowość związku po 
-stronie "jeden" nie jest odwzorowywana w modelu 
+ • Opcjonalność lub obowiązkowość związku po
+stronie "jeden" nie jest odwzorowywana w modelu
 relacyjnym
  Pracownik
  # IdPracownika
@@ -5039,7 +5039,7 @@ relacyjnym
  21
 Związek M:N
  • Reprezentowany poprzez dodatkową relację
- • Nazwa relacji jest złączeniem nazw relacji z 
+ • Nazwa relacji jest złączeniem nazw relacji z
 powstałych encji
  • Relacja zawiera klucze obce wskazujące na klucze
  podstawowe relacji powstałych z powiązanych encji
@@ -5068,7 +5068,7 @@ powstałych encji
  # NrProjektu
  * Nazwa
  * Sponsor
- Pracownicy_Projekty 
+ Pracownicy_Projekty
 # IdPracownika REFERENCES Pracownicy(IdPracownika)
  # NrProjektu REFERENCES Projekty(NrProjektu)
  PRIMARY KEY (IdPracownika, NrProjektu)
@@ -5129,10 +5129,10 @@ Związek unarny
  PRIMARY KEY (IdKierowcy, NrSłużbowy,NrWykroczenia)
  Normalizacja baz danych
 25
- • Załóżmy, że atrybut Nazwa Firmy jest unikalna, tj. nie ma dwóch 
+ • Załóżmy, że atrybut Nazwa Firmy jest unikalna, tj. nie ma dwóch
 dostawców o tym samym nazwisku.
  • Cechy relacji Dostawca:–redundancja danych -problem spójności danych–anomalia wprowadzania danych–anomalia usuwania danych–anomalia uaktualniania danych
- • Rozwiązaniem: dekompozycja relacji Dostawca na dwie relacje: Dostawca 
+ • Rozwiązaniem: dekompozycja relacji Dostawca na dwie relacje: Dostawca
 i Dostawy
  Przykład
  Dostawca
@@ -5141,36 +5141,36 @@ i Dostawy
  Dostawy
  Przykład
  • Zależność funkcyjna (FD)
- Dana jest relacja r o schemacie R. X,Y są podzbiorami atrybutów R. W 
-schemacie relacji R, X wyznacza funkcyjnie Y, lub Y jest funkcyjnie zależny 
-od X, co zapisujemy X →Y, wtedy i tylko wtedy, jeżeli dla dwóch dowolnych 
-krotek t1, t2 takich, że t1[X] =t2[X] zachodzi zawsze t1[Y]=t2[Y], gdzie ti[A] 
+ Dana jest relacja r o schemacie R. X,Y są podzbiorami atrybutów R. W
+schemacie relacji R, X wyznacza funkcyjnie Y, lub Y jest funkcyjnie zależny
+od X, co zapisujemy X →Y, wtedy i tylko wtedy, jeżeli dla dwóch dowolnych
+krotek t1, t2 takich, że t1[X] =t2[X] zachodzi zawsze t1[Y]=t2[Y], gdzie ti[A]
 oznacza wartość atrybutu
  A krotki ti
  • Przykłady:–1. Naza Firmy → Adres–2. {Nazwa Firmy, Nazwa Produktu} → Cena
 26
  Normalizacja baz danych
- • Proces normalizacji relacji można traktować jako proces, podczas 
-którego schematy relacji posiadające pewne niepożądane cechy są 
-dekomponowane na mniejsze schematy relacji o pożądanych 
+ • Proces normalizacji relacji można traktować jako proces, podczas
+którego schematy relacji posiadające pewne niepożądane cechy są
+dekomponowane na mniejsze schematy relacji o pożądanych
 własnościach
- • Proces normalizacji musi posiadać trzy dodatkowe własności:-Własność zachowania atrybutów -żaden atrybut nie zostanie 
-zagubiony w trakcie procesu normalizacji-Własność zachowania  informacji -dekompozycja relacji nie 
-prowadzi do utraty informacji-Własność zachowania zależności -wszystkie zależności 
+ • Proces normalizacji musi posiadać trzy dodatkowe własności:-Własność zachowania atrybutów -żaden atrybut nie zostanie
+zagubiony w trakcie procesu normalizacji-Własność zachowania  informacji -dekompozycja relacji nie
+prowadzi do utraty informacji-Własność zachowania zależności -wszystkie zależności
 funkcyjne są reprezentowane w pojedynczych schematach relacji
  Pierwsza postać normalna 1NF
- „Relacja R jest w pierwszej postaci normalnej (1NF) 
-wtedy i tylko wtedy, gdy wszystkie użyte dziedziny 
+ „Relacja R jest w pierwszej postaci normalnej (1NF)
+wtedy i tylko wtedy, gdy wszystkie użyte dziedziny
 zawierają tylko atomowe wartości.”
  Druga postać normalna 2NF
- „Relacja R jest w drugiej postaci normalnej (2NF) wtedy i 
-tylko wtedy, gdy jest w postaci 1NF oraz każdy 
-niekluczowy atrybut jest w pełni funkcyjnie zależny od 
+ „Relacja R jest w drugiej postaci normalnej (2NF) wtedy i
+tylko wtedy, gdy jest w postaci 1NF oraz każdy
+niekluczowy atrybut jest w pełni funkcyjnie zależny od
 klucza głównego.”
  Trzecia postać normalna 3NF
- „Relacja R jest w drugiej postaci normalnej (3NF) wtedy i 
-tylko wtedy, gdy jest w postaci 2NF oraz każdy 
-niekluczowy atrybut jest w nietranzytywnie zależny od 
+ „Relacja R jest w drugiej postaci normalnej (3NF) wtedy i
+tylko wtedy, gdy jest w postaci 2NF oraz każdy
+niekluczowy atrybut jest w nietranzytywnie zależny od
 klucza głównego.”
  Normalizacja baz danych
 

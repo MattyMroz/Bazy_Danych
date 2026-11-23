@@ -43,7 +43,7 @@ EXEC msdb.sys.sp_helprolemember 'DatabaseMailUserRole'; -- default brak rekordó
 EXEC msdb.dbo.sysmail_help_principalprofile_sp;
 
 -- 3. Czy poczta bazy danych została uruchomiona?
-EXEC msdb.dbo.sysmail_help_status_sp; -- status 
+EXEC msdb.dbo.sysmail_help_status_sp; -- status
 GO
 -- Uruchomienie kolejki (start i stop usługi wysyłania maili)
 EXEC msdb.dbo.sysmail_start_sp;
@@ -61,9 +61,9 @@ EXEC msdb.dbo.sysmail_help_queue_sp @queue_type = 'mail';
 GO
 -- Które konto faktycznie wysyła wiadomości
 -- sent_account_id wskazuje konto DB Mail, przez które wysłano daną wiadomość.
-SELECT sent_account_id, sent_date 
+SELECT sent_account_id, sent_date
 FROM msdb.dbo.sysmail_sentitems;
--- Nazwy kont 
+-- Nazwy kont
 SELECT account_id, name, email_address, display_name
 FROM msdb.dbo.sysmail_account;
 -- Lista wysłanych wiadomości z pełną zawartością
@@ -75,16 +75,16 @@ DELETE FROM msdb.dbo.sysmail_sentitems;
 DELETE FROM msdb.dbo .sysmail_event_log;
 
 -- 5. Dodatkowo wysyłamy mail bezpośrednio za pomocą procedury xp_send_dbmail bezpośrednio z poziomu języka SQL
-EXEC msdb.dbo.sp_send_dbmail 
- @profile_name = 'Profil_1', 
- @recipients = 'test@interia.pl', 
- @body = 'Test', 
+EXEC msdb.dbo.sp_send_dbmail
+ @profile_name = 'Profil_1',
+ @recipients = 'test@interia.pl',
+ @body = 'Test',
  @subject = 'Test Mail SQL Server' ;
 -- Wysyłamy mail i zapytanie w pliku: 'SELECT categoryid, categoryname FROM Northwind.dbo.Categories'
-EXEC msdb.dbo.sp_send_dbmail 
- @profile_name = 'Profil_1', 
- @recipients = 'test@interia.pl', 
- @query = 'SELECT categoryid, categoryname 
+EXEC msdb.dbo.sp_send_dbmail
+ @profile_name = 'Profil_1',
+ @recipients = 'test@interia.pl',
+ @query = 'SELECT categoryid, categoryname
 FROM Northwind.dbo.Categories',
- @subject = 'Categories', 
+ @subject = 'Categories',
  @attach_query_result_as_file = 1 ;

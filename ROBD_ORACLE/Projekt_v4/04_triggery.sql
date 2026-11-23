@@ -61,7 +61,7 @@ BEGIN
     -- Sprawdz tylko dla dzieci
     IF v_uczen IS NOT NULL AND v_uczen.czy_dziecko() = 'T' THEN
         -- Przelicz godziny na minuty
-        v_godz_start := TO_NUMBER(SUBSTR(:NEW.godzina_start, 1, 2)) * 60 + 
+        v_godz_start := TO_NUMBER(SUBSTR(:NEW.godzina_start, 1, 2)) * 60 +
                         TO_NUMBER(SUBSTR(:NEW.godzina_start, 4, 2));
         v_godz_end := v_godz_start + :NEW.czas_trwania;
 
@@ -85,7 +85,7 @@ BEGIN
     -- Sprawdz czy po DELETE powstaly osierocone referencje
     SELECT COUNT(*) INTO v_cnt FROM t_lekcja WHERE ref_nauczyciel IS DANGLING;
     IF v_cnt > 0 THEN
-        RAISE_APPLICATION_ERROR(-20109, 
+        RAISE_APPLICATION_ERROR(-20109,
             'Nie mozna usunac nauczyciela z historia lekcji.');
     END IF;
 END;
@@ -103,7 +103,7 @@ DECLARE
 BEGIN
     SELECT COUNT(*) INTO v_cnt FROM t_lekcja WHERE ref_uczen IS DANGLING;
     IF v_cnt > 0 THEN
-        RAISE_APPLICATION_ERROR(-20110, 
+        RAISE_APPLICATION_ERROR(-20110,
             'Nie mozna usunac ucznia z historia lekcji.');
     END IF;
 END;
@@ -120,7 +120,7 @@ DECLARE
 BEGIN
     SELECT COUNT(*) INTO v_cnt FROM t_lekcja WHERE ref_sala IS DANGLING;
     IF v_cnt > 0 THEN
-        RAISE_APPLICATION_ERROR(-20111, 
+        RAISE_APPLICATION_ERROR(-20111,
             'Nie mozna usunac sali z historia lekcji.');
     END IF;
 END;
@@ -137,7 +137,7 @@ DECLARE
 BEGIN
     SELECT COUNT(*) INTO v_cnt FROM t_lekcja WHERE ref_kurs IS DANGLING;
     IF v_cnt > 0 THEN
-        RAISE_APPLICATION_ERROR(-20112, 
+        RAISE_APPLICATION_ERROR(-20112,
             'Nie mozna usunac kursu z historia lekcji.');
     END IF;
 END;

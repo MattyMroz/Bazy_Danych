@@ -30,7 +30,7 @@ END;
 /
 
 -- Weryfikacja: Plan lekcji Jasia Kotka
-SELECT 
+SELECT
     TO_CHAR(l.data_lekcji, 'YYYY-MM-DD') AS data,
     l.godzina_rozp AS godzina,
     DEREF(l.ref_przedmiot).nazwa AS przedmiot,
@@ -78,7 +78,7 @@ END;
 /
 
 -- Weryfikacja: Oceny Jana Kowalskiego
-SELECT 
+SELECT
     DEREF(o.ref_przedmiot).nazwa AS przedmiot,
     o.wartosc AS ocena,
     o.obszar,
@@ -106,7 +106,7 @@ END;
 /
 
 -- Weryfikacja: Egzaminy
-SELECT 
+SELECT
     DEREF(l.ref_uczen).imie || ' ' || DEREF(l.ref_uczen).nazwisko AS uczen,
     TO_CHAR(l.data_lekcji, 'YYYY-MM-DD') AS data,
     l.godzina_rozp AS godzina,
@@ -123,11 +123,11 @@ COMMIT;
 -- ============================================================================
 
 -- Plan nauczyciela Kowalskiej
-SELECT 
+SELECT
     TO_CHAR(l.data_lekcji, 'YYYY-MM-DD') AS data,
     l.godzina_rozp AS godzina,
     DEREF(l.ref_przedmiot).nazwa AS przedmiot,
-    CASE 
+    CASE
         WHEN l.ref_uczen IS NOT NULL THEN DEREF(l.ref_uczen).imie || ' ' || DEREF(l.ref_uczen).nazwisko
         ELSE 'Grupa: ' || DEREF(l.ref_grupa).kod
     END AS uczen_grupa,
@@ -144,7 +144,7 @@ ORDER BY l.data_lekcji, l.godzina_rozp;
 -- ============================================================================
 
 -- Plan grupowy klasy 1A
-SELECT 
+SELECT
     TO_CHAR(l.data_lekcji, 'YYYY-MM-DD') AS data,
     l.godzina_rozp AS godzina,
     DEREF(l.ref_przedmiot).nazwa AS przedmiot,
@@ -162,7 +162,7 @@ ORDER BY l.data_lekcji, l.godzina_rozp;
 -- ============================================================================
 
 -- Obciazenie nauczycieli (tydzien 2026-02-02)
-SELECT 
+SELECT
     DEREF(l.ref_nauczyciel).imie || ' ' || DEREF(l.ref_nauczyciel).nazwisko AS nauczyciel,
     COUNT(*) AS liczba_lekcji,
     SUM(l.czas_trwania) || ' min' AS laczny_czas
@@ -178,7 +178,7 @@ ORDER BY COUNT(*) DESC;
 -- ============================================================================
 
 -- Wykorzystanie sal (tydzien 2026-02-02)
-SELECT 
+SELECT
     DEREF(l.ref_sala).numer AS sala,
     DEREF(l.ref_sala).typ AS typ,
     COUNT(*) AS liczba_lekcji

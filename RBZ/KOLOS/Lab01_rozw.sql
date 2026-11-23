@@ -1,5 +1,5 @@
 ----------------------------
--- Zadania od 9 do 15 do zrealizowania i wymagane odesłanie do oceny w osobnym pliku. W pliku w pierwszym wierszu proszę podać Nazwisko, imię, numer -- indeksu. Nazwa pliku powinna zwierać nazwisko i imię. 
+-- Zadania od 9 do 15 do zrealizowania i wymagane odesłanie do oceny w osobnym pliku. W pliku w pierwszym wierszu proszę podać Nazwisko, imię, numer -- indeksu. Nazwa pliku powinna zwierać nazwisko i imię.
 --------------------------
 --- W środowisku SQL Server obiekty identyfikowane są w sposób bezwzględny przez czteroczłonowy identyfikator na który składa się:
 
@@ -25,9 +25,9 @@ select * from Northwind..Categories
 
 
 --- Zad. 2
---- Sprawdzić ustawienia konfiguracyjne środowiska SQL Server pod kątem możliwości pisania rozproszonych zapytań "Ad Hoc" - wykorzystując w tym celu systemową procedurę: sp_configure (Transact-SQL) 
+--- Sprawdzić ustawienia konfiguracyjne środowiska SQL Server pod kątem możliwości pisania rozproszonych zapytań "Ad Hoc" - wykorzystując w tym celu systemową procedurę: sp_configure (Transact-SQL)
 
---- 
+---
 sp_configure 'show advanced options', 1
 reconfigure
 
@@ -54,12 +54,12 @@ EXEC master.dbo.sp_MSset_oledb_prop N'SQLNCLI11', N'DynamicParameters', 1
 GO
 
 --- Zad. 5
--- Postąpić podobnie z pozostałymi sterownikami dla środowiska Microsoft Office (sterownik [Microsoft.ACE.OLEDB.12.0]) 
+-- Postąpić podobnie z pozostałymi sterownikami dla środowiska Microsoft Office (sterownik [Microsoft.ACE.OLEDB.12.0])
 --- oraz środowiska Oracle ([OraOLEDB.Oracle])
 
 
 --- Zad. 6
--- Poszukać w dokumentacji SQL Server frazę: OPENROWSET (Transact-SQL). 
+-- Poszukać w dokumentacji SQL Server frazę: OPENROWSET (Transact-SQL).
 -- Zapoznać się z informacją dotyczącą możliwości uzyskania dostępu do danych zdalnych ze źródła danych OLE DB.:
 -- https://docs.microsoft.com/en-us/sql/t-sql/functions/openrowset-transact-sql?view=sql-server-ver15
 
@@ -98,13 +98,13 @@ on c.CategoryID=p.CategoryID
 ---Na dysku c:\ założyć nowy katalog (np. \NorthWind) w którym utworzyć plik *.xlsx o nazwie .
 --- W pliku tym w dowolnym skoroszycie utworzyć listę przedmiotów oraz uzyskanych ocen z tych przedmiotów.
 -- Plik powinien zawierać następujące kolumny:
--- L.p. 
+-- L.p.
 -- Przedmiot
 --- Ocena
--- 
+--
 -- Napisać w środowisku SQL Server zapytanie, które zwróci wszystkie oceny z danych przedmiotów
 
-SELECT * FROM OPENROWSET('Microsoft.ACE.OLEDB.16.0', 
+SELECT * FROM OPENROWSET('Microsoft.ACE.OLEDB.16.0',
 'Excel 12.0;Database=C:\northwind\listy.xls',
 'select * from [oceny_do_www$]')
 
