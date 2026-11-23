@@ -84,6 +84,12 @@ pre code { background: none; padding: 0; word-break: normal; white-space: pre }
       <p class="sub">MongoDB, Redis, Neo4j, Cassandra. Pytania z wykładu i labów 1–3.</p>
     </div>
     <div class="row">
+      <label class="row hint" for="set">Zestaw
+        <select id="set">
+          <option value="quiz_300.json">Najważniejsze (300)</option>
+          <option value="quiz.json">Pełny (1151)</option>
+        </select>
+      </label>
       <label class="row hint" for="mod">Moduł
         <select id="mod"></select>
       </label>
@@ -227,15 +233,25 @@ $("#m-learn").onclick = () => setMode("learn");
 $("#m-quiz").onclick = () => setMode("quiz");
 $("#mod").addEventListener("change", e => { mod = data.modules.find(m => m.id === e.target.value); try { localStorage.setItem("nosql-mod", mod.id); } catch (x) {} setMode(mode); loadHistory(); });
 
-(async () => {
+async function loadSet(file) {
   try {
-    data = await (await fetch("quiz.json", { cache: "no-store" })).json();
+    data = await (await fetch(file, { cache: "no-store" })).json();
   } catch (e) { $("#view").innerHTML = `<p class="empty">Nie udało się wczytać pytań.</p>`; return; }
   let saved = null; try { saved = localStorage.getItem("nosql-mod"); } catch (x) {}
   $("#mod").innerHTML = data.modules.map(m => `<option value="${m.id}">${esc(m.title)} (${m.questions.length})</option>`).join("");
   mod = data.modules.find(m => m.id === saved) || data.modules[0];
   $("#mod").value = mod.id;
-  start();
+  setMode(mode);
+  loadHistory();
+}
+
+$("#set").addEventListener("change", e => { try { localStorage.setItem("nosql-set", e.target.value); } catch (x) {} loadSet(e.target.value); });
+
+(async () => {
+  let set = null; try { set = localStorage.getItem("nosql-set"); } catch (x) {}
+  if (set) $("#set").value = set;
+  if (!$("#set").value) $("#set").value = "quiz_300.json";
+  await loadSet($("#set").value);
   if (window.claude && window.claude.use) { db = await window.claude.use("db"); loadHistory(); }
 })();
 </script>
